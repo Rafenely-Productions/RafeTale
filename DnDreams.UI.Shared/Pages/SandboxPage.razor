@@ -1,0 +1,100 @@
+@page "/sandbox"
+@using DnDreams.Domain
+@using DnDreams.Domain.Entities
+@using DnDreams.Application.Models
+@using DnDreams.Application.Services
+
+<div class="container mt-4">
+    <h1 class="display-4 text-primary">🧪 DnDreams Sandbox</h1>
+    <p class="lead text-muted">Pruebas del Motor de Progresión y Requisitos</p>
+    
+    <hr />
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">Configuración del Personaje</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre del Personaje</label>
+                        <input @bind="testChar.Name" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Subir a Nivel:</label>
+                        <input type="number" @bind="targetLevel" class="form-control" min="1" max="20" />
+                    </div>
+                    <button class="btn btn-primary w-100" @onclick="RunLevelTest">
+                        Simular Subida de Nivel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">Requisitos Detectados por el Motor</div>
+                <div class="card-body">
+                    @if (results == null)
+                    {
+                        <p><em>Haz clic en simular para ver la magia...</em></p>
+                    }
+                    else if (!results.Any())
+                    {
+                        <div class="alert alert-warning">No se encontraron reglas para este nivel.</div>
+                    }
+                    else
+                    {
+                        <ul class="list-group">
+                            @foreach (var req in results)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">@req.FeatureName</div>
+                                        @req.Description
+                                    </div>
+                                    <span class="badge @(req.IsCompleted ? "bg-success" : "bg-danger") rounded-pill">
+                                        @(req.IsCompleted ? "✓ Automático" : "⚠ Pendiente")
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    // Inyectamos el servicio que creamos en DnDreams.Application
+    [Inject] private LevelingService _levelingService { get; set; } = default!;
+
+    private Character testChar = new Character { Name = "Grog el Fuerte", Strength = 16 };
+    private int targetLevel = 2;
+    private List<LevelUpRequirement>? results;
+
+    private void RunLevelTest()
+    {
+        // Simulamos una definición de clase (esto vendrá de SQLite después)
+        var warriorDef = new ClassDefinition
+        {
+            Name = "Guerrero",
+            Progression = new List<ClassLevelProgression>
+            {
+                new() {
+                    Level = 2,
+                    Features = new List<Feature> {
+                        new() { Name = "Acción Súbita", Description = "Ganas una acción extra este turno.", RequiresChoice = false }
+                    }
+                },
+                new() {
+                    Level = 4,
+                    Features = new List<Feature>() // Aquí el motor debería añadir el ASI automático
+                }
+            }
+        };
+
+        // Ejecutamos el motor
+        results = _levelingService.GetPendingRequirements(testChar, warriorDef, targetLevel);
+    }
+}

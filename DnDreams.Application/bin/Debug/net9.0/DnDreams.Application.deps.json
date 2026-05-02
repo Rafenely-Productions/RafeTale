@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "DnDreams.Application/1.0.0": {
+        "dependencies": {
+          "DnDreams.Domain": "1.0.0"
+        },
+        "runtime": {
+          "DnDreams.Application.dll": {}
+        }
+      },
+      "DnDreams.Domain/1.0.0": {
+        "runtime": {
+          "DnDreams.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DnDreams.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DnDreams.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

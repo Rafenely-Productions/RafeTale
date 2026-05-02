@@ -1,0 +1,17 @@
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\Infrastructure.csproj.AssemblyReference.cache
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\Infrastructure.AssemblyInfoInputs.cache
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\Infrastructure.AssemblyInfo.cs
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\Infrastructure.csproj.CoreCompileInputs.cache
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\bin\Debug\net9.0\Infrastructure.deps.json
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\bin\Debug\net9.0\Infrastructure.runtimeconfig.json
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\bin\Debug\net9.0\Infrastructure.dll
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\bin\Debug\net9.0\Infrastructure.pdb
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\bin\Debug\net9.0\Domain.dll
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\bin\Debug\net9.0\Domain.pdb
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\Infrastr.15EFFBFE.Up2Date
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\Infrastructure.dll
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\refint\Infrastructure.dll
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\Infrastructure.pdb
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\Infrastructure.genruntimeconfig.cache
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\ref\Infrastructure.dll

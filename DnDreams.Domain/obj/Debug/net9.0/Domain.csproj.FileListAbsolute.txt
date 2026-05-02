@@ -1,0 +1,11 @@
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\bin\Debug\net9.0\Domain.deps.json
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\bin\Debug\net9.0\Domain.dll
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\bin\Debug\net9.0\Domain.pdb
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\Domain.dll
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\refint\Domain.dll
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\Domain.pdb
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\ref\Domain.dll

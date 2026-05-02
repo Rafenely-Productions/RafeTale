@@ -1,0 +1,37 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\DnDreams.UI.Shared.bundle.scp.css",
+      "PackagePath": "staticwebassets\\DnDreams.UI.Shared.t1roobeqbz.bundle.scp.css"
+    },
+    {
+      "Id": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\wwwroot\\background.png",
+      "PackagePath": "staticwebassets\\background.png"
+    },
+    {
+      "Id": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\wwwroot\\exampleJsInterop.js",
+      "PackagePath": "staticwebassets\\exampleJsInterop.js"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.DnDreams.UI.Shared.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.DnDreams.UI.Shared.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.build.DnDreams.UI.Shared.props",
+      "PackagePath": "build\\DnDreams.UI.Shared.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildMultiTargeting.DnDreams.UI.Shared.props",
+      "PackagePath": "buildMultiTargeting\\DnDreams.UI.Shared.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildTransitive.DnDreams.UI.Shared.props",
+      "PackagePath": "buildTransitive\\DnDreams.UI.Shared.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

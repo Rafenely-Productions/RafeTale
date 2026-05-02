@@ -1,0 +1,3 @@
+D:\Users\ricar\repos\DnDreams\DnDreams.UI.Shared\wwwroot\exampleJsInterop.js
+wwwroot\background.png
+wwwroot\exampleJsInterop.js
