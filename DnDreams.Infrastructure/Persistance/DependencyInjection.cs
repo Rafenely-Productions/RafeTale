@@ -1,6 +1,8 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+using DnDreams.Domain.Interfaces;
 using DnDreams.Infrastructure.Persistence;
+using DnDreamsInfrastructure.Persistance;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DnDreams.Infrastructure;
 
@@ -10,6 +12,8 @@ public static class DependencyInjection
     {
         services.AddDbContext<DnDreamsDbContext>(options =>
             options.UseSqlite($"Data Source={dbPath}"));
+
+        services.AddScoped<ICharacterRepository, CharacterRepository>();
 
         return services;
     }

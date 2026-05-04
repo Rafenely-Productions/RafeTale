@@ -8,6 +8,7 @@ D:\Users\ricar\repos\DnDreams\DnDreams.Application\obj\Debug\net9.0\DnDreams.App
 D:\Users\ricar\repos\DnDreams\DnDreams.Application\obj\Debug\net9.0\DnDreams.Application.AssemblyInfoInputs.cache
 D:\Users\ricar\repos\DnDreams\DnDreams.Application\obj\Debug\net9.0\DnDreams.Application.AssemblyInfo.cs
 D:\Users\ricar\repos\DnDreams\DnDreams.Application\obj\Debug\net9.0\DnDreams.Application.csproj.CoreCompileInputs.cache
+D:\Users\ricar\repos\DnDreams\DnDreams.Application\obj\Debug\net9.0\DnDreams.Application.sourcelink.json
 D:\Users\ricar\repos\DnDreams\DnDreams.Application\obj\Debug\net9.0\DnDreams.9AB929E6.Up2Date
 D:\Users\ricar\repos\DnDreams\DnDreams.Application\obj\Debug\net9.0\DnDreams.Application.dll
 D:\Users\ricar\repos\DnDreams\DnDreams.Application\obj\Debug\net9.0\refint\DnDreams.Application.dll

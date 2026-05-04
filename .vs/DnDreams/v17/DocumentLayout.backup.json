@@ -3,8 +3,83 @@
   "WorkspaceRootPath": "D:\\Users\\ricar\\repos\\DnDreams\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\MAUI.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.maui\\main.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\MAUI.csproj|solutionrelative:dndreams.maui\\main.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\DnDreams.Domain.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.domain\\entities\\classlevelprogression.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\DnDreams.Domain.csproj|solutionrelative:dndreams.domain\\entities\\classlevelprogression.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\DnDreams.Domain.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.domain\\entities\\classdefinition.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\DnDreams.Domain.csproj|solutionrelative:dndreams.domain\\entities\\classdefinition.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\DnDreams.Domain.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.domain\\entities\\character.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\DnDreams.Domain.csproj|solutionrelative:dndreams.domain\\entities\\character.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.maui\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|solutionrelative:dndreams.maui\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.infrastructure\\persistance\\dndreamsdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|solutionrelative:dndreams.infrastructure\\persistance\\dndreamsdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.infrastructure\\persistance\\dndreamsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|solutionrelative:dndreams.infrastructure\\persistance\\dndreamsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\dotnet\\sdk\\9.0.304\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.infrastructure\\persistance\\characterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|solutionrelative:dndreams.infrastructure\\persistance\\characterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.application\\services\\charactermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|solutionrelative:dndreams.application\\services\\charactermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.infrastructure\\persistance\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|solutionrelative:dndreams.infrastructure\\persistance\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.infrastructure\\persistance\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|solutionrelative:dndreams.infrastructure\\persistance\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.application\\models\\importsummary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|solutionrelative:dndreams.application\\models\\importsummary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.infrastructure\\persistance\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|solutionrelative:dndreams.infrastructure\\persistance\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.application\\services\\exceldataservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|solutionrelative:dndreams.application\\services\\exceldataservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.application\\models\\excelimportresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|solutionrelative:dndreams.application\\models\\excelimportresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4218BB1-B194-E39F-2EB9-40A0442C058F}|DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.ui.shared\\pages\\sandboxpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A4218BB1-B194-E39F-2EB9-40A0442C058F}|DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj|solutionrelative:dndreams.ui.shared\\pages\\sandboxpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.maui\\main.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|solutionrelative:dndreams.maui\\main.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4218BB1-B194-E39F-2EB9-40A0442C058F}|DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.ui.shared\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A4218BB1-B194-E39F-2EB9-40A0442C058F}|DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj|solutionrelative:dndreams.ui.shared\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.maui\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|solutionrelative:dndreams.maui\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.maui\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|solutionrelative:dndreams.maui\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A4218BB1-B194-E39F-2EB9-40A0442C058F}|DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.ui.shared\\shared\\layout\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -15,60 +90,28 @@
       "RelativeMoniker": "D:0:0:{A4218BB1-B194-E39F-2EB9-40A0442C058F}|DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj|solutionrelative:dndreams.ui.shared\\shared\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.maui\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|solutionrelative:dndreams.maui\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A4218BB1-B194-E39F-2EB9-40A0442C058F}|DnDreams.UI.Shared\\UI.Shared.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.ui.shared\\pages\\sandboxpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A4218BB1-B194-E39F-2EB9-40A0442C058F}|DnDreams.UI.Shared\\UI.Shared.csproj|solutionrelative:dndreams.ui.shared\\pages\\sandboxpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\MAUI.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.maui\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\MAUI.csproj|solutionrelative:dndreams.maui\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\MAUI.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.maui\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\MAUI.csproj|solutionrelative:dndreams.maui\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\Infrastructure.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.infrastructure\\persistance\\dndreamsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\Infrastructure.csproj|solutionrelative:dndreams.infrastructure\\persistance\\dndreamsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\Infrastructure.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.infrastructure\\persistance\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\Infrastructure.csproj|solutionrelative:dndreams.infrastructure\\persistance\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\Application.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.application\\models\\leveluprequirement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\Application.csproj|solutionrelative:dndreams.application\\models\\leveluprequirement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\Application.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.application\\models\\requirementtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\Application.csproj|solutionrelative:dndreams.application\\models\\requirementtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\Application.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.application\\services\\levelingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\Application.csproj|solutionrelative:dndreams.application\\services\\levelingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.infrastructure\\dndreamsinfrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}|DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj|solutionrelative:dndreams.infrastructure\\dndreamsinfrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\Domain.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.domain\\entities\\classdefinition.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\Domain.csproj|solutionrelative:dndreams.domain\\entities\\classdefinition.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.maui\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{C49A9753-362A-FC16-26CD-99FEF61714E7}|DnDreams.MAUI\\DnDreams.MAUI.csproj|solutionrelative:dndreams.maui\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\Domain.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.domain\\feature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\Domain.csproj|solutionrelative:dndreams.domain\\feature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.application\\models\\requirementtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|solutionrelative:dndreams.application\\models\\requirementtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\Domain.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.domain\\entities\\classlevelprogression.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\Domain.csproj|solutionrelative:dndreams.domain\\entities\\classlevelprogression.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.application\\models\\leveluprequirement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|solutionrelative:dndreams.application\\models\\leveluprequirement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\Domain.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.domain\\entities\\character.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\Domain.csproj|solutionrelative:dndreams.domain\\entities\\character.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.application\\services\\levelingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{517B2860-D7C5-F39E-94ED-7A70842E63BD}|DnDreams.Application\\DnDreams.Application.csproj|solutionrelative:dndreams.application\\services\\levelingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\DnDreams.Domain.csproj|d:\\users\\ricar\\repos\\dndreams\\dndreams.domain\\feature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B10587A2-A75F-ADA7-B178-6879E56AE476}|DnDreams.Domain\\DnDreams.Domain.csproj|solutionrelative:dndreams.domain\\feature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -78,32 +121,30 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "NavMenu.razor",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Shared\\Layout\\NavMenu.razor",
-              "RelativeDocumentMoniker": "DnDreams.UI.Shared\\Shared\\Layout\\NavMenu.razor",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Shared\\Layout\\NavMenu.razor",
-              "RelativeToolTip": "DnDreams.UI.Shared\\Shared\\Layout\\NavMenu.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-02T01:34:39.28Z",
+              "DocumentIndex": 4,
+              "Title": "DnDreamsDbContextFactory.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DnDreamsDbContextFactory.cs",
+              "RelativeDocumentMoniker": "DnDreams.Infrastructure\\Persistance\\DnDreamsDbContextFactory.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DnDreamsDbContextFactory.cs",
+              "RelativeToolTip": "DnDreams.Infrastructure\\Persistance\\DnDreamsDbContextFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-04T03:42:57.375Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MainLayout.razor",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Shared\\Layout\\MainLayout.razor",
-              "RelativeDocumentMoniker": "DnDreams.UI.Shared\\Shared\\Layout\\MainLayout.razor",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Shared\\Layout\\MainLayout.razor",
-              "RelativeToolTip": "DnDreams.UI.Shared\\Shared\\Layout\\MainLayout.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-02T01:33:39.938Z",
+              "DocumentIndex": 6,
+              "Title": "Microsoft.PackageDependencyResolution.targets",
+              "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.304\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
+              "ToolTip": "C:\\Program Files\\dotnet\\sdk\\9.0.304\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
+              "ViewState": "AgIAAM4AAAAAAAAAAAAuwAkBAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2026-05-04T03:25:23.403Z",
               "EditorCaption": ""
             },
             {
@@ -112,159 +153,42 @@
               "Title": "MauiProgram.cs",
               "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\MauiProgram.cs",
               "RelativeDocumentMoniker": "DnDreams.MAUI\\MauiProgram.cs",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\MauiProgram.cs",
-              "RelativeToolTip": "DnDreams.MAUI\\MauiProgram.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAeAAAAAAAAAA==",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\MauiProgram.cs*",
+              "RelativeToolTip": "DnDreams.MAUI\\MauiProgram.cs*",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABUAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-02T01:29:29.631Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Main.razor",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\Main.razor",
-              "RelativeDocumentMoniker": "DnDreams.MAUI\\Main.razor",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\Main.razor",
-              "RelativeToolTip": "DnDreams.MAUI\\Main.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAABbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-02T01:12:42.923Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "App.xaml",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\App.xaml",
-              "RelativeDocumentMoniker": "DnDreams.MAUI\\App.xaml",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\App.xaml",
-              "RelativeToolTip": "DnDreams.MAUI\\App.xaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-05-02T01:12:18.43Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "App.xaml.cs",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\App.xaml.cs",
-              "RelativeDocumentMoniker": "DnDreams.MAUI\\App.xaml.cs",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\App.xaml.cs",
-              "RelativeToolTip": "DnDreams.MAUI\\App.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAA+AAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "Character.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\Entities\\Character.cs",
+              "RelativeDocumentMoniker": "DnDreams.Domain\\Entities\\Character.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\Entities\\Character.cs",
+              "RelativeToolTip": "DnDreams.Domain\\Entities\\Character.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABkAAABJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-02T01:10:51.851Z",
+              "WhenOpened": "2026-05-02T00:44:42.597Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SandboxPage.razor",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Pages\\SandboxPage.razor",
-              "RelativeDocumentMoniker": "DnDreams.UI.Shared\\Pages\\SandboxPage.razor",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Pages\\SandboxPage.razor",
-              "RelativeToolTip": "DnDreams.UI.Shared\\Pages\\SandboxPage.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-02T01:10:01.933Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "DnDreamsDbContext.cs",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DnDreamsDbContext.cs",
-              "RelativeDocumentMoniker": "DnDreams.Infrastructure\\Persistance\\DnDreamsDbContext.cs",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DnDreamsDbContext.cs",
-              "RelativeToolTip": "DnDreams.Infrastructure\\Persistance\\DnDreamsDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-02T01:09:44.316Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "RequirementType.cs",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\RequirementType.cs",
-              "RelativeDocumentMoniker": "DnDreams.Application\\Models\\RequirementType.cs",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\RequirementType.cs",
-              "RelativeToolTip": "DnDreams.Application\\Models\\RequirementType.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-02T01:07:45.709Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "LevelUpRequirement.cs",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\LevelUpRequirement.cs",
-              "RelativeDocumentMoniker": "DnDreams.Application\\Models\\LevelUpRequirement.cs",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\LevelUpRequirement.cs",
-              "RelativeToolTip": "DnDreams.Application\\Models\\LevelUpRequirement.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-02T01:07:26.448Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "DnDreamsInfrastructure.csproj",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj",
-              "RelativeDocumentMoniker": "DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj",
-              "RelativeToolTip": "DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-05-02T01:05:23.374Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 1,
               "Title": "ClassDefinition.cs",
               "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\Entities\\ClassDefinition.cs",
               "RelativeDocumentMoniker": "DnDreams.Domain\\Entities\\ClassDefinition.cs",
               "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\Entities\\ClassDefinition.cs",
               "RelativeToolTip": "DnDreams.Domain\\Entities\\ClassDefinition.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-02T00:58:55.197Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "DbInitializer.cs",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DbInitializer.cs",
-              "RelativeDocumentMoniker": "DnDreams.Infrastructure\\Persistance\\DbInitializer.cs",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DbInitializer.cs",
-              "RelativeToolTip": "DnDreams.Infrastructure\\Persistance\\DbInitializer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-02T00:51:23.48Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "LevelingService.cs",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Services\\LevelingService.cs",
-              "RelativeDocumentMoniker": "DnDreams.Application\\Services\\LevelingService.cs",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Services\\LevelingService.cs",
-              "RelativeToolTip": "DnDreams.Application\\Services\\LevelingService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-02T00:49:06.651Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 0,
               "Title": "ClassLevelProgression.cs",
               "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\Entities\\ClassLevelProgression.cs",
               "RelativeDocumentMoniker": "DnDreams.Domain\\Entities\\ClassLevelProgression.cs",
@@ -277,7 +201,274 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CharacterRepository.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\CharacterRepository.cs",
+              "RelativeDocumentMoniker": "DnDreams.Infrastructure\\Persistance\\CharacterRepository.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\CharacterRepository.cs",
+              "RelativeToolTip": "DnDreams.Infrastructure\\Persistance\\CharacterRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-04T02:54:50.868Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CharacterManager.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Services\\CharacterManager.cs",
+              "RelativeDocumentMoniker": "DnDreams.Application\\Services\\CharacterManager.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Services\\CharacterManager.cs",
+              "RelativeToolTip": "DnDreams.Application\\Services\\CharacterManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-04T02:55:38.951Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DependencyInjection.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DependencyInjection.cs",
+              "RelativeDocumentMoniker": "DnDreams.Infrastructure\\Persistance\\DependencyInjection.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DependencyInjection.cs",
+              "RelativeToolTip": "DnDreams.Infrastructure\\Persistance\\DependencyInjection.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-04T03:06:44.155Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DnDreamsDbContext.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DnDreamsDbContext.cs",
+              "RelativeDocumentMoniker": "DnDreams.Infrastructure\\Persistance\\DnDreamsDbContext.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DnDreamsDbContext.cs",
+              "RelativeToolTip": "DnDreams.Infrastructure\\Persistance\\DnDreamsDbContext.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABQAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-02T01:09:44.316Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "DbContext.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DbContext.cs",
+              "RelativeDocumentMoniker": "DnDreams.Infrastructure\\Persistance\\DbContext.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DbContext.cs",
+              "RelativeToolTip": "DnDreams.Infrastructure\\Persistance\\DbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-04T03:02:02.352Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "ImportSummary.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\ImportSummary.cs",
+              "RelativeDocumentMoniker": "DnDreams.Application\\Models\\ImportSummary.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\ImportSummary.cs",
+              "RelativeToolTip": "DnDreams.Application\\Models\\ImportSummary.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-04T03:00:08.517Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ExcelDataService.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Services\\ExcelDataService.cs",
+              "RelativeDocumentMoniker": "DnDreams.Application\\Services\\ExcelDataService.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Services\\ExcelDataService.cs",
+              "RelativeToolTip": "DnDreams.Application\\Services\\ExcelDataService.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA0AAABZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-04T02:47:52.539Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 14,
+              "Title": "ExcelImportResult.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\ExcelImportResult.cs",
+              "RelativeDocumentMoniker": "DnDreams.Application\\Models\\ExcelImportResult.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\ExcelImportResult.cs",
+              "RelativeToolTip": "DnDreams.Application\\Models\\ExcelImportResult.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-04T02:47:10.522Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "MainLayout.razor",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Shared\\Layout\\MainLayout.razor",
+              "RelativeDocumentMoniker": "DnDreams.UI.Shared\\Shared\\Layout\\MainLayout.razor",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Shared\\Layout\\MainLayout.razor",
+              "RelativeToolTip": "DnDreams.UI.Shared\\Shared\\Layout\\MainLayout.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-02T01:33:39.938Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Main.razor",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\Main.razor",
+              "RelativeDocumentMoniker": "DnDreams.MAUI\\Main.razor",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\Main.razor",
+              "RelativeToolTip": "DnDreams.MAUI\\Main.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAABbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-02T01:12:42.923Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "DbInitializer.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DbInitializer.cs",
+              "RelativeDocumentMoniker": "DnDreams.Infrastructure\\Persistance\\DbInitializer.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\Persistance\\DbInitializer.cs",
+              "RelativeToolTip": "DnDreams.Infrastructure\\Persistance\\DbInitializer.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAwAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-02T00:51:23.48Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "NavMenu.razor",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Shared\\Layout\\NavMenu.razor",
+              "RelativeDocumentMoniker": "DnDreams.UI.Shared\\Shared\\Layout\\NavMenu.razor",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Shared\\Layout\\NavMenu.razor",
+              "RelativeToolTip": "DnDreams.UI.Shared\\Shared\\Layout\\NavMenu.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-02T01:34:39.28Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "index.html",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\wwwroot\\index.html",
+              "RelativeDocumentMoniker": "DnDreams.MAUI\\wwwroot\\index.html",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\wwwroot\\index.html",
+              "RelativeToolTip": "DnDreams.MAUI\\wwwroot\\index.html",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABcAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-05-04T02:26:30.548Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Home.razor",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Pages\\Home.razor",
+              "RelativeDocumentMoniker": "DnDreams.UI.Shared\\Pages\\Home.razor",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Pages\\Home.razor",
+              "RelativeToolTip": "DnDreams.UI.Shared\\Pages\\Home.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-04T02:39:17.905Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "App.xaml",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\App.xaml",
+              "RelativeDocumentMoniker": "DnDreams.MAUI\\App.xaml",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\App.xaml",
+              "RelativeToolTip": "DnDreams.MAUI\\App.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-05-02T01:12:18.43Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\App.xaml.cs",
+              "RelativeDocumentMoniker": "DnDreams.MAUI\\App.xaml.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.MAUI\\App.xaml.cs",
+              "RelativeToolTip": "DnDreams.MAUI\\App.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-02T01:10:51.851Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "SandboxPage.razor",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Pages\\SandboxPage.razor",
+              "RelativeDocumentMoniker": "DnDreams.UI.Shared\\Pages\\SandboxPage.razor",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\Pages\\SandboxPage.razor",
+              "RelativeToolTip": "DnDreams.UI.Shared\\Pages\\SandboxPage.razor",
+              "ViewState": "AgIAADwAAAAAAAAAAAAAAEwAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-02T01:10:01.933Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "RequirementType.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\RequirementType.cs",
+              "RelativeDocumentMoniker": "DnDreams.Application\\Models\\RequirementType.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\RequirementType.cs",
+              "RelativeToolTip": "DnDreams.Application\\Models\\RequirementType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-02T01:07:45.709Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "LevelUpRequirement.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\LevelUpRequirement.cs",
+              "RelativeDocumentMoniker": "DnDreams.Application\\Models\\LevelUpRequirement.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Models\\LevelUpRequirement.cs",
+              "RelativeToolTip": "DnDreams.Application\\Models\\LevelUpRequirement.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-02T01:07:26.448Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "DnDreamsInfrastructure.csproj",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj",
+              "RelativeDocumentMoniker": "DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj",
+              "RelativeToolTip": "DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-02T01:05:23.374Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "LevelingService.cs",
+              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Services\\LevelingService.cs",
+              "RelativeDocumentMoniker": "DnDreams.Application\\Services\\LevelingService.cs",
+              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Application\\Services\\LevelingService.cs",
+              "RelativeToolTip": "DnDreams.Application\\Services\\LevelingService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-02T00:49:06.651Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
               "Title": "Feature.cs",
               "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\Feature.cs",
               "RelativeDocumentMoniker": "DnDreams.Domain\\Feature.cs",
@@ -285,21 +476,7 @@
               "RelativeToolTip": "DnDreams.Domain\\Feature.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-02T00:45:14.295Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "Character.cs",
-              "DocumentMoniker": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\Entities\\Character.cs",
-              "RelativeDocumentMoniker": "DnDreams.Domain\\Entities\\Character.cs",
-              "ToolTip": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\Entities\\Character.cs",
-              "RelativeToolTip": "DnDreams.Domain\\Entities\\Character.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-02T00:44:42.597Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-02T00:45:14.295Z"
             }
           ]
         }

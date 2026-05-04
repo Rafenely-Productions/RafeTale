@@ -5,6 +5,7 @@ D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\DnDreams.Domain.G
 D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\DnDreams.Domain.AssemblyInfoInputs.cache
 D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\DnDreams.Domain.AssemblyInfo.cs
 D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\DnDreams.Domain.csproj.CoreCompileInputs.cache
+D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\DnDreams.Domain.sourcelink.json
 D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\DnDreams.Domain.dll
 D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\refint\DnDreams.Domain.dll
 D:\Users\ricar\repos\DnDreams\DnDreams.Domain\obj\Debug\net9.0\DnDreams.Domain.pdb

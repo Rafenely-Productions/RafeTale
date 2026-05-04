@@ -9,6 +9,7 @@ D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\DnDreamsI
 D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\DnDreamsInfrastructure.AssemblyInfoInputs.cache
 D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\DnDreamsInfrastructure.AssemblyInfo.cs
 D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\DnDreamsInfrastructure.csproj.CoreCompileInputs.cache
+D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\DnDreamsInfrastructure.sourcelink.json
 D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\DnDreams.A754EA91.Up2Date
 D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\DnDreamsInfrastructure.dll
 D:\Users\ricar\repos\DnDreams\DnDreams.Infrastructure\obj\Debug\net9.0\refint\DnDreamsInfrastructure.dll

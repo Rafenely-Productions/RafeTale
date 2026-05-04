@@ -7,7 +7,7 @@
 <div class="container mt-4">
     <h1 class="display-4 text-primary">🧪 DnDreams Sandbox</h1>
     <p class="lead text-muted">Pruebas del Motor de Progresión y Requisitos</p>
-    
+
     <hr />
 
     <div class="row">
@@ -72,6 +72,12 @@
     private Character testChar = new Character { Name = "Grog el Fuerte", Strength = 16 };
     private int targetLevel = 2;
     private List<LevelUpRequirement>? results;
+
+    protected override void OnInitialized()
+    {
+        // PON EL BREAKPOINT AQUÍ
+        base.OnInitialized();
+    }
 
     private void RunLevelTest()
     {

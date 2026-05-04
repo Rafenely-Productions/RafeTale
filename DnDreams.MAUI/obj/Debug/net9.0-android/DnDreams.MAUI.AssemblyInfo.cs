@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DnDreams.MAUI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+d69c5773d79c5b1e2087c4d3ff0b3d5b566f3974")]
 [assembly: System.Reflection.AssemblyProductAttribute("DnDreams.MAUI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DnDreams.MAUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

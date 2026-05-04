@@ -19,7 +19,7 @@ public static class MauiProgram
 		builder.Services.AddMauiBlazorWebView();
 		var dbPath = Path.Combine(FileSystem.AppDataDirectory, "dndreams.db3");
 
-		builder.Services.AddInfrastructure(dbPath);
+		builder.Services.AddInfrastructure(dbPath);//.AddInfrastructure(dbPath);
 		builder.Services.AddSingleton<LevelingService>();
 #if DEBUG
 		builder.Services.AddBlazorWebViewDeveloperTools();
