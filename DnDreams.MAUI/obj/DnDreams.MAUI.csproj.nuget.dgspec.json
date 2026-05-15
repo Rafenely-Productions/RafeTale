@@ -146,12 +146,12 @@
         }
       }
     },
-    "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj": {
+    "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreams.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj",
-        "projectName": "DnDreamsInfrastructure",
-        "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj",
+        "projectUniqueName": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreams.Infrastructure.csproj",
+        "projectName": "DnDreams.Infrastructure",
+        "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreams.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\ricar\\.nuget\\packages\\",
         "outputPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
@@ -207,6 +207,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.105.0, )"
+            },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -239,6 +243,10 @@
         "net9.0-windows10.0.19041": {
           "targetAlias": "net9.0-windows10.0.19041.0",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.105.0, )"
+            },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -318,8 +326,8 @@
               "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\DnDreams.Domain.csproj": {
                 "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\DnDreams.Domain.csproj"
               },
-              "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj": {
-                "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj"
+              "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreams.Infrastructure.csproj": {
+                "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreams.Infrastructure.csproj"
               },
               "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj": {
                 "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj"
@@ -335,8 +343,8 @@
               "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\DnDreams.Domain.csproj": {
                 "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\DnDreams.Domain.csproj"
               },
-              "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj": {
-                "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj"
+              "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreams.Infrastructure.csproj": {
+                "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreams.Infrastructure.csproj"
               },
               "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj": {
                 "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj"
@@ -352,8 +360,8 @@
               "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\DnDreams.Domain.csproj": {
                 "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\DnDreams.Domain.csproj"
               },
-              "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj": {
-                "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj"
+              "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreams.Infrastructure.csproj": {
+                "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreams.Infrastructure.csproj"
               },
               "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj": {
                 "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj"
@@ -369,8 +377,8 @@
               "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\DnDreams.Domain.csproj": {
                 "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Domain\\DnDreams.Domain.csproj"
               },
-              "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj": {
-                "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreamsInfrastructure.csproj"
+              "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreams.Infrastructure.csproj": {
+                "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.Infrastructure\\DnDreams.Infrastructure.csproj"
               },
               "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj": {
                 "projectPath": "D:\\Users\\ricar\\repos\\DnDreams\\DnDreams.UI.Shared\\DnDreams.UI.Shared.csproj"

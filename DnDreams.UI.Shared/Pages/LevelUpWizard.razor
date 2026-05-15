@@ -1,0 +1,154 @@
+﻿@page "/character/{CharacterId:guid}/levelup"
+@using DnDreams.Domain.Entities
+@using DnDreams.Application.Interfaces
+@using DnDreams.Application.Models
+@using DnDreams.UI.Shared.Components.LevelUp
+@inject ILevelingService LevelingService
+@inject IUnitOfWork UnitOfWork
+@inject NavigationManager Navigation
+
+<div class="container mx-auto max-w-4xl p-6">
+    @if (CurrentCharacter == null)
+    {
+        <div class="flex justify-center items-center h-64">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-lime-500"></div>
+        </div>
+    }
+    else
+    {
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 mb-8 shadow-2xl">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-left">
+                    <h1 class="text-4xl font-black text-white tracking-tight">SUBIDA DE NIVEL</h1>
+                    <p class="text-lime-400 font-medium text-lg">
+                        @CurrentCharacter.Name • @CurrentCharacter.ClassDef.Name 
+                        <span class="text-slate-500 mx-2">|</span> 
+                        Nivel @CurrentCharacter.Level → <span class="text-white">@(CurrentCharacter.Level + 1)</span>
+                    </p>
+                </div>
+
+                <div class="flex flex-col items-center md:items-end gap-2">
+                    <div class="text-xs font-bold text-slate-500 uppercase tracking-widest">Paso @CurrentStep de 3</div>
+                    <div class="flex gap-2">
+                        @for (int i = 1; i <= 3; i++)
+                        {
+                            <div class="h-2 w-12 rounded-full transition-all duration-500 @(i <= CurrentStep ? "bg-lime-500 shadow-[0_0_10px_rgba(132,204,22,0.5)]" : "bg-slate-800")"></div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 min-h-[500px] shadow-2xl relative overflow-hidden">
+            @switch (CurrentStep)
+            {
+                case 1:
+                    <ASIFeatStep State="WizardState" />
+                    break;
+                case 2:
+                    <SpellStep State="WizardState" Character="CurrentCharacter" />
+                    break;
+                case 3:
+                    <HPStep State="WizardState" Character="CurrentCharacter" />
+                    break;
+            }
+        </div>
+
+        <div class="flex justify-between items-center mt-8">
+            <button @onclick="PreviousStep" 
+                    disabled="@(CurrentStep == 1 || IsProcessing)"
+                    class="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all disabled:opacity-20 disabled:cursor-not-allowed">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Atrás
+            </button>
+
+            @if (CurrentStep < 3)
+            {
+                <button @onclick="NextStep" 
+                        class="px-10 py-4 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-2xl transition-all shadow-lg shadow-lime-900/20">
+                    Siguiente <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            }
+            else
+            {
+                <button @onclick="HandleFinish" 
+                        disabled="@(IsProcessing || !IsStepValid())"
+                        class="px-10 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all shadow-lg shadow-blue-900/20 disabled:opacity-50">
+                    @if (IsProcessing)
+                    {
+                        <i class="fa-solid fa-spinner animate-spin mr-2"></i> <span>GUARDANDO...</span>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> <span>FINALIZAR AVENTURA</span>
+                    }
+                </button>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid CharacterId { get; set; }
+    
+    private Character? CurrentCharacter;
+    private LevelUpState WizardState = new();
+    private int CurrentStep = 1;
+    private bool IsProcessing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargamos al personaje con todos sus detalles (Stats, Modificadores, etc.)
+        var characters = await UnitOfWork.Characters.GetAllWithDetailsAsync();
+        CurrentCharacter = characters.FirstOrDefault(c => c.Id == CharacterId);
+
+        if (CurrentCharacter == null)
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    private void NextStep() => CurrentStep++;
+    private void PreviousStep() => CurrentStep--;
+
+    private bool IsStepValid()
+    {
+        // Aquí puedes agregar validaciones reales (ej: si no ha elegido HP en el paso 3)
+        if (CurrentStep == 3 && WizardState.SelectedHp <= 0) return false;
+        return true;
+    }
+
+    private async Task HandleFinish()
+    {
+        IsProcessing = true;
+
+        try
+        {
+            // Combinamos los modificadores de ASI si es que el usuario eligió subir puntos
+            var finalModifiers = WizardState.GetModifiersFromAsi();
+            
+            // 🔥 Llamada al servicio que ya blindamos contra errores de concurrencia
+            var success = await LevelingService.CommitLevelUpAsync(
+                CharacterId,
+                WizardState.SelectedHp,
+                finalModifiers,
+                WizardState.SelectedFeatId.HasValue ? new List<Guid> { WizardState.SelectedFeatId.Value } : new List<Guid>(),
+                WizardState.SelectedSpellIds
+            );
+
+            if (success)
+            {
+                // ¡Éxito! Mandamos al Dashboard del personaje
+                Navigation.NavigateTo($"/character/{CharacterId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Aquí podrías mostrar un log de error en la UI
+            Console.WriteLine($"Error al subir nivel: {ex.Message}");
+        }
+        finally
+        {
+            IsProcessing = false;
+        }
+    }
+}

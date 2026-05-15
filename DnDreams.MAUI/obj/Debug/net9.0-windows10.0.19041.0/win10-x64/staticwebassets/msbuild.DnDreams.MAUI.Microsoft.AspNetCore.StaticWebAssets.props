@@ -12,12 +12,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>e5tk7yf482</Fingerprint>
-      <Integrity>bhCZyC/yM2+DaFXr8z25+5MeWfXWqMJNNA4ZLAXbjjU=</Integrity>
+      <Fingerprint>13lvhf1s9r</Fingerprint>
+      <Integrity>fdl8NfU6f1syDxJEA1xv4HdarhGfq4wrc8CTMadLgpo=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>3376</FileLength>
-      <LastWriteTime>Fri, 01 May 2026 23:06:00 GMT</LastWriteTime>
+      <FileLength>3689</FileLength>
+      <LastWriteTime>Fri, 15 May 2026 00:31:08 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\app.css'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\bootstrap\bootstrap.min.css'))">
@@ -77,7 +77,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <FileLength>87</FileLength>
-      <LastWriteTime>Mon, 04 May 2026 03:41:05 GMT</LastWriteTime>
+      <LastWriteTime>Fri, 15 May 2026 00:10:05 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\DnDreams.MAUI.styles.css'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))">
@@ -92,12 +92,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>vcsb6d0ehs</Fingerprint>
-      <Integrity>T/5keVvSX6dsMt5dP9fGfpobHID3RziajoB2/5Sp25I=</Integrity>
+      <Fingerprint>f2zbc2h3is</Fingerprint>
+      <Integrity>udWxJPPO/Pb8Q05NUV3QPknG8ibl+Aq11rO3WhoA3WA=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>988</FileLength>
-      <LastWriteTime>Fri, 01 May 2026 23:58:11 GMT</LastWriteTime>
+      <FileLength>1157</FileLength>
+      <LastWriteTime>Fri, 15 May 2026 00:26:06 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>

@@ -73,7 +73,7 @@
     <ItemGroup>
       <ProjectReference Include="..\DnDreams.Application\DnDreams.Application.csproj" />
       <ProjectReference Include="..\DnDreams.Domain\DnDreams.Domain.csproj" />
-      <ProjectReference Include="..\DnDreams.Infrastructure\DnDreamsInfrastructure.csproj" />
+      <ProjectReference Include="..\DnDreams.Infrastructure\DnDreams.Infrastructure.csproj" />
       <ProjectReference Include="..\DnDreams.UI.Shared\DnDreams.UI.Shared.csproj" />
     </ItemGroup>
 

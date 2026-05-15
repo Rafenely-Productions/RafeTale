@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DnDreamsInfrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d69c5773d79c5b1e2087c4d3ff0b3d5b566f3974")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ef44141be23be2a84fde426f0a7ab9c50f2980cd")]
 [assembly: System.Reflection.AssemblyProductAttribute("DnDreamsInfrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DnDreamsInfrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

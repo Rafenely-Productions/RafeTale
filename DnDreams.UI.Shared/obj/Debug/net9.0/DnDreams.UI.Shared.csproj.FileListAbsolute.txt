@@ -35,6 +35,7 @@ D:\Users\ricar\repos\DnDreams\DnDreams.UI.Shared\obj\Debug\net9.0\staticwebasset
 D:\Users\ricar\repos\DnDreams\DnDreams.UI.Shared\obj\Debug\net9.0\staticwebassets\msbuild.buildMultiTargeting.DnDreams.UI.Shared.props
 D:\Users\ricar\repos\DnDreams\DnDreams.UI.Shared\obj\Debug\net9.0\staticwebassets\msbuild.buildTransitive.DnDreams.UI.Shared.props
 D:\Users\ricar\repos\DnDreams\DnDreams.UI.Shared\obj\Debug\net9.0\staticwebassets.pack.json
+D:\Users\ricar\repos\DnDreams\DnDreams.UI.Shared\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 D:\Users\ricar\repos\DnDreams\DnDreams.UI.Shared\obj\Debug\net9.0\DnDreams.8E456ED9.Up2Date
 D:\Users\ricar\repos\DnDreams\DnDreams.UI.Shared\obj\Debug\net9.0\DnDreams.UI.Shared.dll
 D:\Users\ricar\repos\DnDreams\DnDreams.UI.Shared\obj\Debug\net9.0\refint\DnDreams.UI.Shared.dll

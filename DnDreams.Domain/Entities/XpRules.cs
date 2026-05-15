@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DnDreams.Domain.Entities
+{
+    public class XpRules
+    {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Level { get; set; } = 0;
+        public int RequiredXp { get; set; } = 0;
+        public int Bonus { get; set; } = 0;
+    }
+}

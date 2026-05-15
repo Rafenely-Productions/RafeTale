@@ -1,0 +1,35 @@
+# .NET Core  Visual Studio
+bin
+obj
+[Bb]in
+[Oo]bj
+out
+
+# User-specific files
+.user
+.userosscache
+.sln.docstates
+.vs
+
+# Databases
+.db
+.db-shm
+.db-wal
+.sqlite
+.sqlite3
+
+# MAUI Specific
+.maui
+AppPackages
+BundleArtifacts
+
+# Node (in case TailwindPostCSS are local)
+node_modules
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Secrets and environment
+.env
+appsettings.Development.json

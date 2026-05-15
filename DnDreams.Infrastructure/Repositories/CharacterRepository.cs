@@ -1,0 +1,32 @@
+﻿using DnDreams.Domain.Entities;
+using DnDreams.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using DnDreams.Infrastructure.Persistence;
+
+namespace DnDreams.Infrastructure.Repositories;
+
+public class CharacterRepository : ICharacterRepository
+{
+    private readonly DnDreamsDbContext _context;
+    public CharacterRepository(DnDreamsDbContext context) => _context = context;
+
+    public async Task AddRangeAsync(IEnumerable<Character> characters)
+    {
+        await _context.Characters.AddRangeAsync(characters);
+    }
+
+    public async Task<IEnumerable<Character>> GetAllWithDetailsAsync()
+    {
+        return await _context.Characters
+            .Include(c => c.Race)
+            .Include(c => c.ClassDef)
+            .Include(c => c.AcquiredFeatures)
+            .Include(c => c.AcquiredFeats)
+            .Include(c => c.KnownSpells)
+            .Include(c => c.ActiveModifiers)
+            .ToListAsync();
+    }
+}

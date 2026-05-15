@@ -1,0 +1,71 @@
+﻿@inject IUnitOfWork UnitOfWork
+
+<div class="p-4 bg-slate-900 rounded-lg border border-slate-700">
+    <h3 class="text-xl font-bold text-lime-400 mb-4">Mejora de Habilidad o Dote</h3>
+
+    <div class="flex gap-4 mb-6">
+        <button @onclick="() => SetMode(true)" class="btn @(isAsiMode ? "bg-lime-600" : "bg-slate-700")">Subir Atributos</button>
+        <button @onclick="() => SetMode(false)" class="btn @(!isAsiMode ? "bg-lime-600" : "bg-slate-700")">Elegir Dote</button>
+    </div>
+
+    @if (isAsiMode)
+    {
+        <div class="grid grid-cols-2 gap-4">
+            @foreach (var stat in StatsList)
+            {
+                <div class="flex items-center justify-between p-2 border border-slate-800 rounded">
+                    <span>@stat</span>
+                    <div class="flex gap-2">
+                        <button class="px-2 bg-slate-800">-</button>
+                        <span class="font-bold">@GetPoints(stat)</span>
+                        <button class="px-2 bg-lime-600">+</button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="max-h-60 overflow-y-auto space-y-2">
+            @foreach (var feat in AvailableFeats)
+            {
+                <div @onclick="() => SelectFeat(feat)"
+                     class="p-3 border rounded cursor-pointer transition-colors @(State.SelectedFeatIds.Contains(feat.Id) ? "border-lime-500 bg-lime-900/20" : "border-slate-700 hover:bg-slate-800")">
+                    <div class="font-bold">@feat.Name</div>
+                    <div class="text-xs text-slate-400">@feat.Description</div>
+                    @if (feat.Modifiers.Any())
+                    {
+                        <div class="mt-1 flex gap-1">
+                            @foreach (var mod in feat.Modifiers)
+                            {
+                                <span class="text-[10px] bg-blue-900 px-1 rounded">@mod.Target +@mod.Value</span>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public LevelUpState State { get; set; }
+    private bool isAsiMode = true;
+    private List<Feat> AvailableFeats = new();
+    private string[] StatsList = { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var allFeats = await UnitOfWork.Feats.GetAllAsync();
+        // Aquí podrías filtrar por prerrequisitos en el futuro
+        AvailableFeats = allFeats.ToList();
+    }
+
+    private void SetMode(bool asi) => isAsiMode = asi;
+    private int GetPoints(string stat) => 0; // Lógica de puntos
+    private void SelectFeat(Feat feat)
+    {
+        State.SelectedFeatIds.Clear();
+        State.SelectedFeatIds.Add(feat.Id);
+    }
+}

@@ -20,8 +20,32 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
+[D:/Users/ricar/repos/DnDreams/DnDreams.UI.Shared/Components/LevelUp/ASIFeatStep.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMZXZlbFVwXEFTSUZlYXRTdGVwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Users/ricar/repos/DnDreams/DnDreams.UI.Shared/Components/LevelUp/HPStep.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMZXZlbFVwXEhQU3RlcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Users/ricar/repos/DnDreams/DnDreams.UI.Shared/Components/LevelUp/SpellStep.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMZXZlbFVwXFNwZWxsU3RlcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Users/ricar/repos/DnDreams/DnDreams.UI.Shared/Pages/CharacterDashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2hhcmFjdGVyRGFzaGJvYXJkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Users/ricar/repos/DnDreams/DnDreams.UI.Shared/Pages/CharacterList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2hhcmFjdGVyTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/Users/ricar/repos/DnDreams/DnDreams.UI.Shared/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Users/ricar/repos/DnDreams/DnDreams.UI.Shared/Pages/LevelUpWizard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGV2ZWxVcFdpemFyZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/Users/ricar/repos/DnDreams/DnDreams.UI.Shared/Pages/SandboxPage.razor]

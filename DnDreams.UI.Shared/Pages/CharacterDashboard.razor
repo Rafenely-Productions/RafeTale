@@ -1,0 +1,48 @@
+﻿@page "/character/{CharacterId:guid}"
+@using DnDreams.Domain.Entities
+@using DnDreams.Application.Interfaces
+@inject IUnitOfWork UnitOfWork
+@inject NavigationManager Navigation
+
+@if (Char == null)
+{
+    <p>Buscando al héroe...</p>
+}
+else
+{
+    <div class="max-w-5xl mx-auto p-6">
+        <div class="flex justify-between items-end mb-8 bg-slate-900 p-8 rounded-3xl border border-slate-800">
+            <div>
+                <h1 class="text-5xl font-black text-white">@Char.Name</h1>
+                <p class="text-lime-400 text-xl">@Char.Race?.Name @Char.ClassDef?.Name • Nivel @Char.Level</p>
+            </div>
+            <button @onclick="NavigateToLevelUp" 
+                class="bg-lime-600 text-black px-6 py-3 rounded-2xl font-black hover:scale-105 transition-transform">
+                SUBIR NIVEL
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-slate-900 p-6 rounded-3xl border border-slate-800">
+                <h3 class="text-slate-500 font-bold uppercase text-xs tracking-widest mb-4">Atributos</h3>
+                <p class="text-white">Próximamente: Stats calculados</p>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid CharacterId { get; set; }
+    private Character? Char;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var characters = await UnitOfWork.Characters.GetAllWithDetailsAsync();
+        Char = characters.FirstOrDefault(c => c.Id == CharacterId);
+    }
+
+    private void NavigateToLevelUp()
+    {
+        Navigation.NavigateTo($"/character/{Char.Id}/levelup");
+    }
+}

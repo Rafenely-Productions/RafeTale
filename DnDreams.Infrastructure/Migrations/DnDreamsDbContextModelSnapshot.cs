@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DnDreamsInfrastructure.Migrations
+namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
     partial class DnDreamsDbContextModelSnapshot : ModelSnapshot
@@ -26,16 +26,36 @@ namespace DnDreamsInfrastructure.Migrations
                     b.Property<int>("Charisma")
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid>("ClassDefId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ClassId")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Constitution")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Dexterity")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Experience")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Intelligence")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RaceId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Stats")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -46,6 +66,10 @@ namespace DnDreamsInfrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClassDefId");
+
+                    b.HasIndex("RaceId");
 
                     b.ToTable("Characters");
                 });
@@ -62,6 +86,7 @@ namespace DnDreamsInfrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -91,6 +116,29 @@ namespace DnDreamsInfrastructure.Migrations
                     b.HasIndex("ClassDefinitionId");
 
                     b.ToTable("ClassLevelProgression");
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.Race", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Speed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StatBonuses")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Races");
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Feature", b =>
@@ -123,6 +171,25 @@ namespace DnDreamsInfrastructure.Migrations
                     b.HasIndex("ClassLevelProgressionId");
 
                     b.ToTable("Features");
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.Character", b =>
+                {
+                    b.HasOne("DnDreams.Domain.Entities.ClassDefinition", "ClassDef")
+                        .WithMany()
+                        .HasForeignKey("ClassDefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DnDreams.Domain.Entities.Race", "Race")
+                        .WithMany()
+                        .HasForeignKey("RaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ClassDef");
+
+                    b.Navigation("Race");
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.ClassLevelProgression", b =>

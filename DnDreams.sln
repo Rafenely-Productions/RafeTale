@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnDreams.Application", "DnD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnDreams.Domain", "DnDreams.Domain\DnDreams.Domain.csproj", "{B10587A2-A75F-ADA7-B178-6879E56AE476}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnDreamsInfrastructure", "DnDreams.Infrastructure\DnDreamsInfrastructure.csproj", "{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnDreams.Infrastructure", "DnDreams.Infrastructure\DnDreams.Infrastructure.csproj", "{9B7A9626-87F8-B0FE-88CC-9BF21D69B942}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnDreams.MAUI", "DnDreams.MAUI\DnDreams.MAUI.csproj", "{C49A9753-362A-FC16-26CD-99FEF61714E7}"
 EndProject
