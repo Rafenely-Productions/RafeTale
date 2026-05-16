@@ -2,7 +2,6 @@
 using DnDreams.Application.Interfaces;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +14,6 @@ public class ImportManager : IExcelImportService
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    // Inyectamos el orquestador maestro de transacciones
     public ImportManager(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
@@ -24,9 +22,13 @@ public class ImportManager : IExcelImportService
     public async Task<(int Count, string Version)> ImportDataFromExcelAsync(Stream excelStream)
     {
         var racesList = new List<Race>();
-        var classesList = new List<ClassDefinition>();
+        var classDefinitionList = new List<ClassDefinition>();
         var charactersList = new List<Character>();
         var progressionsList = new List<ClassLevelProgression>();
+        var spellsList = new List<Spell>();
+        var xpRulesList = new List<XpRules>();
+        var featsList = new List<Feat>();
+        var itemsList = new List<ItemTemplate>();
 
         using var workbook = new XLWorkbook(excelStream);
 
@@ -43,7 +45,6 @@ public class ImportManager : IExcelImportService
                     Speed = row.Cell(2).GetValue<int>()
                 };
 
-                // Leer columnas de bonos dinámicos (Fuerza, Destreza, etc.)
                 for (int col = 3; col <= raceSheet.LastColumnUsed().ColumnNumber(); col++)
                 {
                     var statName = raceSheet.Cell(1, col).GetString();
@@ -63,7 +64,7 @@ public class ImportManager : IExcelImportService
             var rows = classSheet.RangeUsed().RowsUsed().Skip(1);
             foreach (var row in rows)
             {
-                classesList.Add(new ClassDefinition
+                classDefinitionList.Add(new ClassDefinition
                 {
                     Id = Guid.NewGuid(),
                     Name = row.Cell(1).GetString(),
@@ -82,9 +83,8 @@ public class ImportManager : IExcelImportService
                 var raceName = row.Cell(2).GetString();
                 var className = row.Cell(3).GetString();
 
-                // Buscamos temporalmente en las listas de arriba para relacionar los IDs mockeados
                 var matchedRace = racesList.FirstOrDefault(r => r.Name.Equals(raceName, StringComparison.OrdinalIgnoreCase));
-                var matchedClass = classesList.FirstOrDefault(c => c.Name.Equals(className, StringComparison.OrdinalIgnoreCase));
+                var matchedClass = classDefinitionList.FirstOrDefault(c => c.Name.Equals(className, StringComparison.OrdinalIgnoreCase));
 
                 var character = new Character
                 {
@@ -96,7 +96,6 @@ public class ImportManager : IExcelImportService
                     ClassDefId = matchedClass?.Id ?? Guid.Empty
                 };
 
-                // Mapear los Stats base al diccionario dinámico
                 for (int col = 6; col <= charSheet.LastColumnUsed().ColumnNumber(); col++)
                 {
                     var statName = charSheet.Cell(1, col).GetString();
@@ -121,16 +120,11 @@ public class ImportManager : IExcelImportService
                 var level = row.Cell(2).GetValue<int>();
                 var featureName = row.Cell(3).GetString().Trim();
                 var featureDescription = row.Cell(4).GetString().Trim() ?? $"Rasgo de nivel {level}";
-
-                if (string.IsNullOrEmpty(featureDescription))
-                {
-                    featureDescription = $"Rasgo de nivel {level}";
-                }
                 var modifiersJson = row.Cell(5).GetString() is string json && !string.IsNullOrWhiteSpace(json) ? json : "[]";
-                
+
                 if (string.IsNullOrEmpty(featureName)) continue;
 
-                var targetClass = classesList.FirstOrDefault(c => c.Name.Equals(className, StringComparison.OrdinalIgnoreCase));
+                var targetClass = classDefinitionList.FirstOrDefault(c => c.Name.Equals(className, StringComparison.OrdinalIgnoreCase));
 
                 if (targetClass == null) continue;
 
@@ -143,16 +137,14 @@ public class ImportManager : IExcelImportService
                          featureName.Contains("Arquetipo", StringComparison.OrdinalIgnoreCase),
                     ModifiersJson = modifiersJson
                 };
-                var existingProgression = progressionsList.FirstOrDefault(p => p.ClassDefId == targetClass.Id && p.Level == level);
 
+                var existingProgression = progressionsList.FirstOrDefault(p => p.ClassDefId == targetClass.Id && p.Level == level);
                 if (existingProgression != null)
                 {
-                    // Si la progresión de ese nivel ya existía, solo le inyectamos el nuevo rasgo a su colección
                     existingProgression.Features.Add(feature);
                 }
                 else
                 {
-                    // Si es la primera vez que pasamos por este nivel, creamos la progresión base
                     var newProgression = new ClassLevelProgression
                     {
                         Id = Guid.NewGuid(),
@@ -166,7 +158,7 @@ public class ImportManager : IExcelImportService
             }
         }
 
-        var xpRulesList = new List<XpRules>();
+        // LEER REGLAS XP, DOTES, HECHIZOS E ITEMS
         if (workbook.TryGetWorksheet("ReglasXP", out var xpSheet))
         {
             var rows = xpSheet.RangeUsed().RowsUsed().Skip(1);
@@ -174,14 +166,13 @@ public class ImportManager : IExcelImportService
             {
                 xpRulesList.Add(new XpRules
                 {
-                    Level = row.Cell(1).GetValue<int>(), // Usamos el nivel como ID o mapeamos el nivel
+                    Level = row.Cell(1).GetValue<int>(),
                     RequiredXp = row.Cell(2).GetValue<int>(),
                     Bonus = xpSheet.LastColumnUsed().ColumnNumber() >= 3 ? row.Cell(3).GetValue<int>() : 0
                 });
             }
         }
 
-        var featsList = new List<Feat>();
         if (workbook.TryGetWorksheet("Dotes", out var featSheet))
         {
             var rows = featSheet.RangeUsed().RowsUsed().Skip(1);
@@ -193,14 +184,11 @@ public class ImportManager : IExcelImportService
                     Name = row.Cell(1).GetString() ?? string.Empty,
                     Description = row.Cell(2).GetString() ?? string.Empty,
                     Prerequisite = row.Cell(3).GetString() ?? "Ninguno",
-                    ModifiersJson = row.Cell(4).GetString() is string json && !string.IsNullOrWhiteSpace(json)
-                        ? json
-                        : "[]"
+                    ModifiersJson = row.Cell(4).GetString() is string json && !string.IsNullOrWhiteSpace(json) ? json : "[]"
                 });
             }
         }
 
-        var spellsList = new List<Spell>();
         if (workbook.TryGetWorksheet("Hechizos", out var spellSheet))
         {
             var rows = spellSheet.RangeUsed().RowsUsed().Skip(1);
@@ -219,38 +207,140 @@ public class ImportManager : IExcelImportService
             }
         }
 
+        if (workbook.TryGetWorksheet("Items", out var itemsSheet))
+        {
+            var rows = itemsSheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
+            {
+                var itemName = row.Cell(1).GetString() ?? string.Empty;
+                if (string.IsNullOrEmpty(itemName)) continue;
+
+                var template = new ItemTemplate
+                {
+                    Id = Guid.NewGuid(),
+                    Name = itemName,
+                    Description = row.Cell(2).GetString() ?? string.Empty,
+                    Category = itemsSheet.LastColumnUsed().ColumnNumber() >= 3
+                        ? (ItemCategory)Enum.Parse(typeof(ItemCategory), row.Cell(3).GetString(), true)
+                        : ItemCategory.AdventuringGear
+                };
+                itemsList.Add(template);
+
+                if (itemsSheet.LastColumnUsed().ColumnNumber() >= 4)
+                {
+                    var ownerName = row.Cell(4).GetString();
+                    var matchedChar = charactersList.FirstOrDefault(c => c.Name.Equals(ownerName, StringComparison.OrdinalIgnoreCase));
+
+                    if (matchedChar != null)
+                    {
+                        var quantity = itemsSheet.LastColumnUsed().ColumnNumber() >= 5 ? row.Cell(5).GetValue<int>() : 1;
+                        var isEquipped = itemsSheet.LastColumnUsed().ColumnNumber() >= 6 && row.Cell(6).GetValue<bool>();
+
+                        matchedChar.Inventory.Add(new CharacterInventory
+                        {
+                            Id = Guid.NewGuid(),
+                            CharacterId = matchedChar.Id,
+                            ItemTemplateId = template.Id,
+                            Item = template,
+                            Quantity = quantity <= 0 ? 1 : quantity,
+                            IsEquipped = isEquipped
+                        });
+                    }
+                }
+            }
+        }
+
         // GUARDADO DE DATOS CON UNIT OF WORK
         // ==========================================
         await _unitOfWork.BeginTransactionAsync();
         try
         {
-            // Mandamos los datos maestros a sus respectivos mini-repositorios
-            await _unitOfWork.Races.AddRangeAsync(racesList);
-            await _unitOfWork.Classes.AddRangeAsync(classesList);
-            await _unitOfWork.Classes.AddProgressionsRangeAsync(progressionsList);
-            await _unitOfWork.XpRules.AddRangeAsync(xpRulesList);
-            await _unitOfWork.Feats.AddRangeAsync(featsList);
-            await _unitOfWork.Spells.AddRangeAsync(spellsList);
+            // 1. RAZAS
+            var existingRaces = (await _unitOfWork.Races.GetAllAsync()).Select(r => r.Name.ToLower()).ToHashSet();
+            var newRaces = racesList.Where(r => !existingRaces.Contains(r.Name.ToLower())).ToList();
+            if (newRaces.Any()) await _unitOfWork.Races.AddRangeAsync(newRaces);
 
-            // Hacemos un save intermedio para consolidar llaves primarias en la memoria de EF
+            // 2. CLASES
+            var existingClasses = (await _unitOfWork.ClassDefinitions.GetAllAsync()).Select(c => c.Name.ToLower()).ToHashSet();
+            var newClasses = classDefinitionList.Where(c => !existingClasses.Contains(c.Name.ToLower())).ToList();
+            if (newClasses.Any()) await _unitOfWork.ClassDefinitions.AddRangeAsync(newClasses);
+
+            // Guardado intermedio para asegurar las llaves de las clases
             await _unitOfWork.SaveChangesAsync();
 
-            // Mapeamos los IDs reales a los personajes antes de insertarlos (Garantiza las FKs)
+            // 3. PROGRESIONES DE CLASES
+            var dbProgressions = await _unitOfWork.ClassLevelProgressions.GetAllAsync();
+            var existingProgKeys = dbProgressions.Select(p => $"{p.ClassDefId}_{p.Level}").ToHashSet();
+
+            foreach (var prog in progressionsList)
+            {
+                var parentClass = classDefinitionList.FirstOrDefault(c => c.Id == prog.ClassDefId);
+                if (parentClass == null) continue;
+
+                var dbClass = await _unitOfWork.ClassDefinitions.GetByNameAsync(parentClass.Name);
+                if (dbClass == null) continue;
+
+                prog.ClassDefId = dbClass.Id;
+
+                string key = $"{prog.ClassDefId}_{prog.Level}";
+                if (!existingProgKeys.Contains(key))
+                {
+                    await _unitOfWork.ClassLevelProgressions.AddProgressionAsync(prog);
+                    existingProgKeys.Add(key);
+                }
+                else
+                {
+                    // Recuperamos el ID real de la DB para que los personajes puedan jalar los rasgos
+                    var match = dbProgressions.First(dp => $"{dp.ClassDefId}_{dp.Level}" == key);
+                    prog.Id = match.Id;
+                    prog.Features = match.Features; // Mantener la referencia a los rasgos de la DB
+                }
+            }
+
+            // 4. REGLAS XP
+            var existingXp = (await _unitOfWork.XpRules.GetAllAsync()).Select(x => x.Level).ToHashSet();
+            var newXp = xpRulesList.Where(x => !existingXp.Contains(x.Level)).ToList();
+            if (newXp.Any()) await _unitOfWork.XpRules.AddRangeAsync(newXp);
+
+            // 5. DOTES (FEATS)
+            var existingFeats = (await _unitOfWork.Feats.GetAllAsync()).Select(f => f.Name.ToLower()).ToHashSet();
+            var newFeats = featsList.Where(f => !existingFeats.Contains(f.Name.ToLower())).ToList();
+            if (newFeats.Any()) await _unitOfWork.Feats.AddRangeAsync(newFeats);
+
+            // 6. HECHIZOS (SPELLS)
+            var existingSpells = (await _unitOfWork.Spells.GetAllAsync()).Select(s => s.Name.ToLower()).ToHashSet();
+            var newSpells = spellsList.Where(s => !existingSpells.Contains(s.Name.ToLower())).ToList();
+            if (newSpells.Any()) await _unitOfWork.Spells.AddRangeAsync(newSpells);
+
+            // 7. PLANTILLAS DE OBJETOS (ITEM TEMPLATES)
+            var existingItems = (await _unitOfWork.ItemTemplates.GetAllAsync()).Select(i => i.Name.ToLower()).ToHashSet();
+            var newItems = itemsList.Where(i => !existingItems.Contains(i.Name.ToLower())).ToList();
+            if (newItems.Any()) await _unitOfWork.ItemTemplates.AddRangeAsync(newItems);
+
+            // Guardado intermedio de catálogos
+            await _unitOfWork.SaveChangesAsync();
+
+            // 8. PROCESAR PERSONAJES 
             foreach (var character in charactersList)
             {
                 var targetRaceName = racesList.FirstOrDefault(r => r.Id == character.RaceId)?.Name ?? string.Empty;
-                var targetClassName = classesList.FirstOrDefault(c => c.Id == character.ClassDefId)?.Name ?? string.Empty;
+                var targetClassName = classDefinitionList.FirstOrDefault(c => c.Id == character.ClassDefId)?.Name ?? string.Empty;
 
                 var dbRace = await _unitOfWork.Races.GetByNameAsync(targetRaceName);
-                var dbClass = await _unitOfWork.Classes.GetByNameAsync(targetClassName);
+                var dbClass = await _unitOfWork.ClassDefinitions.GetByNameAsync(targetClassName);
 
                 character.RaceId = dbRace?.Id ?? character.RaceId;
                 character.ClassDefId = dbClass?.Id ?? character.ClassDefId;
 
+                // Limpieza preventiva para evitar duplicados en actualizaciones
+                var existingChar = await _unitOfWork.Characters.GetByNameAsync(character.Name);
+                if (existingChar != null)
+                {
+                    await _unitOfWork.Characters.RemoveAsync(existingChar);
+                }
+
                 if (dbClass != null && character.Level > 0)
                 {
-                    // Buscamos todas las progresiones de esta clase que correspondan a los niveles 
-                    // que el personaje YA TIENE (desde nivel 1 hasta su nivel actual del Excel)
                     var earnedProgressions = progressionsList
                         .Where(p => p.ClassDefId == dbClass.Id && p.Level <= character.Level)
                         .ToList();
@@ -261,7 +351,6 @@ public class ImportManager : IExcelImportService
                         {
                             foreach (var feature in prog.Features)
                             {
-                                // Evitamos duplicaciones y le asignamos el rasgo al personaje
                                 if (!character.AcquiredFeatures.Any(f => f.Id == feature.Id))
                                 {
                                     character.AcquiredFeatures.Add(feature);
@@ -270,11 +359,22 @@ public class ImportManager : IExcelImportService
                         }
                     }
                 }
+                // Sincronizar también los items de la mochila
+                foreach (var invItem in character.Inventory)
+                {
+                    var dbItem = await _unitOfWork.ItemTemplates.GetByNameAsync(invItem.Item.Name);
+                    if (dbItem != null)
+                    {
+                        invItem.ItemTemplateId = dbItem.Id;
+                        invItem.Item = dbItem;
+                    }
+                }
             }
 
             await _unitOfWork.Characters.AddRangeAsync(charactersList);
 
-            // Guardado definitivo y consolidación de la transacción en el archivo .db3
+
+            // Guardado final definitivo libre de conflictos de llaves
             await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitAsync();
 

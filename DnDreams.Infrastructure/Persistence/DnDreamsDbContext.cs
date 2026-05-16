@@ -15,6 +15,14 @@ public class DnDreamsDbContext : DbContext
     public DbSet<Feat> Feats => Set<Feat>();
     public DbSet<Spell> Spells => Set<Spell>();
     public DbSet<CharacterModifier> characterModifiers => Set<CharacterModifier>();
+    public DbSet<ItemTemplate> ItemTemplates { get; set; }
+    public DbSet<CharacterInventory> CharacterInventories { get; set; }
+    public DbSet<CharacterStatus> CharacterStatuses { get; set; } = null!;
+    public DbSet<CharacterSpellSlots> CharacterSpellSlots { get; set; } = null!;
+    public DbSet<ActiveModifiers> ActiveModifiers { get; set; } = null!;
+    public DbSet<Campaign> Campaigns { get; set; } = null!;
+    public DbSet<CampaignCharacter> CampaignCharacters { get; set; } = null!;
+    public DbSet<JournalEntry> JournalEntries { get; set; } = null!;
 
     public DnDreamsDbContext(DbContextOptions<DnDreamsDbContext> options) : base(options) { }
 
@@ -24,6 +32,73 @@ public class DnDreamsDbContext : DbContext
         
         var jsonOptions = new JsonSerializerOptions { WriteIndented = false };
 
+        modelBuilder.Entity<Campaign>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
+            entity.Property(e => e.DungeonMasterName).IsRequired();
+        });
+
+        // 2. Tabla Intermedia (Muchos a Muchos)
+        modelBuilder.Entity<CampaignCharacter>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            // Relación con Campaña: Si se borra la campaña, se limpia la intermedia
+            entity.HasOne(d => d.Campaign)
+                .WithMany(p => p.CampaignCharacters)
+                .HasForeignKey(d => d.CampaignId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Relación con Personaje: Si se borra el personaje, se limpia la intermedia
+            entity.HasOne(d => d.Character)
+                .WithMany(p => p.CampaignCharacters)
+                .HasForeignKey(d => d.CharacterId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<CharacterStatus>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            // Relación 1 a 1: Un Personaje tiene UN Solo Estado Vital, y el Estado pertenece a UN Personaje.
+            // Al borrar el personaje, se borra su status en cascada.
+            entity.HasOne(d => d.Character)
+                .WithOne(p => p.Status)
+                .HasForeignKey<CharacterStatus>(d => d.CharacterId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Mapeo del Enum Flag como entero para SQLite
+            entity.Property(e => e.ActiveConditions)
+                .HasConversion<int>();
+        });
+        modelBuilder.Entity<ActiveModifiers>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            // Relación 1 a Muchos: Un personaje puede verse afectado por múltiples modificadores vivos
+            entity.HasOne(d => d.Character)
+                .WithMany(p => p.ActiveModifiers)
+                .HasForeignKey(d => d.CharacterId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Guardar los Enums como strings en la DB para que sea legible al depurar SQLite
+            entity.Property(e => e.TargetProperty)
+                .HasConversion<string>();
+
+            entity.Property(e => e.DurationType)
+                .HasConversion<string>();
+        });
+        modelBuilder.Entity<CharacterSpellSlots>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            // Relación 1 a Muchos: Un personaje puede tener varios niveles de Slots
+            entity.HasOne(d => d.Character)
+                .WithMany(p => p.SpellSlots)
+                .HasForeignKey(d => d.CharacterId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
         modelBuilder.Entity<Feat>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -54,7 +129,7 @@ public class DnDreamsDbContext : DbContext
 
             entity.HasMany(c => c.AcquiredFeats).WithMany();
             entity.HasMany(c => c.KnownSpells).WithMany();
-            entity.HasMany(c => c.ActiveModifiers).WithOne().OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(c => c.CharacterModifiers).WithOne().OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Race>(entity =>
@@ -103,6 +178,30 @@ public class DnDreamsDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).ValueGeneratedOnAdd(); // <-- Asegúrate de que tenga esto
+        });
+
+        modelBuilder.Entity<CharacterInventory>()
+        .HasOne(ci => ci.Item)
+        .WithMany()
+        .HasForeignKey(ci => ci.ItemTemplateId);
+
+        modelBuilder.Entity<JournalEntry>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Content).IsRequired();
+
+            // Relación opcional con Campaña (Una campaña tiene muchos registros de diario)
+            entity.HasOne(d => d.Campaign)
+                .WithMany() // Si en el futuro quieres un List<JournalEntry> en Campaign, lo pones aquí
+                .HasForeignKey(d => d.CampaignId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Relación opcional con Personaje (Un personaje puede tener sus notas privadas)
+            entity.HasOne(d => d.Character)
+                .WithMany() // Si en el futuro quieres un List<JournalEntry> en Character, lo pones aquí
+                .HasForeignKey(d => d.CharacterId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

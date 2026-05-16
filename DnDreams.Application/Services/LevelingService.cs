@@ -1,6 +1,7 @@
 using DnDreams.Application.Interfaces;
 using DnDreams.Application.Models;
 using DnDreams.Domain.Entities;
+using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
 
 namespace DnDreams.Application.Services;
@@ -39,7 +40,7 @@ public class LevelingService : ILevelingService
 
                 // 3. Buscar qué rasgos otorga su clase en este nuevo nivel
                 // Para esto ocupamos consultar la tabla de progresiones que cargamos desde el Excel
-                var progressions = await _unitOfWork.Classes.GetProgressionsByClassAndLevelAsync(targetChar.ClassDefId, targetChar.Level);
+                var progressions = await _unitOfWork.ClassLevelProgressions.GetProgressionsByClassAndLevelAsync(targetChar.ClassDefId, targetChar.Level);
 
                 if (progressions != null && progressions.Features.Any())
                 {
@@ -63,7 +64,7 @@ public class LevelingService : ILevelingService
                                         Value = modData.Value,
                                         CharacterId = targetChar.Id // El vínculo explícito
                                     };
-                                    targetChar.ActiveModifiers.Add(newModifier);
+                                    targetChar.CharacterModifiers.Add(newModifier);
                                 }
                             }
                         }
@@ -155,7 +156,7 @@ public class LevelingService : ILevelingService
             // 2. Inyectar modificadores de atributos o rasgos elegidos (ej: +2 Fuerza)
             foreach (var mod in chosenModifiers)
             {
-                targetChar.ActiveModifiers.Add(mod);
+                targetChar.CharacterModifiers.Add(mod);
             }
 
             // 3. Vincular los Dotes elegidos desde el catálogo mestro
@@ -174,7 +175,7 @@ public class LevelingService : ILevelingService
                             // Mapeamos el string del tipo al Enum real de la base de datos
                             if (Enum.TryParse<ModifierType>(modData.Type, out var parsedType))
                             {
-                                targetChar.ActiveModifiers.Add(new CharacterModifier
+                                targetChar.CharacterModifiers.Add(new CharacterModifier
                                 {
                                     Source = $"Dote: {feat.Name}",
                                     Type = parsedType,

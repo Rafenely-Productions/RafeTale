@@ -6,6 +6,8 @@ namespace DnDreams.Domain.Interfaces;
 
 public interface IRaceRepository
 {
+    Task AddAsync(Race race);
     Task AddRangeAsync(IEnumerable<Race> races);
+    Task<List<Race>> GetAllAsync();
     Task<Race?> GetByNameAsync(string name);
 }

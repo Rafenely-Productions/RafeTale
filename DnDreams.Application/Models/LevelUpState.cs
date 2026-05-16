@@ -1,4 +1,5 @@
 ﻿using DnDreams.Domain.Entities;
+using DnDreams.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,15 @@ namespace DnDreams.Application.Models
         public List<Guid> SelectedSpellIds { get; set; } = new();
         public Guid? SelectedFeatId { get; set; }
 
-        public Dictionary<string, int> SelectedAsi { get; set; } = new()
-    {
-        { "Strength", 0 }, { "Dexterity", 0 }, { "Constitution", 0 },
-        { "Intelligence", 0 }, { "Wisdom", 0 }, { "Charisma", 0 }
-    };
+        public Dictionary<TargetPropertyType, int> SelectedAsi { get; set; } = new()
+        {
+            { TargetPropertyType.Strength, 0 },
+            { TargetPropertyType.Dexterity, 0 },
+            { TargetPropertyType.Constitution, 0 },
+            { TargetPropertyType.Intelligence, 0 },
+            { TargetPropertyType.Wisdom, 0 },
+            { TargetPropertyType.Charisma, 0 }
+        };
 
         public List<CharacterModifier> GetModifiersFromAsi()
         {

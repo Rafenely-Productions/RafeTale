@@ -12,15 +12,19 @@ public class RaceRepository : IRaceRepository
     private readonly DnDreamsDbContext _context;
     public RaceRepository(DnDreamsDbContext context) => _context = context;
 
+    public async Task AddAsync(Race race)
+    {
+        await _context.Races.AddAsync(race);
+    }
+
     public async Task AddRangeAsync(IEnumerable<Race> races)
     {
-        foreach (var race in races)
-        {
-            if (!await _context.Races.AnyAsync(r => r.Name == race.Name))
-            {
-                await _context.Races.AddAsync(race);
-            }
-        }
+        await _context.Races.AddRangeAsync(races);
+    }
+
+    public async Task<List<Race>> GetAllAsync()
+    {
+        return await _context.Races.ToListAsync();
     }
 
     public async Task<Race?> GetByNameAsync(string name)

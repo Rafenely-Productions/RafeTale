@@ -26,7 +26,17 @@ public class CharacterRepository : ICharacterRepository
             .Include(c => c.AcquiredFeatures)
             .Include(c => c.AcquiredFeats)
             .Include(c => c.KnownSpells)
-            .Include(c => c.ActiveModifiers)
+            .Include(c => c.CharacterModifiers)
             .ToListAsync();
+    }
+
+    public async Task<Character> GetByNameAsync(string name)
+    {
+        return await _context.Characters.FirstOrDefaultAsync(c => c.Name == name);
+    }
+
+    public async Task RemoveAsync(Character existingChar)
+    {
+        await _context.Characters.Where(c => c.Id == existingChar.Id).ExecuteDeleteAsync();
     }
 }

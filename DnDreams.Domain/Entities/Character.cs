@@ -1,3 +1,4 @@
+using DnDreams.Domain.Enums;
 namespace DnDreams.Domain.Entities;
 
 public class Character
@@ -11,7 +12,7 @@ public class Character
         get
         {
             int baseVal = Stats.TryGetValue("Fuerza", out var val) ? val : 10;
-            int bonus = ActiveModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == "Strength").Sum(m => m.Value);
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Strength).Sum(m => m.Value);
             return baseVal + bonus;
         }
         set => Stats["Fuerza"] = value;
@@ -21,7 +22,7 @@ public class Character
         get
         {
             int baseVal = Stats.TryGetValue("Destreza", out var val) ? val : 10;
-            int bonus = ActiveModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == "Dexterity").Sum(m => m.Value);
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Dexterity).Sum(m => m.Value);
             return baseVal + bonus;
         }
         set => Stats["Destreza"] = value;
@@ -31,7 +32,7 @@ public class Character
         get
         {
             int baseVal = Stats.TryGetValue("Constitución", out var val) ? val : 10;
-            int bonus = ActiveModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == "Constitution").Sum(m => m.Value);
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Constitution).Sum(m => m.Value);
             return baseVal + bonus;
         }
         set => Stats["Constitución"] = value;
@@ -41,7 +42,7 @@ public class Character
         get
         {
             int baseVal = Stats.TryGetValue("Inteligencia", out var val) ? val : 10;
-            int bonus = ActiveModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == "Intelligence").Sum(m => m.Value);
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Intelligence).Sum(m => m.Value);
             return baseVal + bonus;
         }
         set => Stats["Inteligencia"] = value;
@@ -51,7 +52,7 @@ public class Character
         get
         {
             int baseVal = Stats.TryGetValue("Sabiduría", out var val) ? val : 10;
-            int bonus = ActiveModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == "Wisdom").Sum(m => m.Value);
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Wisdom).Sum(m => m.Value);
             return baseVal + bonus;
         }
         set => Stats["Sabiduría"] = value;
@@ -61,7 +62,7 @@ public class Character
         get
         {
             int baseVal = Stats.TryGetValue("Carisma", out var val) ? val : 10;
-            int bonus = ActiveModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == "Charisma").Sum(m => m.Value);
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Charisma).Sum(m => m.Value);
             return baseVal + bonus;
         }
         set => Stats["Carisma"] = value;
@@ -95,5 +96,12 @@ public class Character
     public Dictionary<string, int> Stats { get; set; } = new();
     public virtual ICollection<Feat> AcquiredFeats { get; set; } = new List<Feat>();
     public virtual ICollection<Spell> KnownSpells { get; set; } = new List<Spell>();
-    public virtual ICollection<CharacterModifier> ActiveModifiers { get; set; } = new List<CharacterModifier>();
+    public virtual ICollection<CharacterModifier> CharacterModifiers { get; set; } = new List<CharacterModifier>();
+
+    public List<CharacterInventory> Inventory { get; set; } = new();
+
+    public CharacterStatus Status { get; set; } = null!;
+    public List<CharacterSpellSlots> SpellSlots { get; set; } = new();
+    public List<ActiveModifiers> ActiveModifiers { get; set; } = new();
+    public List<CampaignCharacter> CampaignCharacters { get; set; } = new();
 }

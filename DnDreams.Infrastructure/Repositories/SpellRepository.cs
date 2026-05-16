@@ -11,19 +11,23 @@ public class SpellRepository : ISpellRepository
     private readonly DnDreamsDbContext _context;
     public SpellRepository(DnDreamsDbContext context) => _context = context;
 
+    public async Task AddAsync(Spell spell)
+    {
+        await _context.Set<Spell>().AddAsync(spell);
+    }
+
     public async Task AddRangeAsync(IEnumerable<Spell> spells)
     {
-        foreach (var spell in spells)
-        {
-            if (!await _context.Set<Spell>().AnyAsync(s => s.Name == spell.Name))
-            {
-                await _context.Set<Spell>().AddAsync(spell);
-            }
-        }
+        await _context.Set<Spell>().AddRangeAsync(spells);
     }
 
     public async Task<IEnumerable<Spell>> GetAllAsync()
     {
         return await _context.Set<Spell>().ToListAsync();
+    }
+
+    public async Task<Spell> GetByNameAsync(string name)
+    {
+        return await _context.Set<Spell>().FirstOrDefaultAsync(s => s.Name == name);
     }
 }

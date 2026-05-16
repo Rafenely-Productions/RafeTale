@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\DnDreams.UI.Shared.props" />
-</Project>

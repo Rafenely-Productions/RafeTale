@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\DnDreams.UI.Shared.props" />
-</Project>

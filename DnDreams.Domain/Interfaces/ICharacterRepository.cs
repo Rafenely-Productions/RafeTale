@@ -8,4 +8,6 @@ public interface ICharacterRepository
 {
     Task AddRangeAsync(IEnumerable<Character> characters);
     Task<IEnumerable<Character>> GetAllWithDetailsAsync();
+    Task<Character> GetByNameAsync(string name);
+    Task RemoveAsync(Character existingChar);
 }

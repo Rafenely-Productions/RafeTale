@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\UI.Shared.props" />
-</Project>

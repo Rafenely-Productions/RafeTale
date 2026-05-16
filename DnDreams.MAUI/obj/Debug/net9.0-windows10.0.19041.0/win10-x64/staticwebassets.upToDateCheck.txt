@@ -1,8 +1,0 @@
-wwwroot\css\app.css
-wwwroot\css\bootstrap\bootstrap.min.css
-wwwroot\css\bootstrap\bootstrap.min.css.map
-wwwroot\index.html
-D:\Users\ricar\repos\DnDreams\DnDreams.MAUI\wwwroot\css\bootstrap\bootstrap.min.css
-D:\Users\ricar\repos\DnDreams\DnDreams.MAUI\wwwroot\css\bootstrap\bootstrap.min.css.map
-D:\Users\ricar\repos\DnDreams\DnDreams.MAUI\wwwroot\index.html
-D:\Users\ricar\repos\DnDreams\DnDreams.MAUI\wwwroot\css\app.css
