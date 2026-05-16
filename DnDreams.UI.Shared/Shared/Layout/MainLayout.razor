@@ -1,26 +1,12 @@
 ﻿@namespace DnDreams.UI.Shared.Shared
-
 @inherits LayoutComponentBase
 
-<div class="flex min-h-screen bg-[#020617] text-slate-200">
-    <div class="w-64 bg-[#0f172a] border-r border-slate-800 hidden md:block">
-        <div class="p-6">
-            <h1 class="text-2xl font-black text-lime-400">DnDreams</h1>
-        </div>
-        <nav class="mt-4 px-4">
-            <NavLink class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all" href="" Match="NavLinkMatch.All">
-                <i class="fa-solid fa-house"></i> Home
-            </NavLink>
-            
-        </nav>
-        <nav class="mt-4 px-4">
-            <NavLink class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all" href="sandbox">
-                Laboratorio (Sandbox)
-            </NavLink>
-        </nav>
-    </div>
+<div class="main-layout">
+    <aside class="sidebar-container">
+        <NavMenu />
+    </aside>
 
-    <main class="flex-1 overflow-y-auto">
+    <main class="content-container">
         @Body
     </main>
 </div>

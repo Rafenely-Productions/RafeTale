@@ -47,7 +47,7 @@
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
         <!-- Splash Screen -->
-        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#121212" BaseSize="128,128" />
 
         <!-- Images -->
         <MauiImage Include="Resources\Images\*" />
@@ -75,6 +75,14 @@
       <ProjectReference Include="..\DnDreams.Domain\DnDreams.Domain.csproj" />
       <ProjectReference Include="..\DnDreams.Infrastructure\DnDreams.Infrastructure.csproj" />
       <ProjectReference Include="..\DnDreams.UI.Shared\DnDreams.UI.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="images\logo.svg">
+        <Color>#121212</Color>
+        <BaseSize>128,128</BaseSize>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

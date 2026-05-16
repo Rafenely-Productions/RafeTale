@@ -7,89 +7,125 @@
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
 
-<div class="container mx-auto max-w-4xl p-6">
-    @if (CurrentCharacter == null)
-    {
-        <div class="flex justify-center items-center h-64">
-            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-lime-500"></div>
-        </div>
-    }
-    else
-    {
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 mb-8 shadow-2xl">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="text-center md:text-left">
-                    <h1 class="text-4xl font-black text-white tracking-tight">SUBIDA DE NIVEL</h1>
-                    <p class="text-lime-400 font-medium text-lg">
-                        @CurrentCharacter.Name • @CurrentCharacter.ClassDef.Name 
-                        <span class="text-slate-500 mx-2">|</span> 
-                        Nivel @CurrentCharacter.Level → <span class="text-white">@(CurrentCharacter.Level + 1)</span>
-                    </p>
+<div class="min-h-screen bg-black p-6">
+    <div class="container mx-auto max-w-4xl">
+        @if (CurrentCharacter == null)
+        {
+            <div class="flex flex-col justify-center items-center h-96">
+                <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-amber-500 mb-4"></div>
+                <p class="text-amber-500 italic font-serif animate-pulse">Consultando los archivos del destino...</p>
+            </div>
+        }
+        else
+        {
+            <div class="bg-slate-900 border border-amber-900/30 rounded-[2rem] p-8 mb-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-5">
+                    <i class="fa-solid fa-dice-d20 text-8xl text-white"></i>
                 </div>
 
-                <div class="flex flex-col items-center md:items-end gap-2">
-                    <div class="text-xs font-bold text-slate-500 uppercase tracking-widest">Paso @CurrentStep de 3</div>
-                    <div class="flex gap-2">
-                        @for (int i = 1; i <= 3; i++)
-                        {
-                            <div class="h-2 w-12 rounded-full transition-all duration-500 @(i <= CurrentStep ? "bg-lime-500 shadow-[0_0_10px_rgba(132,204,22,0.5)]" : "bg-slate-800")"></div>
-                        }
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
+                    <div class="text-center md:text-left">
+                        <h1 class="text-4xl font-black text-amber-500 tracking-tight mb-2 italic uppercase">Subida de Nivel</h1>
+                        <div class="flex items-center gap-3 justify-center md:justify-start">
+                            <span class="text-white font-bold text-xl">@CurrentCharacter.Name</span>
+                            <span class="bg-black/50 text-amber-600 px-3 py-1 rounded-full text-xs font-black border border-amber-900/40">
+                                @CurrentCharacter.ClassDef?.Name.ToUpper()
+                            </span>
+                        </div>
+                        <p class="text-slate-500 mt-2 font-bold">
+                            Nivel @CurrentCharacter.Level <i class="fa-solid fa-arrow-right mx-2 text-lime-500"></i> <span class="text-white text-lg">@(CurrentCharacter.Level + 1)</span>
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col items-center md:items-end gap-3">
+                        <div class="text-[10px] font-black text-amber-700 uppercase tracking-[0.2em]">Paso de Senda</div>
+                        <div class="flex gap-3">
+                            @for (int i = 1; i <= 3; i++)
+                            {
+                                <div class="group relative">
+                                    <div class="h-3 w-16 rounded-full transition-all duration-700 @(i <= CurrentStep ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)]" : "bg-black/40 border border-amber-900/20")"></div>
+                                    @if (i == CurrentStep)
+                                    {
+                                        <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] font-black text-amber-500 whitespace-nowrap tracking-tighter">
+                                            @GetStepName(i)
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 min-h-[500px] shadow-2xl relative overflow-hidden">
-            @switch (CurrentStep)
-            {
-                case 1:
-                    <ASIFeatStep State="WizardState" />
-                    break;
-                case 2:
-                    <SpellStep State="WizardState" Character="CurrentCharacter" />
-                    break;
-                case 3:
-                    <HPStep State="WizardState" Character="CurrentCharacter" />
-                    break;
-            }
-        </div>
-
-        <div class="flex justify-between items-center mt-8">
-            <button @onclick="PreviousStep" 
-                    disabled="@(CurrentStep == 1 || IsProcessing)"
-                    class="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all disabled:opacity-20 disabled:cursor-not-allowed">
-                <i class="fa-solid fa-arrow-left mr-2"></i> Atrás
-            </button>
-
-            @if (CurrentStep < 3)
-            {
-                <button @onclick="NextStep" 
-                        class="px-10 py-4 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-2xl transition-all shadow-lg shadow-lime-900/20">
-                    Siguiente <i class="fa-solid fa-arrow-right ml-2"></i>
-                </button>
-            }
-            else
-            {
-                <button @onclick="HandleFinish" 
-                        disabled="@(IsProcessing || !IsStepValid())"
-                        class="px-10 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all shadow-lg shadow-blue-900/20 disabled:opacity-50">
-                    @if (IsProcessing)
+            <div class="bg-slate-900 border border-amber-900/20 rounded-[2.5rem] p-10 min-h-[550px] shadow-2xl relative">
+                <div class="transition-all duration-500 ease-in-out">
+                    @switch (CurrentStep)
                     {
-                        <i class="fa-solid fa-spinner animate-spin mr-2"></i> <span>GUARDANDO...</span>
+                        case 1:
+                            <div class="animate-in fade-in slide-in-from-right-4 duration-500">
+                                <ASIFeatStep State="WizardState" />
+                            </div>
+                            break;
+                        case 2:
+                            <div class="animate-in fade-in slide-in-from-right-4 duration-500">
+                                <SpellStep State="WizardState" Character="CurrentCharacter" />
+                            </div>
+                            break;
+                        case 3:
+                            <div class="animate-in fade-in slide-in-from-right-4 duration-500">
+                                <HPStep State="WizardState" Character="CurrentCharacter" />
+                            </div>
+                            break;
+                    }
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-10">
+                <button @onclick="PreviousStep"
+                        disabled="@(CurrentStep == 1 || IsProcessing)"
+                        class="px-8 py-4 bg-black border border-amber-900/40 text-amber-500 font-bold rounded-2xl transition-all disabled:opacity-10 flex items-center gap-2 hover:bg-amber-900/20">
+                    <i class="fa-solid fa-chevron-left"></i> Atrás
+                </button>
+
+                <div class="flex gap-4 items-center">
+                    <button @onclick="CancelLevelUp"
+                            class="px-6 py-4 text-slate-500 hover:text-red-400 font-bold transition-colors uppercase text-xs tracking-widest">
+                        Cancelar
+                    </button>
+
+                    @if (CurrentStep < 3)
+                    {
+                        <button @onclick="NextStep"
+                                class="px-12 py-4 bg-amber-600 hover:bg-amber-500 text-black font-black rounded-2xl transition-all shadow-xl shadow-amber-900/20 flex items-center gap-2">
+                            SIGUIENTE <i class="fa-solid fa-chevron-right"></i>
+                        </button>
                     }
                     else
                     {
-                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> <span>FINALIZAR AVENTURA</span>
+                        <button @onclick="HandleFinish"
+                                disabled="@(IsProcessing || !IsStepValid())"
+                                class="px-12 py-4 bg-lime-600 text-black font-black rounded-2xl transition-all shadow-xl hover:bg-lime-500 disabled:bg-slate-800 disabled:text-slate-600 group">
+                            @if (IsProcessing)
+                            {
+                                <i class="fa-solid fa-spinner animate-spin"></i>
+                            }
+                            else
+                            {
+                                <span class="flex items-center gap-2">
+                                    FORJAR DESTINO <i class="fa-solid fa-wand-magic-sparkles text-black"></i>
+                                </span>
+                            }
+                        </button>
                     }
-                </button>
-            }
-        </div>
-    }
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
 @code {
     [Parameter] public Guid CharacterId { get; set; }
-    
+
     private Character? CurrentCharacter;
     private LevelUpState WizardState = new();
     private int CurrentStep = 1;
@@ -97,36 +133,36 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Cargamos al personaje con todos sus detalles (Stats, Modificadores, etc.)
-        var characters = await UnitOfWork.Characters.GetAllWithDetailsAsync();
-        CurrentCharacter = characters.FirstOrDefault(c => c.Id == CharacterId);
-
-        if (CurrentCharacter == null)
-        {
-            Navigation.NavigateTo("/");
-        }
+        CurrentCharacter = await UnitOfWork.Characters.GetByIdAsync(CharacterId);
+        if (CurrentCharacter == null) Navigation.NavigateTo("/characters");
     }
+
+    private string GetStepName(int step) => step switch
+    {
+        1 => "ATRIBUTOS / DOTES",
+        2 => "CONJUROS",
+        3 => "PUNTOS DE GOLPE",
+        _ => ""
+    };
 
     private void NextStep() => CurrentStep++;
     private void PreviousStep() => CurrentStep--;
+    private void CancelLevelUp() => Navigation.NavigateTo("/characters");
 
     private bool IsStepValid()
     {
-        // Aquí puedes agregar validaciones reales (ej: si no ha elegido HP en el paso 3)
         if (CurrentStep == 3 && WizardState.SelectedHp <= 0) return false;
         return true;
     }
 
     private async Task HandleFinish()
     {
+        if (IsProcessing) return;
         IsProcessing = true;
 
         try
         {
-            // Combinamos los modificadores de ASI si es que el usuario eligió subir puntos
             var finalModifiers = WizardState.GetModifiersFromAsi();
-            
-            // 🔥 Llamada al servicio que ya blindamos contra errores de concurrencia
             var success = await LevelingService.CommitLevelUpAsync(
                 CharacterId,
                 WizardState.SelectedHp,
@@ -137,14 +173,13 @@
 
             if (success)
             {
-                // ¡Éxito! Mandamos al Dashboard del personaje
-                Navigation.NavigateTo($"/character/{CharacterId}");
+                await Task.Delay(500);
+                Navigation.NavigateTo($"/characters");
             }
         }
         catch (Exception ex)
         {
-            // Aquí podrías mostrar un log de error en la UI
-            Console.WriteLine($"Error al subir nivel: {ex.Message}");
+            Console.WriteLine($"[LevelUp Error]: {ex.Message}");
         }
         finally
         {

@@ -16,26 +16,25 @@ namespace DnDreams.Application.Models
         public List<Guid> SelectedSpellIds { get; set; } = new();
         public Guid? SelectedFeatId { get; set; }
 
-        public Dictionary<TargetPropertyType, int> SelectedAsi { get; set; } = new()
+        public Dictionary<TargetPropertyType, string> SelectedAsi { get; set; } = new()
         {
-            { TargetPropertyType.Strength, 0 },
-            { TargetPropertyType.Dexterity, 0 },
-            { TargetPropertyType.Constitution, 0 },
-            { TargetPropertyType.Intelligence, 0 },
-            { TargetPropertyType.Wisdom, 0 },
-            { TargetPropertyType.Charisma, 0 }
+            { TargetPropertyType.Strength, TargetPropertyType.Strength.ToString() },
+            { TargetPropertyType.Dexterity, TargetPropertyType.Dexterity.ToString() },
+            { TargetPropertyType.Constitution, TargetPropertyType.Constitution.ToString() },
+            { TargetPropertyType.Intelligence, TargetPropertyType.Intelligence.ToString() },
+            { TargetPropertyType.Wisdom, TargetPropertyType.Wisdom.ToString() },
+            { TargetPropertyType.Charisma, TargetPropertyType.Charisma.ToString() }
         };
 
         public List<CharacterModifier> GetModifiersFromAsi()
         {
             return SelectedAsi
-                .Where(kv => kv.Value > 0)
                 .Select(kv => new CharacterModifier
                 {
                     Source = "Mejora de Característica",
                     Type = ModifierType.AttributeBonus,
-                    Target = kv.Key,
-                    Value = kv.Value
+                    Target = kv.Key.ToString(),
+                    Value = 0
                 })
                 .ToList();
         }

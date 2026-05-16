@@ -10,22 +10,7 @@ public class Feat
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Prerequisite { get; set; } = "Ninguno"; // Ej: "Fuerza 13 o más" o "Capacidad de lanzar conjuros"
-    public string ModifiersJson { get; set; } = "[]";
+    public List<ModifierData> Modifiers { get; set; } = new();
 
-    // Propiedad calculada des-serializada en caliente para usar en el juego
-    public List<ModifierData> Modifiers
-    {
-        get
-        {
-            try
-            {
-                return JsonSerializer.Deserialize<List<ModifierData>>(ModifiersJson) ?? new List<ModifierData>();
-            }
-            catch
-            {
-                return new List<ModifierData>();
-            }
-        }
-    }
 }
 

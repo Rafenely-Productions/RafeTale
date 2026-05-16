@@ -1,44 +1,70 @@
-﻿@inject IUnitOfWork UnitOfWork
+﻿@using DnDreams.Domain.Entities
+@using DnDreams.Domain.Interfaces
+@inject IUnitOfWork UnitOfWork
 
-<div class="p-4 bg-slate-900 rounded-lg border border-slate-700">
-    <h3 class="text-xl font-bold text-lime-400 mb-4">Mejora de Habilidad o Dote</h3>
+<div class="p-6 bg-slate-900 rounded-[2rem] border border-amber-900/20 shadow-2xl">
+    <h3 class="text-2xl font-black text-amber-500 mb-6 italic uppercase tracking-tight">Mejora de Habilidad o Dote</h3>
 
-    <div class="flex gap-4 mb-6">
-        <button @onclick="() => SetMode(true)" class="btn @(isAsiMode ? "bg-lime-600" : "bg-slate-700")">Subir Atributos</button>
-        <button @onclick="() => SetMode(false)" class="btn @(!isAsiMode ? "bg-lime-600" : "bg-slate-700")">Elegir Dote</button>
+    <div class="flex gap-4 mb-8 bg-black/40 p-2 rounded-2xl border border-amber-900/10">
+        <button @onclick="() => SetMode(true)"
+                class="flex-1 py-3 rounded-xl font-black transition-all @(isAsiMode ? "bg-amber-600 text-black shadow-lg" : "text-slate-500 hover:text-slate-300")">
+            ATRIBUTOS (ASI)
+        </button>
+        <button @onclick="() => SetMode(false)"
+                class="flex-1 py-3 rounded-xl font-black transition-all @(!isAsiMode ? "bg-amber-600 text-black shadow-lg" : "text-slate-500 hover:text-slate-300")">
+            ELEGIR DOTE
+        </button>
     </div>
 
     @if (isAsiMode)
     {
-        <div class="grid grid-cols-2 gap-4">
-            @foreach (var stat in StatsList)
-            {
-                <div class="flex items-center justify-between p-2 border border-slate-800 rounded">
-                    <span>@stat</span>
-                    <div class="flex gap-2">
-                        <button class="px-2 bg-slate-800">-</button>
-                        <span class="font-bold">@GetPoints(stat)</span>
-                        <button class="px-2 bg-lime-600">+</button>
+        <div class="space-y-4">
+            <div class="flex justify-between items-center px-2">
+                <span class="text-xs font-black text-amber-700 tracking-widest">HABILIDAD</span>
+                <span class="text-xs font-black text-amber-700 tracking-widest">PUNTOS</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @foreach (var stat in StatsList)
+                {
+                    <div class="flex items-center justify-between p-4 bg-black/30 border border-amber-900/10 rounded-2xl hover:border-amber-500/30 transition-colors">
+                        <span class="font-bold text-slate-300 uppercase text-sm tracking-tighter">@stat</span>
+                        <div class="flex items-center gap-4">
+                            <button class="w-8 h-8 flex items-center justify-center bg-slate-800 text-white rounded-full hover:bg-red-900/40 transition-colors">-</button>
+                            <span class="text-xl font-black text-white w-4 text-center">@GetPoints(stat)</span>
+                            <button class="w-8 h-8 flex items-center justify-center bg-amber-600 text-black rounded-full hover:bg-lime-500 transition-colors">+</button>
+                        </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
+            <p class="text-[10px] text-slate-500 italic mt-4 text-center">Puedes subir un atributo +2 o dos atributos +1.</p>
         </div>
     }
     else
     {
-        <div class="max-h-60 overflow-y-auto space-y-2">
+        <div class="max-h-[400px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
             @foreach (var feat in AvailableFeats)
             {
                 <div @onclick="() => SelectFeat(feat)"
-                     class="p-3 border rounded cursor-pointer transition-colors @(State.SelectedFeatIds.Contains(feat.Id) ? "border-lime-500 bg-lime-900/20" : "border-slate-700 hover:bg-slate-800")">
-                    <div class="font-bold">@feat.Name</div>
-                    <div class="text-xs text-slate-400">@feat.Description</div>
-                    @if (feat.Modifiers.Any())
+                     class="p-5 border-2 rounded-2xl cursor-pointer transition-all duration-300 @(State.SelectedFeatIds.Contains(feat.Id) ? "border-lime-500 bg-lime-950/20 shadow-[0_0_20px_rgba(132,204,22,0.1)]" : "border-amber-900/10 bg-black/20 hover:border-amber-500/40")">
+
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="font-black text-white text-lg tracking-tight uppercase">@feat.Name</div>
+                        @if (State.SelectedFeatIds.Contains(feat.Id))
+                        {
+                            <i class="fa-solid fa-circle-check text-lime-500"></i>
+                        }
+                    </div>
+
+                    <div class="text-sm text-slate-400 font-serif leading-snug mb-4">@feat.Description</div>
+
+                    @if (feat.Modifiers != null && feat.Modifiers.Any())
                     {
-                        <div class="mt-1 flex gap-1">
+                        <div class="flex flex-wrap gap-2">
                             @foreach (var mod in feat.Modifiers)
                             {
-                                <span class="text-[10px] bg-blue-900 px-1 rounded">@mod.Target +@mod.Value</span>
+                                <span class="text-[9px] font-black bg-amber-900/30 text-amber-500 border border-amber-500/20 px-2 py-1 rounded-md uppercase tracking-tighter">
+                                    @mod.Target +@mod.Value
+                                </span>
                             }
                         </div>
                     }
@@ -48,8 +74,23 @@
     }
 </div>
 
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #b45309; /* amber-700 */
+        border-radius: 10px;
+    }
+</style>
+
 @code {
-    [Parameter] public LevelUpState State { get; set; }
+    [Parameter] public LevelUpState State { get; set; } = null!;
     private bool isAsiMode = true;
     private List<Feat> AvailableFeats = new();
     private string[] StatsList = { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
@@ -57,12 +98,17 @@
     protected override async Task OnInitializedAsync()
     {
         var allFeats = await UnitOfWork.Feats.GetAllAsync();
-        // Aquí podrías filtrar por prerrequisitos en el futuro
         AvailableFeats = allFeats.ToList();
     }
 
     private void SetMode(bool asi) => isAsiMode = asi;
-    private int GetPoints(string stat) => 0; // Lógica de puntos
+
+    private int GetPoints(string stat)
+    {
+        // Aquí conectamos con tu lógica de State para mostrar los puntos asignados
+        return 0;
+    }
+
     private void SelectFeat(Feat feat)
     {
         State.SelectedFeatIds.Clear();

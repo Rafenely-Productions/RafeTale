@@ -1,35 +1,91 @@
 ﻿@page "/character/{CharacterId:guid}"
 @using DnDreams.Domain.Entities
-@using DnDreams.Application.Interfaces
+@using DnDreams.Domain.Interfaces
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
 
-@if (Char == null)
-{
-    <p>Buscando al héroe...</p>
-}
-else
-{
-    <div class="max-w-5xl mx-auto p-6">
-        <div class="flex justify-between items-end mb-8 bg-slate-900 p-8 rounded-3xl border border-slate-800">
-            <div>
-                <h1 class="text-5xl font-black text-white">@Char.Name</h1>
-                <p class="text-lime-400 text-xl">@Char.Race?.Name @Char.ClassDef?.Name • Nivel @Char.Level</p>
-            </div>
-            <button @onclick="NavigateToLevelUp" 
-                class="bg-lime-600 text-black px-6 py-3 rounded-2xl font-black hover:scale-105 transition-transform">
-                SUBIR NIVEL
-            </button>
+<div class="min-h-screen bg-black p-6">
+    @if (Char == null)
+    {
+        <div class="flex flex-col items-center justify-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 mb-4"></div>
+            <p class="text-amber-500 italic font-serif">Invocando al héroe desde el plano astral...</p>
         </div>
+    }
+    else
+    {
+        <div class="max-w-5xl mx-auto">
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-slate-900 p-6 rounded-3xl border border-slate-800">
-                <h3 class="text-slate-500 font-bold uppercase text-xs tracking-widest mb-4">Atributos</h3>
-                <p class="text-white">Próximamente: Stats calculados</p>
+            <button @onclick="Back"
+                    class="flex items-center gap-2 text-amber-700 hover:text-amber-500 font-black text-xs tracking-[0.2em] mb-6 transition-colors group uppercase">
+                <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
+                Volver a la Taberna
+            </button>
+
+            <div class="relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-6 mb-8 bg-slate-900 p-10 rounded-[2.5rem] border border-amber-900/30 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+
+                <div class="absolute -left-10 -top-10 opacity-5 text-[12rem] text-white">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <div class="relative z-10 text-center md:text-left">
+                    <h1 class="text-6xl font-black text-amber-500 tracking-tighter italic uppercase mb-2">@Char.Name</h1>
+                    <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                        <span class="text-slate-300 text-xl font-serif italic">@Char.Race?.Name</span>
+                        <span class="h-2 w-2 rounded-full bg-amber-600"></span>
+                        <span class="text-amber-600 font-black text-xl uppercase">@Char.ClassDef?.Name</span>
+                        <span class="bg-black/50 px-4 py-1 rounded-full border border-amber-500/20 text-white font-bold">
+                            Nivel @Char.Level
+                        </span>
+                    </div>
+                </div>
+
+                <div class="relative z-10">
+                    <button @onclick="NavigateToLevelUp"
+                            class="group bg-lime-600 hover:bg-lime-500 text-black px-8 py-4 rounded-2xl font-black transition-all shadow-[0_10px_30px_rgba(77,124,15,0.3)] flex items-center gap-3 active:scale-95">
+                        SUBIR NIVEL <i class="fa-solid fa-arrow-up group-hover:-translate-y-1 transition-transform"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+
+                <div class="md:col-span-1 space-y-4">
+                    <h3 class="text-amber-700 font-black text-xs tracking-[0.3em] uppercase mb-4 ml-2 italic">Atributos</h3>
+
+                    @DisplayAttribute("FUERZA", "STR", Char.Strength, Char.StrModifier)
+                    @DisplayAttribute("DESTREZA", "DEX", Char.Dexterity, Char.DexModifier)
+                    @DisplayAttribute("CONSTITUCIÓN", "CON", Char.Constitution, Char.ConModifier)
+                    @DisplayAttribute("INTELIGENCIA", "INT", Char.Intelligence, Char.IntModifier)
+                    @DisplayAttribute("SABIDURÍA", "WIS", Char.Wisdom, Char.WisModifier)
+                    @DisplayAttribute("CARISMA", "CHA", Char.Charisma, Char.ChaModifier)
+                </div>
+
+                <div class="md:col-span-3 space-y-8">
+                    <div class="bg-slate-900 border border-amber-900/20 rounded-[2rem] p-8 shadow-xl">
+                        <h3 class="text-amber-500 font-black text-lg mb-6 flex items-center gap-3 italic uppercase tracking-tighter">
+                            <i class="fa-solid fa-book-open text-amber-700"></i> Rasgos de Clase y Raza
+                        </h3>
+
+                        <div class="grid grid-cols-1 gap-4">
+                            @if (!Char.AcquiredFeatures.Any())
+                            {
+                                <p class="text-slate-600 italic">El diario de aventuras está vacío aún...</p>
+                            }
+                            @foreach (var feature in Char.AcquiredFeatures)
+                            {
+                                <div class="bg-black/30 border border-slate-800 p-5 rounded-2xl group hover:border-amber-500/30 transition-all duration-300">
+                                    <h4 class="text-white font-bold text-lg mb-1 group-hover:text-amber-500 transition-colors">@feature.Name</h4>
+                                    <p class="text-slate-400 text-sm leading-relaxed">@feature.Description</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-}
+    }
+</div>
 
 @code {
     [Parameter] public Guid CharacterId { get; set; }
@@ -37,12 +93,31 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        // Asegúrate de que el UnitOfWork esté configurado para cargar Includes (Race, ClassDef, Modifiers, Features)
         var characters = await UnitOfWork.Characters.GetAllWithDetailsAsync();
         Char = characters.FirstOrDefault(c => c.Id == CharacterId);
     }
 
     private void NavigateToLevelUp()
     {
-        Navigation.NavigateTo($"/character/{Char.Id}/levelup");
+        Navigation.NavigateTo($"/character/{Char?.Id}/levelup");
     }
+
+    private void Back() => Navigation.NavigateTo("/characters");
+
+    private RenderFragment DisplayAttribute(string name, string shortName, int score, int mod) => __builder =>
+    {
+        <div class="bg-slate-900 border border-amber-900/10 p-4 rounded-3xl flex items-center justify-between group hover:border-amber-500/40 transition-all duration-300">
+            <div>
+                <p class="text-[10px] font-black text-amber-700 tracking-widest uppercase mb-1">@name</p>
+                <p class="text-white text-2xl font-black leading-none">@score</p>
+            </div>
+            <div class="bg-black/50 w-14 h-14 rounded-2xl flex flex-col items-center justify-center border border-amber-500/10 group-hover:border-amber-500/30 transition-all">
+                <span class="text-[9px] font-bold text-slate-500 leading-none mb-1">MOD</span>
+                <span class="text-xl font-black @(mod >= 0 ? "text-lime-500" : "text-red-500") leading-none">
+                    @(mod >= 0 ? "+" : "")@mod
+                </span>
+            </div>
+        </div>
+    };
 }

@@ -1,4 +1,5 @@
 using DnDreams.Domain.Entities;
+using DnDreams.Domain.Modifiers;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -31,6 +32,7 @@ public class DnDreamsDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         
         var jsonOptions = new JsonSerializerOptions { WriteIndented = false };
+        modelBuilder.Ignore<ModifierData>();
 
         modelBuilder.Entity<Campaign>(entity =>
         {
@@ -103,7 +105,12 @@ public class DnDreamsDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.ModifiersJson).HasColumnType("TEXT");
+            entity.Property(e => e.Modifiers)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null), // Al guardar
+                v => JsonSerializer.Deserialize<List<ModifierData>>(v, (JsonSerializerOptions)null)
+                     ?? new List<ModifierData>() // Al leer
+            );
 
             entity.Ignore(e => e.Modifiers);
         });
@@ -168,9 +175,12 @@ public class DnDreamsDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.ModifiersJson).HasColumnType("TEXT");
-
-            entity.Ignore(e => e.Modifiers);
+            entity.Property(e => e.Modifiers)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null), // Al guardar
+                v => JsonSerializer.Deserialize<List<ModifierData>>(v, (JsonSerializerOptions)null)
+                     ?? new List<ModifierData>() // Al leer
+            );
         });
         modelBuilder.Entity<XpRules>()
             .HasKey(e => e.Level);

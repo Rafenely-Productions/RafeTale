@@ -11,61 +11,61 @@ public class Character
     {
         get
         {
-            int baseVal = Stats.TryGetValue("Fuerza", out var val) ? val : 10;
-            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Strength).Sum(m => m.Value);
+            int baseVal = Stats.TryGetValue(TargetPropertyType.Strength.ToString(), out var val) ? val : 10;
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Strength.ToString()).Sum(m => m.Value);
             return baseVal + bonus;
         }
-        set => Stats["Fuerza"] = value;
+        set => Stats[TargetPropertyType.Strength.ToString()] = value;
     }
     public int Dexterity
     {
         get
         {
-            int baseVal = Stats.TryGetValue("Destreza", out var val) ? val : 10;
-            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Dexterity).Sum(m => m.Value);
+            int baseVal = Stats.TryGetValue(TargetPropertyType.Dexterity.ToString(), out var val) ? val : 10;
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Dexterity.ToString()).Sum(m => m.Value);
             return baseVal + bonus;
         }
-        set => Stats["Destreza"] = value;
+        set => Stats[TargetPropertyType.Dexterity.ToString()] = value;
     }
     public int Constitution
     {
         get
         {
-            int baseVal = Stats.TryGetValue("Constitución", out var val) ? val : 10;
-            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Constitution).Sum(m => m.Value);
+            int baseVal = Stats.TryGetValue(TargetPropertyType.Constitution.ToString(), out var val) ? val : 10;
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Constitution.ToString()).Sum(m => m.Value);
             return baseVal + bonus;
         }
-        set => Stats["Constitución"] = value;
+        set => Stats[TargetPropertyType.Constitution.ToString()] = value;
     }
     public int Intelligence
     {
         get
         {
-            int baseVal = Stats.TryGetValue("Inteligencia", out var val) ? val : 10;
-            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Intelligence).Sum(m => m.Value);
+            int baseVal = Stats.TryGetValue(TargetPropertyType.Intelligence.ToString(), out var val) ? val : 10;
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Intelligence.ToString()).Sum(m => m.Value);
             return baseVal + bonus;
         }
-        set => Stats["Inteligencia"] = value;
+        set => Stats[TargetPropertyType.Intelligence.ToString()] = value;
     }
     public int Wisdom
     {
         get
         {
-            int baseVal = Stats.TryGetValue("Sabiduría", out var val) ? val : 10;
-            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Wisdom).Sum(m => m.Value);
+            int baseVal = Stats.TryGetValue(TargetPropertyType.Wisdom.ToString(), out var val) ? val : 10;
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Wisdom.ToString()).Sum(m => m.Value);
             return baseVal + bonus;
         }
-        set => Stats["Sabiduría"] = value;
+        set => Stats[TargetPropertyType.Wisdom.ToString()] = value;
     }
     public int Charisma
     {
         get
         {
-            int baseVal = Stats.TryGetValue("Carisma", out var val) ? val : 10;
-            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Charisma).Sum(m => m.Value);
+            int baseVal = Stats.TryGetValue(TargetPropertyType.Charisma.ToString(), out var val) ? val : 10;
+            int bonus = CharacterModifiers.Where(m => m.Type == ModifierType.AttributeBonus && m.Target == TargetPropertyType.Charisma.ToString()).Sum(m => m.Value);
             return baseVal + bonus;
         }
-        set => Stats["Carisma"] = value;
+        set => Stats[TargetPropertyType.Charisma.ToString()] = value;
     }
 
     public int StrModifier => CalculateModifier(Strength);
@@ -77,8 +77,6 @@ public class Character
 
     private int CalculateModifier(int score)
     {
-        if (score >20) score = 20;
-
         return (int)Math.Floor((score - 10) / 2.0);
     }
 

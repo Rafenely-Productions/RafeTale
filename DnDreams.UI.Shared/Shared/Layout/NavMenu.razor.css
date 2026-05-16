@@ -20,8 +20,16 @@
     background-color: rgba(0,0,0,0.4);
 }
 
+.sidebar {
+    background-color: #0a0a0a !important; /* Más oscuro que el fondo principal */
+    border-right: 1px solid rgba(212, 175, 55, 0.1);
+}
+
 .navbar-brand {
-    font-size: 1.1rem;
+    font-family: 'Cinzel', serif;
+    color: #d4af37 !important; /* Dorado en lugar de verde */
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
 .bi {

@@ -53,19 +53,16 @@ public class LevelingService : ILevelingService
 
                             foreach (var modData in feature.Modifiers)
                             {
-                                if (Enum.TryParse<ModifierType>(modData.Type, out var parsedType))
+                                var newModifier = new CharacterModifier
                                 {
-                                    var newModifier = new CharacterModifier
-                                    {
-                                        // Id = Guid.Empty, // Asegúrate de que no tenga valor manual
-                                        Source = $"Rasgo de Clase: {feature.Name}",
-                                        Type = parsedType,
-                                        Target = modData.Target,
-                                        Value = modData.Value,
-                                        CharacterId = targetChar.Id // El vínculo explícito
-                                    };
-                                    targetChar.CharacterModifiers.Add(newModifier);
-                                }
+                                    // Id = Guid.Empty, // Asegúrate de que no tenga valor manual
+                                    Source = $"Rasgo de Clase: {feature.Name}",
+                                    Type = modData.Type,
+                                    Target = modData.Target,
+                                    Value = modData.Value,
+                                    CharacterId = targetChar.Id // El vínculo explícito
+                                };
+                                targetChar.CharacterModifiers.Add(newModifier);
                             }
                         }
                     }
@@ -172,17 +169,13 @@ public class LevelingService : ILevelingService
 
                         foreach (var modData in feat.Modifiers)
                         {
-                            // Mapeamos el string del tipo al Enum real de la base de datos
-                            if (Enum.TryParse<ModifierType>(modData.Type, out var parsedType))
-                            {
-                                targetChar.CharacterModifiers.Add(new CharacterModifier
+                            targetChar.CharacterModifiers.Add(new CharacterModifier
                                 {
                                     Source = $"Dote: {feat.Name}",
-                                    Type = parsedType,
+                                    Type = modData.Type,
                                     Target = modData.Target,
                                     Value = modData.Value
                                 });
-                            }
                         }
                     }
                 }

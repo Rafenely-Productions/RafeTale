@@ -1,4 +1,6 @@
-﻿namespace DnDreams.Domain.Entities;
+﻿using DnDreams.Domain.Modifiers;
+
+namespace DnDreams.Domain.Entities;
 
 public enum ItemCategory { Weapon, Armor, Consumable, Tool, AdventuringGear, Trinket }
 
@@ -16,5 +18,5 @@ public class ItemTemplate
     public int? ArmorClass { get; set; }     // Ej: 15
 
     // Modificadores JSON (Igual que en Feats)
-    public string ModifiersJson { get; set; } = "[]";
+    public List<ModifierData> Modifiers { get; set; } = new();
 }

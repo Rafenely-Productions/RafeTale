@@ -2,10 +2,13 @@
 using DnDreams.Application.Interfaces;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Interfaces;
+using DnDreams.Domain.Modifiers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DnDreams.Application.Services;
@@ -31,6 +34,11 @@ public class ImportManager : IExcelImportService
         var itemsList = new List<ItemTemplate>();
 
         using var workbook = new XLWorkbook(excelStream);
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() } // <-- LA CLAVE
+        };
 
         // 1. LEER PESTAÑA DE RAZAS
         if (workbook.TryGetWorksheet("Razas", out var raceSheet))
@@ -120,7 +128,7 @@ public class ImportManager : IExcelImportService
                 var level = row.Cell(2).GetValue<int>();
                 var featureName = row.Cell(3).GetString().Trim();
                 var featureDescription = row.Cell(4).GetString().Trim() ?? $"Rasgo de nivel {level}";
-                var modifiersJson = row.Cell(5).GetString() is string json && !string.IsNullOrWhiteSpace(json) ? json : "[]";
+                var modifiersRaw = row.Cell(5).GetString();
 
                 if (string.IsNullOrEmpty(featureName)) continue;
 
@@ -135,7 +143,10 @@ public class ImportManager : IExcelImportService
                     Description = featureDescription,
                     RequiresChoice = featureName.Contains("Elegir", StringComparison.OrdinalIgnoreCase) ||
                          featureName.Contains("Arquetipo", StringComparison.OrdinalIgnoreCase),
-                    ModifiersJson = modifiersJson
+                    Modifiers = string.IsNullOrWhiteSpace(modifiersRaw)
+                        ? new List<ModifierData>()
+                        : JsonSerializer.Deserialize<List<ModifierData>>(modifiersRaw, jsonOptions)
+                          ?? new List<ModifierData>()
                 };
 
                 var existingProgression = progressionsList.FirstOrDefault(p => p.ClassDefId == targetClass.Id && p.Level == level);
@@ -178,13 +189,18 @@ public class ImportManager : IExcelImportService
             var rows = featSheet.RangeUsed().RowsUsed().Skip(1);
             foreach (var row in rows)
             {
+                var featModifiersRaw = row.Cell(4).GetString();
+
                 featsList.Add(new Feat
                 {
                     Id = Guid.NewGuid(),
                     Name = row.Cell(1).GetString() ?? string.Empty,
                     Description = row.Cell(2).GetString() ?? string.Empty,
                     Prerequisite = row.Cell(3).GetString() ?? "Ninguno",
-                    ModifiersJson = row.Cell(4).GetString() is string json && !string.IsNullOrWhiteSpace(json) ? json : "[]"
+                    Modifiers = string.IsNullOrWhiteSpace(featModifiersRaw)
+                        ? new List<ModifierData>()
+                        : JsonSerializer.Deserialize<List<ModifierData>>(featModifiersRaw, jsonOptions)
+                          ?? new List<ModifierData>()
                 });
             }
         }

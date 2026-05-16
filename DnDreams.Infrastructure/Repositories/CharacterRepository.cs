@@ -35,6 +35,11 @@ public class CharacterRepository : ICharacterRepository
         return await _context.Characters.FirstOrDefaultAsync(c => c.Name == name);
     }
 
+    public async Task<Character> GetByIdAsync(Guid id)
+    {
+        return await _context.Characters.FirstOrDefaultAsync(c => c.Id == id);
+    }
+
     public async Task RemoveAsync(Character existingChar)
     {
         await _context.Characters.Where(c => c.Id == existingChar.Id).ExecuteDeleteAsync();
