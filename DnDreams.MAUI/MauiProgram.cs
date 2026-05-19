@@ -1,9 +1,10 @@
 ﻿using DnDreams.Application.Interfaces;
 using DnDreams.Application.Services;
+using DnDreams.Domain.DTOs;
 using DnDreams.Infrastructure;
 using DnDreams.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
-
+using System.Globalization;
 namespace DnDreams.MAUI;
 
 public static class MauiProgram
@@ -28,6 +29,12 @@ public static class MauiProgram
         builder.Services.AddScoped<ICharacterQueryService, CharacterQueryService>();
         builder.Services.AddScoped<IFeatureQueryService, FeatureQueryService>();
         builder.Services.AddScoped<ILevelingService, LevelingService>();
+        builder.Services.AddScoped<CharacterCreationService>();
+
+        var culture = new CultureInfo("es-MX");
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
+        builder.Services.AddLocalization();
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();

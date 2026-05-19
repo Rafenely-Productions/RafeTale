@@ -6,6 +6,7 @@ public class ClassDefinition
     public string Name { get; set; } = string.Empty; // Ej: Guerrero, Mago
     public string HitDie { get; set; } = "d8";      // Dado de golpe
     public int HitDieValue => CalculateValue();
+    public string Description { get; set; } = "";
 
     private int CalculateValue()
     {

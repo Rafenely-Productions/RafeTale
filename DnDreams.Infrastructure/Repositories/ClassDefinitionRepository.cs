@@ -27,6 +27,11 @@ public class ClassDefinitionRepository : IClassDefinitionRepository
     }
     public async Task<List<ClassDefinition>> GetAllAsync()
     {
-        return await _context.ClassDefinitions.ToListAsync();
+        return await _context.ClassDefinitions.Include(c => c.Progressions).ThenInclude(p => p.Features).ToListAsync();
+    }
+
+    public async Task<ClassDefinition> GetByIdAsync(Guid name)
+    {
+        return await _context.ClassDefinitions.FirstOrDefaultAsync(c => c.Id == name);
     }
 }

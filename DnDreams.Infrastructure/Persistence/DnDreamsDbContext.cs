@@ -41,6 +41,12 @@ public class DnDreamsDbContext : DbContext
             entity.Property(e => e.DungeonMasterName).IsRequired();
         });
 
+        modelBuilder.Entity<Trait>()
+        .HasOne<Race>()
+        .WithMany(r => r.Traits)
+        .HasForeignKey(t => t.RaceId)
+        .OnDelete(DeleteBehavior.Cascade);
+
         // 2. Tabla Intermedia (Muchos a Muchos)
         modelBuilder.Entity<CampaignCharacter>(entity =>
         {

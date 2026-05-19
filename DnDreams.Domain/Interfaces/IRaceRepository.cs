@@ -10,4 +10,6 @@ public interface IRaceRepository
     Task AddRangeAsync(IEnumerable<Race> races);
     Task<List<Race>> GetAllAsync();
     Task<Race?> GetByNameAsync(string name);
+    Task<Race?> GetByIdAsync(Guid id);
+
 }

@@ -102,4 +102,26 @@ public class Character
     public List<CharacterSpellSlots> SpellSlots { get; set; } = new();
     public List<ActiveModifiers> ActiveModifiers { get; set; } = new();
     public List<CampaignCharacter> CampaignCharacters { get; set; } = new();
+    public int ProficiencyBonus => 2 + ((Level - 1) / 4); // Lógica oficial de D&D
+
+    public int GetSkillBonus(string skillName, string baseStat)
+    {
+        // 1. Obtenemos el modificador del atributo base (Fuerza, Destreza, etc.)
+        int statMod = baseStat switch
+        {
+            "Strength" => StrModifier,
+            "Dexterity" => DexModifier,
+            "Constitution" => ConModifier,
+            "Intelligence" => IntModifier,
+            "Wisdom" => WisModifier,
+            "Charisma" => ChaModifier,
+            _ => 0
+        };
+
+        // 2. Buscamos si el personaje tiene competencia (Proficiency) en esta skill
+        // Por ahora, asumiremos que tienes una lista de strings con las skills entrenadas
+        bool isProficient = AcquiredFeatures.Any(f => f.Name.Contains(skillName));
+
+        return statMod + (isProficient ? ProficiencyBonus : 0);
+    }
 }

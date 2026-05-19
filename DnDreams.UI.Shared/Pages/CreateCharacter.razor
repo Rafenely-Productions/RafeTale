@@ -1,0 +1,175 @@
+@page "/character/create"
+@using DnDreams.Domain.DTOs
+@using DnDreams.Domain.Entities
+@using DnDreams.Domain.Interfaces
+@inject IUnitOfWork UnitOfWork
+@inject NavigationManager Navigation
+@inject IStringLocalizer<AppStrings> L
+@inject CharacterCreationService CreationService
+
+<div class="min-h-screen bg-black p-6">
+    <div class="max-w-5xl mx-auto">
+
+        <div class="mb-8 flex justify-between items-end">
+            <div>
+                <button @onclick='Back' class="text-amber-700 hover:text-amber-500 text-[10px] font-black tracking-widest mb-4 uppercase flex items-center gap-2 transition-colors">
+                    <i class="fa-solid fa-arrow-left"></i> @L["Btn_Back"]
+                </button>
+                <h1 class="text-5xl font-black text-amber-500 italic uppercase">@L["Title_NewHero"]</h1>
+                <p class="text-slate-500 font-serif italic text-lg">@L["Title_StepIdentity"]</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-slate-900 border border-amber-900/20 rounded-[2.5rem] p-8 shadow-2xl">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-amber-700 font-black text-[10px] tracking-widest mb-3 uppercase">@L["Label_HeroName"]</label>
+                            <input @bind="Model.Name" placeholder="@L["Placeholder_Name"]"
+                                   class="w-full bg-black/40 border border-amber-900/20 p-4 rounded-2xl text-white text-xl font-bold focus:border-amber-500 outline-none transition-all" />
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div @onclick='() => Navigation.NavigateTo("/character/create/race")'
+                                 class="cursor-pointer bg-black/40 border border-amber-900/20 p-4 rounded-2xl flex justify-between items-center">
+                                <div>
+                                    <label class="block text-amber-700 font-black text-[10px] uppercase">@L["Label_Race"]</label>
+                                    <span class="text-white font-bold">
+                                        @(SelectedRace?.Name ?? L["Choose_Race"])
+                                    </span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-amber-500"></i>
+                            </div>
+
+                            <div @onclick='() => Navigation.NavigateTo("/character/create/class")'
+                                 class="cursor-pointer bg-black/40 border border-amber-900/20 p-4 rounded-2xl flex justify-between items-center">
+                                <div>
+                                    <label class="block text-amber-700 font-black text-[10px] uppercase">@L["Label_Class"]</label>
+                                    <span class="text-white font-bold">
+                                        @(SelectedClass?.Name ?? L["Choose_Class"])
+                                    </span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-amber-500"></i>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-amber-700 font-black text-[10px] tracking-widest mb-3 uppercase">@L["Label_History"]</label>
+                            <textarea @bind="Model.History" rows="4" placeholder="@L["Placeholder_History"]"
+                                      class="w-full bg-black/40 border border-amber-900/20 p-4 rounded-2xl text-slate-300 font-serif outline-none focus:border-amber-500 transition-all resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button @onclick="HandleCreate"
+                            disabled="@(!IsFormReady())"
+                            class="px-12 py-5 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-2xl transition-all shadow-xl shadow-lime-900/20 disabled:opacity-10 disabled:grayscale uppercase tracking-tighter flex items-center gap-3">
+                        @L["Btn_CreateHero"] <i class="fa-solid fa-wand-sparkles"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1">
+                <div class="bg-slate-900 border border-amber-900/30 rounded-[2.5rem] p-8 sticky top-6 shadow-2xl min-h-[400px]">
+                    <h3 class="text-amber-500 font-black text-sm mb-6 italic uppercase tracking-widest border-b border-amber-900/20 pb-2">
+                        @L["Label_SelectionDetails"]
+                    </h3>
+
+                    @if (SelectedRace == null && SelectedClass == null)
+                    {
+                        <div class="flex flex-col items-center justify-center h-64 text-center">
+                            <i class="fa-solid fa-book-sparkles text-amber-900/20 text-5xl mb-4"></i>
+                            <p class="text-slate-600 font-serif italic text-sm px-4">@L["Msg_EmptySelection"]</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="space-y-6 animate-in fade-in duration-500">
+                            @if (SelectedRace != null)
+                            {
+                                <div>
+                                    <span class="text-[10px] font-black text-amber-700 uppercase">@L["Label_Race"]</span>
+                                    <h4 class="text-xl font-bold text-white mb-1">@SelectedRace.Name</h4>
+                                    <p class="text-slate-400 text-xs font-serif leading-relaxed">@SelectedRace.Description</p>
+                                </div>
+                            }
+
+                            @if (SelectedClass != null)
+                            {
+                                <div class="pt-4 border-t border-amber-900/10">
+                                    <span class="text-[10px] font-black text-amber-700 uppercase">@L["Label_Class"]</span>
+                                    <h4 class="text-xl font-bold text-white mb-1">@SelectedClass.Name</h4>
+                                    <p class="text-slate-400 text-xs font-serif leading-relaxed">@SelectedClass.Description</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private CharacterCreationService Model = new();
+    private List<Race> Races = new();
+    private List<ClassDefinition> Classes = new();
+
+    private Race? SelectedRace;
+    private ClassDefinition? SelectedClass;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Races = (await UnitOfWork.Races.GetAllAsync()).ToList();
+        Classes = (await UnitOfWork.ClassDefinitions.GetAllAsync()).ToList();
+    }
+
+    private void OnRaceChanged(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value?.ToString(), out var id))
+        {
+            Model.SelectedRaceId = id;
+            SelectedRace = Races.FirstOrDefault(r => r.Id == id);
+        }
+        else { SelectedRace = null; Model.SelectedRaceId = Guid.Empty; }
+    }
+
+    private void OnClassChanged(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value?.ToString(), out var id))
+        {
+            Model.SelectedClassId = id;
+            SelectedClass = Classes.FirstOrDefault(c => c.Id == id);
+        }
+        else { SelectedClass = null; Model.SelectedClassId = Guid.Empty; }
+    }
+
+    private bool IsFormReady() =>
+        !string.IsNullOrWhiteSpace(Model.Name) &&
+        Model.SelectedRaceId != Guid.Empty &&
+        Model.SelectedClassId != Guid.Empty;
+
+    private void Back() => Navigation.NavigateTo("/characters");
+
+    private async Task HandleCreate() { /* Lógica futura */ }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Si el servicio ya tiene una raza, la buscamos para mostrarla
+        if (CreationService.SelectedRaceId.HasValue)
+        {
+            var race = await UnitOfWork.Races.GetByIdAsync(CreationService.SelectedRaceId.Value);
+            SelectedRace = race;
+        }
+
+        if (CreationService.SelectedClassId.HasValue)
+        {
+            var classz = await UnitOfWork.ClassDefinitions.GetByIdAsync(CreationService.SelectedClassId.Value);
+            SelectedClass = classz;
+        }
+    }
+}

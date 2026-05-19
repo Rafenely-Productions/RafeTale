@@ -3,6 +3,7 @@ using System;
 using DnDreams.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
-    partial class DnDreamsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260519001114_AddCreateCharacterService")]
+    partial class AddCreateCharacterService
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.16");
@@ -507,9 +510,6 @@ namespace DnDreams.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Size")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Speed")
                         .HasColumnType("INTEGER");
 
@@ -555,30 +555,6 @@ namespace DnDreams.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Spells");
-                });
-
-            modelBuilder.Entity("DnDreams.Domain.Entities.Trait", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("RaceId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RaceId");
-
-                    b.ToTable("Trait");
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.XpRules", b =>
@@ -782,15 +758,6 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Navigation("Character");
                 });
 
-            modelBuilder.Entity("DnDreams.Domain.Entities.Trait", b =>
-                {
-                    b.HasOne("DnDreams.Domain.Entities.Race", null)
-                        .WithMany("Traits")
-                        .HasForeignKey("RaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DnDreams.Domain.Entities.Campaign", b =>
                 {
                     b.Navigation("CampaignCharacters");
@@ -822,11 +789,6 @@ namespace DnDreams.Infrastructure.Migrations
             modelBuilder.Entity("DnDreams.Domain.Entities.ClassLevelProgression", b =>
                 {
                     b.Navigation("Features");
-                });
-
-            modelBuilder.Entity("DnDreams.Domain.Entities.Race", b =>
-                {
-                    b.Navigation("Traits");
                 });
 #pragma warning restore 612, 618
         }

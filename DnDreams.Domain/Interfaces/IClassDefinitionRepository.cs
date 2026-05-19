@@ -10,4 +10,6 @@ public interface IClassDefinitionRepository
     Task<ClassDefinition?> GetByNameAsync(string name);
     Task AddAsync(ClassDefinition cls);
     Task<List<ClassDefinition>> GetAllAsync();
+    Task<ClassDefinition> GetByIdAsync(Guid name);
+
 }

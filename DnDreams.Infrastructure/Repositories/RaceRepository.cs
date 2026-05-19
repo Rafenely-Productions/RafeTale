@@ -31,4 +31,9 @@ public class RaceRepository : IRaceRepository
     {
         return await _context.Races.FirstOrDefaultAsync(r => r.Name == name);
     }
+
+    public async Task<Race?> GetByIdAsync(Guid id)
+    {
+        return await _context.Races.Include(r => r.Traits).FirstOrDefaultAsync(x => x.Id == id);
+    }
 }

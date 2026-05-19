@@ -62,3 +62,13 @@ public enum ModifierType
     GrantFeature,    // Ej: Te da la habilidad "Visión en la Oscuridad"
     HpBonus          // Ej: El dote Robustez da +2 HP por nivel
 }
+
+public enum ASI
+{
+    Strength,
+    Dexterity,
+    Constitution,
+    Intelligence,
+    Wisdom,
+    Charisma
+}
