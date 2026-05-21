@@ -5,7 +5,7 @@
 namespace DnDreams.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCreateCharacterService : Migration
+    public partial class Spelldurationtostring2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

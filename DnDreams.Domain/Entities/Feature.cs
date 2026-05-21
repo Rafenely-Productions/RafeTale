@@ -14,6 +14,7 @@ namespace DnDreams.Domain.Entities
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string SpecialData { get; set; } = "";
         public bool RequiresChoice { get; set; } = false;
 
         public List<ModifierData> Modifiers { get; set; } = new();

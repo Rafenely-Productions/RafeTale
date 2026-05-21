@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\AppStrings.es.resx~RF1a8c6a43.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DnDreams.Domain\DnDreams.Domain.csproj" />
   </ItemGroup>
 

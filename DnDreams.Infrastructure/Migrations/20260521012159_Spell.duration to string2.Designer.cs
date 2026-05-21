@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
-    [Migration("20260516224412_ChangeModifierType2")]
-    partial class ChangeModifierType2
+    [Migration("20260521012159_Spell.duration to string2")]
+    partial class Spelldurationtostring2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,7 +96,7 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.HasIndex("CharacterId");
 
-                    b.ToTable("ActiveModifiers");
+                    b.ToTable("ActiveModifiers", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.Campaign", b =>
@@ -123,7 +123,7 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Campaigns");
+                    b.ToTable("Campaigns", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.CampaignCharacter", b =>
@@ -147,7 +147,7 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.HasIndex("CharacterId");
 
-                    b.ToTable("CampaignCharacters");
+                    b.ToTable("CampaignCharacters", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.Character", b =>
@@ -201,7 +201,7 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.HasIndex("RaceId");
 
-                    b.ToTable("Characters");
+                    b.ToTable("Characters", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.CharacterInventory", b =>
@@ -232,7 +232,7 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.HasIndex("ItemTemplateId");
 
-                    b.ToTable("CharacterInventories");
+                    b.ToTable("CharacterInventories", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.CharacterModifier", b =>
@@ -262,7 +262,7 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.HasIndex("CharacterId");
 
-                    b.ToTable("characterModifiers");
+                    b.ToTable("CharacterModifiers", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.CharacterSpellSlots", b =>
@@ -287,7 +287,7 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.HasIndex("CharacterId");
 
-                    b.ToTable("CharacterSpellSlots");
+                    b.ToTable("CharacterSpellSlots", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.CharacterStatus", b =>
@@ -319,13 +319,21 @@ namespace DnDreams.Infrastructure.Migrations
                     b.HasIndex("CharacterId")
                         .IsUnique();
 
-                    b.ToTable("CharacterStatuses");
+                    b.ToTable("CharacterStatus", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.ClassDefinition", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ArmorProficiencies")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("HitDie")
@@ -336,9 +344,33 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PrimaryAbility")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SavingThrowProficiencies")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SkillProficiencies")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SkillsToChoose")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid?>("SpellId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WeaponProficiencies")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
-                    b.ToTable("ClassDefinitions");
+                    b.HasIndex("SpellId");
+
+                    b.ToTable("ClassDefinitions", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.ClassLevelProgression", b =>
@@ -402,10 +434,6 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Modifiers")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -414,11 +442,15 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<bool>("RequiresChoice")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("SpecialData")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClassLevelProgressionId");
 
-                    b.ToTable("Features");
+                    b.ToTable("Features", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.ItemTemplate", b =>
@@ -488,7 +520,7 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.HasIndex("CharacterId");
 
-                    b.ToTable("JournalEntries");
+                    b.ToTable("JournalEntries", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.Race", b =>
@@ -497,13 +529,39 @@ namespace DnDreams.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("CreatureType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Darkvision")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.PrimitiveCollection<string>("Languages")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Speed")
+                    b.Property<string>("RacialTraits")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Resistances")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Size")
                         .HasColumnType("INTEGER");
+
+                    b.Property<float>("Speed")
+                        .HasColumnType("REAL");
 
                     b.Property<string>("StatBonuses")
                         .IsRequired()
@@ -511,7 +569,7 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Races");
+                    b.ToTable("Races", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.Spell", b =>
@@ -524,7 +582,19 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Components")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Concentration")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Duration")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -540,13 +610,69 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("Ritual")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("School")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Spells");
+                    b.ToTable("Spells", (string)null);
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.SubRace", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RaceId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RaceId");
+
+                    b.ToTable("SubRaces", (string)null);
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.Trait", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RaceId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RequiredLevel")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RaceId");
+
+                    b.ToTable("Traits", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.XpRules", b =>
@@ -566,7 +692,7 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.HasKey("Level");
 
-                    b.ToTable("XpRules");
+                    b.ToTable("XpRules", (string)null);
                 });
 
             modelBuilder.Entity("CharacterFeat", b =>
@@ -711,6 +837,13 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Navigation("Character");
                 });
 
+            modelBuilder.Entity("DnDreams.Domain.Entities.ClassDefinition", b =>
+                {
+                    b.HasOne("DnDreams.Domain.Entities.Spell", null)
+                        .WithMany("Classes")
+                        .HasForeignKey("SpellId");
+                });
+
             modelBuilder.Entity("DnDreams.Domain.Entities.ClassLevelProgression", b =>
                 {
                     b.HasOne("DnDreams.Domain.Entities.Character", null)
@@ -750,6 +883,28 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Navigation("Character");
                 });
 
+            modelBuilder.Entity("DnDreams.Domain.Entities.SubRace", b =>
+                {
+                    b.HasOne("DnDreams.Domain.Entities.Race", "Race")
+                        .WithMany("SubRaces")
+                        .HasForeignKey("RaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Race");
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.Trait", b =>
+                {
+                    b.HasOne("DnDreams.Domain.Entities.Race", "Race")
+                        .WithMany("Traits")
+                        .HasForeignKey("RaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Race");
+                });
+
             modelBuilder.Entity("DnDreams.Domain.Entities.Campaign", b =>
                 {
                     b.Navigation("CampaignCharacters");
@@ -781,6 +936,18 @@ namespace DnDreams.Infrastructure.Migrations
             modelBuilder.Entity("DnDreams.Domain.Entities.ClassLevelProgression", b =>
                 {
                     b.Navigation("Features");
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.Race", b =>
+                {
+                    b.Navigation("SubRaces");
+
+                    b.Navigation("Traits");
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.Spell", b =>
+                {
+                    b.Navigation("Classes");
                 });
 #pragma warning restore 612, 618
         }

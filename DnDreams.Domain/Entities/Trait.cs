@@ -12,7 +12,10 @@ namespace DnDreams.Domain.Entities
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
+        public int RequiredLevel { get; set; } = 1;
+
         // Relación con la Raza
         public Guid RaceId { get; set; }
+        public Race Race { get; set; } = null!;
     }
 }

@@ -5,15 +5,15 @@
 namespace DnDreams.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ChangeModifierType2 : Migration
+    public partial class RaceSpeedtofloat : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "Target",
-                table: "characterModifiers",
-                type: "TEXT",
+            migrationBuilder.AlterColumn<float>(
+                name: "Speed",
+                table: "Races",
+                type: "REAL",
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "INTEGER");
@@ -23,12 +23,12 @@ namespace DnDreams.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<int>(
-                name: "Target",
-                table: "characterModifiers",
+                name: "Speed",
+                table: "Races",
                 type: "INTEGER",
                 nullable: false,
-                oldClrType: typeof(string),
-                oldType: "TEXT");
+                oldClrType: typeof(float),
+                oldType: "REAL");
         }
     }
 }

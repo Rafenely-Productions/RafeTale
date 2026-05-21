@@ -7,6 +7,12 @@ public class ClassDefinition
     public string HitDie { get; set; } = "d8";      // Dado de golpe
     public int HitDieValue => CalculateValue();
     public string Description { get; set; } = "";
+    public string PrimaryAbility { get; set; } = ""; // Ej: Fuerza, Inteligencia
+    public string SavingThrowProficiencies { get; set; } = ""; // Ej: "Fuerza, Constitución"
+    public string ArmorProficiencies { get; set; } = ""; // Ej: "Armadura ligera, Armadura media"
+    public string WeaponProficiencies { get; set; } = ""; // Ej: "Armas simples, Armas marciales"
+    public string SkillProficiencies { get; set; } = ""; // Ej: "Atletismo, Percepción"
+    public int SkillsToChoose { get; set; } = 2; // Bonificación de competencia inicial
 
     private int CalculateValue()
     {

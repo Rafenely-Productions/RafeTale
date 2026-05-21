@@ -1,6 +1,7 @@
+using DnDreams.Application.Interfaces;
 using DnDreams.Domain.Interfaces;
+using DnDreams.Infrastructure.Extractors;
 using DnDreams.Infrastructure.Persistence;
-using DnDreams.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,10 +14,8 @@ public static class DependencyInjection
         services.AddDbContext<DnDreamsDbContext>(options =>
             options.UseSqlite($"Data Source={dbPath}"));
 
-        services.AddScoped<ExcelImportService>();
-        services.AddScoped<CharacterManager>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+        services.AddScoped<IDataExtractor, ExcelDataExtractor>();
         return services;
     }
 }

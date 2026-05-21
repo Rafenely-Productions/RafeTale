@@ -1,8 +1,10 @@
 ﻿using DnDreams.Application.Interfaces;
 using DnDreams.Application.Services;
 using DnDreams.Domain.DTOs;
+using DnDreams.Domain.Interfaces;
 using DnDreams.Infrastructure;
-using DnDreams.Infrastructure.Services;
+using DnDreams.Infrastructure.Extractors;
+using DnDreams.Infrastructure.Persistence;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 namespace DnDreams.MAUI;
@@ -25,11 +27,13 @@ public static class MauiProgram
 		builder.Services.AddInfrastructure(dbPath);//.AddInfrastructure(dbPath);
 		builder.Services.AddSingleton<LevelingService>();
 
-		builder.Services.AddScoped<IExcelImportService, ImportManager>();
         builder.Services.AddScoped<ICharacterQueryService, CharacterQueryService>();
         builder.Services.AddScoped<IFeatureQueryService, FeatureQueryService>();
         builder.Services.AddScoped<ILevelingService, LevelingService>();
         builder.Services.AddScoped<CharacterCreationService>();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddScoped<IDataExtractor, ExcelDataExtractor>();
+        builder.Services.AddScoped<IExcelImportService, ImportManager>();
 
         var culture = new CultureInfo("es-MX");
         CultureInfo.DefaultThreadCurrentCulture = culture;
@@ -45,7 +49,7 @@ public static class MauiProgram
         using (var scope = app.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DnDreams.Infrastructure.Persistence.DnDreamsDbContext>();
-            //if (File.Exists(dbPath)) File.Delete(dbPath);
+            if (File.Exists(dbPath)) File.Delete(dbPath);
             context.Database.EnsureCreated();
         }
 

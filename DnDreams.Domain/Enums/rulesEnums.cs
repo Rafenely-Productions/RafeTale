@@ -72,3 +72,102 @@ public enum ASI
     Wisdom,
     Charisma
 }
+public enum CreatureType
+{
+    Humanoid,
+    Fey,
+    Fiend,
+    Celestial,
+    Undead,
+    Construct,
+    Dragon,
+    Elemental
+}
+
+public enum DamageType
+{
+    Bludgeoning,
+    Piercing,
+    Slashing,
+    Fire,
+    Cold,
+    Lightning,
+    Thunder,
+    Acid,
+    Poison,
+    Psychic,
+    Necrotic,
+    Radiant,
+    Force
+}
+public enum ActionType
+{
+    Attack,
+    BonusAction,
+    Reaction,
+    LegendaryAction,
+    LairAction
+}
+public enum SizeCategory
+{
+    Tiny,
+    Small,
+    MediumSmall,
+    Medium,
+    Large,
+    Huge,
+    Gargantuan
+}
+public enum Alignment
+{
+    LawfulGood,
+    NeutralGood,
+    ChaoticGood,
+    LawfulNeutral,
+    TrueNeutral,
+    ChaoticNeutral,
+    LawfulEvil,
+    NeutralEvil,
+    ChaoticEvil
+}
+
+public enum SkillType
+{
+    Acrobatics,
+    AnimalHandling,
+    Arcana,
+    Athletics,
+    Deception,
+    History,
+    Insight,
+    Intimidation,
+    Investigation,
+    Medicine,
+    Nature,
+    Perception,
+    Performance,
+    Persuasion,
+    Religion,
+    SleightOfHand,
+    Stealth,
+    Survival
+}
+public enum LanguageType
+{
+    Common,
+    Dwarvish,
+    Elvish,
+    Giant,
+    Gnomish,
+    Goblin,
+    Halfling,
+    Orc,
+    Abyssal,
+    Celestial,
+    Draconic,
+    DeepSpeech,
+    Infernal,
+    Primordial,
+    Sylvan,
+    Undercommon
+}

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DnDreams.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,11 +13,17 @@ namespace DnDreams.Domain.Entities
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = "";
 
-        public int Speed { get; set; } = 30;
-        public int Size { get; set; }
+        public float Speed { get; set; } = 30;
+        public SizeCategory Size { get; set; }
+        public CreatureType CreatureType { get; set; }
+        public string Darkvision { get; set; } = "60 ft.";
+        public List<LanguageType> Languages { get; set; } = new();
+        public string RacialTraits { get; set; } = "";
+        public List<SubRace> SubRaces { get; set; } = new();
+        public string Resistances { get; set; } = "";
 
         public List<Trait> Traits { get; set; } = new();
-        public Dictionary<string, int> StatBonuses { get; set; } = new(); // <- JSON en BD
+        public Dictionary<string, int> StatBonuses { get; set; } = new();
 
     }
 }
