@@ -115,12 +115,14 @@ public class ImportManager : IExcelImportService
                     var targetRaceName = data.Races.FirstOrDefault(r => r.Id == character.RaceId)?.Name ?? string.Empty;
                     var targetClassName = data.ClassDefinitions.FirstOrDefault(c => c.Id == character.ClassDefId)?.Name ?? string.Empty;
 
-                    if (raceDict.TryGetValue(targetRaceName, out var dbRace))
+                    ClassDefinition? currentDbClass = null;
+
+                    if (raceDict.TryGetValue(targetRaceName.ToLower(), out var dbRace))
                     {
                         character.RaceId = dbRace.Id;
                     }
 
-                    if (classDict.TryGetValue(targetClassName, out var dbClass))
+                    if (classDict.TryGetValue(targetClassName.ToLower(), out var dbClass))
                     {
                         character.ClassDefId = dbClass.Id;
 
@@ -156,7 +158,7 @@ public class ImportManager : IExcelImportService
                     // Sincronizar también los items de la mochila
                     foreach (var invItem in character.Inventory)
                     {
-                        var dbItem = await _unitOfWork.ItemTemplates.GetByNameAsync(invItem.Item.Name);
+                        var dbItem = await _unitOfWork.ItemTemplates.GetByNameAsync(invItem.Item.Name.Trim());
                         if (dbItem != null)
                         {
                             invItem.ItemTemplateId = dbItem.Id;

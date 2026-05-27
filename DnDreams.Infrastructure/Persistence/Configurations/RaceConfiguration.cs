@@ -1,4 +1,5 @@
 ﻿using DnDreams.Domain.Entities;
+using DnDreams.Domain.Enums;
 using DocumentFormat.OpenXml.Vml.Office;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -31,6 +32,11 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
                 .HasForeignKey(t => t.RaceId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Property(e => e.Languages)
+        .HasConversion(
+            v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null!), // De Lista a String para guardar
+            v => JsonSerializer.Deserialize<List<LanguageType>>(v, (JsonSerializerOptions)null!) ?? new List<LanguageType>() // De String a Lista para leer
+        );
             builder.Property(e => e.StatBonuses)
                 .HasConversion(
                     v => JsonSerializer.Serialize(v, jsonOptions),

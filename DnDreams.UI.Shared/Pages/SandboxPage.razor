@@ -222,15 +222,15 @@
 
     private async Task OnFolderFileSelected(InputFileChangeEventArgs e)
     {
-        var file = e.File;
-        if (file == null) return;
-
-        isProcessing = true;
-        errorMessage = null;
-        uploadedCount = null;
-
         try
         {
+            var file = e.File;
+            if (file == null) return;
+
+            isProcessing = true;
+            errorMessage = null;
+            uploadedCount = null;
+
             using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
             using var memoryStream = new MemoryStream();
             await stream.CopyToAsync(memoryStream);

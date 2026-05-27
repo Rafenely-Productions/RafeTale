@@ -103,7 +103,12 @@
                                         </h3>
                                         <p class="text-slate-400 text-sm font-serif italic">
                                             @* Aquí irían los idiomas separados por coma *@
-                                            Común, Elfo, Enano.
+                                            @{
+                                                var language = string.Join(", ", SelectedRace.Languages);
+                                            }
+
+                                           ab @SelectedRace.Languages.Count
+                                            Común, Elfo, Enanos.
                                         </p>
                                     </div>
                                 </div>

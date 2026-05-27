@@ -22,7 +22,8 @@ public static class MauiProgram
 			});
 		builder.Services.AddMauiBlazorWebView();
 
-		var dbPath = Path.Combine(FileSystem.AppDataDirectory, "dndreams.db3");
+
+        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "dndreams.db3");
 
 		builder.Services.AddInfrastructure(dbPath);//.AddInfrastructure(dbPath);
 		builder.Services.AddSingleton<LevelingService>();
@@ -40,6 +41,11 @@ public static class MauiProgram
         CultureInfo.DefaultThreadCurrentUICulture = culture;
         builder.Services.AddLocalization();
 
+        AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+        {
+            var ex = (Exception)args.ExceptionObject;
+            System.Diagnostics.Debug.WriteLine($"¡CRASH EVITADO!: {ex.Message}");
+        };
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
