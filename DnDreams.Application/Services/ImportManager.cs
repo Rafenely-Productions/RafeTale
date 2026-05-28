@@ -170,6 +170,10 @@ public class ImportManager : IExcelImportService
                 await _unitOfWork.Characters.AddRangeAsync(data.Characters);
             }
 
+            if(data.LocalizedContents.Any())
+            {
+                await _unitOfWork.LocalizedContents.AddRangeAsync(data.LocalizedContents);
+            }
             await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitAsync();
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DnDreams.Domain.Interfaces.IRepositories;
+using System;
 using System.Threading.Tasks;
 
 namespace DnDreams.Domain.Interfaces;
@@ -14,7 +15,7 @@ public interface IUnitOfWork : IDisposable
     IFeatRepository Feats { get; }
     ISpellRepository Spells { get; }
     IItemTemplateRepository ItemTemplates { get; }
-
+    ILocalizedContentRepository LocalizedContents { get; }
     Task BeginTransactionAsync();
     Task CommitAsync();
     Task RollbackAsync();

@@ -6,6 +6,7 @@
 @inject NavigationManager Navigation
 @inject IStringLocalizer<AppStrings> L
 @inject CharacterCreationService CreationService
+@inject ILocalizationService Localization
 
 <div class="min-h-screen bg-black p-6">
     <div class="max-w-5xl mx-auto">
@@ -119,23 +120,39 @@
     private List<Race> Races = new();
     private List<ClassDefinition> Classes = new();
 
-    private Race? SelectedRace;
+    private RaceDto? SelectedRace;
     private ClassDefinition? SelectedClass;
 
     protected override async Task OnInitializedAsync()
     {
         Races = (await UnitOfWork.Races.GetAllAsync()).ToList();
         Classes = (await UnitOfWork.ClassDefinitions.GetAllAsync()).ToList();
+        // SelectedRace = new RaceDto();
     }
 
-    private void OnRaceChanged(ChangeEventArgs e)
+    private async Task OnRaceChanged(ChangeEventArgs e)
     {
         if (Guid.TryParse(e.Value?.ToString(), out var id))
         {
             Model.SelectedRaceId = id;
-            SelectedRace = Races.FirstOrDefault(r => r.Id == id);
+            var race = Races.FirstOrDefault(r => r.Id == id);
+
+            if (race != null)
+            {
+                SelectedRace = new RaceDto
+                {
+                    Id = race.Id,
+                    Name = await Localization.GetStringAsync(race.Id, "Name"),
+                    Description = await Localization.GetStringAsync(race.Id, "Description"),
+                    Race = race
+                };
+            }
         }
-        else { SelectedRace = null; Model.SelectedRaceId = Guid.Empty; }
+        else
+        {
+            SelectedRace = null;
+            Model.SelectedRaceId = Guid.Empty;
+        }
     }
 
     private void OnClassChanged(ChangeEventArgs e)
@@ -163,7 +180,15 @@
         if (CreationService.SelectedRaceId.HasValue)
         {
             var race = await UnitOfWork.Races.GetByIdAsync(CreationService.SelectedRaceId.Value);
-            SelectedRace = race;
+            if (SelectedRace != null) SelectedRace = new();
+            SelectedRace = new RaceDto
+            {
+                Id = race.Id,
+                Name = race.Name,// await Localization.GetStringAsync(race.Id, "Name"),
+                Description = await Localization.GetStringAsync(race.Id, "Description"),
+                Race = race
+            };
+            SelectedRace.Race = race;
         }
 
         if (CreationService.SelectedClassId.HasValue)

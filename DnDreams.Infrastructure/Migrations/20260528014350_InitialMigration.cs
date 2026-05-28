@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DnDreams.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class MigracionInicial : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,19 +59,34 @@ namespace DnDreams.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LocalizedContents",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    EntityId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    EntityType = table.Column<string>(type: "TEXT", nullable: false),
+                    Property = table.Column<string>(type: "TEXT", nullable: false),
+                    LanguageCode = table.Column<string>(type: "TEXT", nullable: false),
+                    Text = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LocalizedContents", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Races",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    Speed = table.Column<int>(type: "INTEGER", nullable: false),
+                    Resistances = table.Column<string>(type: "TEXT", nullable: false),
+                    Darkvision = table.Column<string>(type: "TEXT", nullable: false),
                     Size = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatureType = table.Column<int>(type: "INTEGER", nullable: false),
-                    Darkvision = table.Column<string>(type: "TEXT", nullable: false),
-                    Languages = table.Column<int>(type: "INTEGER", nullable: false),
                     RacialTraits = table.Column<string>(type: "TEXT", nullable: false),
-                    Resistances = table.Column<string>(type: "TEXT", nullable: false),
+                    Speed = table.Column<float>(type: "REAL", nullable: false),
+                    Languages = table.Column<string>(type: "TEXT", nullable: false),
                     StatBonuses = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -91,7 +106,7 @@ namespace DnDreams.Infrastructure.Migrations
                     Range = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Components = table.Column<string>(type: "TEXT", nullable: false),
-                    Duration = table.Column<int>(type: "INTEGER", nullable: false),
+                    Duration = table.Column<string>(type: "TEXT", nullable: false),
                     Concentration = table.Column<string>(type: "TEXT", nullable: false),
                     Ritual = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
@@ -164,6 +179,12 @@ namespace DnDreams.Infrastructure.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     HitDie = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
+                    PrimaryAbility = table.Column<string>(type: "TEXT", nullable: false),
+                    SavingThrowProficiencies = table.Column<string>(type: "TEXT", nullable: false),
+                    ArmorProficiencies = table.Column<string>(type: "TEXT", nullable: false),
+                    WeaponProficiencies = table.Column<string>(type: "TEXT", nullable: false),
+                    SkillProficiencies = table.Column<string>(type: "TEXT", nullable: false),
+                    SkillsToChoose = table.Column<int>(type: "INTEGER", nullable: false),
                     SpellId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -463,6 +484,7 @@ namespace DnDreams.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
+                    SpecialData = table.Column<string>(type: "TEXT", nullable: false),
                     RequiresChoice = table.Column<bool>(type: "INTEGER", nullable: false),
                     ClassLevelProgressionId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
@@ -597,6 +619,12 @@ namespace DnDreams.Infrastructure.Migrations
                 column: "CharacterId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LocalizedContents_EntityId_Property_LanguageCode",
+                table: "LocalizedContents",
+                columns: new[] { "EntityId", "Property", "LanguageCode" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SubRaces_RaceId",
                 table: "SubRaces",
                 column: "RaceId");
@@ -639,6 +667,9 @@ namespace DnDreams.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "JournalEntries");
+
+            migrationBuilder.DropTable(
+                name: "LocalizedContents");
 
             migrationBuilder.DropTable(
                 name: "SubRaces");

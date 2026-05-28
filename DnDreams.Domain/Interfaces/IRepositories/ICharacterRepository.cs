@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DnDreams.Domain.Interfaces;
+namespace DnDreams.Domain.Interfaces.IRepositories;
 
-public interface ICharacterRepository
+public interface ICharacterRepository : IRepository<Character>
 {
-    Task AddRangeAsync(IEnumerable<Character> characters);
     Task<IEnumerable<Character>> GetAllWithDetailsAsync();
     Task<Character> GetByNameAsync(string name);
     Task<Character> GetByIdAsync(Guid id);

@@ -1,31 +1,14 @@
 ﻿using DnDreams.Domain.Entities;
-using DnDreams.Domain.Interfaces;
+using DnDreams.Domain.Interfaces.IRepositories;
 using DnDreams.Infrastructure.Persistence;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using Microsoft.EntityFrameworkCore;
 
 namespace DnDreams.Infrastructure.Repositories
 {
-    public class XpRulesRepository : IXpRulesRepository
+    public class XpRulesRepository : Repository<XpRules>, IXpRulesRepository
     {
-        private readonly DnDreamsDbContext _context;
-        public XpRulesRepository(DnDreamsDbContext context) => _context = context;
-
-        public async Task AddAsync(XpRules xp)
-        {
-            await _context.XpRules.AddAsync(xp);
-        }
-
-        public async Task AddRangeAsync(IEnumerable<XpRules> xpRules)
-        {
-            await _context.XpRules.AddRangeAsync(xpRules);
-
-        }
-
-        public async Task<List<XpRules>> GetAllAsync()
-        {
-            return await _context.XpRules.ToListAsync();
-        }
+        public XpRulesRepository(DnDreamsDbContext context) : base(context){}
 
         public async Task<XpRules> GetByLevelAsync(int level)
         {

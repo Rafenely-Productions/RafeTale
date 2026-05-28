@@ -13,6 +13,7 @@ namespace DnDreams.Infrastructure.Extractors
 {
     public class ExcelDataExtractor : IDataExtractor
     {
+        private List<LocalizedContent> _localizedContentCache = new List<LocalizedContent>();
         public async Task<ImportDataPackage> ExtractAllAsync(Stream excelStream)
         {
             var package = new ImportDataPackage();
@@ -28,7 +29,7 @@ namespace DnDreams.Infrastructure.Extractors
             package.Feats = ExtractFeats(workbook);
             package.Characters = ExtractCharacters(workbook, package.Races, package.ClassDefinitions);
             package.Items = ExtractItems(workbook, package.Characters);
-
+            package.LocalizedContents.AddRange(_localizedContentCache);
             return package;
         }
         public List<Race> ExtractRaces(IXLWorkbook workbook)
@@ -46,12 +47,13 @@ namespace DnDreams.Infrastructure.Extractors
                         Name = row.Cell(1).GetString(),
                         Speed = row.Cell(2).GetValue<float>(),
                         Size = Enum.TryParse<SizeCategory>(row.Cell(3).GetString(), true, out var size) ? size : SizeCategory.Medium,
-                        Description = row.Cell(4).GetString(),
                         CreatureType = Enum.TryParse<CreatureType>(row.Cell(5).GetString(), true, out var type) ? type : CreatureType.Humanoid,
                         Darkvision = row.Cell(6).GetString(),
                         Resistances = row.Cell(7).GetString(),
                         RacialTraits = row.Cell(9).GetString()
                     };
+
+                    _localizedContentCache.Add(ExtractLocalizedContent(race.Id, "Race", "Description", row.Cell(4).GetString(), "es"));
 
                     var languagesList = row.Cell(8).GetString().Split(',').Select(l => l.Trim()).ToList();
                     foreach (var lang in languagesList)
@@ -365,6 +367,11 @@ namespace DnDreams.Infrastructure.Extractors
                 }
             }
             return subRaces;
+        }
+
+        private LocalizedContent ExtractLocalizedContent(Guid entityId, string entityType, string property, string text, string LanguageCode)
+        {
+            return new LocalizedContent {Id = Guid.NewGuid(), EntityId = entityId, EntityType = entityType, Property = property, Text = text, LanguageCode = LanguageCode };
         }
     }
 }

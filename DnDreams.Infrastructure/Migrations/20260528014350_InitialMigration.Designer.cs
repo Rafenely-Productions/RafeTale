@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
-    [Migration("20260521012159_Spell.duration to string2")]
-    partial class Spelldurationtostring2
+    [Migration("20260528014350_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -523,6 +523,39 @@ namespace DnDreams.Infrastructure.Migrations
                     b.ToTable("JournalEntries", (string)null);
                 });
 
+            modelBuilder.Entity("DnDreams.Domain.Entities.LocalizedContent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("EntityId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LanguageCode")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Property")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId", "Property", "LanguageCode")
+                        .IsUnique();
+
+                    b.ToTable("LocalizedContents", (string)null);
+                });
+
             modelBuilder.Entity("DnDreams.Domain.Entities.Race", b =>
                 {
                     b.Property<Guid>("Id")
@@ -536,11 +569,7 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.PrimitiveCollection<string>("Languages")
+                    b.Property<string>("Languages")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

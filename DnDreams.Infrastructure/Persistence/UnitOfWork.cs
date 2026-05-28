@@ -1,4 +1,5 @@
 ﻿using DnDreams.Domain.Interfaces;
+using DnDreams.Domain.Interfaces.IRepositories;
 using DnDreams.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -22,6 +23,8 @@ public class UnitOfWork : IUnitOfWork
     public ISpellRepository Spells { get; }
     public IItemTemplateRepository ItemTemplates { get; }
 
+    public ILocalizedContentRepository LocalizedContents { get; }
+
     public UnitOfWork(DnDreamsDbContext context)
     {
         _context = context;
@@ -34,6 +37,7 @@ public class UnitOfWork : IUnitOfWork
         Feats = new FeatRepository(_context);
         Spells = new SpellRepository(_context);
         ItemTemplates = new ItemTemplateRepository(_context);
+        LocalizedContents = new LocalizedContentRepository(_context);
     }
 
     public async Task BeginTransactionAsync()

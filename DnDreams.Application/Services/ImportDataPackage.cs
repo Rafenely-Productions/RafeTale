@@ -19,5 +19,6 @@ namespace DnDreams.Application.Services
         public List<XpRules> XpRules { get; set; } = new();
         public List<Feat> Feats { get; set; } = new();
         public List<ItemTemplate> Items { get; set; } = new();
+        public List<LocalizedContent> LocalizedContents { get; set; } = new();
     }
 }

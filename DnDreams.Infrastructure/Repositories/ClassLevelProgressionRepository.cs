@@ -1,5 +1,5 @@
 ﻿using DnDreams.Domain.Entities;
-using DnDreams.Domain.Interfaces;
+using DnDreams.Domain.Interfaces.IRepositories;
 using DnDreams.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,10 +10,9 @@ using System.Threading.Tasks;
 
 namespace DnDreams.Infrastructure.Repositories
 {
-    public class ClassLevelProgressionRepository : IClassLevelProgressionRepository
+    public class ClassLevelProgressionRepository : Repository<ClassLevelProgression>, IClassLevelProgressionRepository
     {
-        private readonly DnDreamsDbContext _context;
-        public ClassLevelProgressionRepository(DnDreamsDbContext context) => _context = context;
+        public ClassLevelProgressionRepository(DnDreamsDbContext context):base(context) { }
 
         public async Task AddProgressionsRangeAsync(List<ClassLevelProgression> progressions)
         {

@@ -18,6 +18,5 @@ namespace DnDreams.Application.Interfaces
         List<XpRules> ExtractXpRules(IXLWorkbook workbook);
         List<Feat> ExtractFeats(IXLWorkbook workbook);
         List<ItemTemplate> ExtractItems(IXLWorkbook workbook, List<Character> characters);
-
     }
 }

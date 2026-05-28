@@ -1,32 +1,18 @@
 ﻿using DnDreams.Domain.Entities;
-using DnDreams.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DnDreams.Infrastructure.Persistence;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DnDreams.Domain.DTOs;
+using System.Linq.Expressions;
+using DnDreams.Domain.Interfaces.IRepositories;
 
 namespace DnDreams.Infrastructure.Repositories;
 
-public class RaceRepository : IRaceRepository
+public class RaceRepository : Repository<Race>, IRaceRepository
 {
-    private readonly DnDreamsDbContext _context;
-    public RaceRepository(DnDreamsDbContext context) => _context = context;
-
-    public async Task AddAsync(Race race)
-    {
-        await _context.Races.AddAsync(race);
-    }
-
-    public async Task AddRangeAsync(IEnumerable<Race> races)
-    {
-        await _context.Races.AddRangeAsync(races);
-    }
-
-    public async Task<List<Race>> GetAllAsync()
-    {
-        return await _context.Races.ToListAsync();
-    }
+    public RaceRepository(DnDreamsDbContext context) : base(context) { }
 
     public async Task<Race?> GetByNameAsync(string name)
     {

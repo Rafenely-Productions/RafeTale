@@ -72,18 +72,6 @@ public enum ASI
     Wisdom,
     Charisma
 }
-public enum CreatureType
-{
-    Humanoid,
-    Fey,
-    Fiend,
-    Celestial,
-    Undead,
-    Construct,
-    Dragon,
-    Elemental
-}
-
 public enum DamageType
 {
     Bludgeoning,
@@ -170,4 +158,15 @@ public enum LanguageType
     Primordial,
     Sylvan,
     Undercommon
+}
+public enum CreatureType
+{
+    Humanoid,
+    Fey,
+    Fiend,
+    Celestial,
+    Undead,
+    Construct,
+    Dragon,
+    Elemental
 }
