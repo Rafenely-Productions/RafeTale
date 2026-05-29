@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DnDreams.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DnDreams.Domain.Entities
 {
-    public class LocalizedContent
+    public class LocalizedContent : IEntity
     {
         public Guid Id { get; set; }
         public Guid EntityId { get; set; }

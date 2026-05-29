@@ -1,6 +1,8 @@
-﻿namespace DnDreams.Domain.Entities
+﻿using DnDreams.Domain.Interfaces;
+
+namespace DnDreams.Domain.Entities
 {
-    public class SubRace
+    public class SubRace : IEntity
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid RaceId { get; set; }

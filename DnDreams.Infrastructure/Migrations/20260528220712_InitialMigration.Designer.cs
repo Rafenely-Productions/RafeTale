@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
-    [Migration("20260528014350_InitialMigration")]
+    [Migration("20260528220712_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -523,6 +523,21 @@ namespace DnDreams.Infrastructure.Migrations
                     b.ToTable("JournalEntries", (string)null);
                 });
 
+            modelBuilder.Entity("DnDreams.Domain.Entities.Language", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TechnicalName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Languages");
+                });
+
             modelBuilder.Entity("DnDreams.Domain.Entities.LocalizedContent", b =>
                 {
                     b.Property<Guid>("Id")
@@ -569,20 +584,7 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Languages")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("RacialTraits")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Resistances")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -594,6 +596,11 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.Property<string>("StatBonuses")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TechnicalName")
+                        .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -722,6 +729,21 @@ namespace DnDreams.Infrastructure.Migrations
                     b.HasKey("Level");
 
                     b.ToTable("XpRules", (string)null);
+                });
+
+            modelBuilder.Entity("LanguageRace", b =>
+                {
+                    b.Property<Guid>("LanguagesId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RacesId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LanguagesId", "RacesId");
+
+                    b.HasIndex("RacesId");
+
+                    b.ToTable("LanguageRace");
                 });
 
             modelBuilder.Entity("CharacterFeat", b =>
@@ -932,6 +954,21 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Race");
+                });
+
+            modelBuilder.Entity("LanguageRace", b =>
+                {
+                    b.HasOne("DnDreams.Domain.Entities.Language", null)
+                        .WithMany()
+                        .HasForeignKey("LanguagesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DnDreams.Domain.Entities.Race", null)
+                        .WithMany()
+                        .HasForeignKey("RacesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.Campaign", b =>

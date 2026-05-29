@@ -8,7 +8,8 @@ namespace DnDreams.Application.Interfaces
     {
         Task<ImportDataPackage> ExtractAllAsync(Stream excelStream);
 
-        List<Race> ExtractRaces(IXLWorkbook workbook);
+        List<Language> ExtractLanguages(IXLWorkbook workbook);
+        List<Race> ExtractRaces(IXLWorkbook workbook, List<Language> languages);
         List<SubRace> ExtractSubRaces(IXLWorkbook workbook, List<Race> races);
         List<ClassDefinition> ExtractClasses(IXLWorkbook workbook);
 
@@ -18,5 +19,6 @@ namespace DnDreams.Application.Interfaces
         List<XpRules> ExtractXpRules(IXLWorkbook workbook);
         List<Feat> ExtractFeats(IXLWorkbook workbook);
         List<ItemTemplate> ExtractItems(IXLWorkbook workbook, List<Character> characters);
+        List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races);
     }
 }

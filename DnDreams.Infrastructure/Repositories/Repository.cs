@@ -1,4 +1,5 @@
 ﻿using DnDreams.Domain.Entities;
+using DnDreams.Domain.Interfaces;
 using DnDreams.Domain.Interfaces.IRepositories;
 using DnDreams.Infrastructure.Persistence;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DnDreams.Infrastructure.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class,IEntity
     {
         protected readonly DnDreamsDbContext _context;
 
@@ -31,21 +32,56 @@ namespace DnDreams.Infrastructure.Repositories
             await _context.Set<T>().AddRangeAsync(list);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T?>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetManyAsync(Expression<Func<T, bool>> predicate)
+        public async Task<IEnumerable<T?>> GetManyAsync(Expression<Func<T, bool>> predicate)
         {
             return await _context.Set<T>()
                 .Where(predicate)
                 .ToListAsync();
         }
 
-        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate)
+        public async Task<T?> GetSingleAsync(Expression<Func<T, bool>> predicate)
         {
             return await _context.Set<T>().Where(predicate).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<T?>> GetAllAsync(Expression<Func<T, bool>>? filter,params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = GetValues(filter, includes);
+
+            return await query.ToListAsync();
+        }
+        public async Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = GetValues(x => x.Id == id, includes);
+
+            return await query.FirstOrDefaultAsync();
+        }
+
+        private IQueryable<T> GetValues(Expression<Func<T, bool>>? filter, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            return query;
+        }
+
+        public Task<T> GetByIdAsync(Guid id, params Expression<Func<Race, object>>[] includes)
+        {
+            throw new NotImplementedException();
         }
     }
 }

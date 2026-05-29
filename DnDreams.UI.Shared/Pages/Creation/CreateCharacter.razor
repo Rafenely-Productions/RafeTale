@@ -1,12 +1,12 @@
 @page "/character/create"
+@using DnDreams.Application.DTOs
+@using DnDreams.Application.Interfaces.DtosInterfaces
 @using DnDreams.Domain.DTOs
-@using DnDreams.Domain.Entities
-@using DnDreams.Domain.Interfaces
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
 @inject IStringLocalizer<AppStrings> L
 @inject CharacterCreationService CreationService
-@inject ILocalizationService Localization
+@inject IService<RaceDto,Race> RaceService
 
 <div class="min-h-screen bg-black p-6">
     <div class="max-w-5xl mx-auto">
@@ -139,13 +139,7 @@
 
             if (race != null)
             {
-                SelectedRace = new RaceDto
-                {
-                    Id = race.Id,
-                    Name = await Localization.GetStringAsync(race.Id, "Name"),
-                    Description = await Localization.GetStringAsync(race.Id, "Description"),
-                    Race = race
-                };
+                SelectedRace = await RaceService.GetByIdAsync(id);
             }
         }
         else
@@ -179,16 +173,9 @@
         // Si el servicio ya tiene una raza, la buscamos para mostrarla
         if (CreationService.SelectedRaceId.HasValue)
         {
-            var race = await UnitOfWork.Races.GetByIdAsync(CreationService.SelectedRaceId.Value);
             if (SelectedRace != null) SelectedRace = new();
-            SelectedRace = new RaceDto
-            {
-                Id = race.Id,
-                Name = race.Name,// await Localization.GetStringAsync(race.Id, "Name"),
-                Description = await Localization.GetStringAsync(race.Id, "Description"),
-                Race = race
-            };
-            SelectedRace.Race = race;
+
+            SelectedRace = await RaceService.GetByIdAsync(CreationService.SelectedRaceId.Value);
         }
 
         if (CreationService.SelectedClassId.HasValue)

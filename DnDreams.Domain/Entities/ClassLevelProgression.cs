@@ -1,6 +1,8 @@
+using DnDreams.Domain.Interfaces;
+
 namespace DnDreams.Domain.Entities;
 
-public class ClassLevelProgression
+public class ClassLevelProgression : IEntity
 {
     public Guid Id { get; set; }
     public int Level { get; set; }

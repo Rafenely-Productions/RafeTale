@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DnDreams.Domain.DTOs
+namespace DnDreams.Application.DTOs
 {
-    public class RaceDto
+    public class ClassDeffinitionDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = "";
         public string Resistances { get; set; } = "";
-        public Race Race { get; set; } = null!;
+        public ClassDefinition Class { get; set; } = null!;
     }
 }

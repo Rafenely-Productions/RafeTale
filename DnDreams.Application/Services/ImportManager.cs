@@ -17,17 +17,19 @@ public class ImportManager : IExcelImportService
 {
     private readonly IUnitOfWork _unitOfWork;
     private IDataExtractor _dataExtractor;
+    private ILocalizationService _localizationService;
 
-    public ImportManager(IUnitOfWork unitOfWork, IDataExtractor dataExtractor)
+    public ImportManager(IUnitOfWork unitOfWork, IDataExtractor dataExtractor, ILocalizationService localizationService)
     {
         _unitOfWork = unitOfWork;
         _dataExtractor = dataExtractor;
+        _localizationService = localizationService;
     }
 
     public async Task<(int Count, string Version)> ImportDataFromExcelAsync(Stream excelStream)
     {
         var data = await _dataExtractor.ExtractAllAsync(excelStream);  
-
+        
         // GUARDADO DE DATOS CON UNIT OF WORK
         // ==========================================
         await _unitOfWork.BeginTransactionAsync();
@@ -35,8 +37,8 @@ public class ImportManager : IExcelImportService
         {
             if (data.Races.Any())
             {
-                var existingRaces = (await _unitOfWork.Races.GetAllAsync()).Select(r => r.Name.ToLower()).ToHashSet();
-                var newRaces = data.Races.Where(r => !existingRaces.Contains(r.Name.ToLower())).ToList();
+                var existingRaces = (await _localizationService.GetAllAsync("Race", "Name")).Values.Select(x=> x.ToLower()).ToHashSet();
+                var newRaces = data.Races.Where(r => !existingRaces.Contains(r.TechnicalName.ToLower())).ToList();
                 if (newRaces.Any()) await _unitOfWork.Races.AddRangeAsync(newRaces);
             }
             if (data.ClassDefinitions.Any())
@@ -107,12 +109,12 @@ public class ImportManager : IExcelImportService
             {
                 var dbRaces = await _unitOfWork.Races.GetAllAsync();
                 var dbClasses = await _unitOfWork.ClassDefinitions.GetAllAsync();
-                var raceDict = dbRaces.ToDictionary(r => r.Name.ToLower(), r => r);
+                var raceDict = dbRaces.ToDictionary(r => r.TechnicalName.ToLower(), r => r);
                 var classDict = dbClasses.ToDictionary(c => c.Name.ToLower(), c => c);
 
                 foreach (var character in data.Characters)
                 {
-                    var targetRaceName = data.Races.FirstOrDefault(r => r.Id == character.RaceId)?.Name ?? string.Empty;
+                    var targetRaceName = data.Races.FirstOrDefault(r => r.Id == character.RaceId)?.TechnicalName ?? string.Empty;
                     var targetClassName = data.ClassDefinitions.FirstOrDefault(c => c.Id == character.ClassDefId)?.Name ?? string.Empty;
 
                     ClassDefinition? currentDbClass = null;
@@ -174,6 +176,27 @@ public class ImportManager : IExcelImportService
             {
                 await _unitOfWork.LocalizedContents.AddRangeAsync(data.LocalizedContents);
             }
+            await _unitOfWork.SaveChangesAsync();
+
+            if (data.Traits.Any()) 
+            {
+                var existingTraits = (await _unitOfWork.Traits.GetAllAsync()).Select(x => x.Name).ToHashSet();
+                var newTrait = data.Traits.Where(x => !existingTraits.Contains(x.Name)).ToList();
+                if (newTrait.Any()) await _unitOfWork.Traits.AddRangeAsync(newTrait);
+            }
+            if (data.Languages.Any()) 
+            {
+                var existingLanguages = (await _unitOfWork.Languages.GetAllAsync()).Select(x => x.TechnicalName).ToHashSet();
+                var newLanguages = data.Languages.Where(x => !existingLanguages.Contains(x.TechnicalName)).ToList();
+                if (newLanguages.Any()) await _unitOfWork.Languages.AddRangeAsync(newLanguages);
+            }
+            if(data.SubRaces.Any())
+            {
+                var existingSubRaces = (await _unitOfWork.SubRaces.GetAllAsync()).Select(x => x.Name).ToHashSet();
+                var newSubRaces = data.SubRaces.Where(x => !existingSubRaces.Contains(x.Name)).ToList();
+                if (newSubRaces.Any()) await _unitOfWork.SubRaces.AddRangeAsync(newSubRaces);
+            }
+
             await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitAsync();
 

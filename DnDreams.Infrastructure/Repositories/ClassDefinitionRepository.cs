@@ -20,4 +20,11 @@ public class ClassDefinitionRepository : Repository<ClassDefinition>, IClassDefi
     {
         return await _context.ClassDefinitions.FirstOrDefaultAsync(c => c.Id == name);
     }
+    public async Task<List<ClassDefinition>> GetClassesWithFeatures()
+    {
+        return await _context.ClassDefinitions
+            .Include(c => c.Progressions)
+                .ThenInclude(p => p.Features)
+            .ToListAsync();
+    }
 }

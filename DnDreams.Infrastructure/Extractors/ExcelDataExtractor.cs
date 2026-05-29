@@ -6,21 +6,23 @@ using DnDreams.Domain.Enums;
 using DnDreams.Domain.Modifiers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using LanguageType = DnDreams.Domain.Enums.LanguageType;
 
 namespace DnDreams.Infrastructure.Extractors
 {
     public class ExcelDataExtractor : IDataExtractor
     {
         private List<LocalizedContent> _localizedContentCache = new List<LocalizedContent>();
+        private List<string> _LanguagesCache = new List<string>();
+        private readonly string _currentCulture = "es";
+
         public async Task<ImportDataPackage> ExtractAllAsync(Stream excelStream)
         {
             var package = new ImportDataPackage();
             using var workbook = new XLWorkbook(excelStream);
 
             // Aquí llamas a tus lógicas pequeñas (lo que tenías en la función enorme)
-            package.Races = ExtractRaces(workbook);
+            package.Languages  = ExtractLanguages(workbook);
+            package.Races = ExtractRaces(workbook,package.Languages);
             package.SubRaces = ExtractSubRaces(workbook, package.Races);
             package.ClassDefinitions = ExtractClasses(workbook);
             package.Spells = ExtractSpells(workbook, package.ClassDefinitions);
@@ -30,9 +32,34 @@ namespace DnDreams.Infrastructure.Extractors
             package.Characters = ExtractCharacters(workbook, package.Races, package.ClassDefinitions);
             package.Items = ExtractItems(workbook, package.Characters);
             package.LocalizedContents.AddRange(_localizedContentCache);
+            package.Traits = ExtractTraits(workbook, package.Races);
             return package;
         }
-        public List<Race> ExtractRaces(IXLWorkbook workbook)
+        public List<Language> ExtractLanguages(IXLWorkbook workbook)
+        {
+            var languagesList = new List<Language>();
+
+            if (workbook.TryGetWorksheet("Languages", out var sheet))
+            {
+                var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+                foreach (var row in rows)
+                {
+                    var language = new Language
+                    {
+                        Id = Guid.NewGuid(),
+                        TechnicalName = row.Cell(1).GetString()
+                    };
+                    languagesList.Add(language);
+
+                    _localizedContentCache.Add(ExtractLocalizedContent(language.Id, "Language", "Name", row.Cell(1).GetString(), "us"));
+                    _localizedContentCache.Add(ExtractLocalizedContent(language.Id, "Language", "Name", row.Cell(2).GetString(), _currentCulture));
+                    _localizedContentCache.Add(ExtractLocalizedContent(language.Id, "Language", "Description", row.Cell(3).GetString(), _currentCulture));
+                }
+
+            }
+            return languagesList;
+        }
+        public List<Race> ExtractRaces(IXLWorkbook workbook, List<Language> allLanguages)
         {
             var raceList = new List<Race>();
 
@@ -44,23 +71,29 @@ namespace DnDreams.Infrastructure.Extractors
                     var race = new Race
                     {
                         Id = Guid.NewGuid(),
-                        Name = row.Cell(1).GetString(),
+                        TechnicalName = row.Cell(1).GetString(),
                         Speed = row.Cell(2).GetValue<float>(),
                         Size = Enum.TryParse<SizeCategory>(row.Cell(3).GetString(), true, out var size) ? size : SizeCategory.Medium,
                         CreatureType = Enum.TryParse<CreatureType>(row.Cell(5).GetString(), true, out var type) ? type : CreatureType.Humanoid,
                         Darkvision = row.Cell(6).GetString(),
-                        Resistances = row.Cell(7).GetString(),
                         RacialTraits = row.Cell(9).GetString()
                     };
 
-                    _localizedContentCache.Add(ExtractLocalizedContent(race.Id, "Race", "Description", row.Cell(4).GetString(), "es"));
+                    _localizedContentCache.Add(ExtractLocalizedContent(race.Id, "Race", "Name", row.Cell(1).GetString(), _currentCulture));
+                    _localizedContentCache.Add(ExtractLocalizedContent(race.Id, "Race", "Description", row.Cell(4).GetString(), _currentCulture));
+                    _localizedContentCache.Add(ExtractLocalizedContent(race.Id, "Race", "Resistances", row.Cell(7).GetString(), _currentCulture));
 
-                    var languagesList = row.Cell(8).GetString().Split(',').Select(l => l.Trim()).ToList();
-                    foreach (var lang in languagesList)
+                    var languagesInCell = row.Cell(8).GetString().Split(',').Select(l => l.Trim());
+
+                    foreach (var langName in languagesInCell)
                     {
-                        if (Enum.TryParse<LanguageType>(lang, true, out var parsedLang))
+                        // Buscamos el idioma por su nombre técnico o traducción previa
+                        var foundLanguage = allLanguages.FirstOrDefault(l =>
+                            l.TechnicalName.Equals(langName, StringComparison.OrdinalIgnoreCase));
+
+                        if (foundLanguage != null)
                         {
-                            race.Languages.Add(parsedLang);
+                            race.Languages.Add(foundLanguage);
                         }
                     }
 
@@ -116,7 +149,7 @@ namespace DnDreams.Infrastructure.Extractors
                     var raceName = row.Cell(2).GetString();
                     var className = row.Cell(3).GetString();
 
-                    var matchedRace = races.FirstOrDefault(r => r.Name.Equals(raceName, StringComparison.OrdinalIgnoreCase));
+                    var matchedRace = races.FirstOrDefault(r => r.TechnicalName.Equals(raceName, StringComparison.OrdinalIgnoreCase));
                     var matchedClass = classes.FirstOrDefault(c => c.Name.Equals(className, StringComparison.OrdinalIgnoreCase));
 
                     var character = new Character
@@ -361,7 +394,7 @@ namespace DnDreams.Infrastructure.Extractors
                         Name = row.Cell(2).GetString() ?? string.Empty,
                         Description = row.Cell(3).GetString() ?? string.Empty,
                     };
-                    sub.RaceId = races.FirstOrDefault(r => r.Name.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty;
+                    sub.RaceId = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty;
 
                     subRaces.Add(sub);
                 }
@@ -372,6 +405,29 @@ namespace DnDreams.Infrastructure.Extractors
         private LocalizedContent ExtractLocalizedContent(Guid entityId, string entityType, string property, string text, string LanguageCode)
         {
             return new LocalizedContent {Id = Guid.NewGuid(), EntityId = entityId, EntityType = entityType, Property = property, Text = text, LanguageCode = LanguageCode };
+        }
+
+        public List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races)
+        {
+            var traits = new List<Trait>();
+            if (workbook.TryGetWorksheet("Traits", out var itemsSheet))
+            {
+                var rows = itemsSheet.RangeUsed().RowsUsed().Skip(1);
+                foreach (var row in rows)
+                {
+                    var trait = new Trait
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = row.Cell(2).GetString() ?? string.Empty,
+                        Description = row.Cell(3).GetString() ?? string.Empty,
+                        RequiredLevel = int.Parse(row.Cell(4).GetString())
+                    };
+                    trait.RaceId = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty;
+
+                    traits.Add(trait);
+                }
+            }
+            return traits;
         }
     }
 }

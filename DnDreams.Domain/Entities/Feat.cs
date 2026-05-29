@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Text.Json;
+using DnDreams.Domain.Interfaces;
 using DnDreams.Domain.Modifiers;
 
 namespace DnDreams.Domain.Entities;
 
-public class Feat
+public class Feat : IEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;

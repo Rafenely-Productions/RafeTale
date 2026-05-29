@@ -1,6 +1,8 @@
+using DnDreams.Domain.Interfaces;
+
 namespace DnDreams.Domain.Entities; 
 
-public class ClassDefinition
+public class ClassDefinition : IEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty; // Ej: Guerrero, Mago

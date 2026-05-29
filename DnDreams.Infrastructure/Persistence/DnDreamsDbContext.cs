@@ -26,6 +26,8 @@ public class DnDreamsDbContext : DbContext
     public DbSet<CampaignCharacter> CampaignCharacters { get; set; } = null!;
     public DbSet<JournalEntry> JournalEntries { get; set; } = null!;
     public DbSet<SubRace> SubRaces { get; set; } = null!;
+    public DbSet<Language> Languages { get; set; } = null!;
+    public DbSet<Trait> Traits { get; set; } = null!;
 
     public DnDreamsDbContext(DbContextOptions<DnDreamsDbContext> options) : base(options) { }
 

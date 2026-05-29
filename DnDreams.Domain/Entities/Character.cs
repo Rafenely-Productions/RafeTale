@@ -1,7 +1,8 @@
 using DnDreams.Domain.Enums;
+using DnDreams.Domain.Interfaces;
 namespace DnDreams.Domain.Entities;
 
-public class Character
+public class Character : IEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;

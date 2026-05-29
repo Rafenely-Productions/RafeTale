@@ -59,6 +59,18 @@ namespace DnDreams.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Languages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    TechnicalName = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Languages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LocalizedContents",
                 columns: table => new
                 {
@@ -79,14 +91,12 @@ namespace DnDreams.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Resistances = table.Column<string>(type: "TEXT", nullable: false),
+                    TechnicalName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Darkvision = table.Column<string>(type: "TEXT", nullable: false),
                     Size = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatureType = table.Column<int>(type: "INTEGER", nullable: false),
                     RacialTraits = table.Column<string>(type: "TEXT", nullable: false),
                     Speed = table.Column<float>(type: "REAL", nullable: false),
-                    Languages = table.Column<string>(type: "TEXT", nullable: false),
                     StatBonuses = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -128,6 +138,30 @@ namespace DnDreams.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_XpRules", x => x.Level);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LanguageRace",
+                columns: table => new
+                {
+                    LanguagesId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    RacesId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LanguageRace", x => new { x.LanguagesId, x.RacesId });
+                    table.ForeignKey(
+                        name: "FK_LanguageRace_Languages_LanguagesId",
+                        column: x => x.LanguagesId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LanguageRace_Races_RacesId",
+                        column: x => x.RacesId,
+                        principalTable: "Races",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -619,6 +653,11 @@ namespace DnDreams.Infrastructure.Migrations
                 column: "CharacterId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LanguageRace_RacesId",
+                table: "LanguageRace",
+                column: "RacesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LocalizedContents_EntityId_Property_LanguageCode",
                 table: "LocalizedContents",
                 columns: new[] { "EntityId", "Property", "LanguageCode" },
@@ -669,6 +708,9 @@ namespace DnDreams.Infrastructure.Migrations
                 name: "JournalEntries");
 
             migrationBuilder.DropTable(
+                name: "LanguageRace");
+
+            migrationBuilder.DropTable(
                 name: "LocalizedContents");
 
             migrationBuilder.DropTable(
@@ -691,6 +733,9 @@ namespace DnDreams.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Campaigns");
+
+            migrationBuilder.DropTable(
+                name: "Languages");
 
             migrationBuilder.DropTable(
                 name: "ClassLevelProgressions");

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DnDreams.Domain.Interfaces;
+using System;
 
 namespace DnDreams.Domain.Entities;
 
-public class Spell
+public class Spell : IEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
