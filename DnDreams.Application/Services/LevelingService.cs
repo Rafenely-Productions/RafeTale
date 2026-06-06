@@ -1,5 +1,7 @@
+using DnDreams.Application.DTOs;
 using DnDreams.Application.Interfaces;
 using DnDreams.Application.Models;
+using DnDreams.Application.Services.DtosServices;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
@@ -56,7 +58,7 @@ public class LevelingService : ILevelingService
                                 var newModifier = new CharacterModifier
                                 {
                                     // Id = Guid.Empty, // Asegúrate de que no tenga valor manual
-                                    Source = $"Rasgo de Clase: {feature.Name}",
+                                    Source = $"Rasgo de Clase: {feature.TechnicalName}",
                                     Type = modData.Type,
                                     Target = modData.Target,
                                     Value = modData.Value,
@@ -93,18 +95,20 @@ public class LevelingService : ILevelingService
     {
         var requirements = new List<LevelUpRequirement>();
 
-        // 1. Buscar qué Features otorga la clase en ese nivel
+        /* // 1. Buscar qué Features otorga la clase en ese nivel
         var progression = classDef.Progressions.FirstOrDefault(p => p.Level == targetLevel);
 
         if (progression == null) return requirements;
 
         foreach (var feature in progression.Features)
         {
+            featureDto = RaceService
+
             if (feature.RequiresChoice)
             {
                 requirements.Add(new LevelUpRequirement
                 {
-                    FeatureName = feature.Name,
+                    FeatureName =  feature.Name,
                     Description = feature.Description,
                     Type = RequirementType.Choice,
                     IsCompleted = false // Esto obligará a la UI a mostrar el selector
@@ -133,7 +137,7 @@ public class LevelingService : ILevelingService
                 IsCompleted = false
             });
         }
-
+*/
         return requirements;
     }
     public async Task<bool> CommitLevelUpAsync(Guid characterId, int chosenHp, List<CharacterModifier> chosenModifiers, List<Guid> chosenFeatIds, List<Guid> chosenSpellIds)
@@ -170,12 +174,12 @@ public class LevelingService : ILevelingService
                         foreach (var modData in feat.Modifiers)
                         {
                             targetChar.CharacterModifiers.Add(new CharacterModifier
-                                {
-                                    Source = $"Dote: {feat.Name}",
-                                    Type = modData.Type,
-                                    Target = modData.Target,
-                                    Value = modData.Value
-                                });
+                            {
+                                Source = $"Dote: {feat.TechnicalName}",
+                                Type = modData.Type,
+                                Target = modData.Target,
+                                Value = modData.Value
+                            });
                         }
                     }
                 }

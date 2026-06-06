@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
-    [Migration("20260528220712_InitialMigration")]
+    [Migration("20260603235509_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -328,11 +328,7 @@ namespace DnDreams.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ArmorProficiencies")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
+                    b.PrimitiveCollection<string>("ArmorProficiencies")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -340,19 +336,11 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
+                    b.PrimitiveCollection<string>("PrimaryAbility")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PrimaryAbility")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SavingThrowProficiencies")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SkillProficiencies")
+                    b.PrimitiveCollection<string>("SavingThrowProficiencies")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -362,7 +350,11 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<Guid?>("SpellId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("WeaponProficiencies")
+                    b.Property<string>("TechnicalName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.PrimitiveCollection<string>("WeaponProficiencies")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -403,17 +395,12 @@ namespace DnDreams.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Category")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("TechnicalName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Prerequisite")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -430,20 +417,16 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<Guid?>("ClassLevelProgressionId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Modifiers")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("RequiresChoice")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("SpecialData")
+                    b.Property<string>("TechnicalName")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -468,14 +451,10 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<string>("DamageDice")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("GoldValue")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("TechnicalName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -553,10 +532,12 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.Property<string>("LanguageCode")
                         .IsRequired()
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Property")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Text")
@@ -566,7 +547,8 @@ namespace DnDreams.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EntityId", "Property", "LanguageCode")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("IX_LocalizedContent_Lookup");
 
                     b.ToTable("LocalizedContents", (string)null);
                 });
@@ -584,19 +566,11 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RacialTraits")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("Size")
                         .HasColumnType("INTEGER");
 
                     b.Property<float>("Speed")
                         .HasColumnType("REAL");
-
-                    b.Property<string>("StatBonuses")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("TechnicalName")
                         .IsRequired()
@@ -608,49 +582,63 @@ namespace DnDreams.Infrastructure.Migrations
                     b.ToTable("Races", (string)null);
                 });
 
+            modelBuilder.Entity("DnDreams.Domain.Entities.Skill", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Ability")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid?>("ClassDefinitionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TechnicalName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassDefinitionId");
+
+                    b.ToTable("Skill");
+                });
+
             modelBuilder.Entity("DnDreams.Domain.Entities.Spell", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CastingTime")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CastingTime")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("Components")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Concentration")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("Concentration")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Duration")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Duration")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Range")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("Range")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("RangeDistance")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("Ritual")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("School")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TechnicalName")
+                        .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -664,16 +652,12 @@ namespace DnDreams.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
+                    b.Property<Guid>("RaceId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("TechnicalName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("RaceId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -689,20 +673,16 @@ namespace DnDreams.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("RaceId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("RequiredLevel")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("TechnicalName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -934,6 +914,13 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Navigation("Character");
                 });
 
+            modelBuilder.Entity("DnDreams.Domain.Entities.Skill", b =>
+                {
+                    b.HasOne("DnDreams.Domain.Entities.ClassDefinition", null)
+                        .WithMany("SkillProficiencies")
+                        .HasForeignKey("ClassDefinitionId");
+                });
+
             modelBuilder.Entity("DnDreams.Domain.Entities.SubRace", b =>
                 {
                     b.HasOne("DnDreams.Domain.Entities.Race", "Race")
@@ -997,6 +984,8 @@ namespace DnDreams.Infrastructure.Migrations
             modelBuilder.Entity("DnDreams.Domain.Entities.ClassDefinition", b =>
                 {
                     b.Navigation("Progressions");
+
+                    b.Navigation("SkillProficiencies");
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.ClassLevelProgression", b =>

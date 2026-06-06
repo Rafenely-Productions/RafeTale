@@ -1,15 +1,13 @@
-﻿using DnDreams.Domain.Interfaces;
+﻿using DnDreams.Domain.Enums;
+using DnDreams.Domain.Interfaces;
 using DnDreams.Domain.Modifiers;
 
 namespace DnDreams.Domain.Entities;
 
-public enum ItemCategory { Weapon, Armor, Consumable, Tool, AdventuringGear, Trinket }
-
 public class ItemTemplate : IEntity
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
+    public string TechnicalName { get; set; } = string.Empty;
     public ItemCategory Category { get; set; }
     public double Weight { get; set; }
     public int GoldValue { get; set; }

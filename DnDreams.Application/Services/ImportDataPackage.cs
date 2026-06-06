@@ -22,5 +22,8 @@ namespace DnDreams.Application.Services
         public List<LocalizedContent> LocalizedContents { get; set; } = new();
         public List<Language> Languages { get; set; } = new();
         public List<Trait> Traits { get; set; } = new();
+        public List<SpecialTrait> SpecialTraits { get; set; } = new();
+        public List<Skill> SkillProficiencies { get; set; } = new();
+        public List<Background> Backgrounds { get; set; } = new();
     }
 }

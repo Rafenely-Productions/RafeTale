@@ -9,7 +9,7 @@ namespace DnDreams.Application.Interfaces
 {
     public interface IClassService
     {
-        Task<ClassDeffinitionDto> GetRaceByIdAsync(Guid id);
-        Task<List<ClassDeffinitionDto>> GetAllRacesAsync();
+        Task<ClassDefinitionDto> GetRaceByIdAsync(Guid id);
+        Task<List<ClassDefinitionDto>> GetAllRacesAsync();
     }
 }

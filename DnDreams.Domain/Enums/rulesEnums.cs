@@ -57,10 +57,26 @@ public enum ModifierDurationType
 }
 public enum ModifierType
 {
-    AttributeBonus,  // Ej: +1 a Carisma, +2 a Fuerza
-    GrantSpell,      // Ej: Te da el hechizo "Escudo"
-    GrantFeature,    // Ej: Te da la habilidad "Visión en la Oscuridad"
-    HpBonus          // Ej: El dote Robustez da +2 HP por nivel
+    AttributeBonus, // Ej: +1 a Carisma, +2 a Fuerza
+    GrantSpell,     // Ej: Te da el hechizo "Escudo"
+    GrantFeature,   // Ej: Te da la habilidad "Visión en la Oscuridad"
+    HpBonus,        // Ej: El dote Robustez da +2 HP por nivel
+    Special,
+    GrantResource,
+    ActiveAbility,
+    InitiativeBonus,
+    CombatAbility,
+    DiceRule,
+    HpBonusPerLevel,
+    GrantProficiencyChoice,
+    MarketDiscount,
+    RestAbility,
+    AnySkillOrTool,
+    WeaponOverride,
+    RequiredLevel,
+    GrantProficiency,
+    FeatProperty,
+    None
 }
 
 public enum ASI
@@ -169,4 +185,110 @@ public enum CreatureType
     Construct,
     Dragon,
     Elemental
+}
+
+public enum SchoolOfMagicEnum
+{
+    Abjuration,
+    Conjuration,
+    Divination,
+    Enchantment,
+    Evocation,
+    Illusion,
+    Necromancy,
+    Transmutation
+}
+public enum ItemCategory
+{
+    Weapon,
+    Armor,
+    Consumable,
+    Tool,
+    AdventuringGear,
+    Trinket
+}
+public enum SpellComponent
+{
+    V, //Verbal
+    S,//Somatic
+    M//Material
+}
+public enum SpellRange
+{
+    Self,
+    Touch,
+    Ranged
+}
+public enum SpellDuration
+{
+    Instantaneous,
+    ConcentrationUpTo1Minute,
+    ConcentrationUpTo10Minutes,
+    ConcentrationUpTo1Hour,
+    ConcentrationUpTo8Hours,
+    ConcentrationUpTo24Hours,
+    Permanent
+}
+
+public enum SpellLevel
+{
+    Cantrip = 0,
+    Level1 = 1,
+    Level2 = 2,
+    Level3 = 3,
+    Level4 = 4,
+    Level5 = 5,
+    Level6 = 6,
+    Level7 = 7,
+    Level8 = 8,
+    Level9 = 9
+}
+
+public enum CastingTime
+{
+    Action,
+    BonusAction,
+    Reaction,
+    Minute,
+    Hour,
+    Special
+}
+public enum RestType
+{
+    ShortRest,
+    LongRest
+}
+public enum SpellConcentration
+{
+    Yes,
+    No
+}
+public enum FeatPrerequisiteType
+{
+    AttributeMinimum, // Ej: Fuerza 13
+    Proficiency,      // Ej: Competencia con armas marciales
+    Spellcasting,     // Ej: Capacidad de lanzar hechizos de nivel 1 o superior
+    RequiredLevel,
+    FeatureRequired,
+    GrantedProfiency
+}
+public enum ArmorProficiency
+{
+    Light,
+    Medium,
+    Heavy,
+    Shield
+}
+public enum WeaponProficiency
+{
+    Simple,
+    Martial,
+    Exotic
+}
+public enum CategoryFeat
+{
+    General,
+    Origin,
+    CombatStyle,
+    EpicFeat
 }

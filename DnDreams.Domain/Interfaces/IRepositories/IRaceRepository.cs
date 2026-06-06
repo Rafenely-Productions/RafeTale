@@ -8,5 +8,4 @@ namespace DnDreams.Domain.Interfaces.IRepositories;
 
 public interface IRaceRepository : IRepository<Race>
 {
-    Task<Race?> GetByIdAsync(Guid id, params Expression<Func<Race, object>>[] includes);
 }

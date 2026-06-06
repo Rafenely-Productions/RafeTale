@@ -93,6 +93,7 @@ public class Character : IEntity
     public int Level { get; set; } = 1;
     public int Experience { get; set; } = 0;
     public Dictionary<string, int> Stats { get; set; } = new();
+
     public virtual ICollection<Feat> AcquiredFeats { get; set; } = new List<Feat>();
     public virtual ICollection<Spell> KnownSpells { get; set; } = new List<Spell>();
     public virtual ICollection<CharacterModifier> CharacterModifiers { get; set; } = new List<CharacterModifier>();
@@ -121,7 +122,7 @@ public class Character : IEntity
 
         // 2. Buscamos si el personaje tiene competencia (Proficiency) en esta skill
         // Por ahora, asumiremos que tienes una lista de strings con las skills entrenadas
-        bool isProficient = AcquiredFeatures.Any(f => f.Name.Contains(skillName));
+        bool isProficient = AcquiredFeatures.Any(f => f.TechnicalName.Contains(skillName));
 
         return statMod + (isProficient ? ProficiencyBonus : 0);
     }

@@ -16,7 +16,7 @@ namespace DnDreams.Domain.Interfaces.IRepositories
         Task<IEnumerable<T?>> GetAllAsync(Expression<Func<T, bool>>? filter,params Expression<Func<T, object>>[] includes);
         Task<IEnumerable<T?>> GetManyAsync(Expression<Func<T, bool>> predicate);
         Task<T?> GetSingleAsync(Expression<Func<T, bool>> predicate);
-        Task<T?> GetByIdAsync(Guid id, params Expression<Func<Race, object>>[] includes);
+        Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes);
 
     }
 }

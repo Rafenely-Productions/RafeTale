@@ -18,9 +18,11 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Feat> builder)
         {
             builder.HasKey(e => e.Id);
-            builder.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            builder.Property(e => e.TechnicalName).IsRequired().HasMaxLength(100);
             builder.HasMany(e => e.Modifiers);
+            builder.HasMany(e => e.Prerequisite);
 
+            builder.Ignore(e => e.Prerequisite);
             builder.Ignore(e => e.Modifiers);
         }
     }

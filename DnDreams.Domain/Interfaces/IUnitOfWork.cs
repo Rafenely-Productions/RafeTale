@@ -7,13 +7,14 @@ namespace DnDreams.Domain.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {
-    IRaceRepository Races { get; }
+    IRepository<Race> Races { get; }
     IClassDefinitionRepository ClassDefinitions { get; }
     IClassLevelProgressionRepository ClassLevelProgressions { get; }
     ICharacterRepository Characters { get; }
     IFeatureRepository Features { get; }
     IXpRulesRepository XpRules { get; }
     IFeatRepository Feats { get; }
+    IRepository<Background> Backgrounds { get; }
     ISpellRepository Spells { get; }
     IItemTemplateRepository ItemTemplates { get; }
     ILocalizedContentRepository LocalizedContents { get; }

@@ -1,4 +1,5 @@
 ﻿using DnDreams.Application.Interfaces;
+using DnDreams.Domain.Entities;
 using DnDreams.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,14 @@ namespace DnDreams.Application.Services
                 x.LanguageCode == _currentCulture);
 
             return translations.ToDictionary(t => t.EntityId, t => t.Text);
+        }
+        public async Task<List<LocalizedContent?>> GetTranslationsForLanguageAsync(string entityType)
+        {
+            var translations = await _unitOfWork.LocalizedContents.GetManyAsync(x =>
+                x.EntityType == entityType &&
+                x.LanguageCode == _currentCulture);
+
+            return translations.ToList();
         }
     }
 }

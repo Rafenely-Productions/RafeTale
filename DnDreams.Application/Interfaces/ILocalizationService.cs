@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DnDreams.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace DnDreams.Application.Interfaces
     {
         Task<string> GetStringAsync(Guid entityId, string property);
         Task<Dictionary<Guid, string>> GetAllAsync(string entityType, string propertyType = "Name");
+        Task<List<LocalizedContent>> GetTranslationsForLanguageAsync(string entityType);
     }
 }

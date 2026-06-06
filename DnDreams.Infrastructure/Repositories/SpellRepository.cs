@@ -13,6 +13,6 @@ public class SpellRepository : Repository<Spell>, ISpellRepository
 
     public async Task<Spell> GetByNameAsync(string name)
     {
-        return await _context.Set<Spell>().FirstOrDefaultAsync(s => s.Name == name);
+        return await _context.Set<Spell>().FirstOrDefaultAsync(s => s.TechnicalName == name);
     }
 }

@@ -13,6 +13,6 @@ public class FeatRepository : Repository<Feat>, IFeatRepository
 
     public async Task<Feat> GetByNameAsync(string name)
     {
-        return await _context.Set<Feat>().FirstOrDefaultAsync(f => f.Name == name);
+        return await _context.Set<Feat>().FirstOrDefaultAsync(f => f.TechnicalName == name);
     }
 }

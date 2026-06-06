@@ -18,14 +18,21 @@ namespace DnDreams.Application.Services.DtosServices
             _loc = loc;
         }
 
-        private async Task<RaceDto> ArmDto(Race race)
+        public async Task<RaceDto> ArmDto(Race race)
         {
             return new RaceDto 
             {
                 Id = race.Id,
                 Name = await _loc.GetStringAsync(race.Id, "Name"),
                 Description = await _loc.GetStringAsync(race.Id, "Description"),
-                Race = race
+                Resistances = await _loc.GetStringAsync(race.Id, "Resistances"),
+                Darkvision = race.Darkvision,
+                Size = race.Size,
+                CreatureType = race.CreatureType,
+                Speed = race.Speed,
+                Languages = race.Languages,
+                SubRaces = race.SubRaces,
+                Traits = race.Traits
             };
 
         }
@@ -35,6 +42,7 @@ namespace DnDreams.Application.Services.DtosServices
             var races = await _uow.Races.GetAllAsync(filter,includes);
             var names = await _loc.GetAllAsync("Race", "Name");
             var descriptions = await _loc.GetAllAsync("Race", "Description");
+            var resistances = await _loc.GetAllAsync("Race", "Resistances");
 
             var raceDtos = new List<RaceDto>();
             foreach (var race in races)
@@ -44,7 +52,14 @@ namespace DnDreams.Application.Services.DtosServices
                     Id = race.Id,
                     Name = names.TryGetValue(race.Id, out var n) ? n : "[No Name]",
                     Description = descriptions.TryGetValue(race.Id, out var d) ? d : "[No Description]",
-                    Race = race
+                    Resistances = resistances.TryGetValue(race.Id, out var r) ? r : "[No Resistances]",
+                    Darkvision = race.Darkvision,
+                    Size = race.Size,
+                    CreatureType = race.CreatureType,
+                    Speed = race.Speed,
+                    Languages = race.Languages,
+                    SubRaces = race.SubRaces,
+                    Traits = race.Traits
                 });
             }
             return raceDtos;

@@ -4,6 +4,9 @@ using DnDreams.Application.Services;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
 using DnDreams.Domain.Modifiers;
+using DnDreams.Infrastructure.Extractors.Extensions;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -11,7 +14,7 @@ namespace DnDreams.Infrastructure.Extractors
 {
     public class ExcelDataExtractor : IDataExtractor
     {
-        private List<LocalizedContent> _localizedContentCache = new List<LocalizedContent>();
+        private Dictionary<string, LocalizedContent> _localizedContentCache = new();
         private List<string> _LanguagesCache = new List<string>();
         private readonly string _currentCulture = "es";
 
@@ -21,118 +24,224 @@ namespace DnDreams.Infrastructure.Extractors
             using var workbook = new XLWorkbook(excelStream);
 
             // Aquí llamas a tus lógicas pequeñas (lo que tenías en la función enorme)
-            package.Languages  = ExtractLanguages(workbook);
-            package.Races = ExtractRaces(workbook,package.Languages);
+            package.Languages = ExtractLanguages(workbook);
+            package.Races = ExtractRaces(workbook, package.Languages);
             package.SubRaces = ExtractSubRaces(workbook, package.Races);
-            package.ClassDefinitions = ExtractClasses(workbook);
+            package.Traits = ExtractTraits(workbook, package.Races);
+            package.SpecialTraits = ExtractSpecialTraits(workbook, package.Traits);
+            package.SkillProficiencies = ExtractSkillProficiencies(workbook);
+            package.ClassDefinitions = ExtractClasses(workbook, package.SkillProficiencies);
             package.Spells = ExtractSpells(workbook, package.ClassDefinitions);
             package.ClassLevelProgressions = ExtractClassLevelProgressions(workbook, package.ClassDefinitions);
             package.XpRules = ExtractXpRules(workbook);
-            package.Feats = ExtractFeats(workbook);
             package.Characters = ExtractCharacters(workbook, package.Races, package.ClassDefinitions);
             package.Items = ExtractItems(workbook, package.Characters);
-            package.LocalizedContents.AddRange(_localizedContentCache);
-            package.Traits = ExtractTraits(workbook, package.Races);
+            package.Feats = ExtractFeats(workbook);
+            package.Backgrounds = ExtractBackgrounds(workbook, package.Feats);
+
+            package.LocalizedContents.AddRange(_localizedContentCache.Values);
             return package;
         }
+
+        public List<Skill> ExtractSkillProficiencies(IXLWorkbook workbook)
+        {
+            var skillProficiencyList = new List<Skill>();
+            var sheet = workbook.GetSheet("Skills", isRequired: true);
+
+            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+
+            foreach (var row in rows)
+            {
+                var skill = new Skill
+                {
+                    Id = Guid.NewGuid(),
+                    TechnicalName = row.Cell(1).GetString(),
+                    Ability = ParseEnum<ASI>(row.Cell(3).GetString(), ASI.Charisma)
+                };
+                skillProficiencyList.Add(skill);
+                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Name", row.Cell(1).GetString(), "us");
+                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Ability", row.Cell(2).GetString(), "us");
+                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Description", row.Cell(3).GetString(), "us");
+
+                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Name", row.Cell(4).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Ability", row.Cell(5).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Description", row.Cell(6).GetString(), _currentCulture);
+            }
+            return skillProficiencyList;
+        }
+
         public List<Language> ExtractLanguages(IXLWorkbook workbook)
         {
             var languagesList = new List<Language>();
+            var sheet = workbook.GetSheet("Languages", isRequired: true);
 
-            if (workbook.TryGetWorksheet("Languages", out var sheet))
+            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
             {
-                var rows = sheet.RangeUsed().RowsUsed().Skip(1);
-                foreach (var row in rows)
+                var language = new Language
                 {
-                    var language = new Language
-                    {
-                        Id = Guid.NewGuid(),
-                        TechnicalName = row.Cell(1).GetString()
-                    };
-                    languagesList.Add(language);
+                    Id = Guid.NewGuid(),
+                    TechnicalName = row.Cell(1).GetString()
+                };
+                languagesList.Add(language);
 
-                    _localizedContentCache.Add(ExtractLocalizedContent(language.Id, "Language", "Name", row.Cell(1).GetString(), "us"));
-                    _localizedContentCache.Add(ExtractLocalizedContent(language.Id, "Language", "Name", row.Cell(2).GetString(), _currentCulture));
-                    _localizedContentCache.Add(ExtractLocalizedContent(language.Id, "Language", "Description", row.Cell(3).GetString(), _currentCulture));
-                }
-
+                SaveValidateLocalizedContent(language.Id, nameof(Language), "Name", row.Cell(1).GetString(), "us");
+                SaveValidateLocalizedContent(language.Id, nameof(Language), "Name", row.Cell(2).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(language.Id, nameof(Language), "Description", row.Cell(3).GetString(), _currentCulture);
             }
+
             return languagesList;
         }
         public List<Race> ExtractRaces(IXLWorkbook workbook, List<Language> allLanguages)
         {
             var raceList = new List<Race>();
 
-            if (workbook.TryGetWorksheet("Razas", out var raceSheet))
+            var raceSheet = workbook.GetSheet("Races", isRequired: true);
+            var rows = raceSheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
             {
-                var rows = raceSheet.RangeUsed().RowsUsed().Skip(1);
-                foreach (var row in rows)
+                var race = new Race
                 {
-                    var race = new Race
-                    {
-                        Id = Guid.NewGuid(),
-                        TechnicalName = row.Cell(1).GetString(),
-                        Speed = row.Cell(2).GetValue<float>(),
-                        Size = Enum.TryParse<SizeCategory>(row.Cell(3).GetString(), true, out var size) ? size : SizeCategory.Medium,
-                        CreatureType = Enum.TryParse<CreatureType>(row.Cell(5).GetString(), true, out var type) ? type : CreatureType.Humanoid,
-                        Darkvision = row.Cell(6).GetString(),
-                        RacialTraits = row.Cell(9).GetString()
-                    };
+                    Id = Guid.NewGuid(),
+                    TechnicalName = row.Cell(1).GetString(),
+                    Speed = row.Cell(2).GetValue<float>(),
+                    Size = Enum.TryParse<SizeCategory>(row.Cell(3).GetString(), true, out var size) ? size : SizeCategory.Medium,
+                    CreatureType = Enum.TryParse<CreatureType>(row.Cell(5).GetString(), true, out var type) ? type : CreatureType.Humanoid,
+                    Darkvision = row.Cell(6).GetString(),
+                };
 
-                    _localizedContentCache.Add(ExtractLocalizedContent(race.Id, "Race", "Name", row.Cell(1).GetString(), _currentCulture));
-                    _localizedContentCache.Add(ExtractLocalizedContent(race.Id, "Race", "Description", row.Cell(4).GetString(), _currentCulture));
-                    _localizedContentCache.Add(ExtractLocalizedContent(race.Id, "Race", "Resistances", row.Cell(7).GetString(), _currentCulture));
+                SaveValidateLocalizedContent(race.Id, nameof(Race), "Name", row.Cell(1).GetString(), "us");
+                SaveValidateLocalizedContent(race.Id, nameof(Race), "Description", row.Cell(4).GetString(), "us");
+                SaveValidateLocalizedContent(race.Id, nameof(Race), "Resistances", row.Cell(7).GetString(), "us");
 
-                    var languagesInCell = row.Cell(8).GetString().Split(',').Select(l => l.Trim());
+                SaveValidateLocalizedContent(race.Id, nameof(Race), "Name", row.Cell(9).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(race.Id, nameof(Race), "Description", row.Cell(10).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(race.Id, nameof(Race), "Resistances", row.Cell(11).GetString(), _currentCulture);
 
-                    foreach (var langName in languagesInCell)
-                    {
-                        // Buscamos el idioma por su nombre técnico o traducción previa
-                        var foundLanguage = allLanguages.FirstOrDefault(l =>
-                            l.TechnicalName.Equals(langName, StringComparison.OrdinalIgnoreCase));
+                var languagesInCell = row.Cell(8).GetString().Split(',').Select(l => l.Trim());
 
-                        if (foundLanguage != null)
-                        {
-                            race.Languages.Add(foundLanguage);
-                        }
-                    }
+                foreach (var langName in languagesInCell)
+                {
+                    var foundLanguage = allLanguages.FirstOrDefault(l => l.TechnicalName.Equals(langName, StringComparison.OrdinalIgnoreCase));
 
-                    for (int col = 10; col <= raceSheet.LastColumnUsed().ColumnNumber(); col++)
-                    {
-                        var statName = raceSheet.Cell(1, col).GetString();
-                        var statValue = row.Cell(col).GetValue<int>();
-                        if (!string.IsNullOrEmpty(statName) && statValue != 0)
-                        {
-                            race.StatBonuses[statName] = statValue;
-                        }
-                    }
-                    raceList.Add(race);
+                    if (foundLanguage != null) race.Languages.Add(foundLanguage);
+                    if (foundLanguage == null) Console.WriteLine($"Advertencia: No se encontró el idioma '{langName}' para la raza");
                 }
+                raceList.Add(race);
             }
             return raceList;
         }
+        public List<SubRace> ExtractSubRaces(IXLWorkbook workbook, List<Race> races)
+        {
+            var subRaces = new List<SubRace>();
+            var sheet = workbook.GetSheet("Sub Races", isRequired: true);
 
-        public List<ClassDefinition> ExtractClasses(IXLWorkbook workbook)
+            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
+            {
+                var sub = new SubRace
+                {
+                    Id = Guid.NewGuid(),
+                    TechnicalName = row.Cell(2).GetString()
+                };
+                SaveValidateLocalizedContent(sub.Id, nameof(SubRace), "Name", row.Cell(2).GetString(), "us");
+                SaveValidateLocalizedContent(sub.Id, nameof(SubRace), "Description", row.Cell(3).GetString(), "us");
+
+                SaveValidateLocalizedContent(sub.Id, nameof(SubRace), "Name", row.Cell(4).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(sub.Id, nameof(SubRace), "Description", row.Cell(5).GetString(), _currentCulture);
+
+                var race = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase));
+
+                if (race != null)
+                    sub.RaceId = race.Id;
+
+                subRaces.Add(sub);
+            }
+            return subRaces;
+        }
+        public List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races)
+        {
+            var sheet = workbook.GetSheet("Traits", isRequired: true);
+
+            var traits = new List<Trait>();
+            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
+            {
+                var trait = new Trait
+                {
+                    Id = Guid.NewGuid(),
+                    TechnicalName = row.Cell(2).GetString(),
+                    RequiredLevel = row.Cell(4).TryGetValue<int>(out var res) ? res : 0,
+                    Modifiers = GetModifierData(row.Cell(5).GetString())
+                };
+                trait.RaceId = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty;
+
+                SaveValidateLocalizedContent(trait.Id, nameof(Trait), "Name", trait.TechnicalName, "us");
+                SaveValidateLocalizedContent(trait.Id, nameof(Trait), "Description", row.Cell(3).GetString(), "us");
+
+                SaveValidateLocalizedContent(trait.Id, nameof(Trait), "Name", row.Cell(6).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(trait.Id, nameof(Trait), "Description", row.Cell(7).GetString(), _currentCulture);
+
+                traits.Add(trait);
+            }
+            return traits;
+        }
+        public List<SpecialTrait> ExtractSpecialTraits(IXLWorkbook workbook, List<Trait> traits)
+        {
+            var specialTraits = new List<SpecialTrait>();
+
+            var sheet = workbook.GetSheet("Special Traits", isRequired: true);
+
+            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
+            {
+                var specialTrait = new SpecialTrait
+                {
+                    Id = Guid.NewGuid(),
+                    TechnicalName = row.Cell(2).GetString()
+                };
+                specialTrait.TraitId = traits.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty;
+
+                SaveValidateLocalizedContent(specialTrait.Id, nameof(SpecialTrait), "Name", specialTrait.TechnicalName, "us");
+                SaveValidateLocalizedContent(specialTrait.Id, nameof(SpecialTrait), "Description", row.Cell(3).GetString(), "us");
+
+                SaveValidateLocalizedContent(specialTrait.Id, nameof(SpecialTrait), "Name", row.Cell(5).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(specialTrait.Id, nameof(SpecialTrait), "Description", row.Cell(6).GetString(), _currentCulture);
+
+                specialTrait.Modifiers = GetModifierData(row.Cell(4).GetString());
+
+                specialTraits.Add(specialTrait);
+            }
+            return specialTraits;
+        }
+
+        public List<ClassDefinition> ExtractClasses(IXLWorkbook workbook, List<Skill> skillProficiencies)
         {
             var classDefinitionList = new List<ClassDefinition>();
-            if (workbook.TryGetWorksheet("Clases", out var classSheet))
+            var classSheet = workbook.GetSheet("Classes", isRequired: true);
+
+            var rows = classSheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
             {
-                var rows = classSheet.RangeUsed().RowsUsed().Skip(1);
-                foreach (var row in rows)
+                var classDef = new ClassDefinition
                 {
-                    classDefinitionList.Add(new ClassDefinition
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = row.Cell(1).GetString(),
-                        HitDie = row.Cell(2).GetString(),
-                        PrimaryAbility = row.Cell(3).GetString(),
-                        SavingThrowProficiencies = row.Cell(4).GetString(),
-                        ArmorProficiencies = row.Cell(5).GetString(),
-                        WeaponProficiencies = row.Cell(6).GetString(),
-                        SkillsToChoose = row.Cell(7).GetValue<int>(),
-                        SkillProficiencies = row.Cell(8).GetString()
-                    });
-                }
+                    Id = Guid.NewGuid(),
+                    TechnicalName = row.Cell(1).GetString(),
+                    HitDie = row.Cell(2).GetString(),
+                    SkillsToChoose = row.Cell(7).GetValue<int>(),
+
+                    PrimaryAbility = ParseEnumList<ASI>(row.Cell(3).GetString()),
+                    SavingThrowProficiencies = ParseEnumList<ASI>(row.Cell(4).GetString()),
+                    ArmorProficiencies = ParseEnumList<ArmorProficiency>(row.Cell(5).GetString()),
+                    WeaponProficiencies = ParseEnumList<WeaponProficiency>(row.Cell(6).GetString()),
+                };
+                MapClassSkills(classDef, row.Cell(8).GetString(), skillProficiencies);
+
+                classDefinitionList.Add(classDef);
+
+                SaveValidateLocalizedContent(classDef.Id, nameof(ClassDefinition), "Name", classDef.TechnicalName, "us");
+                SaveValidateLocalizedContent(classDef.Id, nameof(ClassDefinition), "Name", row.Cell(9).GetString(), _currentCulture);
+
             }
             return classDefinitionList;
         }
@@ -140,39 +249,37 @@ namespace DnDreams.Infrastructure.Extractors
         public List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes)
         {
             var charactersList = new List<Character>();
-            if (workbook.TryGetWorksheet("Personajes", out var charSheet))
+            var charSheet = workbook.GetSheet("Personajes", isRequired: true);
+            var rows = charSheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
             {
-                var rows = charSheet.RangeUsed().RowsUsed().Skip(1);
-                foreach (var row in rows)
+                var charName = row.Cell(1).GetString();
+                var raceName = row.Cell(2).GetString();
+                var className = row.Cell(3).GetString();
+
+                var matchedRace = races.FirstOrDefault(r => r.TechnicalName.Equals(raceName, StringComparison.OrdinalIgnoreCase));
+                var matchedClass = classes.FirstOrDefault(c => c.TechnicalName.Equals(className, StringComparison.OrdinalIgnoreCase));
+
+                var character = new Character
                 {
-                    var charName = row.Cell(1).GetString();
-                    var raceName = row.Cell(2).GetString();
-                    var className = row.Cell(3).GetString();
+                    Id = Guid.NewGuid(),
+                    Name = charName,
+                    Level = row.Cell(4).GetValue<int>(),
+                    Experience = row.Cell(5).GetValue<int>(),
+                    RaceId = matchedRace?.Id ?? Guid.Empty,
+                    ClassDefId = matchedClass?.Id ?? Guid.Empty
+                };
 
-                    var matchedRace = races.FirstOrDefault(r => r.TechnicalName.Equals(raceName, StringComparison.OrdinalIgnoreCase));
-                    var matchedClass = classes.FirstOrDefault(c => c.Name.Equals(className, StringComparison.OrdinalIgnoreCase));
-
-                    var character = new Character
+                for (int col = 6; col <= charSheet.LastColumnUsed().ColumnNumber(); col++)
+                {
+                    var statName = charSheet.Cell(1, col).GetString();
+                    var statValue = row.Cell(col).GetValue<int>();
+                    if (!string.IsNullOrEmpty(statName))
                     {
-                        Id = Guid.NewGuid(),
-                        Name = charName,
-                        Level = row.Cell(4).GetValue<int>(),
-                        Experience = row.Cell(5).GetValue<int>(),
-                        RaceId = matchedRace?.Id ?? Guid.Empty,
-                        ClassDefId = matchedClass?.Id ?? Guid.Empty
-                    };
-
-                    for (int col = 6; col <= charSheet.LastColumnUsed().ColumnNumber(); col++)
-                    {
-                        var statName = charSheet.Cell(1, col).GetString();
-                        var statValue = row.Cell(col).GetValue<int>();
-                        if (!string.IsNullOrEmpty(statName))
-                        {
-                            character.Stats[statName] = statValue;
-                        }
+                        character.Stats[statName] = statValue;
                     }
-                    charactersList.Add(character);
                 }
+                charactersList.Add(character);
             }
             return charactersList;
         }
@@ -180,62 +287,58 @@ namespace DnDreams.Infrastructure.Extractors
         public List<ClassLevelProgression> ExtractClassLevelProgressions(IXLWorkbook workbook, List<ClassDefinition> classes)
         {
             var progressionsList = new List<ClassLevelProgression>();
-            if (workbook.TryGetWorksheet("ProgresoClases", out var progressSheet))
+            var progressSheet = workbook.GetSheet("ClassLevelProgression", isRequired: true);
+            var progressRows = progressSheet.RangeUsed().RowsUsed().Skip(1);
+
+            foreach (var row in progressRows)
             {
-                var jsonOptions = new JsonSerializerOptions
+                var technicalName = row.Cell(1).GetString().Trim();
+                var level = row.Cell(2).GetValue<int>();
+                var featureTechnicalName = row.Cell(3).GetString().Trim();
+                var featureDescription = row.Cell(4).GetString().Trim() ?? $"Rasgo de nivel {level}";
+                var modifiersRaw = row.Cell(5).GetString();
+                var specialData = row.Cell(6).GetString();
+
+                if (string.IsNullOrEmpty(featureTechnicalName)) continue;
+
+                var targetClass = classes.FirstOrDefault(c => c.TechnicalName.Equals(technicalName, StringComparison.OrdinalIgnoreCase));
+
+                if (targetClass == null) continue;
+
+                var feature = new Feature
                 {
-                    PropertyNameCaseInsensitive = true,
-                    Converters = { new JsonStringEnumConverter() } // <-- LA CLAVE
+                    Id = Guid.NewGuid(),
+                    TechnicalName = featureTechnicalName,
+                    RequiresChoice = featureTechnicalName.Contains("Elegir", StringComparison.OrdinalIgnoreCase) ||
+                         featureTechnicalName.Contains("Arquetipo", StringComparison.OrdinalIgnoreCase),
+                    Modifiers = GetModifierData(modifiersRaw)
                 };
 
-                var progressRows = progressSheet.RangeUsed().RowsUsed().Skip(1);
+                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Name", featureTechnicalName, "us");
+                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", featureDescription, "us");
+                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Special", specialData, "us");
 
-                foreach (var row in progressRows)
+                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Name", row.Cell(8).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", row.Cell(9).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Special", row.Cell(10).GetString(), _currentCulture);
+
+
+                var existingProgression = progressionsList.FirstOrDefault(p => p.ClassDefId == targetClass.Id && p.Level == level);
+                if (existingProgression != null)
                 {
-                    var className = row.Cell(1).GetString().Trim();
-                    var level = row.Cell(2).GetValue<int>();
-                    var featureName = row.Cell(3).GetString().Trim();
-                    var featureDescription = row.Cell(4).GetString().Trim() ?? $"Rasgo de nivel {level}";
-                    var modifiersRaw = row.Cell(5).GetString();
-                    var specialData = row.Cell(6).GetString();
-
-                    if (string.IsNullOrEmpty(featureName)) continue;
-
-                    var targetClass = classes.FirstOrDefault(c => c.Name.Equals(className, StringComparison.OrdinalIgnoreCase));
-
-                    if (targetClass == null) continue;
-
-                    var feature = new Feature
+                    existingProgression.Features.Add(feature);
+                }
+                else
+                {
+                    var newProgression = new ClassLevelProgression
                     {
                         Id = Guid.NewGuid(),
-                        Name = featureName,
-                        Description = featureDescription,
-                        RequiresChoice = featureName.Contains("Elegir", StringComparison.OrdinalIgnoreCase) ||
-                             featureName.Contains("Arquetipo", StringComparison.OrdinalIgnoreCase),
-                        Modifiers = string.IsNullOrWhiteSpace(modifiersRaw)
-                            ? new List<ModifierData>()
-                            : JsonSerializer.Deserialize<List<ModifierData>>(modifiersRaw, jsonOptions)
-                              ?? new List<ModifierData>(),
-                        SpecialData = specialData ?? string.Empty,
+                        Level = level,
+                        ClassDefId = targetClass.Id,
+                        Features = new List<Feature> { feature } // <-- Metemos el Feature real con sus datos
                     };
 
-                    var existingProgression = progressionsList.FirstOrDefault(p => p.ClassDefId == targetClass.Id && p.Level == level);
-                    if (existingProgression != null)
-                    {
-                        existingProgression.Features.Add(feature);
-                    }
-                    else
-                    {
-                        var newProgression = new ClassLevelProgression
-                        {
-                            Id = Guid.NewGuid(),
-                            Level = level,
-                            ClassDefId = targetClass.Id,
-                            Features = new List<Feature> { feature } // <-- Metemos el Feature real con sus datos
-                        };
-
-                        progressionsList.Add(newProgression);
-                    }
+                    progressionsList.Add(newProgression);
                 }
             }
             return progressionsList;
@@ -244,39 +347,41 @@ namespace DnDreams.Infrastructure.Extractors
         public List<Spell> ExtractSpells(IXLWorkbook workbook, List<ClassDefinition> classDefinitions)
         {
             var spellsList = new List<Spell>();
+            var spellSheet = workbook.GetSheet("Spells", isRequired: true);
 
-            if (workbook.TryGetWorksheet("Hechizos", out var spellSheet))
+            var rows = spellSheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
             {
-                var rows = spellSheet.RangeUsed().RowsUsed().Skip(1);
-                foreach (var row in rows)
+                var spell = new Spell
                 {
-                    var spell = new Spell
+                    Id = Guid.NewGuid(),
+                    TechnicalName = row.Cell(1).GetString() ?? string.Empty,
+                    Level = ParseEnum<SpellLevel>(row.Cell(2).GetString(), SpellLevel.Cantrip),
+                    School = ParseEnum<SchoolOfMagicEnum>(row.Cell(3).GetString(), SchoolOfMagicEnum.Enchantment),
+                    CastingTime = ParseEnum<CastingTime>(row.Cell(4).GetString(), CastingTime.Minute),
+                    Range = ParseEnum<SpellRange>(row.Cell(5).GetString(), SpellRange.Ranged),
+                    Components = ParseEnumList<SpellComponent>(row.Cell(7).GetString()),
+                    Duration = ParseEnum<SpellDuration>(row.Cell(8).GetString(), SpellDuration.Instantaneous),
+                    Concentration = ParseEnum<SpellConcentration>(row.Cell(9).GetString(), SpellConcentration.No),
+                    Ritual = row.Cell(10).GetString().Equals("Si", StringComparison.OrdinalIgnoreCase),
+                };
+                if (spell.Range == SpellRange.Ranged)
+                {
+                    if (!string.IsNullOrEmpty(row.Cell(6).GetString()))
                     {
-                        Id = Guid.NewGuid(),
-                        Name = row.Cell(1).GetString() ?? string.Empty,
-                        Level = row.Cell(2).GetValue<int>(),
-                        School = row.Cell(3).GetString() ?? string.Empty,
-                        CastingTime = row.Cell(4).GetString() ?? string.Empty,
-                        Range = row.Cell(5).GetString() ?? string.Empty,
-                        Description = row.Cell(6).GetString() ?? string.Empty,
-                        Components = row.Cell(7).GetString() ?? string.Empty,
-                        Duration = row.Cell(8).GetValue<string>(),
-                        Concentration = row.Cell(9).GetString() ?? string.Empty,
-                        Ritual = row.Cell(10).GetString().Equals("Si", StringComparison.OrdinalIgnoreCase),
-                    };
-
-                    var clasesList = row.Cell(11).GetString().Split(',').Select(l => l.Trim()).ToList();
-                    foreach (var className in clasesList)
-                    {
-                        var matchedClass = classDefinitions.FirstOrDefault(c => c.Name.Equals(className, StringComparison.OrdinalIgnoreCase));
-                        if (matchedClass != null)
-                        {
-                            spell.Classes.Add(matchedClass);
-                        }
+                        spell.RangeDistance = row.Cell(6).GetValue<int>();
                     }
-
-                    spellsList.Add(spell);
                 }
+                MapSpellClass(spell, row.Cell(11).GetString(), classDefinitions);
+
+                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Name", spell.TechnicalName, "us");
+                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Description", row.Cell(12).GetString(), "us");
+
+                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Name", row.Cell(13).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Description", row.Cell(14).GetString(), _currentCulture);
+
+
+                spellsList.Add(spell);
             }
             return spellsList;
         }
@@ -284,18 +389,17 @@ namespace DnDreams.Infrastructure.Extractors
         public List<XpRules> ExtractXpRules(IXLWorkbook workbook)
         {
             var xpRulesList = new List<XpRules>();
-            if (workbook.TryGetWorksheet("ReglasXP", out var xpSheet))
+            var xpSheet = workbook.GetSheet("ReglasXP", isRequired: true);
+
+            var rows = xpSheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
             {
-                var rows = xpSheet.RangeUsed().RowsUsed().Skip(1);
-                foreach (var row in rows)
+                xpRulesList.Add(new XpRules
                 {
-                    xpRulesList.Add(new XpRules
-                    {
-                        Level = row.Cell(1).GetValue<int>(),
-                        RequiredXp = row.Cell(2).GetValue<int>(),
-                        Bonus = xpSheet.LastColumnUsed().ColumnNumber() >= 3 ? row.Cell(3).GetValue<int>() : 0
-                    });
-                }
+                    Level = row.Cell(1).GetValue<int>(),
+                    RequiredXp = row.Cell(2).GetValue<int>(),
+                    Bonus = xpSheet.LastColumnUsed().ColumnNumber() >= 3 ? row.Cell(3).GetValue<int>() : 0
+                });
             }
             return xpRulesList;
         }
@@ -303,31 +407,30 @@ namespace DnDreams.Infrastructure.Extractors
         public List<Feat> ExtractFeats(IXLWorkbook workbook)
         {
             var featsList = new List<Feat>();
-            if (workbook.TryGetWorksheet("Dotes", out var featSheet))
+            var featSheet = workbook.GetSheet("Feats", isRequired: true);
+
+            var rows = featSheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
             {
-                var jsonOptions = new JsonSerializerOptions
+                var featPrerequisite = row.Cell(2).GetString() == "none" ? null : row.Cell(2).GetString();
+                var featModifiersRaw = row.Cell(3).GetString() == "none" ? null : row.Cell(3).GetString();
+
+                var feat = new Feat
                 {
-                    PropertyNameCaseInsensitive = true,
-                    Converters = { new JsonStringEnumConverter() } // <-- LA CLAVE
+                    Id = Guid.NewGuid(),
+                    TechnicalName = row.Cell(1).GetString() ?? string.Empty,
+                    Prerequisite = GetPrerequisiteModifierData(featPrerequisite),
+                    Modifiers = GetModifierData(featModifiersRaw),
+                    Category = ParseEnum<CategoryFeat>(row.Cell(4).GetString(), CategoryFeat.General)
                 };
+                featsList.Add(feat);
 
-                var rows = featSheet.RangeUsed().RowsUsed().Skip(1);
-                foreach (var row in rows)
-                {
-                    var featModifiersRaw = row.Cell(4).GetString();
+                SaveValidateLocalizedContent(feat.Id, nameof(Spell), "Name", feat.TechnicalName, "us");
+                SaveValidateLocalizedContent(feat.Id, nameof(Spell), "Description", row.Cell(5).GetString(), "us");
 
-                    featsList.Add(new Feat
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = row.Cell(1).GetString() ?? string.Empty,
-                        Description = row.Cell(2).GetString() ?? string.Empty,
-                        Prerequisite = row.Cell(3).GetString() ?? "Ninguno",
-                        Modifiers = string.IsNullOrWhiteSpace(featModifiersRaw)
-                            ? new List<ModifierData>()
-                            : JsonSerializer.Deserialize<List<ModifierData>>(featModifiersRaw, jsonOptions)
-                              ?? new List<ModifierData>()
-                    });
-                }
+                SaveValidateLocalizedContent(feat.Id, nameof(Spell), "Name", row.Cell(6).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feat.Id, nameof(Spell), "Description", row.Cell(7).GetString(), _currentCulture);
+
             }
             return featsList;
         }
@@ -335,99 +438,217 @@ namespace DnDreams.Infrastructure.Extractors
         public List<ItemTemplate> ExtractItems(IXLWorkbook workbook, List<Character> characters)
         {
             var itemsList = new List<ItemTemplate>();
-            if (workbook.TryGetWorksheet("Items", out var itemsSheet))
+            var itemsSheet = workbook.GetSheet("Items", isRequired: true);
+
+            var rows = itemsSheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
             {
-                var rows = itemsSheet.RangeUsed().RowsUsed().Skip(1);
-                foreach (var row in rows)
+                var itemName = row.Cell(1).GetString() ?? string.Empty;
+                if (string.IsNullOrEmpty(itemName)) continue;
+
+                var template = new ItemTemplate
                 {
-                    var itemName = row.Cell(1).GetString() ?? string.Empty;
-                    if (string.IsNullOrEmpty(itemName)) continue;
+                    Id = Guid.NewGuid(),
+                    TechnicalName = itemName,
+                    Category = itemsSheet.LastColumnUsed().ColumnNumber() >= 3
+                        ? (ItemCategory)Enum.Parse(typeof(ItemCategory), row.Cell(3).GetString(), true)
+                        : ItemCategory.AdventuringGear
+                };
+                SaveValidateLocalizedContent(template.Id, nameof(ItemTemplate), "Name", itemName, _currentCulture);
+                SaveValidateLocalizedContent(template.Id, nameof(ItemTemplate), "Description", row.Cell(2).GetString(), _currentCulture);
 
-                    var template = new ItemTemplate
+
+
+                itemsList.Add(template);
+
+                if (itemsSheet.LastColumnUsed().ColumnNumber() >= 4)
+                {
+                    var ownerName = row.Cell(4).GetString();
+                    var matchedChar = characters.FirstOrDefault(c => c.Name.Equals(ownerName, StringComparison.OrdinalIgnoreCase));
+
+                    if (matchedChar != null)
                     {
-                        Id = Guid.NewGuid(),
-                        Name = itemName,
-                        Description = row.Cell(2).GetString() ?? string.Empty,
-                        Category = itemsSheet.LastColumnUsed().ColumnNumber() >= 3
-                            ? (ItemCategory)Enum.Parse(typeof(ItemCategory), row.Cell(3).GetString(), true)
-                            : ItemCategory.AdventuringGear
-                    };
-                    itemsList.Add(template);
+                        var quantity = itemsSheet.LastColumnUsed().ColumnNumber() >= 5 ? row.Cell(5).GetValue<int>() : 1;
+                        var isEquipped = itemsSheet.LastColumnUsed().ColumnNumber() >= 6 && row.Cell(6).GetValue<bool>();
 
-                    if (itemsSheet.LastColumnUsed().ColumnNumber() >= 4)
-                    {
-                        var ownerName = row.Cell(4).GetString();
-                        var matchedChar = characters.FirstOrDefault(c => c.Name.Equals(ownerName, StringComparison.OrdinalIgnoreCase));
-
-                        if (matchedChar != null)
+                        matchedChar.Inventory.Add(new CharacterInventory
                         {
-                            var quantity = itemsSheet.LastColumnUsed().ColumnNumber() >= 5 ? row.Cell(5).GetValue<int>() : 1;
-                            var isEquipped = itemsSheet.LastColumnUsed().ColumnNumber() >= 6 && row.Cell(6).GetValue<bool>();
-
-                            matchedChar.Inventory.Add(new CharacterInventory
-                            {
-                                Id = Guid.NewGuid(),
-                                CharacterId = matchedChar.Id,
-                                ItemTemplateId = template.Id,
-                                Item = template,
-                                Quantity = quantity <= 0 ? 1 : quantity,
-                                IsEquipped = isEquipped
-                            });
-                        }
+                            Id = Guid.NewGuid(),
+                            CharacterId = matchedChar.Id,
+                            ItemTemplateId = template.Id,
+                            Item = template,
+                            Quantity = quantity <= 0 ? 1 : quantity,
+                            IsEquipped = isEquipped
+                        });
                     }
                 }
             }
             return itemsList;
         }
-
-        public List<SubRace> ExtractSubRaces(IXLWorkbook workbook, List<Race> races)
+        public List<SchoolOfMagic> ExtractSchoolsOfMagic(IXLWorkbook workbook)
         {
-            var subRaces = new List<SubRace>();
-            if (workbook.TryGetWorksheet("Sub Razas", out var itemsSheet))
+            var schoolsList = new List<SchoolOfMagic>();
+            var sheet = workbook.GetSheet("SchoolsOfMagic", isRequired: true);
+            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
             {
-                var rows = itemsSheet.RangeUsed().RowsUsed().Skip(1);
-                foreach (var row in rows)
+                var school = new SchoolOfMagic
                 {
-                    var sub = new SubRace
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = row.Cell(2).GetString() ?? string.Empty,
-                        Description = row.Cell(3).GetString() ?? string.Empty,
-                    };
-                    sub.RaceId = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty;
-
-                    subRaces.Add(sub);
-                }
+                    Id = Guid.NewGuid(),
+                    TechnicalName = ParseEnum<SchoolOfMagicEnum>(row.Cell(1).GetString(), SchoolOfMagicEnum.Abjuration)
+                };
+                schoolsList.Add(school);
+                SaveValidateLocalizedContent(school.Id, nameof(SchoolOfMagic), "Name", row.Cell(1).GetString(), "us");
+                SaveValidateLocalizedContent(school.Id, nameof(SchoolOfMagic), "Description", row.Cell(2).GetString(), "us");
+                SaveValidateLocalizedContent(school.Id, nameof(SchoolOfMagic), "Name", row.Cell(3).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(school.Id, nameof(SchoolOfMagic), "Description", row.Cell(4).GetString(), _currentCulture);
             }
-            return subRaces;
+            return schoolsList;
+        }
+        public List<Background> ExtractBackgrounds(IXLWorkbook workbook, List<Feat> feats)
+        {
+            var backgroundsList = new List<Background>();
+            var sheet = workbook.GetSheet("Backgrounds", isRequired: true);
+            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            foreach (var row in rows)
+            {
+                var background = new Background
+                {
+                    Id = Guid.NewGuid(),
+                    TechnicalName = row.Cell(1).GetString(),
+                    ASIs = ParseEnumList<ASI>(row.Cell(2).GetString()),
+                    SkillProficiencies = ParseEnumList<SkillType>(row.Cell(4).GetString())
+                };
+
+                var featName = row.Cell(3).GetString();
+                if (!string.IsNullOrEmpty(featName))
+                {
+                    var feat = feats.FirstOrDefault(f => f.TechnicalName.Equals(featName, StringComparison.OrdinalIgnoreCase));
+                    if(feat != null)
+                    {
+                        background.FeatId = feat.Id;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Advertencia: No se encontró el rasgo '{featName}' para el trasfondo '{background.TechnicalName}'");
+                    }
+                }
+
+                backgroundsList.Add(background);
+
+                SaveValidateLocalizedContent(background.Id, nameof(Background), "Name", background.TechnicalName, "us");
+                SaveValidateLocalizedContent(background.Id, nameof(Background), "ToolProficiencies", row.Cell(5).GetString(), "us");
+                SaveValidateLocalizedContent(background.Id, nameof(Background), "Equipment", row.Cell(6).GetString(), "us");
+                SaveValidateLocalizedContent(background.Id, nameof(Background), "Description", row.Cell(7).GetString(), "us");
+
+                SaveValidateLocalizedContent(background.Id, nameof(Background), "Name", row.Cell(8).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(background.Id, nameof(Background), "ToolProficiencies", row.Cell(9).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(background.Id, nameof(Background), "Equipment", row.Cell(10).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(background.Id, nameof(Background), "Description", row.Cell(11).GetString(), _currentCulture);
+            }
+            return backgroundsList;
         }
 
+
+        private void SaveValidateLocalizedContent(Guid entityId, string entityType, string property, string text, string languageCode)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return;
+            string key = $"{entityId}_{property}_{languageCode}";
+
+            if (_localizedContentCache.TryGetValue(key, out var existing))
+            {
+                existing.Text = text;
+            }
+            else
+            {
+                var extractedContent = ExtractLocalizedContent(entityId, entityType, property, text, languageCode);
+                _localizedContentCache.Add(key, extractedContent);
+            }
+        }
         private LocalizedContent ExtractLocalizedContent(Guid entityId, string entityType, string property, string text, string LanguageCode)
         {
-            return new LocalizedContent {Id = Guid.NewGuid(), EntityId = entityId, EntityType = entityType, Property = property, Text = text, LanguageCode = LanguageCode };
+            return new LocalizedContent { Id = Guid.NewGuid(), EntityId = entityId, EntityType = entityType, Property = property, Text = text, LanguageCode = LanguageCode };
+        }
+        private List<T> ParseEnumList<T>(string input) where T : struct, Enum
+        {
+            if (string.IsNullOrWhiteSpace(input)) return new List<T>();
+
+            return input.Split(',')
+                        .Select(s => s.Trim())
+                        .Where(s => Enum.TryParse<T>(s, true, out _))
+                        .Select(s => Enum.Parse<T>(s, true))
+                        .Cast<T>()
+                        .ToList();
+        }
+        private T ParseEnum<T>(string input, T defaultValue) where T : struct, Enum
+        {
+            return Enum.TryParse<T>(input.Trim(), true, out var result) ? result : defaultValue;
+        }
+        private void MapClassSkills(ClassDefinition classDef, string rawSkills, List<Skill> allSkills)
+        {
+            var skillNames = rawSkills.Split(',').Select(s => s.Trim());
+            if (skillNames.Contains("Any"))
+            {
+                classDef.SkillProficiencies.AddRange(allSkills);
+                return;
+            }
+            foreach (var name in skillNames)
+            {
+                var matched = allSkills.FirstOrDefault(s => s.TechnicalName.Equals(name, StringComparison.OrdinalIgnoreCase));
+                if (matched != null) classDef.SkillProficiencies.Add(matched);
+            }
+        }
+        private void MapSpellClass(Spell spell, string rawClass, List<ClassDefinition> allClasses)
+        {
+            var classNames = rawClass.Split(',').Select(s => s.Trim());
+            if (classNames.Contains("Any"))
+            {
+                spell.Classes.AddRange(allClasses);
+                return;
+            }
+            foreach (var name in classNames)
+            {
+                var matched = allClasses.FirstOrDefault(s => s.TechnicalName.Equals(name, StringComparison.OrdinalIgnoreCase));
+                if (matched != null) spell.Classes.Add(matched);
+            }
+        }
+        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() }
+        };
+
+        private List<ModifierData> GetModifierData(string modifiers)
+        {
+            try
+            {
+                return string.IsNullOrWhiteSpace(modifiers)
+                            ? new List<ModifierData>()
+                            : JsonSerializer.Deserialize<List<ModifierData>>(modifiers, _jsonOptions)
+                              ?? new List<ModifierData>();
+            }
+            catch (JsonException)
+            {
+                Console.WriteLine($"Error de JSON: {modifiers}. Revisa el formato en el Excel.");
+                return new List<ModifierData>();
+            }
         }
 
-        public List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races)
+        private List<FeatPrerequisiteModifierData> GetPrerequisiteModifierData(string featPrerequisite)
         {
-            var traits = new List<Trait>();
-            if (workbook.TryGetWorksheet("Traits", out var itemsSheet))
+            try
             {
-                var rows = itemsSheet.RangeUsed().RowsUsed().Skip(1);
-                foreach (var row in rows)
-                {
-                    var trait = new Trait
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = row.Cell(2).GetString() ?? string.Empty,
-                        Description = row.Cell(3).GetString() ?? string.Empty,
-                        RequiredLevel = int.Parse(row.Cell(4).GetString())
-                    };
-                    trait.RaceId = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty;
-
-                    traits.Add(trait);
-                }
+                return string.IsNullOrWhiteSpace(featPrerequisite)
+                            ? new List<FeatPrerequisiteModifierData>()
+                            : JsonSerializer.Deserialize<List<FeatPrerequisiteModifierData>>(featPrerequisite, _jsonOptions)
+                              ?? new List<FeatPrerequisiteModifierData>();
             }
-            return traits;
+            catch (JsonException)
+            {
+                Console.WriteLine($"Error de JSON: {featPrerequisite}. Revisa el formato en el Excel.");
+                return new List<FeatPrerequisiteModifierData>();
+            }
         }
     }
+
 }

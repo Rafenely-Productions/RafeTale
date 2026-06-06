@@ -59,11 +59,11 @@
                                 <div class="flex gap-4">
                                     <div class="bg-amber-600/10 border border-amber-600/30 p-4 rounded-3xl text-center min-w-[90px]">
                                         <span class="block text-[10px] font-black text-amber-600 uppercase mb-1">@L["Label_Speed"]</span>
-                                        <span class="text-2xl font-black text-white">@SelectedRace.Race.Speed <small class="text-xs uppercase">@L["Unit_Feet"]</small></span>
+                                        <span class="text-2xl font-black text-white">@SelectedRace.Speed <small class="text-xs uppercase">@L["Unit_Feet"]</small></span>
                                     </div>
                                     <div class="bg-amber-600/10 border border-amber-600/30 p-4 rounded-3xl text-center min-w-[90px]">
                                         <span class="block text-[10px] font-black text-amber-600 uppercase mb-1">@L["Label_Size"]</span>
-                                        <span class="text-2xl font-black text-white">@SelectedRace.Race.Size</span>
+                                        <span class="text-2xl font-black text-white">@SelectedRace.Size</span>
                                     </div>
                                 </div>
                             </div>
@@ -76,11 +76,11 @@
                                         </h3>
                                         <div class="space-y-3">
                                             @* Aquí iteramos los rasgos que vienen de la DB *@
-                                            @foreach (var trait in SelectedRace.Race.Traits)
+                                            @foreach (var trait in SelectedRace.Traits)
                                             {
                                                 <div class="group bg-black/20 p-5 rounded-3xl border border-white/5 hover:border-amber-500/30 transition-colors">
-                                                    <h4 class="text-amber-500 font-bold text-sm uppercase mb-1">@trait.Name</h4>
-                                                    <p class="text-slate-400 text-xs leading-relaxed">@trait.Description</p>
+                                                    <h4 class="text-amber-500 font-bold text-sm uppercase mb-1">@trait.TechnicalName</h4>
+                                                    <p class="text-slate-400 text-xs leading-relaxed">//trait.Description</p>
                                                 </div>
                                             }
                                         </div>
@@ -107,7 +107,7 @@
                                         <p class="text-slate-400 text-sm font-serif italic">
                                             @* Aquí irían los idiomas separados por coma *@
                                             @{
-                                                var language = string.Join(", ", SelectedRace.Race.Languages.Select(x=> x.TechnicalName).ToList());
+                                                var language = string.Join(", ", SelectedRace.Languages.Select(x=> x.TechnicalName).ToList());
                                             }
 
                                             @language
@@ -139,6 +139,11 @@
     protected override async Task OnInitializedAsync()
     {
         DtoRaces = await RaceService.GetAllAsync(null,x=> x.Traits,x=> x.Languages);
+
+        if(CreationService.SelectedRaceId != null)
+        {
+            SelectedRace = DtoRaces.FirstOrDefault(x => x.Id == CreationService.SelectedRaceId);
+        }
     }
 
     private void Back() => Navigation.NavigateTo("/character/create");

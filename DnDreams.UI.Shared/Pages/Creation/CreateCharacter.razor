@@ -1,4 +1,5 @@
 @page "/character/create"
+@using DnDreams.Application.Services.DtosServices
 @using DnDreams.Application.DTOs
 @using DnDreams.Application.Interfaces.DtosInterfaces
 @using DnDreams.Domain.DTOs
@@ -7,6 +8,7 @@
 @inject IStringLocalizer<AppStrings> L
 @inject CharacterCreationService CreationService
 @inject IService<RaceDto,Race> RaceService
+@inject IService<ClassDefinitionDto,ClassDefinition> ClassService
 
 <div class="min-h-screen bg-black p-6">
     <div class="max-w-5xl mx-auto">
@@ -33,23 +35,35 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div @onclick='() => Navigation.NavigateTo("/character/create/race")'
-                                 class="cursor-pointer bg-black/40 border border-amber-900/20 p-4 rounded-2xl flex justify-between items-center">
-                                <div>
-                                    <label class="block text-amber-700 font-black text-[10px] uppercase">@L["Label_Race"]</label>
-                                    <span class="text-white font-bold">
-                                        @(SelectedRace?.Name ?? L["Choose_Race"])
-                                    </span>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-amber-500"></i>
-                            </div>
-
                             <div @onclick='() => Navigation.NavigateTo("/character/create/class")'
                                  class="cursor-pointer bg-black/40 border border-amber-900/20 p-4 rounded-2xl flex justify-between items-center">
                                 <div>
                                     <label class="block text-amber-700 font-black text-[10px] uppercase">@L["Label_Class"]</label>
                                     <span class="text-white font-bold">
                                         @(SelectedClass?.Name ?? L["Choose_Class"])
+                                    </span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-amber-500"></i>
+                            </div>
+
+                                <div @onclick='() => Navigation.NavigateTo("/character/create/race")'
+                                     class="cursor-pointer bg-black/40 border border-amber-900/20 p-4 rounded-2xl flex justify-between items-center">
+                                    <div>
+                                        <label class="block text-amber-700 font-black text-[10px] uppercase">@L["Label_Race"]</label>
+                                        <span class="text-white font-bold">
+                                            @(SelectedRace?.Name ?? L["Choose_Race"])
+                                        </span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right text-amber-500"></i>
+                                </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div @onclick='() => Navigation.NavigateTo("/character/create/background")'
+                                 class="cursor-pointer bg-black/40 border border-amber-900/20 p-4 rounded-2xl flex justify-between items-center">
+                                <div>
+                                    <label class="block text-amber-700 font-black text-[10px] uppercase">@L["Label_Background"]</label>
+                                    <span class="text-white font-bold">
+                                        @(SelectedClass?.Name ?? L["Choose_Background"])
                                     </span>
                                 </div>
                                 <i class="fa-solid fa-chevron-right text-amber-500"></i>
@@ -121,7 +135,7 @@
     private List<ClassDefinition> Classes = new();
 
     private RaceDto? SelectedRace;
-    private ClassDefinition? SelectedClass;
+    private ClassDefinitionDto? SelectedClass;
 
     protected override async Task OnInitializedAsync()
     {
@@ -149,12 +163,14 @@
         }
     }
 
-    private void OnClassChanged(ChangeEventArgs e)
+    private async Task OnClassChanged(ChangeEventArgs e)
     {
         if (Guid.TryParse(e.Value?.ToString(), out var id))
         {
             Model.SelectedClassId = id;
-            SelectedClass = Classes.FirstOrDefault(c => c.Id == id);
+            var classDefinition = Classes.FirstOrDefault(c => c.Id == id);
+            if (classDefinition != null)
+                SelectedClass = await ClassService.GetByIdAsync(id);
         }
         else { SelectedClass = null; Model.SelectedClassId = Guid.Empty; }
     }
@@ -166,7 +182,10 @@
 
     private void Back() => Navigation.NavigateTo("/characters");
 
-    private async Task HandleCreate() { /* Lógica futura */ }
+    private async Task HandleCreate() 
+    { 
+        /* Lógica futura */ 
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -180,8 +199,9 @@
 
         if (CreationService.SelectedClassId.HasValue)
         {
-            var classz = await UnitOfWork.ClassDefinitions.GetByIdAsync(CreationService.SelectedClassId.Value);
-            SelectedClass = classz;
+            if (SelectedClass != null) SelectedClass = new();
+
+            SelectedClass = await ClassService.GetByIdAsync(CreationService.SelectedClassId.Value);
         }
     }
 }

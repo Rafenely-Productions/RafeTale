@@ -12,6 +12,11 @@ namespace DnDreams.Application.Services.DtosServices
 {
     public class LanguageService : IService<LanguageDto, Language>
     {
+        public Task<LanguageDto> ArmDto(Language entity)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<LanguageDto>> GetAllAsync(Expression<Func<Language, bool>>? filter, params Expression<Func<Language, object>>[] includes)
         {
             throw new NotImplementedException();

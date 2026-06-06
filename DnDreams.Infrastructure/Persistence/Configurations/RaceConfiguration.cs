@@ -33,13 +33,6 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(e => e.Languages).WithMany(l => l.Races);
-
-            builder.Property(e => e.StatBonuses)
-                .HasConversion(
-                    v => JsonSerializer.Serialize(v, jsonOptions),
-                    v => JsonSerializer.Deserialize<Dictionary<string, int>>(v, jsonOptions) ?? new Dictionary<string, int>()
-                )
-                .HasColumnType("TEXT");
         }
     }
 }

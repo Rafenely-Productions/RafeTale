@@ -15,7 +15,7 @@ namespace DnDreams.Infrastructure.Repositories
         public ItemTemplateRepository(DnDreamsDbContext context) : base(context) { }
         public async Task<ItemTemplate> GetByNameAsync(string name)
         {
-            return await _context.ItemTemplates.FirstOrDefaultAsync(t => t.Name == name);
+            return await _context.ItemTemplates.FirstOrDefaultAsync(t => t.TechnicalName == name);
         }
     }
 }

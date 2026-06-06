@@ -16,6 +16,7 @@ public class DnDreamsDbContext : DbContext
     public DbSet<ClassLevelProgression> ClassLevelProgressions => Set<ClassLevelProgression>();
     public DbSet<XpRules> XpRules => Set<XpRules>();
     public DbSet<Feat> Feats => Set<Feat>();
+    public DbSet<Background> Backgrounds => Set<Background>();
     public DbSet<Spell> Spells => Set<Spell>();
     public DbSet<ItemTemplate> ItemTemplates { get; set; }
     public DbSet<CharacterInventory> CharacterInventories { get; set; }
@@ -38,5 +39,6 @@ public class DnDreamsDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DnDreamsDbContext).Assembly);
 
         modelBuilder.Ignore<ModifierData>();
+        modelBuilder.Ignore<FeatPrerequisiteModifierData>();
     }
 }

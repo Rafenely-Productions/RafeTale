@@ -1,5 +1,7 @@
 ﻿@page "/character/create/class"
+@using DnDreams.Application.DTOs
 @using DnDreams.Domain.Entities
+@using DnDreams.Application.Interfaces.DtosInterfaces
 @using DnDreams.Domain.Interfaces
 @using DnDreams.Domain.Enums
 @using DnDreams.Domain.DTOs
@@ -7,6 +9,7 @@
 @inject NavigationManager Navigation
 @inject CharacterCreationService CreationService
 @inject IStringLocalizer<AppStrings> L
+@inject IService<ClassDefinitionDto,ClassDefinition> ClassService
 
 <div class="min-h-screen bg-black p-6">
     <div class="max-w-6xl mx-auto">
@@ -77,11 +80,13 @@
                                                 </div>
                                                 @foreach (var feature in prog.Features)
                                                 {
-                                                    <div @onclick="() => InspectFeature(feature)"
+                                                    var featureDto = SelectedClass.FeatureDtos.FirstOrDefault(f => f.Id == feature.Id);
+
+                                                    <div @onclick="() => InspectFeature(featureDto)"
                                                          class="flex-1 cursor-pointer group/item flex items-center justify-between bg-white/5 hover:bg-white/10 p-3 rounded-xl transition-all border border-transparent hover:border-amber-500/20">
 
                                                         <h4 class="text-white font-bold text-sm uppercase group-hover/item:text-amber-500 transition-colors">
-                                                            @feature.Name
+                                                            @featureDto.Name
                                                         </h4>
 
                                                         <i class="fa-solid fa-circle-info text-amber-900/40 group-hover/item:text-amber-500 text-xs"></i>
@@ -117,7 +122,7 @@
             <div class="p-8">
                 <div class="flex justify-between items-start mb-6">
                     <div>
-                        <span class="text-amber-700 font-black text-[10px] tracking-[0.3em] uppercase">Detalle de Habilidad</span>
+                        <span class="text-amber-700 font-black text-[10px] tracking-[0.3em] uppercase">@L["Skill_Detail"]</span>
                         <h3 class="text-3xl font-black text-white italic uppercase tracking-tighter">@FeatureInInspection.Name</h3>
                     </div>
                     <button @onclick="CloseInspection" class="text-slate-500 hover:text-white transition-colors">
@@ -154,7 +159,7 @@
                                         <div class="text-center p-4"><i class="fa-solid fa-spinner fa-spin text-amber-500"></i></div>
                                     }
 
-                                    @foreach (var spell in InspectedSpells.Where(s => s.Name == modifier.Target))
+                                    @foreach (var spell in InspectedSpells.Where(s => s.TechnicalName == modifier.Target))
                                     {
                                         <div class="bg-black/40 border border-purple-500/10 rounded-3xl p-5 mt-2 animate-in slide-in-from-top-2">
                                             <div class="grid grid-cols-2 gap-4 mb-3">
@@ -167,7 +172,7 @@
                                                     <span class="text-xs text-white">@spell.Range</span>
                                                 </div>
                                             </div>
-                                            <p class="text-[11px] text-slate-400 font-serif leading-relaxed line-clamp-3">@spell.Description</p>
+                                            <p class="text-[11px] text-slate-400 font-serif leading-relaxed line-clamp-3">//spell.Description</p>
                                         </div>
                                     }
                                 </div>
@@ -204,7 +209,7 @@
 
                 <div class="mt-8 flex justify-end">
                     <button @onclick="CloseInspection" class="px-8 py-3 bg-amber-600 text-black font-black rounded-2xl hover:bg-amber-500 transition-all uppercase text-xs tracking-widest">
-                        Entendido
+                        @L["Btn_Confirm"]
                     </button>
                 </div>
             </div>
@@ -212,16 +217,18 @@
     </div>
 }
 @code {
-    private List<ClassDefinition> Classes = new();
-    private ClassDefinition? SelectedClass;
-    private Feature? FeatureInInspection;
+    private List<ClassDefinitionDto> Classes = new();
+    private ClassDefinitionDto? SelectedClass;
+    private FeatureDto? FeatureInInspection;
     private List<Spell> InspectedSpells = new();
     private bool IsLoadingSpell = false;
 
-    private async Task InspectFeature(Feature feature)
+    private async Task InspectFeature(FeatureDto? feature)
     {
         FeatureInInspection = feature;
         InspectedSpells.Clear();
+
+        if (feature == null) return;
 
         var grantSpellModifiers = feature.Modifiers.Where(x => x.Type == ModifierType.GrantSpell).ToList();
 
@@ -247,9 +254,17 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Classes = (await UnitOfWork.ClassDefinitions.GetClassesWithFeatures()).ToList();
-    }
+        Classes = await ClassService.GetAllAsync(null, x => x.Progressions.Select(x=> x.Features));
 
+        if(CreationService.SelectedClassId != null)
+        {
+            SelectedClass = Classes.FirstOrDefault(x => x.Id == CreationService.SelectedClassId);
+        }
+    }
+    protected async Task GetSpell(string target)
+    {
+        
+    }
 
     private void Back() => Navigation.NavigateTo("/character/create");
 

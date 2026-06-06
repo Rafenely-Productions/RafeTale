@@ -15,7 +15,19 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("LocalizedContents");
             builder.HasKey(e => e.Id);
-            builder.HasIndex(x => new { x.EntityId, x.Property, x.LanguageCode }).IsUnique();
+
+            // Índices y restricciones
+            builder.Property(x => x.EntityId).IsRequired();
+            builder.Property(x => x.LanguageCode).HasMaxLength(10).IsRequired();
+            builder.Property(x => x.Property).HasMaxLength(100).IsRequired();
+
+            // El texto de la traducción sí puede ser largo
+            builder.Property(x => x.Text).HasColumnType("TEXT").IsRequired();
+
+            // Índice compuesto ÚNICO: La combinación de estas 3 cosas debe ser irrepetible
+            builder.HasIndex(x => new { x.EntityId, x.Property, x.LanguageCode })
+                   .HasDatabaseName("IX_LocalizedContent_Lookup")
+                   .IsUnique();
         }
     }
 }

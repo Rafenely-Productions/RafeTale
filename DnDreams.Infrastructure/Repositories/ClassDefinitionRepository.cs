@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 using DnDreams.Infrastructure.Persistence;
 using DnDreams.Domain.Interfaces.IRepositories;
+using System.Linq.Expressions;
+using DnDreams.Domain.Modifiers;
 
 namespace DnDreams.Infrastructure.Repositories;
 
@@ -14,13 +16,9 @@ public class ClassDefinitionRepository : Repository<ClassDefinition>, IClassDefi
 
     public async Task<ClassDefinition?> GetByNameAsync(string name)
     {
-        return await _context.ClassDefinitions.FirstOrDefaultAsync(c => c.Name == name);
+        return await _context.ClassDefinitions.FirstOrDefaultAsync(c => c.TechnicalName == name);
     }
-    public async Task<ClassDefinition> GetByIdAsync(Guid name)
-    {
-        return await _context.ClassDefinitions.FirstOrDefaultAsync(c => c.Id == name);
-    }
-    public async Task<List<ClassDefinition>> GetClassesWithFeatures()
+    public async Task<List<ClassDefinition>> GetClassesWithFeatures(Expression<Func<ClassDefinition, bool>>? filter,params Expression<Func<ClassDefinition, object>>[] includes)
     {
         return await _context.ClassDefinitions
             .Include(c => c.Progressions)
