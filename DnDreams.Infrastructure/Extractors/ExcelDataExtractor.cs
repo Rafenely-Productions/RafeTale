@@ -5,6 +5,7 @@ using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
 using DnDreams.Domain.Modifiers;
 using DnDreams.Infrastructure.Extractors.Extensions;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Text.Json;
@@ -31,8 +32,10 @@ namespace DnDreams.Infrastructure.Extractors
             package.SpecialTraits = ExtractSpecialTraits(workbook, package.Traits);
             package.SkillProficiencies = ExtractSkillProficiencies(workbook);
             package.ClassDefinitions = ExtractClasses(workbook, package.SkillProficiencies);
+            package.Subclasses = ExtractSubclasses(workbook, package.ClassDefinitions);
             package.Spells = ExtractSpells(workbook, package.ClassDefinitions);
             package.ClassLevelProgressions = ExtractClassLevelProgressions(workbook, package.ClassDefinitions);
+            package.SubclassLevelProgressions = ExtractSubclassLevelProgressions(workbook, package.Subclasses);
             package.XpRules = ExtractXpRules(workbook);
             package.Characters = ExtractCharacters(workbook, package.Races, package.ClassDefinitions);
             package.Items = ExtractItems(workbook, package.Characters);
@@ -56,7 +59,7 @@ namespace DnDreams.Infrastructure.Extractors
                 {
                     Id = Guid.NewGuid(),
                     TechnicalName = row.Cell(1).GetString(),
-                    Ability = ParseEnum<ASI>(row.Cell(3).GetString(), ASI.Charisma)
+                    Ability = ParseEnum<ASI>(row.Cell(3).GetString())
                 };
                 skillProficiencyList.Add(skill);
                 SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Name", row.Cell(1).GetString(), "us");
@@ -228,19 +231,21 @@ namespace DnDreams.Infrastructure.Extractors
                     Id = Guid.NewGuid(),
                     TechnicalName = row.Cell(1).GetString(),
                     HitDie = row.Cell(2).GetString(),
-                    SkillsToChoose = row.Cell(7).GetValue<int>(),
+                    SkillsToChoose = row.Cell(8).GetValue<int>(),
 
                     PrimaryAbility = ParseEnumList<ASI>(row.Cell(3).GetString()),
                     SavingThrowProficiencies = ParseEnumList<ASI>(row.Cell(4).GetString()),
                     ArmorProficiencies = ParseEnumList<ArmorProficiency>(row.Cell(5).GetString()),
                     WeaponProficiencies = ParseEnumList<WeaponProficiency>(row.Cell(6).GetString()),
+                    ToolProficiencies = ParseEnumList<ToolProficiency>(row.Cell(7).GetString())
                 };
                 MapClassSkills(classDef, row.Cell(8).GetString(), skillProficiencies);
 
                 classDefinitionList.Add(classDef);
 
                 SaveValidateLocalizedContent(classDef.Id, nameof(ClassDefinition), "Name", classDef.TechnicalName, "us");
-                SaveValidateLocalizedContent(classDef.Id, nameof(ClassDefinition), "Name", row.Cell(9).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(classDef.Id, nameof(ClassDefinition), "Name", row.Cell(11).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(classDef.Id, nameof(ClassDefinition), "Description", row.Cell(12).GetString(), _currentCulture);
 
             }
             return classDefinitionList;
@@ -292,41 +297,39 @@ namespace DnDreams.Infrastructure.Extractors
 
             foreach (var row in progressRows)
             {
-                var technicalName = row.Cell(1).GetString().Trim();
+                var className = row.Cell(1).GetString().Trim();
                 var level = row.Cell(2).GetValue<int>();
-                var featureTechnicalName = row.Cell(3).GetString().Trim();
-                var featureDescription = row.Cell(4).GetString().Trim() ?? $"Rasgo de nivel {level}";
-                var modifiersRaw = row.Cell(5).GetString();
-                var specialData = row.Cell(6).GetString();
+                var proficiencyBonus = row.Cell(3).GetValue<int>();
+                var featureTechnicalName = row.Cell(4).GetString().Trim();
+                var progresionClassTraitDataRaw = row.Cell(5).GetString();
+                var modifiersRaw = row.Cell(6).GetString();
 
                 if (string.IsNullOrEmpty(featureTechnicalName)) continue;
 
-                var targetClass = classes.FirstOrDefault(c => c.TechnicalName.Equals(technicalName, StringComparison.OrdinalIgnoreCase));
+                var targetClass = classes.FirstOrDefault(c => c.TechnicalName.Equals(className, StringComparison.OrdinalIgnoreCase));
 
                 if (targetClass == null) continue;
 
+                
                 var feature = new Feature
                 {
                     Id = Guid.NewGuid(),
                     TechnicalName = featureTechnicalName,
-                    RequiresChoice = featureTechnicalName.Contains("Elegir", StringComparison.OrdinalIgnoreCase) ||
-                         featureTechnicalName.Contains("Arquetipo", StringComparison.OrdinalIgnoreCase),
-                    Modifiers = GetModifierData(modifiersRaw)
+                    Modifiers = GetModifierData(modifiersRaw),
                 };
 
                 SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Name", featureTechnicalName, "us");
-                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", featureDescription, "us");
-                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Special", specialData, "us");
+                //SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", featureDescription, "us");
 
-                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Name", row.Cell(8).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", row.Cell(9).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Special", row.Cell(10).GetString(), _currentCulture);
-
+                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Name", row.Cell(7).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", row.Cell(8).GetString(), _currentCulture);
+                var classTraits = GetClassTraits(progresionClassTraitDataRaw);
 
                 var existingProgression = progressionsList.FirstOrDefault(p => p.ClassDefId == targetClass.Id && p.Level == level);
                 if (existingProgression != null)
                 {
                     existingProgression.Features.Add(feature);
+                    existingProgression.Traits.AddRange();
                 }
                 else
                 {
@@ -335,6 +338,93 @@ namespace DnDreams.Infrastructure.Extractors
                         Id = Guid.NewGuid(),
                         Level = level,
                         ClassDefId = targetClass.Id,
+                        Features = new List<Feature> { feature },
+                        Traits = classTraits
+                    };
+
+                    progressionsList.Add(newProgression);
+                }
+            }
+            return progressionsList;
+        }
+        public List<Subclass> ExtractSubclasses(IXLWorkbook workbook, List<ClassDefinition> classDefinitions)
+        {
+            var subClassList = new List<Subclass>();
+            var progressSheet = workbook.GetSheet("SubClasses", isRequired: true);
+            var progressRows = progressSheet.RangeUsed().RowsUsed().Skip(1);
+
+            foreach (var row in progressRows)
+            {
+                var classDefintionTechnicalName = row.Cell(1).GetString().Trim();
+                var subClassTechnicalName = row.Cell(2).GetString().Trim();
+
+                var classDefinition = classDefinitions.FirstOrDefault(p => p.TechnicalName == classDefintionTechnicalName);
+
+                var subClass = new Subclass()
+                {
+                    Id = Guid.NewGuid(),
+                    ClassDefinition = classDefinition!,
+                    TechnicalName = subClassTechnicalName,
+                };
+                subClassList.Add(subClass);
+                SaveValidateLocalizedContent(subClass.Id, nameof(Subclass), "Name", subClassTechnicalName, "us");
+                SaveValidateLocalizedContent(subClass.Id, nameof(Subclass), "Description", row.Cell(3).GetString(), "us");
+                SaveValidateLocalizedContent(subClass.Id, nameof(Subclass), "Name", row.Cell(4).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(subClass.Id, nameof(Subclass), "Description", row.Cell(5).GetString(), _currentCulture);
+                
+            }
+            return subClassList;
+        }
+
+        public List<SubclassLevelProgression> ExtractSubclassLevelProgressions(IXLWorkbook workbook, List<Subclass> subclasses)
+        {
+            var progressionsList = new List<SubclassLevelProgression>();
+            var progressSheet = workbook.GetSheet("SubClassLevelProgresion", isRequired: true);
+            var progressRows = progressSheet.RangeUsed().RowsUsed().Skip(1);
+
+            foreach (var row in progressRows)
+            {
+                var classDefName = row.Cell(1).GetString().Trim();
+                var subclassName = row.Cell(2).GetString().Trim();
+                var featureTechnicalName = row.Cell(3).GetString().Trim();
+                var level = row.Cell(4).GetValue<int>();
+                var modifiersRaw = row.Cell(5).GetString();
+
+
+                var targetSubclass = subclasses.FirstOrDefault(c => c.TechnicalName.Equals(subclassName, StringComparison.OrdinalIgnoreCase));
+
+                if (targetSubclass.ClassDefinition == null) 
+                    continue;
+
+                var targetClass = targetSubclass.ClassDefinition;
+                var feature = new Feature
+                {
+                    Id = Guid.NewGuid(),
+                    TechnicalName = featureTechnicalName,
+                    RequiresChoice = featureTechnicalName.Contains("Elegir", StringComparison.OrdinalIgnoreCase) ||
+                         featureTechnicalName.Contains("Arquetipo", StringComparison.OrdinalIgnoreCase),
+                    //Modifiers = GetModifierData(modifiersRaw)
+                };
+
+                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Name", featureTechnicalName, "us");
+                //SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", featureDescription, "us");
+
+                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Name", row.Cell(6).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", row.Cell(7).GetString(), _currentCulture);
+
+
+                var existingProgression = progressionsList.FirstOrDefault(p => p.SubclassId == targetClass.Id && p.Level == level);
+                if (existingProgression != null)
+                {
+                    existingProgression.Features.Add(feature);
+                }
+                else
+                {
+                    var newProgression = new SubclassLevelProgression
+                    {
+                        Id = Guid.NewGuid(),
+                        Level = level,
+                        SubclassId = targetSubclass.Id,
                         Features = new List<Feature> { feature } // <-- Metemos el Feature real con sus datos
                     };
 
@@ -343,7 +433,6 @@ namespace DnDreams.Infrastructure.Extractors
             }
             return progressionsList;
         }
-
         public List<Spell> ExtractSpells(IXLWorkbook workbook, List<ClassDefinition> classDefinitions)
         {
             var spellsList = new List<Spell>();
@@ -356,29 +445,27 @@ namespace DnDreams.Infrastructure.Extractors
                 {
                     Id = Guid.NewGuid(),
                     TechnicalName = row.Cell(1).GetString() ?? string.Empty,
-                    Level = ParseEnum<SpellLevel>(row.Cell(2).GetString(), SpellLevel.Cantrip),
-                    School = ParseEnum<SchoolOfMagicEnum>(row.Cell(3).GetString(), SchoolOfMagicEnum.Enchantment),
-                    CastingTime = ParseEnum<CastingTime>(row.Cell(4).GetString(), CastingTime.Minute),
-                    Range = ParseEnum<SpellRange>(row.Cell(5).GetString(), SpellRange.Ranged),
+                    Level = ParseEnum<SpellLevel>(row.Cell(2).GetString()),
+                    School = ParseEnum<SchoolOfMagicEnum>(row.Cell(3).GetString()),
+                    CastingTime = ParseEnum<CastingTime>(row.Cell(4).GetString()),
+                    Range = ParseEnum<SpellRange>(row.Cell(5).GetString()),
+                    RangeDistance = row.Cell(6).GetValue<string>(),
                     Components = ParseEnumList<SpellComponent>(row.Cell(7).GetString()),
-                    Duration = ParseEnum<SpellDuration>(row.Cell(8).GetString(), SpellDuration.Instantaneous),
-                    Concentration = ParseEnum<SpellConcentration>(row.Cell(9).GetString(), SpellConcentration.No),
-                    Ritual = row.Cell(10).GetString().Equals("Si", StringComparison.OrdinalIgnoreCase),
+                    Duration = ParseEnumList<SpellDuration>(row.Cell(9).GetString()),
+                    Concentration = ParseEnum<SpellConcentration>(row.Cell(10).GetString()),
+                    Ritual = row.Cell(11).GetString().Equals("Si", StringComparison.OrdinalIgnoreCase),
+
                 };
-                if (spell.Range == SpellRange.Ranged)
-                {
-                    if (!string.IsNullOrEmpty(row.Cell(6).GetString()))
-                    {
-                        spell.RangeDistance = row.Cell(6).GetValue<int>();
-                    }
-                }
-                MapSpellClass(spell, row.Cell(11).GetString(), classDefinitions);
+
+                MapSpellClass(spell, row.Cell(12).GetString(), classDefinitions);
 
                 SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Name", spell.TechnicalName, "us");
                 SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Description", row.Cell(12).GetString(), "us");
+                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "MaterialComponentDescription", row.Cell(8).GetString(), "us");///todo 
 
                 SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Name", row.Cell(13).GetString(), _currentCulture);
                 SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Description", row.Cell(14).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "MaterialComponentDescription", row.Cell(15).GetString(), _currentCulture);
 
 
                 spellsList.Add(spell);
@@ -421,7 +508,7 @@ namespace DnDreams.Infrastructure.Extractors
                     TechnicalName = row.Cell(1).GetString() ?? string.Empty,
                     Prerequisite = GetPrerequisiteModifierData(featPrerequisite),
                     Modifiers = GetModifierData(featModifiersRaw),
-                    Category = ParseEnum<CategoryFeat>(row.Cell(4).GetString(), CategoryFeat.General)
+                    Category = ParseEnum<CategoryFeat>(row.Cell(4).GetString())
                 };
                 featsList.Add(feat);
 
@@ -495,7 +582,7 @@ namespace DnDreams.Infrastructure.Extractors
                 var school = new SchoolOfMagic
                 {
                     Id = Guid.NewGuid(),
-                    TechnicalName = ParseEnum<SchoolOfMagicEnum>(row.Cell(1).GetString(), SchoolOfMagicEnum.Abjuration)
+                    TechnicalName = ParseEnum<SchoolOfMagicEnum>(row.Cell(1).GetString())
                 };
                 schoolsList.Add(school);
                 SaveValidateLocalizedContent(school.Id, nameof(SchoolOfMagic), "Name", row.Cell(1).GetString(), "us");
@@ -524,7 +611,7 @@ namespace DnDreams.Infrastructure.Extractors
                 if (!string.IsNullOrEmpty(featName))
                 {
                     var feat = feats.FirstOrDefault(f => f.TechnicalName.Equals(featName, StringComparison.OrdinalIgnoreCase));
-                    if(feat != null)
+                    if (feat != null)
                     {
                         background.FeatId = feat.Id;
                     }
@@ -580,9 +667,9 @@ namespace DnDreams.Infrastructure.Extractors
                         .Cast<T>()
                         .ToList();
         }
-        private T ParseEnum<T>(string input, T defaultValue) where T : struct, Enum
+        private T ParseEnum<T>(string input) where T : struct, Enum
         {
-            return Enum.TryParse<T>(input.Trim(), true, out var result) ? result : defaultValue;
+            return Enum.TryParse<T>(input.Trim(), true, out var result) ? result : default;
         }
         private void MapClassSkills(ClassDefinition classDef, string rawSkills, List<Skill> allSkills)
         {
@@ -649,6 +736,37 @@ namespace DnDreams.Infrastructure.Extractors
                 return new List<FeatPrerequisiteModifierData>();
             }
         }
-    }
 
+        private List<ClassTrait> GetClassTraits(string classTraitDataRaw)
+        {
+            List<ClassTrait> traits = new List<ClassTrait>();
+
+            var pairs = classTraitDataRaw.Split('|', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var pair in pairs)
+            {
+                var keyValue = pair.Split(':', 2);
+                if (keyValue.Length != 2) continue;
+
+                string keyStr = keyValue[0].Trim();
+                string valueStr = keyValue[1].Trim();
+
+                var trait = new ClassTrait();
+
+                // 1. Tratamiento especial para la matriz de hechizos
+                if (keyStr.Equals("SpellSlots", StringComparison.OrdinalIgnoreCase))
+                {
+                    var slots = JsonSerializer.Deserialize<int[]>(valueStr);
+                    trait.SpellSlots = slots ?? new int[9];
+
+                }
+                else
+                {
+                    trait.Value = valueStr;
+                }
+                trait.Type = ParseEnum<ResourceType>(keyStr);
+
+            }
+            return traits;
+        }
+    }
 }

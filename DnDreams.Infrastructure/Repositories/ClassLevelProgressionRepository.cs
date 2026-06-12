@@ -24,17 +24,5 @@ namespace DnDreams.Infrastructure.Repositories
                 .Include(p => p.Features)
                 .FirstOrDefaultAsync(p => p.ClassDefId == classId && p.Level == level);
         }
-        public async Task AddProgressionAsync(ClassLevelProgression prog)
-        {
-            await _context.ClassLevelProgressions.AddAsync(prog);
-        }
-        public async Task<List<ClassLevelProgression>> GetAllAsync()
-        {
-            return await _context.ClassLevelProgressions.ToListAsync();
-        }
-        public async Task<ClassLevelProgression> GetByNameAsync(string name)
-        {
-            return await _context.ClassLevelProgressions.FirstOrDefaultAsync(p => p.Id.ToString() == name);
-        }
     }
 }

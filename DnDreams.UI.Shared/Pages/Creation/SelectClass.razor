@@ -5,6 +5,7 @@
 @using DnDreams.Domain.Interfaces
 @using DnDreams.Domain.Enums
 @using DnDreams.Domain.DTOs
+@using DnDreams.UI.Shared.Extensions
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
 @inject CharacterCreationService CreationService
@@ -54,7 +55,7 @@
                             <div class="flex flex-wrap justify-between items-start gap-6 mb-8">
                                 <div class="flex-1">
                                     <h2 class="text-6xl font-black text-white mb-2 uppercase italic tracking-tighter">@SelectedClass.Name</h2>
-                                    <p class="text-slate-400 font-serif italic text-lg leading-relaxed">@SelectedClass.Description</p>
+                                    <p class="text-slate-400 font-serif italic text-lg leading-relaxed">@((MarkupString)SelectedClass.Description)</p>
                                 </div>
 
                                 <div class="flex gap-4">
@@ -118,7 +119,7 @@
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" @onclick="CloseInspection"></div>
 
-        <div class="relative bg-slate-900 border border-amber-500/30 w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div class="relative bg-slate-900 border border-amber-500/30 w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div class="p-8">
                 <div class="flex justify-between items-start mb-6">
                     <div>
@@ -129,81 +130,67 @@
                         <i class="fa-solid fa-circle-xmark text-2xl"></i>
                     </button>
                 </div>
-                <div class="mb-6">
-                    @foreach (var modifier in FeatureInInspection.Modifiers)
-                    {
-                        @switch (modifier.Type)
+                <div class="mb-6 w-full max-w-full overflow-hidden">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+
+                        @foreach (var modifier in FeatureInInspection.Modifiers)
                         {
-                            case ModifierType.AttributeBonus:
-                                <div class="flex items-center gap-4 bg-blue-900/20 border border-blue-500/30 p-4 rounded-2xl">
-                                    <i class="fa-solid fa-up-long text-blue-500 text-2xl"></i>
-                                    <div>
-                                        <p class="text-blue-500 font-black text-xs uppercase">Mejora de Atributo</p>
-                                        <p class="text-white font-bold text-xl">+@modifier.Value a @L[modifier.Target]</p>
+                            var meta = modifier.Type.GetVisualMetadata();
+
+                            <div class="flex flex-col gap-3 p-2 rounded-2xl border @meta.CssClasses shadow-lg w-full min-w-0 transition-all duration-300">
+
+                                <div class="flex items-start sm:items-center gap-4 w-full min-w-0 flex-wrap sm:flex-nowrap">
+                                    <i class="fa-solid @meta.Icon text-2xl w-8 min-w-[32px] text-center mt-1 sm:mt-0"></i>
+
+                                    <div class="flex-1 min-w-0 break-words">
+                                        <p class="opacity-60 font-black text-[10px] uppercase tracking-wider block">@meta.Label</p>
+                                        <p class="text-white font-bold text-sm sm:text-base leading-snug break-words">
+                                            @if (modifier.Value != 99 && modifier.Value != 0 && modifier.Value != 1)
+                                            {
+                                                <span class="text-white/90">@($"+{modifier.Value}") </span>
+                                            }
+                                            @L[modifier.Target]
+                                        </p>
                                     </div>
                                 </div>
-                                break;
 
-                            case ModifierType.GrantSpell:
-                                <div class="space-y-4">
-                                    <div class="flex items-center gap-4 bg-purple-900/20 border border-purple-500/30 p-4 rounded-2xl">
-                                        <i class="fa-solid fa-wand-sparkles text-purple-500 text-2xl"></i>
-                                        <div>
-                                            <p class="text-purple-500 font-black text-[10px] uppercase">@L["Label_GrantSpell"]</p>
-                                            <p class="text-white font-bold text-xl">@modifier.Target</p>
-                                        </div>
-                                    </div>
-
+                                @if (modifier.Type == ModifierType.GrantSpell ||
+                                                        modifier.Type == ModifierType.GrantAlwaysPreparedSpell ||
+                                                        modifier.Type == ModifierType.AlwaysPreparedSpell)
+                                {
                                     @if (IsLoadingSpell)
                                     {
-                                        <div class="text-center p-4"><i class="fa-solid fa-spinner fa-spin text-amber-500"></i></div>
+                                        <div class="text-center p-2"><i class="fa-solid fa-spinner fa-spin text-amber-500"></i></div>
                                     }
 
                                     @foreach (var spell in InspectedSpells.Where(s => s.TechnicalName == modifier.Target))
                                     {
-                                        <div class="bg-black/40 border border-purple-500/10 rounded-3xl p-5 mt-2 animate-in slide-in-from-top-2">
-                                            <div class="grid grid-cols-2 gap-4 mb-3">
-                                                <div>
+                                        <div class="bg-black/60 border border-white/5 rounded-xl p-2 mt-1 animate-in slide-in-from-top-2 w-full min-w-0 overflow-hidden">
+                                            <div class="grid grid-cols-2 gap-4 mb-2 border-b border-white/5 pb-2 w-full">
+                                                <div class="min-w-0">
                                                     <span class="block text-[9px] text-slate-500 uppercase font-black">@L["Label_CastingTime"]</span>
-                                                    <span class="text-xs text-white">@spell.CastingTime</span>
+                                                    <span class="text-xs text-white/90 block truncate">@spell.CastingTime</span>
                                                 </div>
-                                                <div>
+                                                <div class="min-w-0">
                                                     <span class="block text-[9px] text-slate-500 uppercase font-black">@L["Label_Range"]</span>
-                                                    <span class="text-xs text-white">@spell.Range</span>
+                                                    <span class="text-xs text-white/90 block truncate">@spell.Range</span>
                                                 </div>
                                             </div>
-                                            <p class="text-[11px] text-slate-400 font-serif leading-relaxed line-clamp-3">//spell.Description</p>
+                                            <p class="text-[11px] text-slate-400 font-serif leading-relaxed line-clamp-3 break-words">
+                                                ((MarkupString)spell.Description)
+                                            </p>
                                         </div>
                                     }
-                                </div>
-                                break;
-
-                            case ModifierType.HpBonus:
-                                <div class="flex items-center gap-4 bg-red-900/20 border border-red-500/30 p-4 rounded-2xl">
-                                    <i class="fa-solid fa-heart-pulse text-red-500 text-2xl"></i>
-                                    <div>
-                                        <p class="text-red-500 font-black text-xs uppercase">Bono de Vitalidad</p>
-                                        <p class="text-white font-bold text-xl">+@modifier.Value HP @L["Msg_PerLevel"]</p>
-                                    </div>
-                                </div>
-                                break;
-
-                            case ModifierType.GrantFeature:
-                                <div class="flex items-center gap-4 bg-amber-900/20 border border-amber-500/30 p-4 rounded-2xl">
-                                    <i class="fa-solid fa-book-skull text-amber-500 text-2xl"></i>
-                                    <div>
-                                        <p class="text-amber-500 font-black text-xs uppercase">Nueva Habilidad</p>
-                                        <p class="text-white font-bold text-xl">@modifier.Value</p>
-                                    </div>
-                                </div>
-                                break;
+                                }
+                            </div>
                         }
-                    }
 
+                    </div>
                 </div>
-                <div class="bg-black/40 p-6 rounded-3xl border border-white/5 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                <div class="bg-black/40 p-6 rounded-3xl border border-white/5 max-h-[35vh] overflow-y-auto custom-scrollbar">
                     <p class="text-slate-300 font-serif leading-relaxed italic text-lg">
-                        @FeatureInInspection.Description
+                        @((MarkupString)FeatureInInspection.Description)
                     </p>
                 </div>
 
@@ -230,7 +217,11 @@
 
         if (feature == null) return;
 
-        var grantSpellModifiers = feature.Modifiers.Where(x => x.Type == ModifierType.GrantSpell).ToList();
+        var grantSpellModifiers = feature.Modifiers
+        .Where(x => x.Type == ModifierType.GrantSpell ||
+                    x.Type == ModifierType.AlwaysPreparedSpell ||
+                    x.Type == ModifierType.GrantAlwaysPreparedSpell)
+        .ToList();
 
         if (grantSpellModifiers.Any())
         {

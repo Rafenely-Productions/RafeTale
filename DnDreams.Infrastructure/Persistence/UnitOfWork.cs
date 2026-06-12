@@ -30,6 +30,8 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<SubRace> SubRaces { get; }
     public IRepository<SchoolOfMagic> SchoolsOfMagic { get; }
     public IRepository<Background> Backgrounds {get;}
+    public IRepository<Subclass> Subclasses { get; }
+    public IRepository<SubclassLevelProgression> SubclassLevelProgressions { get; }
 
     public UnitOfWork(DnDreamsDbContext context)
     {
@@ -49,6 +51,8 @@ public class UnitOfWork : IUnitOfWork
         Traits = new Repository<Trait>(_context);
         SubRaces = new Repository<SubRace>(_context);
         SchoolsOfMagic = new Repository<SchoolOfMagic>(_context);
+        Subclasses = new Repository<Subclass>(_context);
+        SubclassLevelProgressions = new Repository<SubclassLevelProgression>(_context);
     }
 
     public async Task BeginTransactionAsync()

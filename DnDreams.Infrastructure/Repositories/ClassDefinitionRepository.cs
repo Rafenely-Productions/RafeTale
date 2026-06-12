@@ -14,10 +14,6 @@ public class ClassDefinitionRepository : Repository<ClassDefinition>, IClassDefi
 {
     public ClassDefinitionRepository(DnDreamsDbContext context) : base(context) { }
 
-    public async Task<ClassDefinition?> GetByNameAsync(string name)
-    {
-        return await _context.ClassDefinitions.FirstOrDefaultAsync(c => c.TechnicalName == name);
-    }
     public async Task<List<ClassDefinition>> GetClassesWithFeatures(Expression<Func<ClassDefinition, bool>>? filter,params Expression<Func<ClassDefinition, object>>[] includes)
     {
         return await _context.ClassDefinitions

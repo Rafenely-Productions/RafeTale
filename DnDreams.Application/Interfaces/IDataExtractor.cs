@@ -17,7 +17,7 @@ namespace DnDreams.Application.Interfaces
 
         List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes);
         List<ClassLevelProgression> ExtractClassLevelProgressions(IXLWorkbook workbook, List<ClassDefinition> classes);
-         List<Spell> ExtractSpells(IXLWorkbook workbook,List<ClassDefinition> classDefinitions);
+        List<Spell> ExtractSpells(IXLWorkbook workbook,List<ClassDefinition> classDefinitions);
         List<XpRules> ExtractXpRules(IXLWorkbook workbook);
         List<Feat> ExtractFeats(IXLWorkbook workbook);
         List<ItemTemplate> ExtractItems(IXLWorkbook workbook, List<Character> characters);
@@ -25,5 +25,7 @@ namespace DnDreams.Application.Interfaces
         List<SpecialTrait> ExtractSpecialTraits(IXLWorkbook workbook, List<Trait> traits);
         List<SchoolOfMagic> ExtractSchoolsOfMagic(IXLWorkbook workbook);
         List<Background> ExtractBackgrounds(IXLWorkbook workbook, List<Feat> feats);
+        List<Subclass> ExtractSubclasses(IXLWorkbook workbook, List<ClassDefinition> classDefinitions);
+        List<SubclassLevelProgression> ExtractSubclassLevelProgressions(IXLWorkbook workbook, List<Subclass> subclasses);
     }
 }

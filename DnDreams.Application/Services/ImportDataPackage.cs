@@ -25,5 +25,7 @@ namespace DnDreams.Application.Services
         public List<SpecialTrait> SpecialTraits { get; set; } = new();
         public List<Skill> SkillProficiencies { get; set; } = new();
         public List<Background> Backgrounds { get; set; } = new();
+        public List<Subclass> Subclasses { get; set; } = new();
+        public List<SubclassLevelProgression> SubclassLevelProgressions { get; set; } = new();
     }
 }

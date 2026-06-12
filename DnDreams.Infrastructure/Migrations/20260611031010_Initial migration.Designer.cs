@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
-    [Migration("20260603235509_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20260611031010_Initial migration")]
+    partial class Initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.16");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.17");
 
             modelBuilder.Entity("CharacterFeat", b =>
                 {
@@ -97,6 +97,34 @@ namespace DnDreams.Infrastructure.Migrations
                     b.HasIndex("CharacterId");
 
                     b.ToTable("ActiveModifiers", (string)null);
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.Background", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.PrimitiveCollection<string>("ASIs")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("FeatId")
+                        .HasColumnType("TEXT");
+
+                    b.PrimitiveCollection<string>("SkillProficiencies")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TechnicalName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FeatId");
+
+                    b.ToTable("Backgrounds");
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.Campaign", b =>
@@ -380,11 +408,16 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid?>("SubclassId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CharacterId");
 
                     b.HasIndex("ClassDefId");
+
+                    b.HasIndex("SubclassId");
 
                     b.ToTable("ClassLevelProgressions");
                 });
@@ -424,6 +457,9 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<bool>("RequiresChoice")
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid?>("SubclassLevelProgressionId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("TechnicalName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -432,6 +468,8 @@ namespace DnDreams.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClassLevelProgressionId");
+
+                    b.HasIndex("SubclassLevelProgressionId");
 
                     b.ToTable("Features", (string)null);
                 });
@@ -617,8 +655,9 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<int>("Concentration")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Duration")
-                        .HasColumnType("INTEGER");
+                    b.PrimitiveCollection<string>("Duration")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
@@ -626,8 +665,9 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<int>("Range")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("RangeDistance")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("RangeDistance")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Ritual")
                         .HasColumnType("INTEGER");
@@ -665,6 +705,49 @@ namespace DnDreams.Infrastructure.Migrations
                     b.HasIndex("RaceId");
 
                     b.ToTable("SubRaces", (string)null);
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.Subclass", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ClassDefinitionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("LevelRequirement")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TechnicalName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassDefinitionId");
+
+                    b.ToTable("Subclasses", (string)null);
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.SubclassLevelProgression", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("SubclassId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubclassId");
+
+                    b.ToTable("SubclassLevelProgressions");
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.Trait", b =>
@@ -782,6 +865,17 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Navigation("Character");
                 });
 
+            modelBuilder.Entity("DnDreams.Domain.Entities.Background", b =>
+                {
+                    b.HasOne("DnDreams.Domain.Entities.Feat", "Feat")
+                        .WithMany()
+                        .HasForeignKey("FeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Feat");
+                });
+
             modelBuilder.Entity("DnDreams.Domain.Entities.CampaignCharacter", b =>
                 {
                     b.HasOne("DnDreams.Domain.Entities.Campaign", "Campaign")
@@ -887,6 +981,10 @@ namespace DnDreams.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DnDreams.Domain.Entities.Subclass", null)
+                        .WithMany("Progressions")
+                        .HasForeignKey("SubclassId");
+
                     b.Navigation("ClassDef");
                 });
 
@@ -895,6 +993,10 @@ namespace DnDreams.Infrastructure.Migrations
                     b.HasOne("DnDreams.Domain.Entities.ClassLevelProgression", null)
                         .WithMany("Features")
                         .HasForeignKey("ClassLevelProgressionId");
+
+                    b.HasOne("DnDreams.Domain.Entities.SubclassLevelProgression", null)
+                        .WithMany("Features")
+                        .HasForeignKey("SubclassLevelProgressionId");
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.JournalEntry", b =>
@@ -930,6 +1032,28 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Race");
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.Subclass", b =>
+                {
+                    b.HasOne("DnDreams.Domain.Entities.ClassDefinition", "ClassDefinition")
+                        .WithMany("Subclasses")
+                        .HasForeignKey("ClassDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ClassDefinition");
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.SubclassLevelProgression", b =>
+                {
+                    b.HasOne("DnDreams.Domain.Entities.Subclass", "Subclass")
+                        .WithMany()
+                        .HasForeignKey("SubclassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subclass");
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.Trait", b =>
@@ -986,6 +1110,8 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Navigation("Progressions");
 
                     b.Navigation("SkillProficiencies");
+
+                    b.Navigation("Subclasses");
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.ClassLevelProgression", b =>
@@ -1003,6 +1129,16 @@ namespace DnDreams.Infrastructure.Migrations
             modelBuilder.Entity("DnDreams.Domain.Entities.Spell", b =>
                 {
                     b.Navigation("Classes");
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.Subclass", b =>
+                {
+                    b.Navigation("Progressions");
+                });
+
+            modelBuilder.Entity("DnDreams.Domain.Entities.SubclassLevelProgression", b =>
+                {
+                    b.Navigation("Features");
                 });
 #pragma warning restore 612, 618
         }

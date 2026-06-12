@@ -76,7 +76,67 @@ public enum ModifierType
     RequiredLevel,
     GrantProficiency,
     FeatProperty,
-    None
+    None,
+
+    SetBaseArmorClass,
+    ModifyDamage,
+    UnlockWeaponMastery,
+    EnableOption,
+    GrantAdvantage,
+    GrantSubclass,
+    GrantFeat,
+    ModifyAttacksPerAttackAction,
+    ModifySpeed,
+    GrantSubclassFeature,
+    ModifyActionEffect,
+    AddDamageBonus,
+    EnableDeathPrevention,
+    ScaleResource,
+    ExpandBrutalStrikeEffects,
+    TriggerOnInitiative,
+    SetMinimumRollValue,
+    ModifyAbilityScoreMaximum,
+    EnableSpellcasting,
+    ModifyAbilityCheck,
+    GrantExpertise,
+    ModifyResourceReset,
+    ReactionEffect,
+    ExpandSpellLists,
+    UpdatePreparedSpellsCount,
+    InitiativeTrigger,
+    AlwaysPreparedSpells,
+    GrantInvocations,
+    EnablePactMagic,
+    ShortRitualTrigger,
+    ScalePactSlots,
+    GrantMysticArcanum,
+    EnhanceFeature,
+    SelectChoice,
+    SelectFeat,
+    ModifyFeature,
+    GrantLanguage,
+    SelectOption,
+    UpgradeFeature,
+    AlwaysPreparedSpell,
+    GrantLanguages,
+    ModifyAttacksPerAction,
+    GrantSense,
+    UnlockWeaponMasterySlots,
+    GrantAlwaysPreparedSpell,
+    GrantFeatCategory,
+    ModifyAction,
+    EmanationAura,
+    Action,
+    ModifyAura,
+    OnHitModifier,
+    BonusActionOptions,
+    BonusAction,
+    Reaction,
+    UnlockSneakAttackOptions,
+    PassiveEffect,
+    GrantSaveProficiency,
+    FeatureCooldown,
+
 }
 
 public enum ASI
@@ -222,11 +282,27 @@ public enum SpellRange
 public enum SpellDuration
 {
     Instantaneous,
-    ConcentrationUpTo1Minute,
-    ConcentrationUpTo10Minutes,
-    ConcentrationUpTo1Hour,
-    ConcentrationUpTo8Hours,
-    ConcentrationUpTo24Hours,
+    Concentration,
+    UpTo1Minute,
+    UpTo10Minutes,
+    UpTo1Hour,
+    UpTo2Hours,
+    UpTo8Hours,
+    UpTo24Hours,
+    UpTo1Day,
+    UntilDispelled,
+    UntilDispelledOrTriggered,
+    _1Minute,
+    _10Minutes,
+    _1Hour,
+    _8Hours,
+    _24Hours,
+    _1Day,
+    _7Days,
+    _10Days,
+    _30Days,
+    _1Round,
+    Special,
     Permanent
 }
 
@@ -291,4 +367,78 @@ public enum CategoryFeat
     Origin,
     CombatStyle,
     EpicFeat
+}
+public enum RangeDistanceType
+{
+    Feet,
+    Meters
+}
+
+public enum ToolProficiency
+{
+    ThievesTools,
+    DisguiseKit,
+    ForgeryKit,
+    HerbalismKit,
+    NavigatorTools,
+    PoisonersKit,
+    SmithsTools,
+    TinkersTools,
+    VehiclesLand,
+    VehiclesWater
+}
+
+public enum SkillProficiency
+{
+    Acrobatics,
+    AnimalHandling,
+    Arcana,
+    Athletics,
+    Deception,
+    History,
+    Insight,
+    Intimidation,
+    Investigation,
+    Medicine,
+    Nature,
+    Perception,
+    Performance,
+    Persuasion,
+    Religion,
+    SleightOfHand,
+    Stealth,
+    Survival
+}
+public enum ResourceType
+{
+    RagesCount,
+    RageDamage,
+    WeaponMasteryCount,
+
+    BardicDie,
+    CantripsKnown,
+    PreparedSpellsCount,
+
+    InvocationsKnown,
+    PactSlots,
+    SlotLevel,
+
+    ChannelDivinityUses,
+    SpellSlots,
+
+    WildShapeCount,
+
+    FavoredEnemyUses,
+
+    SecondWindUses,
+
+    SorceryPoints,
+
+    MartialArtsDie,
+    FocusPoints,
+    UnarmoredMovement,
+
+    ChannelDivinityCount,
+
+    SneakAttackDie
 }

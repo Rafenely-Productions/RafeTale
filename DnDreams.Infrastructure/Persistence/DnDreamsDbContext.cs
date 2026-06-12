@@ -29,7 +29,8 @@ public class DnDreamsDbContext : DbContext
     public DbSet<SubRace> SubRaces { get; set; } = null!;
     public DbSet<Language> Languages { get; set; } = null!;
     public DbSet<Trait> Traits { get; set; } = null!;
-
+    public DbSet<Subclass> Subclasses { get; set; } = null!;
+    public DbSet<SubclassLevelProgression> SubclassLevelProgressions { get; set; } = null!;
     public DnDreamsDbContext(DbContextOptions<DnDreamsDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,5 +41,6 @@ public class DnDreamsDbContext : DbContext
 
         modelBuilder.Ignore<ModifierData>();
         modelBuilder.Ignore<FeatPrerequisiteModifierData>();
+        modelBuilder.Ignore<ClassTrait>();
     }
 }

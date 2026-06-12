@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DnDreams.Infrastructure.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class,IEntity
+    public class Repository<T> : IRepository<T> where T : class, IEntity
     {
         protected readonly DnDreamsDbContext _context;
 
@@ -22,14 +22,14 @@ namespace DnDreams.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task AddAsync(T data)
+        public async Task AddAsync(T? data)
         {
-            await _context.Set<T>().AddAsync(data);
+            await _context.Set<T>().AddAsync(data!);
         }
 
-        public async Task AddRangeAsync(IEnumerable<T> list)
+        public async Task AddRangeAsync(IEnumerable<T?> list)
         {
-            await _context.Set<T>().AddRangeAsync(list);
+            await _context.Set<T>().AddRangeAsync(list!);
         }
 
         public async Task<IEnumerable<T?>> GetAllAsync()
@@ -49,7 +49,7 @@ namespace DnDreams.Infrastructure.Repositories
             return await _context.Set<T>().Where(predicate).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<T?>> GetAllAsync(Expression<Func<T, bool>>? filter,params Expression<Func<T, object>>[] includes)
+        public async Task<IEnumerable<T?>> GetAllAsync(Expression<Func<T, bool>>? filter, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = GetValues(filter, includes);
 
@@ -77,11 +77,6 @@ namespace DnDreams.Infrastructure.Repositories
                 query = query.Where(filter);
             }
             return query;
-        }
-
-        public Task<T> GetByIdAsync(Guid id, params Expression<Func<Race, object>>[] includes)
-        {
-            throw new NotImplementedException();
         }
     }
 }
