@@ -1,6 +1,7 @@
 ﻿using DnDreams.Application.DTOs;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
+using DnDreams.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,11 @@ namespace DnDreams.Application.Services.DtosServices
             throw new NotImplementedException();
         }
 
+        public Task<LanguageDto> ArmDto(Language entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<LanguageDto>> GetAllAsync(Expression<Func<Language, bool>>? filter, params Expression<Func<Language, object>>[] includes)
         {
             throw new NotImplementedException();
@@ -28,6 +34,11 @@ namespace DnDreams.Application.Services.DtosServices
         }
 
         public Task<LanguageDto> GetByIdAsync(Guid id, params Expression<Func<Language, object>>[] includes)
+        {
+            throw new NotImplementedException();
+        }
+
+        LanguageDto IService<LanguageDto, Language>.ArmDto(Language entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
         {
             throw new NotImplementedException();
         }

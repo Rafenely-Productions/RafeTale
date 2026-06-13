@@ -10,19 +10,19 @@ public class DnDreamsDbContext : DbContext
     public DbSet<Character> Characters => Set<Character>();
     public DbSet<CharacterModifier> CharacterModifiers => Set<CharacterModifier>();
 
-    public DbSet<ClassDefinition> ClassDefinitions { get; set; }
-    public DbSet<Feature> Features { get; set; }
+    public DbSet<ClassDefinition> ClassDefinitions=> Set<ClassDefinition>();
+    public DbSet<Feature> Features => Set<Feature>();
     public DbSet<Race> Races => Set<Race>();
     public DbSet<ClassLevelProgression> ClassLevelProgressions => Set<ClassLevelProgression>();
     public DbSet<XpRules> XpRules => Set<XpRules>();
     public DbSet<Feat> Feats => Set<Feat>();
     public DbSet<Background> Backgrounds => Set<Background>();
     public DbSet<Spell> Spells => Set<Spell>();
-    public DbSet<ItemTemplate> ItemTemplates { get; set; }
-    public DbSet<CharacterInventory> CharacterInventories { get; set; }
-    public DbSet<CharacterStatus> CharacterStatuses { get; set; } = null!;
-    public DbSet<CharacterSpellSlots> CharacterSpellSlots { get; set; } = null!;
-    public DbSet<ActiveModifiers> ActiveModifiers { get; set; } = null!;
+    public DbSet<ItemTemplate> ItemTemplates => Set<ItemTemplate>();
+    public DbSet<CharacterInventory> CharacterInventories => Set<CharacterInventory>();
+    public DbSet<CharacterStatus> CharacterStatuses => Set<CharacterStatus>();
+    public DbSet<CharacterSpellSlots> CharacterSpellSlots => Set<CharacterSpellSlots>();
+    public DbSet<ActiveModifiers> ActiveModifiers => Set<ActiveModifiers>();
     public DbSet<Campaign> Campaigns { get; set; } = null!;
     public DbSet<CampaignCharacter> CampaignCharacters { get; set; } = null!;
     public DbSet<JournalEntry> JournalEntries { get; set; } = null!;

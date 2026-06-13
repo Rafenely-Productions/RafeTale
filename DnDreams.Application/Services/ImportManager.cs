@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using DnDreams.Application.Interfaces;
 using DnDreams.Domain.Entities;
+using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
 using DnDreams.Domain.Modifiers;
 using System;
@@ -37,7 +38,7 @@ public class ImportManager : IExcelImportService
         {
             if (data.Races.Any())
             {
-                var existingRaces = (await _localizationService.GetAllAsync("Race", "Name")).Values.Select(x=> x.ToLower()).ToHashSet();
+                var existingRaces = (await _unitOfWork.Races.GetAllAsync()).Select(r=> r.TechnicalName.ToLower()).ToHashSet();
                 var newRaces = data.Races.Where(r => !existingRaces.Contains(r.TechnicalName.ToLower())).ToList();
                 if (newRaces.Any()) await _unitOfWork.Races.AddRangeAsync(newRaces);
             }
@@ -215,25 +216,25 @@ public class ImportManager : IExcelImportService
             {
                 var dbSubProg = await _unitOfWork.SubclassLevelProgressions.GetAllAsync();
                 var existingSubProgKeys = dbSubProg.Select(p => $"{p.SubclassId}_{p.Level}").ToHashSet();
-                foreach (var prog in data.SubclassLevelProgressions)
+                foreach (var progression in data.SubclassLevelProgressions.ToList())
                 {
-                    var parentSub = data.Subclasses.FirstOrDefault(c => c.Id == prog.SubclassId);
+                    var parentSub = data.Subclasses.FirstOrDefault(c => c.Id == progression.SubclassId);
                     if (parentSub == null) continue;
                     var dbSub = await _unitOfWork.Subclasses.GetSingleAsync(x=> x.TechnicalName == parentSub.TechnicalName);
                     if (dbSub == null) continue;
-                    prog.SubclassId = dbSub.Id;
-                    string key = $"{prog.SubclassId}_{prog.Level}";
+                    progression.SubclassId = dbSub.Id;
+                    string key = $"{progression.SubclassId}_{progression.Level}";
                     if (!existingSubProgKeys.Contains(key))
                     {
-                        await _unitOfWork.SubclassLevelProgressions.AddAsync(prog);
+                        await _unitOfWork.SubclassLevelProgressions.AddAsync(progression);
                         existingSubProgKeys.Add(key);
                     }
                     else
                     {
                         // Recuperamos el ID real de la DB para que los personajes puedan jalar los rasgos
                         var match = dbSubProg.First(dp => $"{dp.SubclassId}_{dp.Level}" == key);
-                        prog.Id = match.Id;
-                        prog.Features = match.Features; // Mantener la referencia a los rasgos de la DB
+                        progression.Id = match.Id;
+                        progression.Features = match.Features; // Mantener la referencia a los rasgos de la DB
                     }
                 }
             }
