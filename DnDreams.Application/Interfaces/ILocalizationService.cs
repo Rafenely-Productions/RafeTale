@@ -1,4 +1,5 @@
 ﻿using DnDreams.Domain.Entities;
+using DnDreams.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,9 @@ namespace DnDreams.Application.Interfaces
 {
     public interface ILocalizationService
     {
-        Task<string> GetStringAsync(Guid entityId, string property);
-        Task<Dictionary<Guid, string>> GetAllAsync(string entityType, string propertyType = "Name");
-        Task<List<LocalizedContent>> GetTranslationsForLanguageAsync(string entityType);
+        Task<string> GetStringAsync(Guid entityId, LocProperty property);
+        Task<Dictionary<Guid, string>> GetAllAsync(LocEntity entityType, LocProperty propertyType = LocProperty.Name);
+        Task<Dictionary<LocProperty,Dictionary<Guid, string>>> GetAllAsync(LocEntity entityType, LocProperty[] propertyType);
+        Task<List<LocalizedContent>> GetTranslationsForLanguageAsync(LocEntity entityType);
     }
 }

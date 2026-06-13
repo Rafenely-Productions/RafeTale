@@ -565,19 +565,16 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<Guid>("EntityId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("EntityType")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("LanguageCode")
-                        .IsRequired()
+                    b.Property<int>("LanguageCode")
                         .HasMaxLength(10)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("Property")
-                        .IsRequired()
+                    b.Property<int>("Property")
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Text")
                         .IsRequired()

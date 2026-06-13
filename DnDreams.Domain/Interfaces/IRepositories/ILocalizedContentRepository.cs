@@ -1,4 +1,5 @@
 ﻿using DnDreams.Domain.Entities;
+using DnDreams.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace DnDreams.Domain.Interfaces.IRepositories
 {
     public interface ILocalizedContentRepository : IRepository<LocalizedContent>
     {
-        Task<LocalizedContent?> GetTranslationAsync(Guid entityID, string property, string _currentCulture);
+        Task<LocalizedContent?> GetTranslationAsync(Guid entityID, LocProperty property, LocLanguage _currentCulture);
     }
 }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
-    [Migration("20260611031010_Initial migration")]
-    partial class Initialmigration
+    [Migration("20260613061615_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -382,6 +382,10 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.PrimitiveCollection<string>("ToolProficiencies")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.PrimitiveCollection<string>("WeaponProficiencies")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -564,19 +568,16 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<Guid>("EntityId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("EntityType")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("LanguageCode")
-                        .IsRequired()
+                    b.Property<int>("LanguageCode")
                         .HasMaxLength(10)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("Property")
-                        .IsRequired()
+                    b.Property<int>("Property")
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Text")
                         .IsRequired()

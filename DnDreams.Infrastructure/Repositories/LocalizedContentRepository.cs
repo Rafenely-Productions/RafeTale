@@ -1,4 +1,5 @@
 ﻿using DnDreams.Domain.Entities;
+using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces.IRepositories;
 using DnDreams.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +16,12 @@ namespace DnDreams.Infrastructure.Repositories
     public class LocalizedContentRepository : Repository<LocalizedContent>, ILocalizedContentRepository
     {
         public LocalizedContentRepository(DnDreamsDbContext context) : base(context) { }
-        public async Task<LocalizedContent?> GetTranslationAsync(Guid entityId, string property, string languageCode)
+        public async Task<LocalizedContent?> GetTranslationAsync(Guid entityId, LocProperty property, LocLanguage languageCode)
         {
             return await _context.Set<LocalizedContent>()
                         .FirstOrDefaultAsync(x => x.EntityId == entityId
-                                       && x.Property.ToLower() == property.ToLower()
-                                       && x.LanguageCode.ToLower() == languageCode.ToLower());
+                                       && x.Property == property
+                                       && x.LanguageCode == languageCode);
         }
     }
 }

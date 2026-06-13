@@ -9,6 +9,7 @@ using DnDreams.Domain.Interfaces;
 using DnDreams.Infrastructure;
 using DnDreams.Infrastructure.Extractors;
 using DnDreams.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 namespace DnDreams.MAUI;
@@ -42,6 +43,7 @@ public static class MauiProgram
         builder.Services.AddScoped<ILocalizationService, LocalizationService>();
         builder.Services.AddScoped<IService<RaceDto, Race>, RaceService>();
         builder.Services.AddScoped<IService<ClassDefinitionDto, ClassDefinition>, ClassService>();
+        builder.Services.AddScoped<IService<SpellDto, Spell>, SpellService>();
         builder.Services.AddScoped<IService<LanguageDto, Language>, LanguageService>();
 
         var culture = new CultureInfo("es-MX");
@@ -64,9 +66,36 @@ public static class MauiProgram
         {
             var context = scope.ServiceProvider.GetRequiredService<DnDreams.Infrastructure.Persistence.DnDreamsDbContext>();
             //if (File.Exists(dbPath)) File.Delete(dbPath);
-            context.Database.EnsureCreated();
+            Task.Run(async () => await InitializeDatabaseFromExcelAsync(app.Services));
         }
 
         return app;
+    }
+
+    // Lógica conceptual que se integra en tu capa de persistencia/arranque
+    public static async Task InitializeDatabaseFromExcelAsync(IServiceProvider services)
+    {
+        using var scope = services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<DnDreamsDbContext>();
+        try
+        {
+            await context.Database.MigrateAsync();
+
+            if (await context.ClassDefinitions.AnyAsync() || await context.Spells.AnyAsync())
+            {
+                return;
+            }
+
+            var importManager = scope.ServiceProvider.GetRequiredService<IExcelImportService>();
+
+
+            using Stream excelStream = await FileSystem.OpenAppPackageFileAsync("DnDreams_v2.xlsx");
+
+            await importManager.ImportDataFromExcelAsync(excelStream);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error crítico en carga inicial de Excel: {ex.Message}");
+        }
     }
 }

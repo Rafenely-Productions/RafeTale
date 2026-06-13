@@ -317,7 +317,8 @@ public enum SpellLevel
     Level6 = 6,
     Level7 = 7,
     Level8 = 8,
-    Level9 = 9
+    Level9 = 9,
+    All = 10
 }
 
 public enum CastingTime
@@ -441,4 +442,63 @@ public enum ResourceType
     ChannelDivinityCount,
 
     SneakAttackDie
+}
+
+public enum CodexKey
+{
+    None,
+    Classes,
+    Races,
+    Backgrounds,
+    Spells,
+    Feats,
+    Items,
+    Rules
+}
+
+public enum LocEntity
+{
+    Race,
+    SubRace,
+    Class,
+    Subclass, 
+    Background,
+    Feat, 
+    Spell, 
+    Item, 
+    Monster,
+    Condition, 
+    Action,
+    Trait,
+    SpecialTrait,
+    Language,
+    Proficiency, 
+    Feature,
+    Character,
+    SchoolOfMagic,
+    ItemTemplate,
+    Skill
+}
+
+public enum LocProperty//LocalizationProperty
+{
+    Name,
+    Description,
+    AdditionalInfo,
+    Resistances,
+    Lore,
+    ShortDescription,
+    LongDescription,
+    EffectDescription,
+    UsageDescription,
+    MaterialComponentDescription,
+    ToolProficiencies,
+    Equipment,
+    Ability
+}
+
+public enum LocLanguage
+{
+    en,
+    es
 }

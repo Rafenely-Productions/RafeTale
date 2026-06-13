@@ -2,6 +2,7 @@
 using DnDreams.Application.Interfaces;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
+using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
 using System.Linq.Expressions;
 
@@ -18,14 +19,14 @@ namespace DnDreams.Application.Services.DtosServices
             _loc = loc;
         }
 
-        public async Task<RaceDto> ArmDto(Race race)
+        public async Task<RaceDto> ArmDto(Race race, Dictionary<Guid, string>? localizedWords = null)
         {
             return new RaceDto 
             {
                 Id = race.Id,
-                Name = await _loc.GetStringAsync(race.Id, "Name"),
-                Description = await _loc.GetStringAsync(race.Id, "Description"),
-                Resistances = await _loc.GetStringAsync(race.Id, "Resistances"),
+                Name = await _loc.GetStringAsync(race.Id, LocProperty.Name),
+                Description = localizedWords?.TryGetValue(race.Id,out var d) == true ? d : await _loc.GetStringAsync(race.Id, LocProperty.Description),
+                Resistances = await _loc.GetStringAsync(race.Id, LocProperty.Resistances),
                 Darkvision = race.Darkvision,
                 Size = race.Size,
                 CreatureType = race.CreatureType,
@@ -37,12 +38,22 @@ namespace DnDreams.Application.Services.DtosServices
 
         }
 
+        public Task<RaceDto> ArmDto(Race entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public RaceDto ArmDto(Race entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<RaceDto>> GetAllAsync(Expression<Func<Race, bool>>? filter,params Expression<Func<Race, object>>[] includes)
         {
             var races = await _uow.Races.GetAllAsync(filter,includes);
-            var names = await _loc.GetAllAsync("Race", "Name");
-            var descriptions = await _loc.GetAllAsync("Race", "Description");
-            var resistances = await _loc.GetAllAsync("Race", "Resistances");
+            var names = await _loc.GetAllAsync(LocEntity.Race, LocProperty.Name);
+            var descriptions = await _loc.GetAllAsync(LocEntity.Race, LocProperty.Description);
+            var resistances = await _loc.GetAllAsync(LocEntity.Race, LocProperty.Resistances);
 
             var raceDtos = new List<RaceDto>();
             foreach (var race in races)

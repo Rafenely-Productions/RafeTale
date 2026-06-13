@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DnDreams.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initialmigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -74,9 +74,9 @@ namespace DnDreams.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     EntityId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    EntityType = table.Column<string>(type: "TEXT", nullable: false),
-                    Property = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    LanguageCode = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
+                    EntityType = table.Column<int>(type: "INTEGER", nullable: false),
+                    Property = table.Column<int>(type: "INTEGER", maxLength: 100, nullable: false),
+                    LanguageCode = table.Column<int>(type: "INTEGER", maxLength: 10, nullable: false),
                     Text = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -230,6 +230,7 @@ namespace DnDreams.Infrastructure.Migrations
                     SavingThrowProficiencies = table.Column<string>(type: "TEXT", nullable: false),
                     ArmorProficiencies = table.Column<string>(type: "TEXT", nullable: false),
                     WeaponProficiencies = table.Column<string>(type: "TEXT", nullable: false),
+                    ToolProficiencies = table.Column<string>(type: "TEXT", nullable: false),
                     SkillsToChoose = table.Column<int>(type: "INTEGER", nullable: false),
                     SpellId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },

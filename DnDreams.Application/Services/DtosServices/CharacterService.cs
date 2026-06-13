@@ -2,6 +2,7 @@
 using DnDreams.Application.Interfaces;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
+using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,8 @@ namespace DnDreams.Application.Services.DtosServices
         public async Task<List<CharacterDto>> GetAllAsync(Expression<Func<Character, bool>>? filter, params Expression<Func<Character, object>>[] includes)
         {
             var characters = await _uow.Characters.GetAllAsync(filter, includes);
-            var names = await _loc.GetAllAsync("Character", "Name");
-            var descriptions = await _loc.GetAllAsync("Character", "Description");
+            var names = await _loc.GetAllAsync(LocEntity.Character, LocProperty.Name);
+            var descriptions = await _loc.GetAllAsync(LocEntity.Character, LocProperty.Description);
 
             var characterDtos = new List<CharacterDto>();
             foreach (var character in characters)
@@ -54,6 +55,16 @@ namespace DnDreams.Application.Services.DtosServices
                 
             };
 
+        }
+
+        public Task<CharacterDto> ArmDto(Character entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
+        {
+            throw new NotImplementedException();
+        }
+
+        CharacterDto IService<CharacterDto, Character>.ArmDto(Character entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
+        {
+            throw new NotImplementedException();
         }
     }
 }

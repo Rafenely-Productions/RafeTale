@@ -17,7 +17,7 @@ namespace DnDreams.Infrastructure.Extractors
     {
         private Dictionary<string, LocalizedContent> _localizedContentCache = new();
         private List<string> _LanguagesCache = new List<string>();
-        private readonly string _currentCulture = "es";
+        private readonly LocLanguage _currentCulture = LocLanguage.es;
 
         public async Task<ImportDataPackage> ExtractAllAsync(Stream excelStream)
         {
@@ -62,13 +62,13 @@ namespace DnDreams.Infrastructure.Extractors
                     Ability = ParseEnum<ASI>(row.Cell(3).GetString())
                 };
                 skillProficiencyList.Add(skill);
-                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Name", row.Cell(1).GetString(), "us");
-                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Ability", row.Cell(2).GetString(), "us");
-                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Description", row.Cell(3).GetString(), "us");
+                SaveValidateLocalizedContent(skill.Id, LocEntity.Skill, LocProperty.Name, row.Cell(1).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(skill.Id, LocEntity.Skill, LocProperty.Ability, row.Cell(2).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(skill.Id, LocEntity.Skill, LocProperty.Description, row.Cell(3).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Name", row.Cell(4).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Ability", row.Cell(5).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(skill.Id, nameof(Skill), "Description", row.Cell(6).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(skill.Id, LocEntity.Skill, LocProperty.Name, row.Cell(4).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(skill.Id, LocEntity.Skill, LocProperty.Ability, row.Cell(5).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(skill.Id, LocEntity.Skill, LocProperty.Description, row.Cell(6).GetString(), _currentCulture);
             }
             return skillProficiencyList;
         }
@@ -88,9 +88,9 @@ namespace DnDreams.Infrastructure.Extractors
                 };
                 languagesList.Add(language);
 
-                SaveValidateLocalizedContent(language.Id, nameof(Language), "Name", row.Cell(1).GetString(), "us");
-                SaveValidateLocalizedContent(language.Id, nameof(Language), "Name", row.Cell(2).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(language.Id, nameof(Language), "Description", row.Cell(3).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(language.Id, LocEntity.Language, LocProperty.Name, row.Cell(1).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(language.Id, LocEntity.Language, LocProperty.Name, row.Cell(2).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(language.Id, LocEntity.Language, LocProperty.Description, row.Cell(3).GetString(), _currentCulture);
             }
 
             return languagesList;
@@ -113,13 +113,13 @@ namespace DnDreams.Infrastructure.Extractors
                     Darkvision = row.Cell(6).GetString(),
                 };
 
-                SaveValidateLocalizedContent(race.Id, nameof(Race), "Name", row.Cell(1).GetString(), "us");
-                SaveValidateLocalizedContent(race.Id, nameof(Race), "Description", row.Cell(4).GetString(), "us");
-                SaveValidateLocalizedContent(race.Id, nameof(Race), "Resistances", row.Cell(7).GetString(), "us");
+                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Name, row.Cell(1).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Description, row.Cell(4).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Resistances, row.Cell(7).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(race.Id, nameof(Race), "Name", row.Cell(9).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(race.Id, nameof(Race), "Description", row.Cell(10).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(race.Id, nameof(Race), "Resistances", row.Cell(11).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Name, row.Cell(9).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Description, row.Cell(10).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Resistances, row.Cell(11).GetString(), _currentCulture);
 
                 var languagesInCell = row.Cell(8).GetString().Split(',').Select(l => l.Trim());
 
@@ -147,11 +147,11 @@ namespace DnDreams.Infrastructure.Extractors
                     Id = Guid.NewGuid(),
                     TechnicalName = row.Cell(2).GetString()
                 };
-                SaveValidateLocalizedContent(sub.Id, nameof(SubRace), "Name", row.Cell(2).GetString(), "us");
-                SaveValidateLocalizedContent(sub.Id, nameof(SubRace), "Description", row.Cell(3).GetString(), "us");
+                SaveValidateLocalizedContent(sub.Id, LocEntity.SubRace, LocProperty.Name, row.Cell(2).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(sub.Id, LocEntity.SubRace, LocProperty.Description, row.Cell(3).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(sub.Id, nameof(SubRace), "Name", row.Cell(4).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(sub.Id, nameof(SubRace), "Description", row.Cell(5).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(sub.Id, LocEntity.SubRace, LocProperty.Name, row.Cell(4).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(sub.Id, LocEntity.SubRace, LocProperty.Description, row.Cell(5).GetString(), _currentCulture);
 
                 var race = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase));
 
@@ -179,11 +179,11 @@ namespace DnDreams.Infrastructure.Extractors
                 };
                 trait.RaceId = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty;
 
-                SaveValidateLocalizedContent(trait.Id, nameof(Trait), "Name", trait.TechnicalName, "us");
-                SaveValidateLocalizedContent(trait.Id, nameof(Trait), "Description", row.Cell(3).GetString(), "us");
+                SaveValidateLocalizedContent(trait.Id, LocEntity.Trait, LocProperty.Name, trait.TechnicalName, LocLanguage.en);
+                SaveValidateLocalizedContent(trait.Id, LocEntity.Trait, LocProperty.Description, row.Cell(3).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(trait.Id, nameof(Trait), "Name", row.Cell(6).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(trait.Id, nameof(Trait), "Description", row.Cell(7).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(trait.Id, LocEntity.Trait, LocProperty.Name, row.Cell(6).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(trait.Id, LocEntity.Trait, LocProperty.Description, row.Cell(7).GetString(), _currentCulture);
 
                 traits.Add(trait);
             }
@@ -205,11 +205,11 @@ namespace DnDreams.Infrastructure.Extractors
                 };
                 specialTrait.TraitId = traits.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty;
 
-                SaveValidateLocalizedContent(specialTrait.Id, nameof(SpecialTrait), "Name", specialTrait.TechnicalName, "us");
-                SaveValidateLocalizedContent(specialTrait.Id, nameof(SpecialTrait), "Description", row.Cell(3).GetString(), "us");
+                SaveValidateLocalizedContent(specialTrait.Id, LocEntity.SpecialTrait, LocProperty.Name, specialTrait.TechnicalName, LocLanguage.en);
+                SaveValidateLocalizedContent(specialTrait.Id, LocEntity.SpecialTrait, LocProperty.Description, row.Cell(3).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(specialTrait.Id, nameof(SpecialTrait), "Name", row.Cell(5).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(specialTrait.Id, nameof(SpecialTrait), "Description", row.Cell(6).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(specialTrait.Id, LocEntity.SpecialTrait, LocProperty.Name, row.Cell(5).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(specialTrait.Id, LocEntity.SpecialTrait, LocProperty.Description, row.Cell(6).GetString(), _currentCulture);
 
                 specialTrait.Modifiers = GetModifierData(row.Cell(4).GetString());
 
@@ -243,9 +243,9 @@ namespace DnDreams.Infrastructure.Extractors
 
                 classDefinitionList.Add(classDef);
 
-                SaveValidateLocalizedContent(classDef.Id, nameof(ClassDefinition), "Name", classDef.TechnicalName, "us");
-                SaveValidateLocalizedContent(classDef.Id, nameof(ClassDefinition), "Name", row.Cell(11).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(classDef.Id, nameof(ClassDefinition), "Description", row.Cell(12).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Name, classDef.TechnicalName, LocLanguage.en);
+                SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Name, row.Cell(11).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Description, row.Cell(12).GetString(), _currentCulture);
 
             }
             return classDefinitionList;
@@ -318,11 +318,11 @@ namespace DnDreams.Infrastructure.Extractors
                     Modifiers = GetModifierData(modifiersRaw),
                 };
 
-                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Name", featureTechnicalName, "us");
-                //SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", featureDescription, "us");
+                SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Name, featureTechnicalName, LocLanguage.en);
+                //SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Description, featureDescription, LocLanguage.en);
 
-                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Name", row.Cell(7).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", row.Cell(8).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Name, row.Cell(7).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Description, row.Cell(8).GetString(), _currentCulture);
                 var classTraits = GetClassTraits(progresionClassTraitDataRaw);
 
                 var existingProgression = progressionsList.FirstOrDefault(p => p.ClassDefId == targetClass.Id && p.Level == level);
@@ -367,10 +367,10 @@ namespace DnDreams.Infrastructure.Extractors
                     TechnicalName = subClassTechnicalName,
                 };
                 subClassList.Add(subClass);
-                SaveValidateLocalizedContent(subClass.Id, nameof(Subclass), "Name", subClassTechnicalName, "us");
-                SaveValidateLocalizedContent(subClass.Id, nameof(Subclass), "Description", row.Cell(3).GetString(), "us");
-                SaveValidateLocalizedContent(subClass.Id, nameof(Subclass), "Name", row.Cell(4).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(subClass.Id, nameof(Subclass), "Description", row.Cell(5).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Name, subClassTechnicalName, LocLanguage.en);
+                SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Description, row.Cell(3).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Name, row.Cell(4).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Description, row.Cell(5).GetString(), _currentCulture);
                 
             }
             return subClassList;
@@ -406,11 +406,11 @@ namespace DnDreams.Infrastructure.Extractors
                     //Modifiers = GetModifierData(modifiersRaw)
                 };
 
-                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Name", featureTechnicalName, "us");
-                //SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", featureDescription, "us");
+                SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Name, featureTechnicalName, LocLanguage.en);
+                //SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Description, featureDescription, LocLanguage.en);
 
-                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Name", row.Cell(6).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(feature.Id, nameof(Feature), "Description", row.Cell(7).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Name, row.Cell(6).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Description, row.Cell(7).GetString(), _currentCulture);
 
 
                 var existingProgression = progressionsList.FirstOrDefault(p => p.SubclassId == targetClass.Id && p.Level == level);
@@ -456,16 +456,19 @@ namespace DnDreams.Infrastructure.Extractors
                     Ritual = row.Cell(11).GetString().Equals("Si", StringComparison.OrdinalIgnoreCase),
 
                 };
+                if(spell.Level == SpellLevel.Cantrip)
+                {
 
+                }
                 MapSpellClass(spell, row.Cell(12).GetString(), classDefinitions);
 
-                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Name", spell.TechnicalName, "us");
-                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Description", row.Cell(12).GetString(), "us");
-                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "MaterialComponentDescription", row.Cell(8).GetString(), "us");///todo 
+                SaveValidateLocalizedContent(spell.Id, LocEntity.Spell, LocProperty.Name, spell.TechnicalName, LocLanguage.en);
+                SaveValidateLocalizedContent(spell.Id, LocEntity.Spell, LocProperty.Description, row.Cell(12).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(spell.Id, LocEntity.Spell, LocProperty.MaterialComponentDescription, row.Cell(8).GetString(), LocLanguage.en);///todo 
 
-                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Name", row.Cell(13).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "Description", row.Cell(14).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(spell.Id, nameof(Spell), "MaterialComponentDescription", row.Cell(15).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(spell.Id, LocEntity.Spell, LocProperty.Name, row.Cell(13).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(spell.Id, LocEntity.Spell, LocProperty.Description, row.Cell(14).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(spell.Id, LocEntity.Spell, LocProperty.MaterialComponentDescription, row.Cell(15).GetString(), _currentCulture);
 
 
                 spellsList.Add(spell);
@@ -512,11 +515,11 @@ namespace DnDreams.Infrastructure.Extractors
                 };
                 featsList.Add(feat);
 
-                SaveValidateLocalizedContent(feat.Id, nameof(Spell), "Name", feat.TechnicalName, "us");
-                SaveValidateLocalizedContent(feat.Id, nameof(Spell), "Description", row.Cell(5).GetString(), "us");
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Name, feat.TechnicalName, LocLanguage.en);
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Description, row.Cell(5).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(feat.Id, nameof(Spell), "Name", row.Cell(6).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(feat.Id, nameof(Spell), "Description", row.Cell(7).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Name, row.Cell(6).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Description, row.Cell(7).GetString(), _currentCulture);
 
             }
             return featsList;
@@ -541,8 +544,8 @@ namespace DnDreams.Infrastructure.Extractors
                         ? (ItemCategory)Enum.Parse(typeof(ItemCategory), row.Cell(3).GetString(), true)
                         : ItemCategory.AdventuringGear
                 };
-                SaveValidateLocalizedContent(template.Id, nameof(ItemTemplate), "Name", itemName, _currentCulture);
-                SaveValidateLocalizedContent(template.Id, nameof(ItemTemplate), "Description", row.Cell(2).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(template.Id, LocEntity.ItemTemplate, LocProperty.Name, itemName, _currentCulture);
+                SaveValidateLocalizedContent(template.Id, LocEntity.ItemTemplate, LocProperty.Description, row.Cell(2).GetString(), _currentCulture);
 
 
 
@@ -585,10 +588,10 @@ namespace DnDreams.Infrastructure.Extractors
                     TechnicalName = ParseEnum<SchoolOfMagicEnum>(row.Cell(1).GetString())
                 };
                 schoolsList.Add(school);
-                SaveValidateLocalizedContent(school.Id, nameof(SchoolOfMagic), "Name", row.Cell(1).GetString(), "us");
-                SaveValidateLocalizedContent(school.Id, nameof(SchoolOfMagic), "Description", row.Cell(2).GetString(), "us");
-                SaveValidateLocalizedContent(school.Id, nameof(SchoolOfMagic), "Name", row.Cell(3).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(school.Id, nameof(SchoolOfMagic), "Description", row.Cell(4).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(school.Id, LocEntity.SchoolOfMagic, LocProperty.Name, row.Cell(1).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(school.Id, LocEntity.SchoolOfMagic, LocProperty.Description, row.Cell(2).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(school.Id, LocEntity.SchoolOfMagic, LocProperty.Name, row.Cell(3).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(school.Id, LocEntity.SchoolOfMagic, LocProperty.Description, row.Cell(4).GetString(), _currentCulture);
             }
             return schoolsList;
         }
@@ -623,21 +626,21 @@ namespace DnDreams.Infrastructure.Extractors
 
                 backgroundsList.Add(background);
 
-                SaveValidateLocalizedContent(background.Id, nameof(Background), "Name", background.TechnicalName, "us");
-                SaveValidateLocalizedContent(background.Id, nameof(Background), "ToolProficiencies", row.Cell(5).GetString(), "us");
-                SaveValidateLocalizedContent(background.Id, nameof(Background), "Equipment", row.Cell(6).GetString(), "us");
-                SaveValidateLocalizedContent(background.Id, nameof(Background), "Description", row.Cell(7).GetString(), "us");
+                SaveValidateLocalizedContent(background.Id, LocEntity.Background, LocProperty.Name, background.TechnicalName, LocLanguage.en);
+                SaveValidateLocalizedContent(background.Id, LocEntity.Background, LocProperty.ToolProficiencies, row.Cell(5).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(background.Id, LocEntity.Background, LocProperty.Equipment, row.Cell(6).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(background.Id, LocEntity.Background, LocProperty.Description, row.Cell(7).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(background.Id, nameof(Background), "Name", row.Cell(8).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(background.Id, nameof(Background), "ToolProficiencies", row.Cell(9).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(background.Id, nameof(Background), "Equipment", row.Cell(10).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(background.Id, nameof(Background), "Description", row.Cell(11).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(background.Id, LocEntity.Background, LocProperty.Name, row.Cell(8).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(background.Id, LocEntity.Background, LocProperty.ToolProficiencies, row.Cell(9).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(background.Id, LocEntity.Background, LocProperty.Equipment, row.Cell(10).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(background.Id, LocEntity.Background, LocProperty.Description, row.Cell(11).GetString(), _currentCulture);
             }
             return backgroundsList;
         }
 
 
-        private void SaveValidateLocalizedContent(Guid entityId, string entityType, string property, string text, string languageCode)
+        private void SaveValidateLocalizedContent(Guid entityId, LocEntity entityType, LocProperty property, string text, LocLanguage languageCode)
         {
             if (string.IsNullOrWhiteSpace(text)) return;
             string key = $"{entityId}_{property}_{languageCode}";
@@ -652,7 +655,7 @@ namespace DnDreams.Infrastructure.Extractors
                 _localizedContentCache.Add(key, extractedContent);
             }
         }
-        private LocalizedContent ExtractLocalizedContent(Guid entityId, string entityType, string property, string text, string LanguageCode)
+        private LocalizedContent ExtractLocalizedContent(Guid entityId, LocEntity entityType, LocProperty property, string text, LocLanguage LanguageCode)
         {
             return new LocalizedContent { Id = Guid.NewGuid(), EntityId = entityId, EntityType = entityType, Property = property, Text = text, LanguageCode = LanguageCode };
         }
