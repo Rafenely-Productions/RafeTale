@@ -24,6 +24,7 @@ public interface IUnitOfWork : IDisposable
     IRepository<SchoolOfMagic> SchoolsOfMagic { get; }
     IRepository<Subclass> Subclasses { get; }
     IRepository<SubclassLevelProgression> SubclassLevelProgressions { get; }
+    IRepository<Skill> Skills { get; }
     Task BeginTransactionAsync();
     Task CommitAsync();
     Task RollbackAsync();

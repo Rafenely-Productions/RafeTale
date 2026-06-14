@@ -354,12 +354,15 @@ public enum ArmorProficiency
     Light,
     Medium,
     Heavy,
-    Shield
+    Shield,
+    None
 }
 public enum WeaponProficiency
 {
     Simple,
     Martial,
+    MartialLight,
+    MartialFinesse,
     Exotic
 }
 public enum CategoryFeat
@@ -386,7 +389,9 @@ public enum ToolProficiency
     SmithsTools,
     TinkersTools,
     VehiclesLand,
-    VehiclesWater
+    VehiclesWater,
+    ThreeMusicalInstruments,
+    ArtisanToolsOrMusicalInstruments,
 }
 
 public enum SkillProficiency

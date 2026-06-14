@@ -3,6 +3,7 @@ using System;
 using DnDreams.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
-    partial class DnDreamsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260613232748_Initial Migration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.17");
@@ -424,11 +427,16 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid?>("SubclassId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CharacterId");
 
                     b.HasIndex("ClassDefId");
+
+                    b.HasIndex("SubclassId");
 
                     b.ToTable("ClassLevelProgressions");
                 });
@@ -999,6 +1007,10 @@ namespace DnDreams.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DnDreams.Domain.Entities.Subclass", null)
+                        .WithMany("Progressions")
+                        .HasForeignKey("SubclassId");
+
                     b.Navigation("ClassDef");
                 });
 
@@ -1055,7 +1067,7 @@ namespace DnDreams.Infrastructure.Migrations
             modelBuilder.Entity("DnDreams.Domain.Entities.SubclassLevelProgression", b =>
                 {
                     b.HasOne("DnDreams.Domain.Entities.Subclass", "Subclass")
-                        .WithMany("Progressions")
+                        .WithMany()
                         .HasForeignKey("SubclassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

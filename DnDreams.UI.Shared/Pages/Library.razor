@@ -6,267 +6,435 @@
 @using DnDreams.Domain.Interfaces
 @inject IUnitOfWork UnitOfWork
 @inject IService<ClassDefinitionDto, ClassDefinition> ClassService
+@inject IService<SubclassDto, Subclass> SubclassService
 @inject IService<RaceDto, Race> RaceService
 @inject IService<SpellDto, Spell> SpellService
 @inject IStringLocalizer<AppStrings> L
 @inject IStringLocalizer<LibraryStrings> LL
 @inject IJSRuntime JS
 
+<div class="mx-auto w-full max-w-6xl px-4 py-6 md:px-8 md:py-8 text-white min-h-screen">
+    @if (SelectedTab == CodexKey.None)
+    {
+        <header class="mb-6">
+            <h1 class="font-heading text-2xl font-bold tracking-tight text-white md:text-3xl text-balance">
+                @LL["Title_Name"]
+            </h1>
+            <p class="mt-1 text-sm text-slate-400 text-pretty">
+                @LL["Title_Description"]
+            </p>
+        </header>
 
-<div class="mx-auto w-full max-w-6xl px-4 py-6 md:px-8 md:py-8">
-    <header class="mb-6">
-        <h1 class="font-heading text-2xl font-bold tracking-tight text-foreground md:text-3xl text-balance">
-            @LL["Title_Name"]
-        </h1>
-        <p class="mt-1 text-sm text-muted-foreground text-pretty">
-            @LL["Title_Description"]
-        </p>
-    </header>
-
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <button type="button" @onclick="() => NavigateToTab(CodexKey.Classes)"
-                class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
-            <div class="flex items-start justify-between gap-3 w-full">
-                <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
-                    <i class="fa-solid fa-swords text-lg"></i>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <button type="button" @onclick="() => NavigateToTab(CodexKey.Classes)"
+                    class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
+                <div class="flex items-start justify-between gap-3 w-full">
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+                        <i class="fa-solid fa-swords text-lg"></i>
+                    </div>
+                    <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
                 </div>
-                <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
-            </div>
-            <div class="min-w-0">
-                <h2 class="text-base font-semibold text-white">Classes & Subclasses</h2>
-                <p class="mt-1 break-words text-sm text-slate-400">Martial and arcane archetypes with Hit Die indicators.</p>
-            </div>
-            <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-                @Classes.Count classes
-            </span>
-        </button>
-
-        <button type="button" @onclick="() => NavigateToTab(CodexKey.Races)"
-                class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
-            <div class="flex items-start justify-between gap-3 w-full">
-                <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
-                    <i class="fa-solid fa-users text-lg"></i>
+                <div class="min-w-0">
+                    <h2 class="text-base font-semibold text-white">@LL["Classes_Subclasses"]</h2>
+                    <p class="mt-1 break-words text-sm text-slate-400">@LL["Classes_CardDescription"]</p>
                 </div>
-                <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
-            </div>
-            <div class="min-w-0">
-                <h2 class="text-base font-semibold text-white">Races & Subraces</h2>
-                <p class="mt-1 break-words text-sm text-slate-400">Ancestries, traits, and their subrace branches.</p>
-            </div>
-            <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-                @Races.Count lineages
-            </span>
-        </button>
+                <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
+                    @Classes.Count classes
+                </span>
+            </button>
 
-        <button type="button" @onclick="() => NavigateToTab(CodexKey.Spells)"
-                class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
-            <div class="flex items-start justify-between gap-3 w-full">
-                <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
-                    <i class="fa-solid fa-sparkles text-lg"></i>
+            <button type="button" @onclick="() => NavigateToTab(CodexKey.Races)"
+                    class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
+                <div class="flex items-start justify-between gap-3 w-full">
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+                        <i class="fa-solid fa-users text-lg"></i>
+                    </div>
+                    <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
                 </div>
-                <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
-            </div>
-            <div class="min-w-0">
-                <h2 class="text-base font-semibold text-white">Spells & Magic</h2>
-                <p class="mt-1 break-words text-sm text-slate-400">Filter by level, slots, and school of magic.</p>
-            </div>
-            <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-                @TotalSpellsCount spells
-            </span>
-        </button>
+                <div class="min-w-0">
+                    <h2 class="text-base font-semibold text-white">Races & Subraces</h2>
+                    <p class="mt-1 break-words text-sm text-slate-400">Ancestries, traits, and their subrace branches.</p>
+                </div>
+                <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
+                    @Races.Count lineages
+                </span>
+            </button>
 
-        <button type="button" @onclick="() => NavigateToTab(CodexKey.Rules)"
-                class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
-            <div class="flex items-start justify-between gap-3 w-full">
-                <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
-                    <i class="fa-solid fa-book-bookmark text-lg"></i>
+            <button type="button" @onclick="() => NavigateToTab(CodexKey.Spells)"
+                    class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
+                <div class="flex items-start justify-between gap-3 w-full">
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+                        <i class="fa-solid fa-sparkles text-lg"></i>
+                    </div>
+                    <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
                 </div>
-                <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
-            </div>
-            <div class="min-w-0">
-                <h2 class="text-base font-semibold text-white">System Core Rules</h2>
-                <p class="mt-1 break-words text-sm text-slate-400">Experience progression and proficiency bonus charts.</p>
-            </div>
-            <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-                XP Table
-            </span>
-        </button>
-    </div>
+                <div class="min-w-0">
+                    <h2 class="text-base font-semibold text-white">Spells & Magic</h2>
+                    <p class="mt-1 break-words text-sm text-slate-400">Filter by level, slots, and school of magic.</p>
+                </div>
+                <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
+                    @TotalSpellsCount spells
+                </span>
+            </button>
+
+            <button type="button" @onclick="() => NavigateToTab(CodexKey.Rules)"
+                    class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
+                <div class="flex items-start justify-between gap-3 w-full">
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+                        <i class="fa-solid fa-book-bookmark text-lg"></i>
+                    </div>
+                    <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
+                </div>
+                <div class="min-w-0">
+                    <h2 class="text-base font-semibold text-white">System Core Rules</h2>
+                    <p class="mt-1 break-words text-sm text-slate-400">Experience progression and proficiency bonus charts.</p>
+                </div>
+                <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
+                    XP Table
+                </span>
+            </button>
+        </div>
     }
     else
     {
-    <button type="button" @onclick="() => SelectedTab = CodexKey.None"
-            class="mb-5 inline-flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-sm font-medium text-slate-400 transition-colors hover:border-amber-500/40 hover:text-white">
-        <i class="fa-solid fa-arrow-left"></i> Back to Library
-    </button>
-
-    <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 md:p-6 shadow-2xl">
-
-        @if (SelectedTab == CodexKey.Classes)
+        @if (InspectedClass == null && InspectedRace == null)
         {
-            <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">Classes Catalog</h2>
-            <ul class="flex flex-col gap-2">
-                @foreach (var cls in Classes)
-                {
-                    <li class="flex items-center justify-between gap-3 rounded-lg border border-slate-800 bg-black/40 px-4 py-3">
-                        <div class="min-w-0">
-                            <p class="truncate text-sm font-bold text-white uppercase">@cls.Name</p>
-                            <p class="truncate text-xs text-slate-400 font-serif leading-relaxed">@((MarkupString)cls.Description)</p>
-                        </div>
-                        <span class="inline-flex items-center rounded-md bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 font-mono text-xs font-semibold text-amber-500">
-                            d @cls.HitDie
-                        </span>
-                    </li>
-                }
-            </ul>
+            <button type="button" @onclick="() => NavigateToTab(CodexKey.None)"
+                    class="mb-5 inline-flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-sm font-medium text-slate-400 transition-colors hover:border-amber-500/40 hover:text-white">
+                <i class="fa-solid fa-arrow-left"></i> Back to Library
+            </button>
         }
-        else if (SelectedTab == CodexKey.Races)
+        else
         {
-            <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">Lineages & Ancestries</h2>
-            <ul class="flex flex-col gap-2">
-                @foreach (var race in Races)
-                {
-                    <li class="rounded-lg border border-slate-800 bg-black/40 px-4 py-3">
-                        <div class="flex items-center justify-between gap-2">
-                            <p class="text-sm font-bold text-white uppercase">@race.Name</p>
-                            <span class="shrink-0 text-xs text-slate-400 font-mono bg-slate-800 px-2 py-0.5 rounded">
-                                Base Speed: 9 meters
-                            </span>
-                        </div>
-                        <div class="mt-2 flex flex-wrap gap-1.5">
-                            <span class="rounded-md bg-slate-800 border border-white/5 px-2 py-0.5 text-xs font-medium text-slate-300">
-                                Core Traits
-                            </span>
-                        </div>
-                    </li>
-                }
-            </ul>
+            <button type="button" @onclick="ClearInspections"
+                    class="mb-5 inline-flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-950/20 px-3 py-1.5 text-sm font-medium text-amber-500 transition-colors hover:bg-amber-500/20 hover:text-white">
+                <i class="fa-solid fa-arrow-left-long"></i> Return to Directory
+            </button>
         }
-        else if (SelectedTab == CodexKey.Spells)
-        {
-            <div class="flex flex-col gap-4">
-                <div class="flex flex-wrap items-center gap-2 border-b border-white/5 pb-4">
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Filter Level:</span>
-                    <button class="px-3 py-1 rounded-full text-xs font-medium border @(SpellLevelFilter == SpellLevel.All ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white") "
-                            @onclick='() => FilterSpellsByLevel(SpellLevel.All)'>
-                        All
-                    </button>
-                    @for (int i = 0; i <= 9; i++)
-                    {
-                        int lvl = i; // Copia local para evitar problemas de contexto en closures de .NET
-                                     <button class="px-3 py-1 rounded-full text-xs font-medium border @(SpellLevelFilter == (SpellLevel)lvl ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white")"
-                                             @onclick="() => FilterSpellsByLevel((SpellLevel)lvl)">
-                            @(lvl == 0 ? "Cantrip" : $"Lvl {lvl}")
-                        </button>
-                    }
-                </div>
 
-                <ul @ref="SpellListElement" class="flex flex-col gap-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                    @foreach (var spell in FilteredSpells)
-                    {
-                        <li class="rounded-lg border border-slate-800 bg-black/40 px-4 py-3 shadow-md">
-                            <div class="flex items-center justify-between gap-2">
-                                <p class="text-sm font-bold text-white uppercase">@spell.Name</p>
-                                <span class="rounded-full bg-slate-800 border border-white/5 px-2.5 py-0.5 text-xs font-semibold text-slate-300">
-                                    @(spell.Level == 0 ? "Cantrip" : $"Level {spell.Level}")
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 md:p-6 shadow-2xl min-h-[500px]">
+
+            @if (SelectedTab == CodexKey.Classes)
+            {
+                @if (InspectedClass == null)
+                {
+                    <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">@LL["Classes_Catalog"]</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        @foreach (var cls in Classes)
+                        {
+                            <div @onclick="() => InspectedClass = cls"
+                                 class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-black/40 px-4 py-4 cursor-pointer hover:border-amber-500/40 transition-all group shadow-md">
+                                <div class="min-w-0">
+                                    <p class="text-base font-black text-white group-hover:text-amber-500 uppercase transition-colors">@cls.Name</p>
+                                    <p class="truncate text-xs text-slate-400 font-serif mt-0.5">
+                                        @LL["Primary_Stat"]: @string.Join(" / ", cls.PrimaryAbility.Select(a => L[a.ToString()].Value))
+                                    </p>
+                                </div>
+                                <span class="inline-flex items-center rounded-md bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 font-mono text-xs font-semibold text-amber-500 shrink-0">
+                                    @cls.HitDie
                                 </span>
                             </div>
-                            <div class="mt-1 flex flex-wrap items-center gap-x-3 text-xs text-amber-500/80 font-mono">
-                                <span>Time: @spell.CastingTime</span>
-                                <span class="text-slate-500">|</span>
-                                <span>Range: @spell.Range</span>
-                            </div>
-                            <p class="mt-2 text-xs text-slate-400 font-serif leading-relaxed">
-                                @((MarkupString)spell.Description)
-                            </p>
-                        </li>
-                    }
-                </ul>
-            </div>
-        }
-        else if (SelectedTab == CodexKey.Rules)
-        {
-            <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">Character Advancement</h2>
-            <div class="overflow-x-auto w-full min-w-0">
-                <table class="w-full text-left text-sm min-w-[400px]">
-                    <thead>
-                        <tr class="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-400 font-black">
-                            <th class="px-3 py-3">Level</th>
-                            <th class="px-3 py-3">XP Required</th>
-                            <th class="px-3 py-3">Proficiency Bonus</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var row in XpProgressionTable)
-                        {
-                            <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
-                                <td class="px-3 py-3 font-mono font-bold text-amber-500">@row.Level</td>
-                                <td class="px-3 py-3 text-white">@row.Xp.ToString("N0") XP</td>
-                                <td class="px-3 py-3 font-mono text-slate-400">+@row.Proficiency</td>
-                            </tr>
                         }
-                    </tbody>
-                </table>
-            </div>
-        }
-    </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="animate-in fade-in duration-300 space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 border-b border-white/5 pb-6">
+
+                            <div class="lg:col-span-2 min-w-0">
+                                <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@InspectedClass.Name</h1>
+                                <p class="text-slate-400 font-serif italic text-base leading-relaxed mt-2">
+                                    @((MarkupString)InspectedClass.Description)
+                                </p>
+                            </div>
+
+                            <div class="flex flex-col justify-start">
+                                <h3 class="text-amber-500 font-black text-[10px] tracking-[0.2em] uppercase mb-2 flex items-center gap-2">
+                                    <i class="fa-solid fa-list-check"></i> @LL["Class_Basic_Atributes"]
+                                </h3>
+
+                                <div class="w-full rounded-xl border border-slate-800/80 bg-black/30 shadow-xl overflow-hidden">
+                                    <table class="w-full text-sm border-collapse">
+                                        <tbody>
+                                            <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
+                                                <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30 w-1/2">
+                                                    @LL["Primary_Stat"]
+                                                </td>
+                                                <td class="px-3 py-2.5 font-sans font-bold text-amber-400 text-right">
+                                                    @string.Join(" / ", InspectedClass.PrimaryAbility.Select(a => L[a.ToString()].Value))
+                                                </td>
+                                            </tr>
+
+                                            <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
+                                                <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
+                                                    @LL["Hit_Die"]
+                                                </td>
+                                                <td class="px-3 py-2.5 font-mono font-black text-red-400 text-right text-base">
+                                                    @InspectedClass.HitDie
+                                                </td>
+                                            </tr>
+
+                                            <tr class="hover:bg-white/5 transition-colors">
+                                                <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
+                                                    @LL["Saving_Throws"]
+                                                </td>
+                                                <td class="px-3 py-2.5 font-sans font-medium text-slate-300 text-right text-xs">
+                                                    @string.Join(" / ", InspectedClass.SavingThrowProficiencies.Select(a => L[a.ToString()].Value))
+                                                </td>
+                                            </tr>
+                                            <tr class="hover:bg-white/5 transition-colors">
+                                                <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
+                                                    @LL["Skill_Proficiencies"]
+                                                </td>
+                                                <td class="px-3 py-2.5 font-sans font-medium text-slate-300 text-right text-xs">
+                                                    @string.Join(" / ", InspectedClass.SkillProficiencies.Select(a => L[a.TechnicalName.ToString()].Value))
+                                                </td>
+                                            </tr>
+                                            <tr class="hover:bg-white/5 transition-colors">
+                                                <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
+                                                    @LL["Weapon_Proficiencies"]
+                                                </td>
+                                                <td class="px-3 py-2.5 font-sans font-medium text-slate-300 text-right text-xs">
+                                                    @string.Join(" / ", InspectedClass.WeaponProficiencies.Select(a => L[a.ToString()].Value))
+                                                </td>
+                                            </tr>
+                                            <tr class="hover:bg-white/5 transition-colors">
+                                                <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
+                                                    @LL["Armor_Proficiencies"]
+                                                </td>
+                                                <td class="px-3 py-2.5 font-sans font-medium text-slate-300 text-right text-xs">
+                                                    @string.Join(" / ", InspectedClass.ArmorProficiencies.Select(a => L[a.ToString()].Value))
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        @if (InspectedClass.Subclasses != null && InspectedClass.Subclasses.Any())
+                        {
+                            <div class="animate-in fade-in duration-300">
+                                <h3 class="text-amber-500 font-black text-xs tracking-[0.2em] uppercase mb-3 flex items-center gap-2">
+                                    <i class="fa-solid fa-scroll"></i> Subclasses & Archetypes
+                                </h3>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                                    @foreach (var subclass in InspectedClass.Subclasses)
+                                    {
+                                        <div class="relative overflow-hidden p-4 rounded-xl border border-slate-800 bg-black/30 shadow-md backdrop-blur-sm group hover:border-amber-500/30 transition-all">
+                                            <div class="absolute -right-3 -bottom-3 text-white/5 pointer-events-none transition-transform group-hover:scale-110 duration-300">
+                                                <i class="fa-solid fa-shield-halved text-5xl"></i>
+                                            </div>
+
+                                            <div class="relative min-w-0">
+                                                <h4 class="text-sm font-black text-amber-400 group-hover:text-amber-300 uppercase tracking-wide transition-colors">
+                                                    @subclass.Name
+                                                </h4>
+                                                <p class="text-[11px] text-slate-400 font-serif leading-relaxed mt-1 line-clamp-3">
+                                                    @((MarkupString)subclass.Description)
+                                                </p>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        <div>
+                            <h3 class="text-amber-500 font-black text-xs tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-medal"></i> Class Progression & Level Features
+                            </h3>
+                            <div class="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                                @foreach (var prog in InspectedClass.Progressions.OrderBy(p => p.Level))
+                                {
+                                    <div class="flex flex-col md:flex-row items-start gap-4 p-4 bg-black/30 rounded-2xl border border-white/5">
+                                        <div class="bg-amber-500 text-black font-black text-xs px-3 py-1 rounded-md shrink-0">
+                                            Level @prog.Level
+                                        </div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full min-w-0">
+                                            @foreach (var feature in prog.Features)
+                                            {
+                                                var matchedFeature = InspectedClass.FeatureDtos.FirstOrDefault(f => f.Id == feature.Id);
+                                                if (matchedFeature != null)
+                                                {
+                                                    <div class="bg-white/5 p-3 rounded-xl border border-slate-800 flex flex-col justify-between min-w-0">
+                                                        <h4 class="text-white font-bold text-sm uppercase truncate">@matchedFeature.Name</h4>
+                                                        <p class="text-[11px] text-slate-400 font-serif line-clamp-2 mt-1">
+                                                            @((MarkupString)matchedFeature.Description)
+                                                        </p>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else if (SelectedTab == CodexKey.Races)
+            {
+                @if (InspectedRace == null)
+                {
+                    <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">Lineages & Ancestries</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        @foreach (var race in Races)
+                        {
+                            <div @onclick="() => InspectedRace = race"
+                                 class="rounded-xl border border-slate-800 bg-black/40 px-4 py-4 cursor-pointer hover:border-amber-500/40 transition-all group shadow-md">
+                                <div class="flex items-center justify-between gap-2">
+                                    <p class="text-base font-black text-white group-hover:text-amber-500 uppercase transition-colors">@race.Name</p>
+                                    <span class="shrink-0 text-xs text-slate-400 font-mono bg-slate-800 px-2 py-0.5 rounded">
+                                        Traits View
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="animate-in fade-in duration-300 space-y-6">
+                        <div class="border-b border-white/5 pb-4">
+                            <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@InspectedRace.Name</h1>
+                            <p class="text-slate-400 font-serif italic text-base leading-relaxed mt-2">
+                                Core lineage specifications and ancestral biological benefits.
+                            </p>
+                        </div>
+
+                        <div class="p-4 bg-black/40 rounded-xl border border-slate-800">
+                            <p class="text-sm font-bold text-amber-500 uppercase tracking-wider mb-2">Ancestral Traits Matrix</p>
+                            <span class="text-slate-300 text-sm">Base speed, traits configurations, and racial ability adjustments mapping container.</span>
+                        </div>
+                    </div>
+                }
+            }
+            else if (SelectedTab == CodexKey.Spells)
+            {
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-wrap items-center gap-2 border-b border-white/5 pb-4">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Filter Level:</span>
+                        <button class="px-3 py-1 rounded-full text-xs font-medium border @(SpellLevelFilter == SpellLevel.All ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white")"
+                                @onclick='() => FilterSpellsByLevel(SpellLevel.All)'>
+                            All
+                        </button>
+                        @for (int i = 0; i <= 9; i++)
+                        {
+                            int lvl = i;
+                            <button class="px-3 py-1 rounded-full text-xs font-medium border @(SpellLevelFilter == (SpellLevel)lvl ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white")"
+                                    @onclick="() => FilterSpellsByLevel((SpellLevel)lvl)">
+                                @(lvl == 0 ? "Cantrip" : $"Lvl {lvl}")
+                            </button>
+                        }
+                    </div>
+
+                    <ul @ref="SpellListElement" class="flex flex-col gap-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                        @foreach (var spell in FilteredSpells)
+                        {
+                            <li class="rounded-lg border border-slate-800 bg-black/40 px-4 py-3 shadow-md">
+                                <div class="flex items-center justify-between gap-2">
+                                    <p class="text-sm font-bold text-white uppercase">@spell.Name</p>
+                                    <span class="rounded-full bg-slate-800 border border-white/5 px-2.5 py-0.5 text-xs font-semibold text-slate-300">
+                                        @(spell.Level == 0 ? "Cantrip" : $"Level {spell.Level}")
+                                    </span>
+                                </div>
+                                <div class="mt-1 flex flex-wrap items-center gap-x-3 text-xs text-amber-500/80 font-mono">
+                                    <span>Time: @spell.CastingTime</span>
+                                    <span class="text-slate-500">|</span>
+                                    <span>Range: @spell.Range</span>
+                                </div>
+                                <p class="mt-2 text-xs text-slate-400 font-serif leading-relaxed">
+                                    @((MarkupString)spell.Description)
+                                </p>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            else if (SelectedTab == CodexKey.Rules)
+            {
+                <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">Character Advancement</h2>
+                <div class="overflow-x-auto w-full min-w-0">
+                    <table class="w-full text-left text-sm min-w-[400px]">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-400 font-black">
+                                <th class="px-3 py-3">Level</th>
+                                <th class="px-3 py-3">XP Required</th>
+                                <th class="px-3 py-3">Proficiency Bonus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var row in XpProgressionTable)
+                            {
+                                <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
+                                    <td class="px-3 py-3 font-mono font-bold text-amber-500">@row.Level</td>
+                                    <td class="px-3 py-3 text-white">@row.Xp.ToString("N0") XP</td>
+                                    <td class="px-3 py-3 font-mono text-slate-400">+@row.Proficiency</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
     }
 </div>
 
 @code {
-    // Estados de ruteo de la pestaña
     private CodexKey SelectedTab = CodexKey.None;
     private SpellLevel SpellLevelFilter = SpellLevel.All;
 
-    // Listas de datos fuertemente tipadas inyectadas desde tu Dominio
+    // Deep inspectors state holders
+    private ClassDefinitionDto? InspectedClass;
+    private RaceDto? InspectedRace;
+
     private List<ClassDefinitionDto> Classes = [];
+    private List<SubclassDto> SubclassDtos = [];
     private List<RaceDto> Races = [];
     private List<SpellDto> AllSpells = [];
     private List<SpellDto> FilteredSpells = [];
     private int TotalSpellsCount = 0;
     private ElementReference SpellListElement;
 
-    // Estructura local simulando tu tabla XpRules de SQLite
     private List<(int Level, int Xp, int Proficiency)> XpProgressionTable = [];
 
     protected override async Task OnInitializedAsync()
     {
-        // 1. Consumimos los servicios reales de la capa de aplicación de DnDreams
         Classes = await ClassService.GetAllAsync(null);
+        SubclassDtos = await SubclassService.GetAllAsync(null);
         Races = await RaceService.GetAllAsync(null);
         AllSpells = await SpellService.GetAllAsync(null);
         FilteredSpells = AllSpells;
         TotalSpellsCount = AllSpells.Count;
 
-        // 3. Inicializamos tu tabla de reglas XP base (D&D 2024 Rules)
         LoadXpProgressionRules();
     }
 
     private void NavigateToTab(CodexKey key)
     {
         SelectedTab = key;
-        // Reseteamos filtros al cambiar de sección
         SpellLevelFilter = SpellLevel.All;
         FilteredSpells = AllSpells;
+        ClearInspections();
+    }
+
+    private void ClearInspections()
+    {
+        InspectedClass = null;
+        InspectedRace = null;
     }
 
     private async Task FilterSpellsByLevel(SpellLevel filter)
     {
         if (filter == SpellLevelFilter) return;
-
         SpellLevelFilter = filter;
 
-        if (filter == SpellLevel.All)
-        {
-            FilteredSpells = AllSpells;
-        }
-        else
-        {
-            FilteredSpells = AllSpells.Where(s => s.Level == filter).ToList();
-        }
+        FilteredSpells = filter == SpellLevel.All
+            ? AllSpells
+            : AllSpells.Where(s => s.Level == filter).ToList();
 
         StateHasChanged();
-
         await Task.Delay(1);
 
         try

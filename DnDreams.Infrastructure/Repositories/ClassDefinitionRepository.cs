@@ -17,6 +17,9 @@ public class ClassDefinitionRepository : Repository<ClassDefinition>, IClassDefi
     public async Task<List<ClassDefinition>> GetClassesWithFeatures(Expression<Func<ClassDefinition, bool>>? filter,params Expression<Func<ClassDefinition, object>>[] includes)
     {
         return await _context.ClassDefinitions
+            .Include(c=> c.Subclasses)
+                .ThenInclude(sc=> sc.Progressions)
+            .Include(c=> c.SkillProficiencies)
             .Include(c => c.Progressions)
                 .ThenInclude(p => p.Features)
             .ToListAsync();

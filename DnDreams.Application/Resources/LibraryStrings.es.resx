@@ -117,8 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Classes_CardDescription" xml:space="preserve">
+    <value>Navega por las clases</value>
+  </data>
+  <data name="Classes_Catalog" xml:space="preserve">
+    <value>Catalogo de Clases</value>
+  </data>
+  <data name="Classes_Subclasses" xml:space="preserve">
+    <value>Clases y Subclases</value>
+  </data>
+  <data name="Primary_Stat" xml:space="preserve">
+    <value>Habilidad Primaria</value>
+  </data>
   <data name="Title_Description" xml:space="preserve">
-    <value>Browse the complete D&amp;D 2024 catalog. Tap any index card to expand its</value>
+    <value>Navega el catalogo completo de D&amp;D.</value>
   </data>
   <data name="Title_Name" xml:space="preserve">
     <value>El Códice</value>

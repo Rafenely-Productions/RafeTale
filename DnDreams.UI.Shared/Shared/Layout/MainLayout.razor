@@ -1,12 +1,65 @@
 ﻿@namespace DnDreams.UI.Shared.Shared
 @inherits LayoutComponentBase
+@using DnDreams.Application.Services.Initializer
+@inject AppInitializer Initializer
 
 <div class="main-layout">
-    <aside class="sidebar-container">
-        <NavMenu />
-    </aside>
+    @if (!Initializer.IsDatabaseReady)
+    {
+        <div class="fixed inset-0 bg-black flex flex-col justify-center items-center z-50">
+            <div class="loading-wrapper">
+                <img src="images/logo.svg" class="loading-logo" alt="Logo DnDreams" />
 
-    <main class="content-container">
-        @Body
+                <div class="text-center">
+                    <i class="bi bi-dice-6-fill dice-icon"></i>
+                    <div class="loading-text-glow font-mono text-sm tracking-widest uppercase text-white mt-3">
+                        @Initializer.CurrentStatusMessage
+                    </div>
+
+                    
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill"></div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+
+        <aside class="sidebar-container">
+            <NavMenu />
+        </aside>
+
+        <main class="content-container">
+            @Body
     </main>
+    }
 </div>
+@code {
+    protected override void OnInitialized()
+    {
+        // Nos colgamos a ambos eventos
+        Initializer.OnInitializationCompleted += HandleInitializationCompleted;
+        Initializer.OnStatusMessageChanged += HandleStatusMessageChanged;
+    }
+
+    // Este se dispara cuando el Excel avisa que cambió de texto
+    private void HandleStatusMessageChanged(string newMessage)
+    {
+        // Forzamos a Blazor a refrescar la pantalla para pintar el nuevo texto en vivo
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleInitializationCompleted()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        // Limpieza de eventos
+        Initializer.OnInitializationCompleted -= HandleInitializationCompleted;
+        Initializer.OnStatusMessageChanged -= HandleStatusMessageChanged;
+    }
+}

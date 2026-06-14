@@ -237,15 +237,16 @@ namespace DnDreams.Infrastructure.Extractors
                     SavingThrowProficiencies = ParseEnumList<ASI>(row.Cell(4).GetString()),
                     ArmorProficiencies = ParseEnumList<ArmorProficiency>(row.Cell(5).GetString()),
                     WeaponProficiencies = ParseEnumList<WeaponProficiency>(row.Cell(6).GetString()),
-                    ToolProficiencies = ParseEnumList<ToolProficiency>(row.Cell(7).GetString())
+                    ToolProficiencies = ParseEnumList<ToolProficiency>(row.Cell(7).GetString()),
                 };
-                MapClassSkills(classDef, row.Cell(8).GetString(), skillProficiencies);
+                MapClassSkills(classDef, row.Cell(9).GetString(), skillProficiencies);
 
                 classDefinitionList.Add(classDef);
 
                 SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Name, classDef.TechnicalName, LocLanguage.en);
                 SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Name, row.Cell(11).GetString(), _currentCulture);
                 SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Description, row.Cell(12).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Equipment, row.Cell(10).GetString(), _currentCulture);
 
             }
             return classDefinitionList;
@@ -324,7 +325,10 @@ namespace DnDreams.Infrastructure.Extractors
                 SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Name, row.Cell(7).GetString(), _currentCulture);
                 SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Description, row.Cell(8).GetString(), _currentCulture);
                 var classTraits = GetClassTraits(progresionClassTraitDataRaw);
+                if(!classTraits.Any())
+                {
 
+                }
                 var existingProgression = progressionsList.FirstOrDefault(p => p.ClassDefId == targetClass.Id && p.Level == level);
                 if (existingProgression != null)
                 {
@@ -393,10 +397,9 @@ namespace DnDreams.Infrastructure.Extractors
 
                 var targetSubclass = subclasses.FirstOrDefault(c => c.TechnicalName.Equals(subclassName, StringComparison.OrdinalIgnoreCase));
 
-                if (targetSubclass.ClassDefinition == null) 
+                if (targetSubclass == null && targetSubclass!.ClassDefinition == null) 
                     continue;
 
-                var targetClass = targetSubclass.ClassDefinition;
                 var feature = new Feature
                 {
                     Id = Guid.NewGuid(),
@@ -413,7 +416,7 @@ namespace DnDreams.Infrastructure.Extractors
                 SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Description, row.Cell(7).GetString(), _currentCulture);
 
 
-                var existingProgression = progressionsList.FirstOrDefault(p => p.SubclassId == targetClass.Id && p.Level == level);
+                var existingProgression = progressionsList.FirstOrDefault(p => p.SubclassId == targetSubclass.Id && p.Level == level);
                 if (existingProgression != null)
                 {
                     existingProgression.Features.Add(feature);
@@ -768,6 +771,7 @@ namespace DnDreams.Infrastructure.Extractors
                 }
                 trait.Type = ParseEnum<ResourceType>(keyStr);
 
+                traits.Add(trait);
             }
             return traits;
         }

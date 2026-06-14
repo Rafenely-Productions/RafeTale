@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
-    [Migration("20260613061615_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20260614003449_fix configs2")]
+    partial class fixconfigs2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,6 +63,21 @@ namespace DnDreams.Infrastructure.Migrations
                     b.HasIndex("KnownSpellsId");
 
                     b.ToTable("CharacterSpell");
+                });
+
+            modelBuilder.Entity("ClassDefinitionSkill", b =>
+                {
+                    b.Property<Guid>("ClassDefinitionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("SkillProficienciesId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ClassDefinitionId", "SkillProficienciesId");
+
+                    b.HasIndex("SkillProficienciesId");
+
+                    b.ToTable("ClassSkillProficiencies", (string)null);
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.ActiveModifiers", b =>
@@ -412,16 +427,11 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid?>("SubclassId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CharacterId");
 
                     b.HasIndex("ClassDefId");
-
-                    b.HasIndex("SubclassId");
 
                     b.ToTable("ClassLevelProgressions");
                 });
@@ -630,16 +640,11 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<int>("Ability")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid?>("ClassDefinitionId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("TechnicalName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ClassDefinitionId");
 
                     b.ToTable("Skill");
                 });
@@ -855,6 +860,21 @@ namespace DnDreams.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ClassDefinitionSkill", b =>
+                {
+                    b.HasOne("DnDreams.Domain.Entities.ClassDefinition", null)
+                        .WithMany()
+                        .HasForeignKey("ClassDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DnDreams.Domain.Entities.Skill", null)
+                        .WithMany()
+                        .HasForeignKey("SkillProficienciesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DnDreams.Domain.Entities.ActiveModifiers", b =>
                 {
                     b.HasOne("DnDreams.Domain.Entities.Character", "Character")
@@ -982,10 +1002,6 @@ namespace DnDreams.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DnDreams.Domain.Entities.Subclass", null)
-                        .WithMany("Progressions")
-                        .HasForeignKey("SubclassId");
-
                     b.Navigation("ClassDef");
                 });
 
@@ -1017,13 +1033,6 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Navigation("Character");
                 });
 
-            modelBuilder.Entity("DnDreams.Domain.Entities.Skill", b =>
-                {
-                    b.HasOne("DnDreams.Domain.Entities.ClassDefinition", null)
-                        .WithMany("SkillProficiencies")
-                        .HasForeignKey("ClassDefinitionId");
-                });
-
             modelBuilder.Entity("DnDreams.Domain.Entities.SubRace", b =>
                 {
                     b.HasOne("DnDreams.Domain.Entities.Race", "Race")
@@ -1049,7 +1058,7 @@ namespace DnDreams.Infrastructure.Migrations
             modelBuilder.Entity("DnDreams.Domain.Entities.SubclassLevelProgression", b =>
                 {
                     b.HasOne("DnDreams.Domain.Entities.Subclass", "Subclass")
-                        .WithMany()
+                        .WithMany("Progressions")
                         .HasForeignKey("SubclassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1109,8 +1118,6 @@ namespace DnDreams.Infrastructure.Migrations
             modelBuilder.Entity("DnDreams.Domain.Entities.ClassDefinition", b =>
                 {
                     b.Navigation("Progressions");
-
-                    b.Navigation("SkillProficiencies");
 
                     b.Navigation("Subclasses");
                 });
