@@ -101,6 +101,19 @@ namespace DnDreams.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Skill",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    TechnicalName = table.Column<string>(type: "TEXT", nullable: false),
+                    Ability = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Skill", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Spells",
                 columns: table => new
                 {
@@ -280,22 +293,27 @@ namespace DnDreams.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Skill",
+                name: "ClassSkillProficiencies",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    TechnicalName = table.Column<string>(type: "TEXT", nullable: false),
-                    Ability = table.Column<int>(type: "INTEGER", nullable: false),
-                    ClassDefinitionId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    ClassDefinitionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    SkillProficienciesId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Skill", x => x.Id);
+                    table.PrimaryKey("PK_ClassSkillProficiencies", x => new { x.ClassDefinitionId, x.SkillProficienciesId });
                     table.ForeignKey(
-                        name: "FK_Skill_ClassDefinitions_ClassDefinitionId",
+                        name: "FK_ClassSkillProficiencies_ClassDefinitions_ClassDefinitionId",
                         column: x => x.ClassDefinitionId,
                         principalTable: "ClassDefinitions",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ClassSkillProficiencies_Skill_SkillProficienciesId",
+                        column: x => x.SkillProficienciesId,
+                        principalTable: "Skill",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -730,6 +748,11 @@ namespace DnDreams.Infrastructure.Migrations
                 column: "SubclassId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClassSkillProficiencies_SkillProficienciesId",
+                table: "ClassSkillProficiencies",
+                column: "SkillProficienciesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Features_ClassLevelProgressionId",
                 table: "Features",
                 column: "ClassLevelProgressionId");
@@ -759,11 +782,6 @@ namespace DnDreams.Infrastructure.Migrations
                 table: "LocalizedContents",
                 columns: new[] { "EntityId", "Property", "LanguageCode" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Skill_ClassDefinitionId",
-                table: "Skill",
-                column: "ClassDefinitionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subclasses_ClassDefinitionId",
@@ -820,6 +838,9 @@ namespace DnDreams.Infrastructure.Migrations
                 name: "CharacterStatus");
 
             migrationBuilder.DropTable(
+                name: "ClassSkillProficiencies");
+
+            migrationBuilder.DropTable(
                 name: "JournalEntries");
 
             migrationBuilder.DropTable(
@@ -827,9 +848,6 @@ namespace DnDreams.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "LocalizedContents");
-
-            migrationBuilder.DropTable(
-                name: "Skill");
 
             migrationBuilder.DropTable(
                 name: "SubRaces");
@@ -848,6 +866,9 @@ namespace DnDreams.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "ItemTemplates");
+
+            migrationBuilder.DropTable(
+                name: "Skill");
 
             migrationBuilder.DropTable(
                 name: "Campaigns");

@@ -61,6 +61,42 @@ namespace DnDreams.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Martial and arcane archetypes with Hit Die indicators..
+        /// </summary>
+        public static string Classes_CardDescription {
+            get {
+                return ResourceManager.GetString("Classes_CardDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Classes Catalog.
+        /// </summary>
+        public static string Classes_Catalog {
+            get {
+                return ResourceManager.GetString("Classes_Catalog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Classes &amp; Subclasses.
+        /// </summary>
+        public static string Classes_Subclasses {
+            get {
+                return ResourceManager.GetString("Classes_Subclasses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Primary Stat focus archetype.
+        /// </summary>
+        public static string Primary_Stat {
+            get {
+                return ResourceManager.GetString("Primary_Stat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse the complete D&amp;D 2024 catalog. Tap any index card to expand its.
         /// </summary>
         public static string Title_Description {

@@ -3,6 +3,7 @@ using DnDreams.Application.Interfaces;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Application.Services;
 using DnDreams.Application.Services.DtosServices;
+using DnDreams.Application.Services.Initializer;
 using DnDreams.Domain.DTOs;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Interfaces;
@@ -29,6 +30,7 @@ public static class MauiProgram
 
 
         var dbPath = Path.Combine(FileSystem.AppDataDirectory, "dndreams.db3");
+        builder.Services.AddSingleton<AppInitializer>();
 
         builder.Services.AddInfrastructure(dbPath);
         builder.Services.AddScoped<ILevelingService, LevelingService>();
@@ -43,6 +45,7 @@ public static class MauiProgram
         builder.Services.AddScoped<ILocalizationService, LocalizationService>();
         builder.Services.AddScoped<IService<RaceDto, Race>, RaceService>();
         builder.Services.AddScoped<IService<ClassDefinitionDto, ClassDefinition>, ClassService>();
+        builder.Services.AddScoped<IService<SubclassDto, Subclass>, SubclassService>();
         builder.Services.AddScoped<IService<SpellDto, Spell>, SpellService>();
         builder.Services.AddScoped<IService<LanguageDto, Language>, LanguageService>();
 
@@ -65,9 +68,11 @@ public static class MauiProgram
         using (var scope = app.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DnDreams.Infrastructure.Persistence.DnDreamsDbContext>();
-            //if (File.Exists(dbPath)) File.Delete(dbPath);
+            if (File.Exists(dbPath)) File.Delete(dbPath);
             Task.Run(async () => await InitializeDatabaseFromExcelAsync(app.Services));
         }
+
+
 
         return app;
     }
@@ -75,27 +80,27 @@ public static class MauiProgram
     // Lógica conceptual que se integra en tu capa de persistencia/arranque
     public static async Task InitializeDatabaseFromExcelAsync(IServiceProvider services)
     {
-        using var scope = services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<DnDreamsDbContext>();
-        try
+        var initializer = services.GetRequiredService<AppInitializer>();
+
+
+        // Le pasamos el bloque de código nativo que MAUI sí sabe resolver
+        await initializer.InitializeAsync(async () =>
         {
+            using var scope = services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<DnDreamsDbContext>();
+
+            initializer.UpdateStatus("Preparando grimorio de SQLite...");
             await context.Database.MigrateAsync();
 
-            if (await context.ClassDefinitions.AnyAsync() || await context.Spells.AnyAsync())
+            // 2. Si no hay datos, leemos el Excel embebido en los Assets de MAUI
+            if (!await context.ClassDefinitions.AnyAsync() && !await context.Spells.AnyAsync())
             {
-                return;
+                var importManager = scope.ServiceProvider.GetRequiredService<IExcelImportService>();
+                using Stream excelStream = await FileSystem.OpenAppPackageFileAsync("DnDreams_v2.xlsx");
+
+                // MAUI resuelve esto de forma nativa:
+                await importManager.ImportDataFromExcelAsync(excelStream,initializer);
             }
-
-            var importManager = scope.ServiceProvider.GetRequiredService<IExcelImportService>();
-
-
-            using Stream excelStream = await FileSystem.OpenAppPackageFileAsync("DnDreams_v2.xlsx");
-
-            await importManager.ImportDataFromExcelAsync(excelStream);
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error crítico en carga inicial de Excel: {ex.Message}");
-        }
+        });
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using DnDreams.Application.Interfaces;
+using DnDreams.Application.Services.Initializer;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
@@ -27,7 +28,7 @@ public class ImportManager : IExcelImportService
         _localizationService = localizationService;
     }
 
-    public async Task<(int Count, string Version)> ImportDataFromExcelAsync(Stream excelStream)
+    public async Task<(int Count, string Version)> ImportDataFromExcelAsync(Stream excelStream,AppInitializer appInitializer)
     {
         var data = await _dataExtractor.ExtractAllAsync(excelStream);  
         
@@ -42,15 +43,17 @@ public class ImportManager : IExcelImportService
                 var newRaces = data.Races.Where(r => !existingRaces.Contains(r.TechnicalName.ToLower())).ToList();
                 if (newRaces.Any()) await _unitOfWork.Races.AddRangeAsync(newRaces);
             }
+            appInitializer.UpdateStatus("Razas importadas. Cargando clases...");
             if (data.ClassDefinitions.Any())
             {
                 var existingClasses = (await _unitOfWork.ClassDefinitions.GetAllAsync()).Select(c => c.TechnicalName.ToLower()).ToHashSet();
                 var newClasses = data.ClassDefinitions.Where(c => !existingClasses.Contains(c.TechnicalName.ToLower())).ToList();
                 if (newClasses.Any()) await _unitOfWork.ClassDefinitions.AddRangeAsync(newClasses);
             }
+            appInitializer.UpdateStatus("Clases importadas. Guardando Razas y Clases...");
             await _unitOfWork.SaveChangesAsync();
-
-            if(data.ClassLevelProgressions.Any())
+            appInitializer.UpdateStatus("Razas y clases guardas en la base de datos. Sincronizando progresiones...");
+            if (data.ClassLevelProgressions.Any())
             {
                 var dbProgressions = await _unitOfWork.ClassLevelProgressions.GetAllAsync();
                 var existingProgKeys = dbProgressions.Select(p => $"{p.ClassDefId}_{p.Level}").ToHashSet();
@@ -80,6 +83,7 @@ public class ImportManager : IExcelImportService
                     }
                 }
             }
+            appInitializer.UpdateStatus("Progresiones de clase sincronizadas. Cargando reglas de experiencia, dotes y trasfondos...");
             if (data.XpRules.Any())
             {
                 var existingXp = (await _unitOfWork.XpRules.GetAllAsync()).Select(x => x.Level).ToHashSet();
@@ -98,8 +102,9 @@ public class ImportManager : IExcelImportService
                 var newItems = data.Backgrounds.Where(i => !existingBackgrounds.Contains(i.TechnicalName.ToLower())).ToList();
                 if (newItems.Any()) await _unitOfWork.Backgrounds.AddRangeAsync(newItems);
             }
+            appInitializer.UpdateStatus("Reglas de experiencia, dotes y trasfondos importados. Guardando en base de datos...");
             await _unitOfWork.SaveChangesAsync();
-
+            appInitializer.UpdateStatus("Datos guardados. Sincronizando hechizos yobjetos");
             if (data.Spells.Any())
             {
                 var existingSpells = (await _unitOfWork.Spells.GetAllAsync()).Select(s => s.TechnicalName.ToLower()).ToHashSet();
@@ -112,8 +117,9 @@ public class ImportManager : IExcelImportService
                 var newItems = data.Items.Where(i => !existingItems.Contains(i.TechnicalName.ToLower())).ToList();
                 if (newItems.Any()) await _unitOfWork.ItemTemplates.AddRangeAsync(newItems);
             }
+            appInitializer.UpdateStatus("Hechizos y objetos importados. Guardando en base de datos...");
             await _unitOfWork.SaveChangesAsync();
-
+            appInitializer.UpdateStatus("Datos guardados. Sincronizando personajes...");
             if (data.Characters.Any())
             {
                 var dbRaces = await _unitOfWork.Races.GetAllAsync();
@@ -180,14 +186,22 @@ public class ImportManager : IExcelImportService
 
                 await _unitOfWork.Characters.AddRangeAsync(data.Characters);
             }
+            appInitializer.UpdateStatus("Personajes importados. Guardando en base de datos...");
             await _unitOfWork.SaveChangesAsync();
-
+            appInitializer.UpdateStatus("Personajes guardados. Sincronizando contenidos localizados...");
             if (data.LocalizedContents.Any())
             {
                 await _unitOfWork.LocalizedContents.AddRangeAsync(data.LocalizedContents);
             }
+            appInitializer.UpdateStatus("Contenidos localizados importados. Guardando en base de datos...");
             await _unitOfWork.SaveChangesAsync();
-
+            appInitializer.UpdateStatus("Contenidos localizados guardados. Sincronizando skills, rasgos, idiomas, subrazas, subclases y progresiones de subclase...");
+            if(data.SkillProficiencies.Any())
+            {
+                var existingSkills = (await _unitOfWork.Skills.GetAllAsync()).Select(x => x.TechnicalName).ToHashSet();
+                var newSkills = data.SkillProficiencies.Where(x => !existingSkills.Contains(x.TechnicalName)).ToList();
+                if (newSkills.Any()) await _unitOfWork.Skills.AddRangeAsync(newSkills);
+            }
             if (data.Traits.Any()) 
             {
                 var existingTraits = (await _unitOfWork.Traits.GetAllAsync()).Select(x => x.TechnicalName).ToHashSet();
@@ -212,7 +226,12 @@ public class ImportManager : IExcelImportService
                 var newSubClasses = data.Subclasses.Where(x => !exisitnSubClases.Contains(x.TechnicalName)).ToList();
                 if (newSubClasses.Any()) await _unitOfWork.Subclasses.AddRangeAsync(newSubClasses);
             }
-            if(data.SubclassLevelProgressions.Any())
+            appInitializer.UpdateStatus("Skills Rasgos, idiomas, subrazas, subclases y progresiones de subclase sincronizados. Guardando en base de datos...");
+
+            await _unitOfWork.SaveChangesAsync();
+            appInitializer.UpdateStatus("Datos guardados. Sincronización completa.");
+
+            if (data.SubclassLevelProgressions.Any())
             {
                 var dbSubProg = await _unitOfWork.SubclassLevelProgressions.GetAllAsync();
                 var existingSubProgKeys = dbSubProg.Select(p => $"{p.SubclassId}_{p.Level}").ToHashSet();
@@ -238,10 +257,12 @@ public class ImportManager : IExcelImportService
                     }
                 }
             }
-
+            appInitializer.UpdateStatus("Progresiones de subclase sincronizados. Guardando en base de datos...");
             await _unitOfWork.SaveChangesAsync();
+            appInitializer.UpdateStatus("Datos guardados. Sincronización completa.");
             await _unitOfWork.CommitAsync();
-
+            appInitializer.UpdateStatus("¡Importación finalizada! Preparando el grimorio para la aventura...");
+            
             return (Count: data.Characters.Count, Version: "1.0");
         }
         catch (Exception)

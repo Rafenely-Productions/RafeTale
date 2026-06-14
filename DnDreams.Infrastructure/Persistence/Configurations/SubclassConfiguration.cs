@@ -21,6 +21,9 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
             .WithMany(c => c.Subclasses)
             .HasForeignKey(s => s.ClassDefinitionId)
             .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(cd => cd.Progressions)
+                .WithOne();
         }
     }
 }

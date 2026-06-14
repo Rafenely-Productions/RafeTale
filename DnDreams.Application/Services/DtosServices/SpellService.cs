@@ -33,6 +33,7 @@ namespace DnDreams.Application.Services.DtosServices
                 Name = await _loc.GetStringAsync(spell.Id, LocProperty.Name),
                 Description = await _loc.GetStringAsync(spell.Id, LocProperty.Description),
                 MaterialComponentDescription = await _loc.GetStringAsync(spell.Id, LocProperty.MaterialComponentDescription),
+                School = spell.School,
                 Level = spell.Level
             };
 
