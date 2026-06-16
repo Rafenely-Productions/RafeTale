@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DnDreams.Application.Services.DtosServices
 {
-    public class SpellService : IService<SpellDto,Spell>
+    public class SpellService : IService<SpellDto, Spell>
     {
         private readonly IUnitOfWork _uow;
         private readonly ILocalizationService _loc;
@@ -30,11 +30,13 @@ namespace DnDreams.Application.Services.DtosServices
             return new SpellDto
             {
                 Id = spell.Id,
+                TechnicalName = spell.TechnicalName,
                 Name = await _loc.GetStringAsync(spell.Id, LocProperty.Name),
                 Description = await _loc.GetStringAsync(spell.Id, LocProperty.Description),
                 MaterialComponentDescription = await _loc.GetStringAsync(spell.Id, LocProperty.MaterialComponentDescription),
                 School = spell.School,
-                Level = spell.Level
+                Level = spell.Level,
+                
             };
 
         }
@@ -48,6 +50,7 @@ namespace DnDreams.Application.Services.DtosServices
             return new SpellDto
             {
                 Id = spell.Id,
+                TechnicalName = spell.TechnicalName,
                 Name = Name,
                 Description = Description,
                 MaterialComponentDescription = Material,
@@ -67,6 +70,11 @@ namespace DnDreams.Application.Services.DtosServices
                 spellDtos.Add(ArmDto(spell!, descriptions));
             }
             return spellDtos.OrderBy(x=> x.Level).ThenBy(x=> x.Name,StringComparer.OrdinalIgnoreCase).ToList();
+        }
+
+        public Task<List<SpellDto>> GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<SpellDto> GetByIdAsync(Guid id, params Expression<Func<Spell, object>>[] includes)

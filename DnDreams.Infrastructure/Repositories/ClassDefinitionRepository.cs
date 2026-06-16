@@ -19,6 +19,7 @@ public class ClassDefinitionRepository : Repository<ClassDefinition>, IClassDefi
         return await _context.ClassDefinitions
             .Include(c=> c.Subclasses)
                 .ThenInclude(sc=> sc.Progressions)
+                    .ThenInclude(p=> p.Features)
             .Include(c=> c.SkillProficiencies)
             .Include(c => c.Progressions)
                 .ThenInclude(p => p.Features)

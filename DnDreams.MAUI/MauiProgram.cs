@@ -68,7 +68,7 @@ public static class MauiProgram
         using (var scope = app.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DnDreams.Infrastructure.Persistence.DnDreamsDbContext>();
-            if (File.Exists(dbPath)) File.Delete(dbPath);
+            //if (File.Exists(dbPath)) File.Delete(dbPath);
             Task.Run(async () => await InitializeDatabaseFromExcelAsync(app.Services));
         }
 

@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace DnDreams.Application.Services.DtosServices
 {
-    public class RaceService : IService<RaceDto,Race>
+    public class RaceService : IService<RaceDto, Race>
     {
         private readonly IUnitOfWork _uow;
         private readonly ILocalizationService _loc;
@@ -74,6 +74,11 @@ namespace DnDreams.Application.Services.DtosServices
                 });
             }
             return raceDtos;
+        }
+
+        public Task<List<RaceDto>> GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<RaceDto> GetByIdAsync(Guid id, params Expression<Func<Race, object>>[] includes)

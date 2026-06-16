@@ -28,6 +28,11 @@ namespace DnDreams.Application.Services.DtosServices
             throw new NotImplementedException();
         }
 
+        public Task<List<LanguageDto>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<LanguageDto> GetByIdAsync(Guid id)
         {
             throw new NotImplementedException();

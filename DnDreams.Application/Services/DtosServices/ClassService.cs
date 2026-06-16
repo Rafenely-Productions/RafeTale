@@ -20,9 +20,6 @@ namespace DnDreams.Application.Services.DtosServices
             _loc = loc;
         }
 
-        // ====================================================================
-        // 1. ArmDto Asíncrono (Usado en búsquedas individuales por ID)
-        // ====================================================================
         public async Task<ClassDefinitionDto> ArmDto(ClassDefinition entity)
         {
             // Traemos las traducciones específicas para las subclases e inicializamos las características
@@ -87,9 +84,6 @@ namespace DnDreams.Application.Services.DtosServices
             };
         }
 
-        // ====================================================================
-        // 3. GetAllAsync (Trae la lista de clases con todo e inyecta las features)
-        // ====================================================================
         public async Task<List<ClassDefinitionDto>> GetAllAsync(Expression<Func<ClassDefinition, bool>>? filter, params Expression<Func<ClassDefinition, object>>[] includes)
         {
             var classes = await _uow.ClassDefinitions.GetClassesWithFeatures(filter, includes);
@@ -112,21 +106,43 @@ namespace DnDreams.Application.Services.DtosServices
 
             return dtos.OrderBy(x => x.Name).ToList();
         }
-        private void ArmSubclasesDtos(ClassDefinition classD, ClassDefinitionDto classDto, List<LocalizedContent> subclasesNames,List<LocalizedContent> featureNames)
+        public async Task<List<ClassDefinitionDto>> GetAllAsync()
+        {
+            var classes = await _uow.ClassDefinitions.GetClassesWithFeatures(null);
+            var classesLocations = await _loc.GetAllAsync(LocEntity.Class, [LocProperty.Name, LocProperty.Description]);
+            var subclasesNames = await _loc.GetTranslationsForLanguageAsync(LocEntity.Subclass);
+            var featuresNames = await _loc.GetTranslationsForLanguageAsync(LocEntity.Feature);
+
+            var dtos = new List<ClassDefinitionDto>();
+            foreach (var entity in classes)
+            {
+                var classDto = ArmDto(entity, classesLocations);
+
+                // 1. Armamos las características de la Clase Base (Nivel 1 al 20)
+                ArmFeatureDtos(classDto, featuresNames);
+                ArmSubclasesDtos(entity, classDto, subclasesNames, featuresNames);
+
+
+                dtos.Add(classDto);
+            }
+
+            return dtos.OrderBy(x => x.Name).ToList();
+        }
+        private void ArmSubclasesDtos(ClassDefinition classD, ClassDefinitionDto classDto, List<LocalizedContent> subclasesNames, List<LocalizedContent> featureNames)
         {
             if (classD.Subclasses == null) return;
-            for(int i = 0; i < classD.Subclasses.Count; i++)
+            for (int i = 0; i < classD.Subclasses.Count; i++)
             {
-                    var sub = classD.Subclasses.ElementAt(i);
-                    var subDto = new SubclassDto
-                    {
-                        Id = sub.Id,
-                        Name = subclasesNames.FirstOrDefault(t => t.EntityId == sub.Id && t.Property == LocProperty.Name)?.Text ?? "Sin nombre",
-                        Description = subclasesNames.FirstOrDefault(t => t.EntityId == sub.Id && t.Property == LocProperty.Description)?.Text ?? "Sin descripcion",
-                        Progressions = sub.Progressions
-                    };
-                    ArmSubclassFeatureDtos(subDto, featureNames);
-                    classDto.Subclasses.Add(subDto);
+                var sub = classD.Subclasses.ElementAt(i);
+                var subDto = new SubclassDto
+                {
+                    Id = sub.Id,
+                    Name = subclasesNames.FirstOrDefault(t => t.EntityId == sub.Id && t.Property == LocProperty.Name)?.Text ?? "Sin nombre",
+                    Description = subclasesNames.FirstOrDefault(t => t.EntityId == sub.Id && t.Property == LocProperty.Description)?.Text ?? "Sin descripcion",
+                    Progressions = sub.Progressions
+                };
+                ArmSubclassFeatureDtos(subDto, featureNames);
+                classDto.Subclasses.Add(subDto);
             }
         }
 

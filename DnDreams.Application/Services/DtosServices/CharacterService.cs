@@ -66,5 +66,10 @@ namespace DnDreams.Application.Services.DtosServices
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<CharacterDto>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
