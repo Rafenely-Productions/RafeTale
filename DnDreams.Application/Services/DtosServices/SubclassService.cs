@@ -89,5 +89,10 @@ namespace DnDreams.Application.Services.DtosServices
 
             return await ArmDto(race);
         }
+
+        public Task<List<SubclassDto>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

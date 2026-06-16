@@ -1,0 +1,136 @@
+﻿@using Application.DTOs;
+@using Domain.Enums;
+@inject IStringLocalizer<AppStrings> L
+@inject IStringLocalizer<LibraryStrings> LL
+@inject IJSRuntime JS
+
+<div class="flex flex-col gap-4 border-b border-white/5 pb-4">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider shrink-0 flex items-center gap-1.5">
+            <i class="fa-solid fa-magnifying-glass text-amber-500/80"></i> @L["Spell_Searcher"]
+        </span>
+
+        <input type="text"
+               class="w-full sm:max-w-xs px-4 py-1.5 rounded-xl text-xs font-medium border border-slate-800 bg-black/40 text-slate-200 placeholder-slate-500 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all shadow-md"
+               placeholder="Buscar conjuro por nombre..."
+               @bind-value="SearchText"
+               @bind-value:event="oninput" />
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2 border-b border-white/5 pb-4">
+        <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Filter Level:</span>
+            <button class="px-3 py-1 rounded-full text-xs font-medium border @(SpellLevelFilter == SpellLevel.All ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white")"
+                    @onclick='() => FilterSpellsByLevel(SpellLevel.All)'>
+                <span>All</span>
+                <span class="text-[10px] opacity-60 font-mono bg-white/10 px-1.5 py-0.2 rounded-md">
+                    @(string.IsNullOrWhiteSpace(SearchText) ? AllSpells.Count : AllSpells.Count(s => s.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)))
+                </span>
+            </button>
+            @for (int i = 0; i <= 9; i++)
+            {
+                int lvl = i;
+                SpellLevel curr = (SpellLevel)i;
+                int countForThisLevel = string.IsNullOrWhiteSpace(SearchText)
+                ? FilteredSpells.Count(s => s.Level == (SpellLevel)lvl)
+                : FilteredSpells.Count(s => s.Level == (SpellLevel)lvl &&
+                (s.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                s.TechnicalName.Contains(SearchText, StringComparison.OrdinalIgnoreCase)));
+
+
+                <button class="px-3 py-1 rounded-full text-xs font-medium border @(SpellLevelFilter == (SpellLevel)lvl ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white")"
+                        @onclick="() => FilterSpellsByLevel((SpellLevel)lvl)">
+                    <span>@(lvl == 0 ? "Cantrip" : $"Lvl {lvl}")</span>
+                    <span class="text-[10px] opacity-60 font-mono bg-white/10 px-1.5 py-0.2 rounded-md @(countForThisLevel > 0 && SpellLevelFilter == (SpellLevel)lvl ? "bg-amber-500/20 text-amber-400" : "")">
+                        @countForThisLevel
+                    </span>
+                </button>
+            }
+        </div>
+    </div>
+
+    <ul @ref="SpellListElement" class="flex flex-col gap-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+        @foreach (var spell in FilteredSpells)
+        {
+            <li class="rounded-lg border border-slate-800 bg-black/40 px-4 py-3 shadow-md">
+                <div class="flex items-center justify-between gap-2">
+                    <p class="text-sm font-bold text-white uppercase">@spell.Name <span class="text-slate-400 text-xs">@spell.TechnicalName</span></p>
+                    <span class="rounded-full bg-slate-800 border border-white/5 px-2.5 py-0.5 text-xs font-semibold text-slate-300">
+                        @(spell.Level == 0 ? "Cantrip" : $"Level {spell.Level}")
+                    </span>
+                </div>
+                <div class="mt-1 flex flex-wrap items-center gap-x-3 text-xs text-amber-500/80 font-mono">
+                    <span>Time: @spell.CastingTime</span>
+                    <span class="text-slate-500">|</span>
+                    <span>Range: @spell.Range</span>
+                </div>
+                <p class="mt-2 text-xs text-slate-400 font-serif leading-relaxed">
+                    @((MarkupString)spell.Description)
+                </p>
+            </li>
+        }
+    </ul>
+</div>
+@code {
+    private SpellLevel SpellLevelFilter = SpellLevel.All;
+
+    [Parameter] public List<SpellDto> AllSpells { get; set; } = [];
+    private List<SpellDto> FilteredSpells = [];
+    private ElementReference SpellListElement;
+
+    protected override void OnInitialized()
+    {
+        FilteredSpells = AllSpells;
+    }
+
+    private string _searchText = string.Empty;
+    private string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            if (_searchText != value)
+            {
+                _searchText = value;
+                ApplySpellsFilter(); // Cada vez que el usuario escribe, aplicamos el filtro de inmediato
+            }
+        }
+    }
+
+    private async Task FilterSpellsByLevel(SpellLevel filter)
+    {
+        if (filter == SpellLevelFilter) return;
+        SpellLevelFilter = filter;
+
+        ApplySpellsFilter();
+
+
+        StateHasChanged();
+        await Task.Delay(1);
+
+        try
+        {
+            await JS.InvokeVoidAsync("eval", "(() => { const el = document.querySelector('.custom-scrollbar'); if (el) el.scrollTop = 0; })()");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error de scroll: {ex.Message}");
+        }
+    }
+    private void ApplySpellsFilter()
+    {
+        var query = AllSpells.AsEnumerable();
+
+        if (SpellLevelFilter != SpellLevel.All)
+        {
+            query = query.Where(s => s.Level == SpellLevelFilter);
+        }
+
+        if (!string.IsNullOrWhiteSpace(SearchText))
+        {
+            query = query.Where(s => s.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) || s.TechnicalName.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+        }
+
+        FilteredSpells = query.ToList();
+    }
+}

@@ -11,6 +11,7 @@ namespace DnDreams.Application.DTOs
     public class SpellDto
     {
         public Guid Id { get; set; }
+        public string TechnicalName { get; set; } = string.Empty; // Nombre técnico para referencias internas
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string MaterialComponentDescription { get; set; } = string.Empty; // Descripción detallada de los componentes materiales, si los hay

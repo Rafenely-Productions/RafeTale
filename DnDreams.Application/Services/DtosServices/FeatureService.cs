@@ -62,6 +62,11 @@ namespace DnDreams.Application.Services.DtosServices
             return featureDtos;
         }
 
+        public Task<List<FeatureDto>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<FeatureDto> GetByIdAsync(Guid id, params Expression<Func<Feature, object>>[] includes)
         {
             var feature = await _uow.Features.GetByIdAsync(id);

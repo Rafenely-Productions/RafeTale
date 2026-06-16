@@ -241,7 +241,7 @@ public class ImportManager : IExcelImportService
                     if (parentSub == null) continue;
                     var dbSub = await _unitOfWork.Subclasses.GetSingleAsync(x=> x.TechnicalName == parentSub.TechnicalName);
                     if (dbSub == null) continue;
-                    progression.SubclassId = dbSub.Id;
+                    //progression.SubclassId = dbSub.Id;
                     string key = $"{progression.SubclassId}_{progression.Level}";
                     if (!existingSubProgKeys.Contains(key))
                     {
