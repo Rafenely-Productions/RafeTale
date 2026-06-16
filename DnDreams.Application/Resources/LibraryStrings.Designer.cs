@@ -61,6 +61,33 @@ namespace DnDreams.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string Active {
+            get {
+                return ResourceManager.GetString("Active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back to Library.
+        /// </summary>
+        public static string Back_LibraryBtn {
+            get {
+                return ResourceManager.GetString("Back_LibraryBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Class Progression &amp; Level Features.
+        /// </summary>
+        public static string Class_Progression {
+            get {
+                return ResourceManager.GetString("Class_Progression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Martial and arcane archetypes with Hit Die indicators..
         /// </summary>
         public static string Classes_CardDescription {
@@ -88,11 +115,110 @@ namespace DnDreams.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feature Compendium.
+        /// </summary>
+        public static string Feature_Compendium {
+            get {
+                return ResourceManager.GetString("Feature_Compendium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Got it.
+        /// </summary>
+        public static string Got_it {
+            get {
+                return ResourceManager.GetString("Got_it", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Primary Stat focus archetype.
         /// </summary>
         public static string Primary_Stat {
             get {
                 return ResourceManager.GetString("Primary_Stat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Progression with {0} active.
+        /// </summary>
+        public static string Progression_With_Subclass_Active {
+            get {
+                return ResourceManager.GetString("Progression_With_Subclass_Active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ancestries, traits, and their subrace branches..
+        /// </summary>
+        public static string Race_Description_Card {
+            get {
+                return ResourceManager.GetString("Race_Description_Card", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Races &amp; Subraces.
+        /// </summary>
+        public static string Race_Subrace_Title_Card {
+            get {
+                return ResourceManager.GetString("Race_Subrace_Title_Card", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading Manuscript from:.
+        /// </summary>
+        public static string Reading_Manuscript {
+            get {
+                return ResourceManager.GetString("Reading_Manuscript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Return to Directory.
+        /// </summary>
+        public static string Return_DirectoryBtn {
+            get {
+                return ResourceManager.GetString("Return_DirectoryBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Special Notes.
+        /// </summary>
+        public static string Special_Notes {
+            get {
+                return ResourceManager.GetString("Special_Notes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by level, slots, and school of magic..
+        /// </summary>
+        public static string Spells_Magic_Description {
+            get {
+                return ResourceManager.GetString("Spells_Magic_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spells &amp; Magic.
+        /// </summary>
+        public static string Spells_Magic_Title {
+            get {
+                return ResourceManager.GetString("Spells_Magic_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subclasses &amp; Archetypes.
+        /// </summary>
+        public static string Subclasses_Archetypes {
+            get {
+                return ResourceManager.GetString("Subclasses_Archetypes", resourceCulture);
             }
         }
         
@@ -111,6 +237,15 @@ namespace DnDreams.Application.Resources {
         public static string Title_Name {
             get {
                 return ResourceManager.GetString("Title_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Un Select Archetype.
+        /// </summary>
+        public static string Un_Select_Archetype {
+            get {
+                return ResourceManager.GetString("Un_Select_Archetype", resourceCulture);
             }
         }
     }

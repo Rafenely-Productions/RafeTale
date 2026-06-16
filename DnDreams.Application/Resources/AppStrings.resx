@@ -234,4 +234,7 @@
   <data name="Label_Range" xml:space="preserve">
     <value>Range</value>
   </data>
+  <data name="Level" xml:space="preserve">
+    <value>Level</value>
+  </data>
 </root>

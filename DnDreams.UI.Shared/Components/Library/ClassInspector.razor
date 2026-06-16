@@ -79,12 +79,12 @@
         <div class="animate-in fade-in duration-300">
             <div class="flex justify-between items-center mb-3">
                 <h3 class="text-amber-500 font-black text-xs tracking-[0.2em] uppercase flex items-center gap-2">
-                    <i class="fa-solid fa-scroll"></i> Subclasses & Archetypes
+                    <i class="fa-solid fa-scroll"></i> @LL["Subclasses_Archetypes"]
                 </h3>
                 @if (SelectedSubclass != null)
                 {
                     <button @onclick="() => SelectedSubclass = null" class="text-[10px] uppercase tracking-wider font-mono text-red-400 hover:text-red-300 bg-red-950/20 border border-red-500/20 px-2 py-0.5 rounded-md transition-colors">
-                        <i class="fa-solid fa-xmark"></i> Deseleccionar arquetipo
+                        <i class="fa-solid fa-xmark"></i> @LL["Un_Select_Archetype"]
                     </button>
                 }
             </div>
@@ -108,7 +108,7 @@
                                 </h4>
                                 @if (isSelected)
                                 {
-                                    <span class="text-[9px] font-mono font-black uppercase tracking-wider bg-amber-500 text-black px-1.5 py-0.5 rounded-md shrink-0">Activo</span>
+                                    <span class="text-[9px] font-mono font-black uppercase tracking-wider bg-amber-500 text-black px-1.5 py-0.5 rounded-md shrink-0">@LL["Active"]</span>
                                 }
                             </div>
                             <p class="text-[11px] text-slate-400 font-serif leading-relaxed mt-1 line-clamp-3">
@@ -123,7 +123,7 @@
             {
                 <div class="mt-4 p-4 bg-amber-500/5 rounded-2xl border border-amber-500/20 shadow-lg animate-in slide-in-from-top-2 duration-200">
                     <h5 class="text-xs font-black text-amber-400 uppercase tracking-widest flex items-center gap-1.5 font-mono">
-                        <i class="fa-solid fa-circle-info"></i> Leyendo manuscrito de: @SelectedSubclass.Name
+                        <i class="fa-solid fa-circle-info"></i> @LL["Reading_Manuscript"] @SelectedSubclass.Name
                     </h5>
                     <p class="text-xs text-slate-300 font-serif leading-relaxed mt-2 italic">
                         @((MarkupString)SelectedSubclass.Description)
@@ -135,14 +135,15 @@
     <div>
         <h3 class="text-amber-500 font-black text-xs tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
             <i class="fa-solid fa-medal"></i>
-            @(SelectedSubclass == null ? "Class Progression & Level Features" : $"Progression with {SelectedSubclass.Name} active")
+            @(SelectedSubclass == null ? LL["Class_Progression"] : string.Format(LL["Progression_With_Subclass_Active"].Value, SelectedSubclass.Name))
+
         </h3>
         <div class="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
             @foreach (var prog in InspectedClass.Progressions.OrderBy(p => p.Level))
             {
                 <div class="flex flex-col md:flex-row items-start gap-4 p-4 bg-black/30 rounded-2xl border border-white/5">
                     <div class="bg-amber-500 text-black font-black text-xs px-3 py-1 rounded-md shrink-0">
-                        Level @prog.Level
+                        @L["Level"] @prog.Level
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full min-w-0">
                         @foreach (var feature in prog.Features)
@@ -206,7 +207,7 @@
 
                 <div class="flex items-center gap-2 text-amber-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-2">
                     <i class="fa-solid fa-book-sparkles"></i>
-                    <span>Feature Compendium</span>
+                    <span>@LL["Feature_Compendium"]</span>
                 </div>
 
                 <h3 class="text-xl font-black text-white uppercase italic tracking-wide border-b border-white/5 pb-3">
@@ -219,7 +220,7 @@
                     @if (!string.IsNullOrEmpty(ActiveFeatureForModal.Special))
                     {
                         <div class="mt-4 p-3 bg-white/5 rounded-xl border border-slate-800/60 font-sans text-xs text-slate-400">
-                            <span class="font-bold text-amber-500 uppercase block mb-1">Special Notes:</span>
+                            <span class="font-bold text-amber-500 uppercase block mb-1">@LL["Special Notes"]:</span>
                             @ActiveFeatureForModal.Special
                         </div>
                     }
@@ -228,7 +229,7 @@
                 <div class="mt-6 flex justify-end">
                     <button @onclick="CloseFeatureModal"
                             class="px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/30 font-medium text-xs uppercase tracking-wider text-slate-300 hover:text-white transition-all shadow-md">
-                        Entendido
+                        @LL["Got_It"]
                     </button>
                 </div>
             </div>

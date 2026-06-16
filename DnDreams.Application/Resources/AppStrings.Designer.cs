@@ -286,6 +286,15 @@ namespace DnDreams.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Level.
+        /// </summary>
+        public static string Level {
+            get {
+                return ResourceManager.GetString("Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose your lineage and path to see their secrets....
         /// </summary>
         public static string Msg_EmptySelection {

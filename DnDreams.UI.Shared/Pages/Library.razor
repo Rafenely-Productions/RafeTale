@@ -53,8 +53,8 @@
                     <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
                 </div>
                 <div class="min-w-0">
-                    <h2 class="text-base font-semibold text-white">Races & Subraces</h2>
-                    <p class="mt-1 break-words text-sm text-slate-400">Ancestries, traits, and their subrace branches.</p>
+                    <h2 class="text-base font-semibold text-white">@LL["Race_Subrace_Title"]</h2>
+                    <p class="mt-1 break-words text-sm text-slate-400">@LL["Race_Description"]</p>
                 </div>
                 <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
                     @Races.Count lineages
@@ -70,8 +70,8 @@
                     <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
                 </div>
                 <div class="min-w-0">
-                    <h2 class="text-base font-semibold text-white">Spells & Magic</h2>
-                    <p class="mt-1 break-words text-sm text-slate-400">Filter by level, slots, and school of magic.</p>
+                    <h2 class="text-base font-semibold text-white">@LL["Spells_Magic"]</h2>
+                    <p class="mt-1 break-words text-sm text-slate-400">@LL["Spells_Magic_Description"]</p>
                 </div>
                 <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
                     @TotalSpellsCount spells
@@ -102,70 +102,69 @@
         {
             <button type="button" @onclick="() => NavigateToTab(CodexKey.None)"
                     class="mb-5 inline-flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-sm font-medium text-slate-400 transition-colors hover:border-amber-500/40 hover:text-white">
-                <i class="fa-solid fa-arrow-left"></i> Back to Library
+                <i class="fa-solid fa-arrow-left"></i>@LL["Back_LibraryBtn"]
             </button>
         }
         else
         {
             <button type="button" @onclick="ClearInspections"
                     class="mb-5 inline-flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-950/20 px-3 py-1.5 text-sm font-medium text-amber-500 transition-colors hover:bg-amber-500/20 hover:text-white">
-                <i class="fa-solid fa-arrow-left-long"></i> Return to Directory
+                <i class="fa-solid fa-arrow-left-long"></i> @LL["Return_DirectoryBtn"]
             </button>
         }
 
         <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 md:p-6 shadow-2xl min-h-[500px]">
-
-            @if (SelectedTab == CodexKey.Classes)
+            @switch (SelectedTab)
             {
-                @if (InspectedClass == null)
-                {
-                    <ClassList Classes="Classes" OnClassSelected="(cls) => InspectedClass = cls" />
-                }
-                else
-                {
-                    <ClassInspector InspectedClass="InspectedClass" /> 
-                    
-                }
-            }
-            else if (SelectedTab == CodexKey.Races)
-            {
-                @if (InspectedRace == null)
-                {
-                    <RaceList Races="Races" OnInspectedRace="(cls) => InspectedRace = cls" />
-                }
-                else
-                {
-                    <RaceInspector InspectedRace="InspectedRace"/>
-                }
-            }
-            else if (SelectedTab == CodexKey.Spells)
-            {
-                <SpellList AllSpells="AllSpells" />
-            }
-            else if (SelectedTab == CodexKey.Rules)
-            {
-                <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">Character Advancement</h2>
-                <div class="overflow-x-auto w-full min-w-0">
-                    <table class="w-full text-left text-sm min-w-[400px]">
-                        <thead>
-                            <tr class="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-400 font-black">
-                                <th class="px-3 py-3">Level</th>
-                                <th class="px-3 py-3">XP Required</th>
-                                <th class="px-3 py-3">Proficiency Bonus</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var row in XpProgressionTable)
-                            {
-                                <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
-                                    <td class="px-3 py-3 font-mono font-bold text-amber-500">@row.Level</td>
-                                    <td class="px-3 py-3 text-white">@row.Xp.ToString("N0") XP</td>
-                                    <td class="px-3 py-3 font-mono text-slate-400">+@row.Proficiency</td>
+                case CodexKey.Classes:
+                    if (InspectedClass == null)
+                    {
+                        <ClassList Classes="Classes" OnClassSelected="(cls) => InspectedClass = cls" />
+                    }
+                    else
+                    {
+                        <ClassInspector InspectedClass="InspectedClass" />
+                    }
+                    break;
+                case CodexKey.Races:
+                    @if (InspectedRace == null)
+                    {
+                        <RaceList Races="Races" OnInspectedRace="(cls) => InspectedRace = cls" />
+                    }
+                    else
+                    {
+                        <RaceInspector InspectedRace="InspectedRace" />
+                    }
+                    break;
+                case CodexKey.Spells:
+                    <SpellList AllSpells="AllSpells" />
+                    break;
+                case CodexKey.Rules:
+                    <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">Character Advancement</h2>
+                    <div class="overflow-x-auto w-full min-w-0">
+                        <table class="w-full text-left text-sm min-w-[400px]">
+                            <thead>
+                                <tr class="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-400 font-black">
+                                    <th class="px-3 py-3">Level</th>
+                                    <th class="px-3 py-3">XP Required</th>
+                                    <th class="px-3 py-3">Proficiency Bonus</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                @foreach (var row in XpProgressionTable)
+                                {
+                                    <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
+                                        <td class="px-3 py-3 font-mono font-bold text-amber-500">@row.Level</td>
+                                        <td class="px-3 py-3 text-white">@row.Xp.ToString("N0") XP</td>
+                                        <td class="px-3 py-3 font-mono text-slate-400">+@row.Proficiency</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    break;
+                default:
+                    break;
             }
         </div>
     }
@@ -206,18 +205,18 @@
         FilteredSpells = AllSpells;
         ClearInspections();
     }
-   
+
     private void ClearInspections()
     {
         InspectedClass = null;
         InspectedRace = null;
         SelectedSubclass = null;
     }
-  
 
-    
 
-    
+
+
+
     private void LoadXpProgressionRules()
     {
         XpProgressionTable = new()
