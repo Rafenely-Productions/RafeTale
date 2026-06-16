@@ -1,19 +1,21 @@
-﻿using System;
+﻿using DnDreams.Domain.Enums;
+using DnDreams.Domain.Interfaces;
+using System;
 
 namespace DnDreams.Domain.Entities;
 
-public class Spell
+public class Spell : IEntity
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public int Level { get; set; } // 0 para Trucos (Cantrips), 1-9 para Conjuros
-    public string School { get; set; } = string.Empty; // Evocación, Abjuración, etc.
-    public string CastingTime { get; set; } = string.Empty; // 1 Acción, 1 Reacción
-    public string Range { get; set; } = string.Empty; // Toque, 120 pies, Personal
-    public string Description { get; set; } = string.Empty;
-    public string Components { get; set; } = string.Empty; // V, S, M (Materiales)
-    public string Duration { get; set; } = string.Empty;// En turnos, minutos, horas, etc.
-    public string Concentration { get; set; } = string.Empty; // "Sí" o "No"
+    public string TechnicalName { get; set; } = string.Empty;
+    public SpellLevel Level { get; set; } // 0 para Trucos (Cantrips), 1-9 para Conjuros
+    public SchoolOfMagicEnum School { get; set; } // Evocación, Abjuración, etc.
+    public CastingTime CastingTime { get; set; } // 1 Acción, 1 Reacción
+    public SpellRange Range { get; set; } // Toque, 120 pies, Personal
+    public string RangeDistance{ get; set; } = string.Empty;
+    public List<SpellComponent> Components = new(); // V, S, M (Materiales)
+    public List<SpellDuration> Duration { get; set; } = null!; // En turnos, minutos, horas, etc.
+    public SpellConcentration Concentration { get; set; } // "Sí" o "No"
     public bool Ritual { get; set; } // Indica si el hechizo se puede lanzar como ritual
     public List<ClassDefinition> Classes { get; set; } = new();
 }

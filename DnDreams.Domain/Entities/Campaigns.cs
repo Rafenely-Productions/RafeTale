@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DnDreams.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace DnDreams.Domain.Entities;
 
-public class Campaign
+public class Campaign : IEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty; // Ej: "La Maldición de Strahd"

@@ -1,22 +1,16 @@
 ﻿using DnDreams.Domain.Entities;
-using DnDreams.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using DnDreams.Infrastructure.Persistence;
+using DnDreams.Domain.Interfaces.IRepositories;
 
 namespace DnDreams.Infrastructure.Repositories;
 
-public class CharacterRepository : ICharacterRepository
+public class CharacterRepository : Repository<Character>, ICharacterRepository
 {
-    private readonly DnDreamsDbContext _context;
-    public CharacterRepository(DnDreamsDbContext context) => _context = context;
-
-    public async Task AddRangeAsync(IEnumerable<Character> characters)
-    {
-        await _context.Characters.AddRangeAsync(characters);
-    }
+    public CharacterRepository(DnDreamsDbContext context) : base(context) { }
 
     public async Task<IEnumerable<Character>> GetAllWithDetailsAsync()
     {

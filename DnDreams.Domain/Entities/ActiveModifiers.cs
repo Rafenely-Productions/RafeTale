@@ -1,9 +1,10 @@
 ﻿using DnDreams.Domain.Enums;
+using DnDreams.Domain.Interfaces;
 using System;
 
 namespace DnDreams.Domain.Entities;
 
-public class ActiveModifiers
+public class ActiveModifiers : IEntity
 {
     public Guid Id { get; set; }
     public Guid CharacterId { get; set; }

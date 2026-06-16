@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DnDreams.Domain.Interfaces;
+using System;
 
 namespace DnDreams.Domain.Entities;
 
-public class JournalEntry
+public class JournalEntry : IEntity
 {
     public Guid Id { get; set; }
 

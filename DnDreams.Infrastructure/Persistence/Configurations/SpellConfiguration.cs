@@ -17,12 +17,12 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
 
             builder.HasKey(s => s.Id);
 
-            builder.Property(s => s.Name)
+            builder.Property(s => s.TechnicalName)
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.Property(s => s.Description)
-                .HasColumnType("TEXT");
+           //TODO builder.Property(s => s.Description)
+                //.HasColumnType("TEXT");
 
             builder.Property(s => s.School)
                 .HasConversion<string>();

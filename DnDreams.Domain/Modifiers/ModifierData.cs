@@ -13,4 +13,11 @@ namespace DnDreams.Domain.Modifiers
         public string Target { get; set; } = ""; // "Charisma", "MaxHp", "Spell_Shield"
         public int Value { get; set; }                     // 1, 2, 10, etc.
     }
+
+    public class FeatPrerequisiteModifierData
+    {
+        public FeatPrerequisiteType Type { get; set; }
+        public string Target { get; set; } = ""; // "Charisma", "MaxHp", "Spell_Shield"
+        public int Value { get; set; }                     // 1, 2, 10, etc.
+    }
 }
