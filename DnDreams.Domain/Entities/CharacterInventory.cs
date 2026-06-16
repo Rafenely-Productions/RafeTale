@@ -1,6 +1,8 @@
-﻿namespace DnDreams.Domain.Entities;
+﻿using DnDreams.Domain.Interfaces;
 
-public class CharacterInventory
+namespace DnDreams.Domain.Entities;
+
+public class CharacterInventory : IEntity
 {
     public Guid Id { get; set; }
     public Guid CharacterId { get; set; }

@@ -20,7 +20,7 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("Races");
             builder.HasKey(e => e.Id);
-            builder.Property(e => e.Name).IsRequired().HasMaxLength(50);
+            builder.Property(e => e.TechnicalName).HasMaxLength(50);
 
             builder.HasMany(e => e.SubRaces)
                 .WithOne(e=> e.Race)
@@ -32,17 +32,7 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
                 .HasForeignKey(t => t.RaceId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Property(e => e.Languages)
-        .HasConversion(
-            v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null!), // De Lista a String para guardar
-            v => JsonSerializer.Deserialize<List<LanguageType>>(v, (JsonSerializerOptions)null!) ?? new List<LanguageType>() // De String a Lista para leer
-        );
-            builder.Property(e => e.StatBonuses)
-                .HasConversion(
-                    v => JsonSerializer.Serialize(v, jsonOptions),
-                    v => JsonSerializer.Deserialize<Dictionary<string, int>>(v, jsonOptions) ?? new Dictionary<string, int>()
-                )
-                .HasColumnType("TEXT");
+            builder.HasMany(e => e.Languages).WithMany(l => l.Races);
         }
     }
 }

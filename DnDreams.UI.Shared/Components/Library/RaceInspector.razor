@@ -1,0 +1,22 @@
+﻿@using Application.DTOs;
+@inject IStringLocalizer<AppStrings> L
+@inject IStringLocalizer<LibraryStrings> LL
+
+<div class="animate-in fade-in duration-300 space-y-6">
+    <div class="border-b border-white/5 pb-4">
+        <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@InspectedRace.Name</h1>
+        <p class="text-slate-400 font-serif italic text-base leading-relaxed mt-2">
+            Core lineage specifications and ancestral biological benefits.
+        </p>
+    </div>
+
+    <div class="p-4 bg-black/40 rounded-xl border border-slate-800">
+        <p class="text-sm font-bold text-amber-500 uppercase tracking-wider mb-2">Ancestral Traits Matrix</p>
+        <span class="text-slate-300 text-sm">Base speed, traits configurations, and racial ability adjustments mapping container.</span>
+    </div>
+</div>
+
+@code {
+    [Parameter] public RaceDto InspectedRace { get; set; } = null!;
+
+}

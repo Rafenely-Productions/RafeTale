@@ -1,11 +1,14 @@
 ﻿@page "/character/create/race"
+@using DnDreams.Application.DTOs
+@using DnDreams.Application.Interfaces.DtosInterfaces
+@using DnDreams.Domain.DTOs
 @using DnDreams.Domain.Entities
 @using DnDreams.Domain.Interfaces
-@using DnDreams.Domain.DTOs
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
 @inject IStringLocalizer<AppStrings> L
 @inject CharacterCreationService CreationService
+@inject IService<RaceDto,Race> RaceService
 
 <div class="min-h-screen bg-black p-6">
     <div class="max-w-6xl mx-auto">
@@ -20,15 +23,15 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
             <div class="lg:col-span-4 space-y-3">
-                @foreach (var race in Races)
+                @foreach (var dtoRace in DtoRaces)
                 {
-                    <div @onclick="() => SelectedRace = race"
-                         class="group cursor-pointer p-6 rounded-2xl border transition-all duration-300 @(SelectedRace?.Id == race.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
+                    <div @onclick="() => SelectingRace(dtoRace)"
+                         class="group cursor-pointer p-6 rounded-2xl border transition-all duration-300 @(SelectedRace?.Id == dtoRace.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
                         <div class="flex justify-between items-center">
-                            <span class="text-xl font-black uppercase tracking-tight @(SelectedRace?.Id == race.Id ? "text-black" : "text-white group-hover:text-amber-500")">
-                                @race.Name
+                            <span class="text-xl font-black uppercase tracking-tight @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-white group-hover:text-amber-500")">
+                                @dtoRace.Name
                             </span>
-                            <i class="fa-solid fa-chevron-right @(SelectedRace?.Id == race.Id ? "text-black" : "text-amber-900/40")"></i>
+                            <i class="fa-solid fa-chevron-right @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-amber-900/40")"></i>
                         </div>
                     </div>
                 }
@@ -76,8 +79,8 @@
                                             @foreach (var trait in SelectedRace.Traits)
                                             {
                                                 <div class="group bg-black/20 p-5 rounded-3xl border border-white/5 hover:border-amber-500/30 transition-colors">
-                                                    <h4 class="text-amber-500 font-bold text-sm uppercase mb-1">@trait.Name</h4>
-                                                    <p class="text-slate-400 text-xs leading-relaxed">@trait.Description</p>
+                                                    <h4 class="text-amber-500 font-bold text-sm uppercase mb-1">@trait.TechnicalName</h4>
+                                                    <p class="text-slate-400 text-xs leading-relaxed">//trait.Description</p>
                                                 </div>
                                             }
                                         </div>
@@ -85,7 +88,7 @@
                                 </div>
 
                                 <div class="space-y-8">
-                                    <div>
+                                    <div style="display:none">
                                         <h3 class="text-amber-500 font-black text-xs tracking-[0.3em] uppercase mb-4 flex items-center gap-2">
                                             <i class="fa-solid fa-bolt text-amber-700"></i> @L["Label_RaceAbilities"]
                                         </h3>
@@ -104,11 +107,10 @@
                                         <p class="text-slate-400 text-sm font-serif italic">
                                             @* Aquí irían los idiomas separados por coma *@
                                             @{
-                                                var language = string.Join(", ", SelectedRace.Languages);
+                                                var language = string.Join(", ", SelectedRace.Languages.Select(x=> x.TechnicalName).ToList());
                                             }
 
-                                           ab @SelectedRace.Languages.Count
-                                            Común, Elfo, Enanos.
+                                            @language
                                         </p>
                                     </div>
                                 </div>
@@ -131,16 +133,24 @@
 </div>
 
 @code {
-    private List<Race> Races = new();
-    private Race? SelectedRace;
+    private List<RaceDto> DtoRaces = new();
+    private RaceDto? SelectedRace;
 
     protected override async Task OnInitializedAsync()
     {
-        Races = (await UnitOfWork.Races.GetAllAsync()).ToList();
+        DtoRaces = await RaceService.GetAllAsync(null,x=> x.Traits,x=> x.Languages);
+
+        if(CreationService.SelectedRaceId != null)
+        {
+            SelectedRace = DtoRaces.FirstOrDefault(x => x.Id == CreationService.SelectedRaceId);
+        }
     }
 
     private void Back() => Navigation.NavigateTo("/character/create");
-
+    private void SelectingRace(RaceDto race)
+    {
+        SelectedRace = race;
+    }
     private void Confirm()
     {
         if (SelectedRace != null)

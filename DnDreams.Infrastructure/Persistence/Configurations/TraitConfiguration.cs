@@ -17,7 +17,7 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
             builder.ToTable("Traits");
 
             builder.HasKey(t => t.Id);
-            builder.Property(t => t.Name).IsRequired().HasMaxLength(100);
+            builder.Property(t => t.TechnicalName).IsRequired().HasMaxLength(100);
         }
     }
 }

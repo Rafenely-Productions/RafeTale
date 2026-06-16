@@ -16,7 +16,7 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("SubRaces");
             builder.HasKey(sr => sr.Id);
-            builder.Property(sr => sr.Name).IsRequired().HasMaxLength(50);
+            builder.Property(sr => sr.TechnicalName).IsRequired().HasMaxLength(50);
         }
     }
 }

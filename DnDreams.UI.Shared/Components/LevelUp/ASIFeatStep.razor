@@ -48,14 +48,14 @@
                      class="p-5 border-2 rounded-2xl cursor-pointer transition-all duration-300 @(State.SelectedFeatIds.Contains(feat.Id) ? "border-lime-500 bg-lime-950/20 shadow-[0_0_20px_rgba(132,204,22,0.1)]" : "border-amber-900/10 bg-black/20 hover:border-amber-500/40")">
 
                     <div class="flex justify-between items-start mb-2">
-                        <div class="font-black text-white text-lg tracking-tight uppercase">@feat.Name</div>
+                        <div class="font-black text-white text-lg tracking-tight uppercase">feat.Name</div>
                         @if (State.SelectedFeatIds.Contains(feat.Id))
                         {
                             <i class="fa-solid fa-circle-check text-lime-500"></i>
                         }
                     </div>
 
-                    <div class="text-sm text-slate-400 font-serif leading-snug mb-4">@feat.Description</div>
+                    <div class="text-sm text-slate-400 font-serif leading-snug mb-4">feat.Description</div>
 
                     @if (feat.Modifiers != null && feat.Modifiers.Any())
                     {

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DnDreams.Domain.Interfaces;
+using System;
 
 namespace DnDreams.Domain.Entities;
 
-public class CharacterSpellSlots
+public class CharacterSpellSlots : IEntity
 {
     public Guid Id { get; set; }
     public Guid CharacterId { get; set; }

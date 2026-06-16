@@ -32,9 +32,9 @@
                 <div class="relative z-10 text-center md:text-left">
                     <h1 class="text-6xl font-black text-amber-500 tracking-tighter italic uppercase mb-2">@Char.Name</h1>
                     <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                        <span class="text-slate-300 text-xl font-serif italic">@Char.Race?.Name</span>
+                        <span class="text-slate-300 text-xl font-serif italic">@Char.Race?.TechnicalName</span>
                         <span class="h-2 w-2 rounded-full bg-amber-600"></span>
-                        <span class="text-amber-600 font-black text-xl uppercase">@Char.ClassDef?.Name</span>
+                        <span class="text-amber-600 font-black text-xl uppercase">Char.ClassDef?.Name</span>
                         <span class="bg-black/50 px-4 py-1 rounded-full border border-amber-500/20 text-white font-bold">
                             Nivel @Char.Level
                         </span>
@@ -76,8 +76,8 @@
                             @foreach (var feature in Char.AcquiredFeatures)
                             {
                                 <div class="bg-black/30 border border-slate-800 p-5 rounded-2xl group hover:border-amber-500/30 transition-all duration-300">
-                                    <h4 class="text-white font-bold text-lg mb-1 group-hover:text-amber-500 transition-colors">@feature.Name</h4>
-                                    <p class="text-slate-400 text-sm leading-relaxed">@feature.Description</p>
+                                    <h4 class="text-white font-bold text-lg mb-1 group-hover:text-amber-500 transition-colors">feature.Name</h4>
+                                    <p class="text-slate-400 text-sm leading-relaxed">feature.Description</p>
                                 </div>
                             }
                         </div>
@@ -157,7 +157,7 @@
     {
         var bonus = Char.GetSkillBonus(name, stat);
         // Verificamos competencia: Si existe un rasgo con el nombre exacto de la skill
-        bool isProficient = Char.AcquiredFeatures.Any(f => f.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        bool isProficient = Char.AcquiredFeatures.Any(f => f.TechnicalName.Equals(name, StringComparison.OrdinalIgnoreCase));
 
         <div class="flex items-center justify-between py-2 border-b border-amber-900/5 hover:bg-amber-500/5 transition-all px-3 rounded-xl group">
             <div class="flex items-center gap-4">
