@@ -1,4 +1,4 @@
-﻿namespace DnDreams.Application.Services.Initializer
+﻿namespace DnDreams.Application.Services.Importer.Initializer
 {
     public interface IAppInitializer
     {

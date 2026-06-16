@@ -1,7 +1,7 @@
 ﻿@namespace DnDreams.UI.Shared.Shared
 @inherits LayoutComponentBase
-@using DnDreams.Application.Services.Initializer
-@inject AppInitializer Initializer
+@using DnDreams.Application.Services.Importer.Initializer
+@inject IAppInitializer Initializer
 
 <div class="main-layout">
     @if (!Initializer.IsDatabaseReady)

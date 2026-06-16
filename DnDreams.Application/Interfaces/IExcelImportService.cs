@@ -1,4 +1,4 @@
-﻿using DnDreams.Application.Services.Initializer;
+﻿using DnDreams.Application.Services.Importer.Initializer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace DnDreams.Application.Interfaces
 {
     public interface IExcelImportService
     {
-        Task<(int Count, string Version)> ImportDataFromExcelAsync(Stream excelStream,AppInitializer appInitializer);
+        Task<(int Count, string Version)> ImportDataFromExcelAsync(Stream excelStream);
     }
 }
