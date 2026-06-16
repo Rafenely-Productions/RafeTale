@@ -1,40 +1,13 @@
 ﻿using DnDreams.Domain.Entities;
-using DnDreams.Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using DnDreams.Domain.Interfaces.IRepositories;
 using DnDreams.Infrastructure.Persistence;
-using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace DnDreams.Infrastructure.Repositories;
 
-public class RaceRepository : IRaceRepository
+public class RaceRepositorys : Repository<Race>, IRaceRepository
 {
-    private readonly DnDreamsDbContext _context;
-    public RaceRepository(DnDreamsDbContext context) => _context = context;
+    protected RaceRepositorys(DnDreamsDbContext context) : base(context) { }
 
-    public async Task AddAsync(Race race)
-    {
-        await _context.Races.AddAsync(race);
-    }
-
-    public async Task AddRangeAsync(IEnumerable<Race> races)
-    {
-        await _context.Races.AddRangeAsync(races);
-    }
-
-    public async Task<List<Race>> GetAllAsync()
-    {
-        return await _context.Races.ToListAsync();
-    }
-
-    public async Task<Race?> GetByNameAsync(string name)
-    {
-        return await _context.Races.FirstOrDefaultAsync(r => r.Name == name);
-    }
-
-    public async Task<Race?> GetByIdAsync(Guid id)
-    {
-        return await _context.Races.Include(r => r.Traits).FirstOrDefaultAsync(x => x.Id == id);
-    }
 }

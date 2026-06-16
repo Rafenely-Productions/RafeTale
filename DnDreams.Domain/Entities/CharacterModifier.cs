@@ -1,10 +1,11 @@
-﻿using System;
-using DnDreams.Domain.Enums;
+﻿using DnDreams.Domain.Enums;
+using DnDreams.Domain.Interfaces;
+using System;
 namespace DnDreams.Domain.Entities;
 
 
 
-public class CharacterModifier
+public class CharacterModifier : IEntity
 {
     public Guid Id { get; set; }
     public string Source { get; set; } = string.Empty; // Ej: "Dote: Actor", "ASI Nivel 4"

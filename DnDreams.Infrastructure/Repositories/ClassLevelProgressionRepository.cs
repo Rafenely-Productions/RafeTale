@@ -1,5 +1,5 @@
 ﻿using DnDreams.Domain.Entities;
-using DnDreams.Domain.Interfaces;
+using DnDreams.Domain.Interfaces.IRepositories;
 using DnDreams.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,10 +10,9 @@ using System.Threading.Tasks;
 
 namespace DnDreams.Infrastructure.Repositories
 {
-    public class ClassLevelProgressionRepository : IClassLevelProgressionRepository
+    public class ClassLevelProgressionRepository : Repository<ClassLevelProgression>, IClassLevelProgressionRepository
     {
-        private readonly DnDreamsDbContext _context;
-        public ClassLevelProgressionRepository(DnDreamsDbContext context) => _context = context;
+        public ClassLevelProgressionRepository(DnDreamsDbContext context):base(context) { }
 
         public async Task AddProgressionsRangeAsync(List<ClassLevelProgression> progressions)
         {
@@ -24,18 +23,6 @@ namespace DnDreams.Infrastructure.Repositories
             return await _context.ClassLevelProgressions
                 .Include(p => p.Features)
                 .FirstOrDefaultAsync(p => p.ClassDefId == classId && p.Level == level);
-        }
-        public async Task AddProgressionAsync(ClassLevelProgression prog)
-        {
-            await _context.ClassLevelProgressions.AddAsync(prog);
-        }
-        public async Task<List<ClassLevelProgression>> GetAllAsync()
-        {
-            return await _context.ClassLevelProgressions.ToListAsync();
-        }
-        public async Task<ClassLevelProgression> GetByNameAsync(string name)
-        {
-            return await _context.ClassLevelProgressions.FirstOrDefaultAsync(p => p.Id.ToString() == name);
         }
     }
 }

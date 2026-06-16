@@ -84,8 +84,8 @@
                             <tr>
                                 <td class="fw-bold text-primary">@character.Name</td>
                                 <td>
-                                    <span class="text-dark">@(character.Race?.Name ?? "Desconocida")</span>
-                                    <span class="text-muted small d-block">@(character.ClassDef?.Name ?? "Desconocida")</span>
+                                    <span class="text-dark">@(character.Race?.TechnicalName ?? "Desconocida")</span>
+                                    <span class="text-muted small d-block">(character.ClassDef?.Name ?? "Desconocida")</span>
                                 </td>
                                 <td class="text-center">
                                     <span class="badge bg-info text-dark fw-bold" style="font-size: 0.9rem;">
@@ -98,8 +98,8 @@
                                     {
                                         @foreach (var feat in character.AcquiredFeatures)
                                         {
-                                            <span class="badge bg-light text-dark border me-1 mb-1" title="@feat.Description">
-                                                🔮 @feat.Name
+                                            <span class="badge bg-light text-dark border me-1 mb-1" title="feat.Description">
+                                                🔮 feat.Name
                                             </span>
                                         }
                                     }
@@ -155,8 +155,8 @@
                         @foreach (var feature in features)
                         {
                             <tr>
-                                <td class="fw-semibold text-success">@feature.Name</td>
-                                <td class="text-muted small">@feature.Description</td>
+                                <td class="fw-semibold text-success">feature.Name</td>
+                                <td class="text-muted small">feature.Description</td>
                             </tr>
                         }
                     </tbody>

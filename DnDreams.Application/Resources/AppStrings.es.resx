@@ -166,7 +166,7 @@
     <value>Elige tu Estirpe</value>
   </data>
   <data name="Label_Traits" xml:space="preserve">
-    <value>Rasgos Raciales</value>
+    <value>Rasgos</value>
   </data>
   <data name="Label_RaceAbilities" xml:space="preserve">
     <value>Mejora de Atributos</value>
@@ -233,5 +233,8 @@
   </data>
   <data name="Label_Range" xml:space="preserve">
     <value>Alcance</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Nivel</value>
   </data>
 </root>

@@ -1,4 +1,6 @@
-﻿using DnDreams.Domain.Interfaces;
+﻿using DnDreams.Domain.Entities;
+using DnDreams.Domain.Interfaces;
+using DnDreams.Domain.Interfaces.IRepositories;
 using DnDreams.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -12,7 +14,7 @@ public class UnitOfWork : IUnitOfWork
     private IDbContextTransaction? _currentTransaction;
 
     // Inicializamos las propiedades de los repositorios de golpe pasándoles el mismo contexto
-    public IRaceRepository Races { get; }
+    public IRepository<Race> Races { get; }
     public IClassDefinitionRepository ClassDefinitions { get; }
     public IClassLevelProgressionRepository ClassLevelProgressions { get; }
     public ICharacterRepository Characters { get; }
@@ -22,18 +24,37 @@ public class UnitOfWork : IUnitOfWork
     public ISpellRepository Spells { get; }
     public IItemTemplateRepository ItemTemplates { get; }
 
+    public ILocalizedContentRepository LocalizedContents { get; }
+    public IRepository<Language> Languages { get; }
+    public IRepository<Trait> Traits { get; }
+    public IRepository<SubRace> SubRaces { get; }
+    public IRepository<SchoolOfMagic> SchoolsOfMagic { get; }
+    public IRepository<Background> Backgrounds {get;}
+    public IRepository<Subclass> Subclasses { get; }
+    public IRepository<SubclassLevelProgression> SubclassLevelProgressions { get; }
+    public IRepository<Skill> Skills { get; }
+
     public UnitOfWork(DnDreamsDbContext context)
     {
         _context = context;
-        Races = new RaceRepository(_context);
+        Races = new Repository<Race>(_context);
         ClassDefinitions = new ClassDefinitionRepository(_context);
         ClassLevelProgressions = new ClassLevelProgressionRepository(_context);
         Characters = new CharacterRepository(_context);
         Features = new FeatureRepository(_context);
         XpRules = new XpRulesRepository(_context);
         Feats = new FeatRepository(_context);
+        Backgrounds = new Repository<Background>(_context);
         Spells = new SpellRepository(_context);
         ItemTemplates = new ItemTemplateRepository(_context);
+        LocalizedContents = new LocalizedContentRepository(_context);
+        Languages = new Repository<Language>(_context);
+        Traits = new Repository<Trait>(_context);
+        SubRaces = new Repository<SubRace>(_context);
+        SchoolsOfMagic = new Repository<SchoolOfMagic>(_context);
+        Subclasses = new Repository<Subclass>(_context);
+        SubclassLevelProgressions = new Repository<SubclassLevelProgression>(_context);
+        Skills = new Repository<Skill>(_context);
     }
 
     public async Task BeginTransactionAsync()
