@@ -3,7 +3,8 @@ using DnDreams.Application.Interfaces;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Application.Services;
 using DnDreams.Application.Services.DtosServices;
-using DnDreams.Application.Services.Initializer;
+using DnDreams.Application.Services.Importer;
+using DnDreams.Application.Services.Importer.Initializer;
 using DnDreams.Domain.DTOs;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Interfaces;
@@ -30,7 +31,7 @@ public static class MauiProgram
 
 
         var dbPath = Path.Combine(FileSystem.AppDataDirectory, "dndreams.db3");
-        builder.Services.AddSingleton<AppInitializer>();
+        builder.Services.AddSingleton<IAppInitializer, AppInitializer>();
 
         builder.Services.AddInfrastructure(dbPath);
         builder.Services.AddScoped<ILevelingService, LevelingService>();
@@ -65,23 +66,25 @@ public static class MauiProgram
 #endif
         var app = builder.Build();
 
+        var initializer = app.Services.GetRequiredService<IAppInitializer>();
+
         using (var scope = app.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DnDreams.Infrastructure.Persistence.DnDreamsDbContext>();
-            //if (File.Exists(dbPath)) File.Delete(dbPath);
-            Task.Run(async () => await InitializeDatabaseFromExcelAsync(app.Services));
-        }
+            if (File.Exists(dbPath)) File.Delete(dbPath);
+            Task.Run(async () => await InitializeDatabaseFromExcelAsync(app.Services, initializer));
+            //_ = InitializeDatabaseFromExcelAsync(app.Services,initializer);
 
+        }
 
 
         return app;
     }
 
     // Lógica conceptual que se integra en tu capa de persistencia/arranque
-    public static async Task InitializeDatabaseFromExcelAsync(IServiceProvider services)
+    public static async Task InitializeDatabaseFromExcelAsync(IServiceProvider services,IAppInitializer initializer)
     {
-        var initializer = services.GetRequiredService<AppInitializer>();
-
+        //var initializer = services.GetRequiredService<IAppInitializer>();
 
         // Le pasamos el bloque de código nativo que MAUI sí sabe resolver
         await initializer.InitializeAsync(async () =>
@@ -99,7 +102,7 @@ public static class MauiProgram
                 using Stream excelStream = await FileSystem.OpenAppPackageFileAsync("DnDreams_v2.xlsx");
 
                 // MAUI resuelve esto de forma nativa:
-                await importManager.ImportDataFromExcelAsync(excelStream,initializer);
+                await importManager.ImportDataFromExcelAsync(excelStream);
             }
         });
     }

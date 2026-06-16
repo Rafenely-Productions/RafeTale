@@ -236,7 +236,7 @@
             await stream.CopyToAsync(memoryStream);
             memoryStream.Position = 0;
 
-            var (count, _) = await ExcelImportService.ImportDataFromExcelAsync(memoryStream,null);
+            var (count, _) = await ExcelImportService.ImportDataFromExcelAsync(memoryStream);
             uploadedCount = count;
 
             await RefreshCharacters();

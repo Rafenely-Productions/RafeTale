@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DnDreams.Application.Services.Initializer
+namespace DnDreams.Application.Services.Importer.Initializer
 {
     public class AppInitializer : IAppInitializer
     {
