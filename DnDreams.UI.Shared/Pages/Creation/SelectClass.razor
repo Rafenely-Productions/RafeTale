@@ -5,6 +5,7 @@
 @using DnDreams.Domain.Interfaces
 @using DnDreams.Domain.Enums
 @using DnDreams.Domain.DTOs
+@using DnDreams.UI.Shared.Components.Library
 @using DnDreams.UI.Shared.Extensions
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
@@ -24,7 +25,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-            <div class="lg:col-span-4 space-y-3">
+            <div class="lg:col-span-3 space-y-3">
                 @foreach (var cls in Classes)
                 {
                     <div @onclick="() => SelectedClass = cls"
@@ -51,7 +52,16 @@
                     }
                     else
                     {
-                        <div class="animate-in fade-in duration-500">
+                        <ClassInspector InspectedClass="SelectedClass"/>
+                        <div class="mt-2 pt-4 border-t border-white/5 flex justify-end">
+                            <button @onclick="Confirm"
+                                    class="px-6 py-2 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-[2rem] transition-all shadow-xl shadow-lime-900/20 flex items-center gap-4">
+                                <span class="uppercase tracking-widest">@L["Btn_ConfirmClass"]</span>
+                                <i class="fa-solid fa-bolt-lightning"></i>
+                            </button>
+                        </div>
+
+                       /* <div class="animate-in fade-in duration-500">
                             <div class="flex flex-wrap justify-between items-start gap-6 mb-8">
                                 <div class="flex-1">
                                     <h2 class="text-6xl font-black text-white mb-2 uppercase italic tracking-tighter">@SelectedClass.Name</h2>
@@ -99,15 +109,9 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="mt-2 pt-4 border-t border-white/5 flex justify-end">
-                                <button @onclick="Confirm"
-                                        class="px-6 py-2 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-[2rem] transition-all shadow-xl shadow-lime-900/20 flex items-center gap-4">
-                                    <span class="uppercase tracking-widest">@L["Btn_ConfirmClass"]</span>
-                                    <i class="fa-solid fa-bolt-lightning"></i>
-                                </button>
-                            </div>
-                        </div>
+                            
+                            
+                        </div>*/
                     }
                 </div>
             </div>
@@ -245,7 +249,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Classes = await ClassService.GetAllAsync(null, x => x.Progressions.Select(x=> x.Features));
+        Classes = await ClassService.GetAllAsync(null, includes: query => query.Include(x => x.Progressions).IncludeCollection(r => r.Progressions, t => t.Features));
 
         if(CreationService.SelectedClassId != null)
         {

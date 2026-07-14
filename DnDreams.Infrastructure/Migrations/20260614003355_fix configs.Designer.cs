@@ -12,7 +12,7 @@ namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
     [Migration("20260614003355_fix configs")]
-    partial class fixconfigs
+    partial class Fixconfigs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

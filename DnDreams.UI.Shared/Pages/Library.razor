@@ -133,7 +133,7 @@
                     }
                     else
                     {
-                        <RaceInspector InspectedRace="InspectedRace" />
+                        <RaceInspector RaceDto="InspectedRace" />
                     }
                     break;
                 case CodexKey.Spells:
@@ -190,8 +190,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Classes = await ClassService.GetAllAsync();
-        Races = await RaceService.GetAllAsync(null);
+        Classes = await ClassService.GetAllAsync(null, includes: config => config
+            .Include(x => x.SkillProficiencies)
+            .IncludeCollection(x => x.Progressions, u => u.Features)
+            .IncludeCollection(x => x.Subclasses, sc => sc.Progressions, p => p.Features));
+
+        Races = await RaceService.GetAllAsync(null,includes: query => query .Include(x=> x.Languages)  .IncludeCollection(x=> x.SubRaces,z=> z.Traits).Include(x=>x.Traits));
         AllSpells = await SpellService.GetAllAsync(null);
         TotalSpellsCount = AllSpells.Count;
 

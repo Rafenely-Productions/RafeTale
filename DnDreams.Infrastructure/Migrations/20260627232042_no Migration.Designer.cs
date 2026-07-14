@@ -3,6 +3,7 @@ using System;
 using DnDreams.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DnDreams.Infrastructure.Migrations
 {
     [DbContext(typeof(DnDreamsDbContext))]
-    partial class DnDreamsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260627232042_no Migration")]
+    partial class noMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.17");
@@ -608,12 +611,15 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<int>("CreatureType")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Darkvision")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Size")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Speed")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<float>("Speed")
+                        .HasColumnType("REAL");
 
                     b.Property<string>("TechnicalName")
                         .IsRequired()
@@ -692,6 +698,9 @@ namespace DnDreams.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("ClassDefinitionId")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("RaceId")
                         .HasColumnType("TEXT");
 
@@ -756,18 +765,11 @@ namespace DnDreams.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Modifiers")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("RaceId")
+                    b.Property<Guid>("RaceId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("RequiredLevel")
                         .HasColumnType("INTEGER");
-
-                    b.Property<Guid?>("SubraceId")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("TechnicalName")
                         .IsRequired()
@@ -777,8 +779,6 @@ namespace DnDreams.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("RaceId");
-
-                    b.HasIndex("SubraceId");
 
                     b.ToTable("Traits", (string)null);
                 });
@@ -1074,16 +1074,10 @@ namespace DnDreams.Infrastructure.Migrations
                     b.HasOne("DnDreams.Domain.Entities.Race", "Race")
                         .WithMany("Traits")
                         .HasForeignKey("RaceId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("DnDreams.Domain.Entities.SubRace", "Subrace")
-                        .WithMany("Traits")
-                        .HasForeignKey("SubraceId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Race");
-
-                    b.Navigation("Subrace");
                 });
 
             modelBuilder.Entity("LanguageRace", b =>
@@ -1146,11 +1140,6 @@ namespace DnDreams.Infrastructure.Migrations
             modelBuilder.Entity("DnDreams.Domain.Entities.Spell", b =>
                 {
                     b.Navigation("Classes");
-                });
-
-            modelBuilder.Entity("DnDreams.Domain.Entities.SubRace", b =>
-                {
-                    b.Navigation("Traits");
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.Subclass", b =>

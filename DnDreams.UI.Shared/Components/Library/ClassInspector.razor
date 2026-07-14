@@ -4,16 +4,16 @@
 
 
 <div class="animate-in fade-in duration-300 space-y-6">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 border-b border-white/5 pb-6">
+    <div class="flex flex-col lg:flex-row items-start gap-6 border-b border-white/5 pb-6 w-full">
 
-        <div class="lg:col-span-2 min-w-0">
+        <div class="flex-1 min-w-0 w-full">
             <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@InspectedClass.Name</h1>
             <p class="text-slate-400 font-serif italic text-base leading-relaxed mt-2">
                 @((MarkupString)InspectedClass.Description)
             </p>
         </div>
 
-        <div class="flex flex-col justify-start">
+        <div class="flex flex-col justify-start w-full lg:w-80 shrink-0 mt-4 lg:mt-0">
             <h3 class="text-amber-500 font-black text-[10px] tracking-[0.2em] uppercase mb-2 flex items-center gap-2">
                 <i class="fa-solid fa-list-check"></i> @LL["Class_Basic_Atributes"]
             </h3>
@@ -37,7 +37,7 @@
                                 @InspectedClass.HitDie
                             </td>
                         </tr>
-                        <tr class="hover:bg-white/5 transition-colors">
+                        <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
                             <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
                                 @LL["Saving_Throws"]
                             </td>
@@ -45,7 +45,7 @@
                                 @string.Join(" / ", InspectedClass.SavingThrowProficiencies.Select(a => L[a.ToString()].Value))
                             </td>
                         </tr>
-                        <tr class="hover:bg-white/5 transition-colors">
+                        <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
                             <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
                                 @LL["Skill_Proficiencies"]
                             </td>
@@ -53,7 +53,7 @@
                                 @string.Join(" / ", InspectedClass.SkillProficiencies.Select(a => L[a.TechnicalName.ToString()].Value))
                             </td>
                         </tr>
-                        <tr class="hover:bg-white/5 transition-colors">
+                        <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
                             <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
                                 @LL["Weapon_Proficiencies"]
                             </td>
@@ -73,6 +73,7 @@
                 </table>
             </div>
         </div>
+
     </div>
     @if (InspectedClass.Subclasses != null && InspectedClass.Subclasses.Any())
     {

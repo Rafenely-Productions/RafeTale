@@ -141,13 +141,13 @@
   <data name="Return_DirectoryBtn" xml:space="preserve">
     <value>Regresa a las Clases</value>
   </data>
-  <data name="Race_Description_Card" xml:space="preserve">
+  <data name="Race_Description" xml:space="preserve">
     <value>Razas, Subrazas y sus rasgos</value>
   </data>
-  <data name="Race_Subrace_Title_Card" xml:space="preserve">
+  <data name="Race_Subrace_Title" xml:space="preserve">
     <value>Razas y Subrazas</value>
   </data>
-  <data name="Spells_Magic_Title" xml:space="preserve">
+  <data name="Spells_Magic" xml:space="preserve">
     <value>Hechizos y Magia</value>
   </data>
   <data name="Spells_Magic_Description" xml:space="preserve">
@@ -179,5 +179,23 @@
   </data>
   <data name="Progression_With_Subclass_Active" xml:space="preserve">
     <value>Progresión con {0} activa</value>
+  </data>
+  <data name="LineagesAndAncestries" xml:space="preserve">
+    <value>Linajes y Especies</value>
+  </data>
+  <data name="Humanoid" xml:space="preserve">
+    <value>Humanoide</value>
+  </data>
+  <data name="Monstrosity" xml:space="preserve">
+    <value>Monstruosidad</value>
+  </data>
+  <data name="Fey" xml:space="preserve">
+    <value>Feérico</value>
+  </data>
+  <data name="Dragon" xml:space="preserve">
+    <value>Dragón</value>
+  </data>
+  <data name="Undead" xml:space="preserve">
+    <value>Muerto Viviente</value>
   </data>
 </root>

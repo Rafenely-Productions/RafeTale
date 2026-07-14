@@ -3,90 +3,133 @@ using DnDreams.Application.Interfaces;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
+using DnDreams.Domain.Helpers;
 using DnDreams.Domain.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DnDreams.Application.Services.DtosServices
 {
-    public class RaceService : IService<RaceDto, Race>
+    public class RaceService(IUnitOfWork uow, ILocalizationService loc) : IService<RaceDto, Race>
     {
-        private readonly IUnitOfWork _uow;
-        private readonly ILocalizationService _loc;
-
-        public RaceService(IUnitOfWork uow, ILocalizationService loc)
+        // 1. ArmDto Asíncrono (GetByIdAsync)
+        public async Task<RaceDto> ArmDto(Race race)
         {
-            _uow = uow;
-            _loc = loc;
-        }
+            var localizedSubraces = await loc.GetAllAsync(LocEntity.SubRace, [LocProperty.Name, LocProperty.Description]);
+            var localizedTraits = await loc.GetAllAsync(LocEntity.Trait, [LocProperty.Name, LocProperty.Description]);
 
-        public async Task<RaceDto> ArmDto(Race race, Dictionary<Guid, string>? localizedWords = null)
-        {
-            return new RaceDto 
+            // Se asignan TODAS las propiedades dentro de la inicialización {} para no violar el 'init'
+            return new RaceDto
             {
                 Id = race.Id,
-                Name = await _loc.GetStringAsync(race.Id, LocProperty.Name),
-                Description = localizedWords?.TryGetValue(race.Id,out var d) == true ? d : await _loc.GetStringAsync(race.Id, LocProperty.Description),
-                Resistances = await _loc.GetStringAsync(race.Id, LocProperty.Resistances),
-                Darkvision = race.Darkvision,
+                Name = await loc.GetStringAsync(race.Id, LocProperty.Name),
+                Description = await loc.GetStringAsync(race.Id, LocProperty.Description),
+                Resistances = await loc.GetStringAsync(race.Id, LocProperty.Resistances),
                 Size = race.Size,
                 CreatureType = race.CreatureType,
                 Speed = race.Speed,
                 Languages = race.Languages,
-                SubRaces = race.SubRaces,
-                Traits = race.Traits
+                Traits = ArmTraitDtos(race.Traits, localizedTraits),
+                SubRaces = ArmSubraceDtos(race.SubRaces, localizedSubraces, localizedTraits)
             };
-
         }
 
-        public Task<RaceDto> ArmDto(Race entity)
+        // 2. ArmDto Síncrono optimizado (GetAllAsync)
+        public RaceDto ArmDto(Race race, Dictionary<LocProperty, Dictionary<Guid, string>>? localizedWords)
         {
-            throw new NotImplementedException();
+            return new RaceDto
+            {
+                Id = race.Id,
+                Name = localizedWords != null && localizedWords.TryGetValue(LocProperty.Name, out var nameDict) && nameDict.TryGetValue(race.Id, out var n) ? n : "[No Name]",
+                Description = localizedWords != null && localizedWords.TryGetValue(LocProperty.Description, out var descDict) && descDict.TryGetValue(race.Id, out var d) ? d : "[No Description]",
+                Resistances = localizedWords != null && localizedWords.TryGetValue(LocProperty.Resistances, out var resDict) && resDict.TryGetValue(race.Id, out var r) ? r : "[No Resistances]",
+                Size = race.Size,
+                CreatureType = race.CreatureType,
+                Speed = race.Speed,
+                Languages = race.Languages,
+                Traits = new(), // Se llenan en GetAllAsync usando el inicializador si hiciera falta
+                SubRaces = new()
+            };
         }
 
-        public RaceDto ArmDto(Race entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
+        // 3. Obtención masiva de Razas con mapeo relacional
+        public async Task<List<RaceDto>> GetAllAsync(Expression<Func<Race, bool>>? filter, Action<IncludeAggregator<Race>>? includes)
         {
-            throw new NotImplementedException();
-        }
+            var races = await uow.Races.GetAllAsync(filter, includes);
 
-        public async Task<List<RaceDto>> GetAllAsync(Expression<Func<Race, bool>>? filter,params Expression<Func<Race, object>>[] includes)
-        {
-            var races = await _uow.Races.GetAllAsync(filter,includes);
-            var names = await _loc.GetAllAsync(LocEntity.Race, LocProperty.Name);
-            var descriptions = await _loc.GetAllAsync(LocEntity.Race, LocProperty.Description);
-            var resistances = await _loc.GetAllAsync(LocEntity.Race, LocProperty.Resistances);
+            var localizedSubraces = await loc.GetAllAsync(LocEntity.SubRace, [LocProperty.Name, LocProperty.Description]);
+            var localizedTraits = await loc.GetAllAsync(LocEntity.Trait, [LocProperty.Name, LocProperty.Description]);
+            var localizedWords = await loc.GetAllAsync(LocEntity.Race, [LocProperty.Name, LocProperty.Description, LocProperty.Resistances]);
 
             var raceDtos = new List<RaceDto>();
             foreach (var race in races)
             {
-                raceDtos.Add(new RaceDto
+                // Mapeamos el DTO base usando el inicializador 'with' o reconstruyendo
+                var baseDto = ArmDto(race!, localizedWords);
+
+                // Como son de tipo 'init', creamos el DTO definitivo inyectando las listas mapeadas desde un inicio
+                var completeDto = new RaceDto
                 {
-                    Id = race.Id,
-                    Name = names.TryGetValue(race.Id, out var n) ? n : "[No Name]",
-                    Description = descriptions.TryGetValue(race.Id, out var d) ? d : "[No Description]",
-                    Resistances = resistances.TryGetValue(race.Id, out var r) ? r : "[No Resistances]",
-                    Darkvision = race.Darkvision,
-                    Size = race.Size,
-                    CreatureType = race.CreatureType,
-                    Speed = race.Speed,
-                    Languages = race.Languages,
-                    SubRaces = race.SubRaces,
-                    Traits = race.Traits
-                });
+                    Id = baseDto.Id,
+                    Name = baseDto.Name,
+                    Description = baseDto.Description,
+                    Resistances = baseDto.Resistances,
+                    Size = baseDto.Size,
+                    CreatureType = baseDto.CreatureType,
+                    Speed = baseDto.Speed,
+                    Languages = baseDto.Languages,
+                    Traits = ArmTraitDtos(race.Traits, localizedTraits),
+                    SubRaces = ArmSubraceDtos(race.SubRaces, localizedSubraces, localizedTraits)
+                };
+
+                raceDtos.Add(completeDto);
             }
             return raceDtos;
         }
 
-        public Task<List<RaceDto>> GetAllAsync()
+        public async Task<RaceDto> GetByIdAsync(Guid id, Action<IncludeAggregator<Race>>? includes = null)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<RaceDto> GetByIdAsync(Guid id, params Expression<Func<Race, object>>[] includes)
-        {
-            var race = await _uow.Races.GetByIdAsync(id);
-            if (race==null)return null!;
+            var race = await uow.Races.GetByIdAsync(id, includes);
+            if (race == null) return null!;
 
             return await ArmDto(race);
+        }
+
+        // --- MÉTODOS DE MAPEO AUXILIARES ---
+
+        private List<SubRaceDto> ArmSubraceDtos(List<SubRace>? subraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedSubraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedTraits)
+        {
+            if (subraces == null) return new();
+
+            return subraces.Select(sr => new SubRaceDto
+            {
+                Id = sr.Id,
+                TechnicalName = sr.TechnicalName,
+                Name = localizedSubraces.TryGetValue(LocProperty.Name, out var nameDict) && nameDict.TryGetValue(sr.Id, out var n) ? n : sr.TechnicalName,
+                Description = localizedSubraces.TryGetValue(LocProperty.Description, out var descDict) && descDict.TryGetValue(sr.Id, out var d) ? d : "No description",
+                RaceId = sr.RaceId,
+                Traits = ArmTraitDtos(sr.Traits, localizedTraits) // Retorna List<TraitDto> limpio
+            }).ToList();
+        }
+
+        private List<TraitDto> ArmTraitDtos(List<Trait>? traits, Dictionary<LocProperty, Dictionary<Guid, string>> localizedTraits)
+        {
+            if (traits == null) return new();
+
+            return traits.Select(t => new TraitDto
+            {
+                Id = t.Id,
+                TechnicalName = t.TechnicalName,
+                Name = localizedTraits.TryGetValue(LocProperty.Name, out var nameDict) && nameDict.TryGetValue(t.Id, out var n) ? n : t.TechnicalName,
+                Description = localizedTraits.TryGetValue(LocProperty.Description, out var descDict) && descDict.TryGetValue(t.Id, out var d) ? d : "No description available",
+                RequiredLevel = t.RequiredLevel,
+                Modifiers = t.Modifiers,
+                RaceId = t.RaceId,
+                SubraceId = t.SubraceId
+            }).ToList();
         }
     }
 }

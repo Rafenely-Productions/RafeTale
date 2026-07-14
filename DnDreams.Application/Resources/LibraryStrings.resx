@@ -141,13 +141,13 @@
   <data name="Return_DirectoryBtn" xml:space="preserve">
     <value>Return to Directory</value>
   </data>
-  <data name="Race_Description_Card" xml:space="preserve">
+  <data name="Race_Description" xml:space="preserve">
     <value>Ancestries, traits, and their subrace branches.</value>
   </data>
-  <data name="Race_Subrace_Title_Card" xml:space="preserve">
+  <data name="Race_Subrace_Title" xml:space="preserve">
     <value>Races &amp; Subraces</value>
   </data>
-  <data name="Spells_Magic_Title" xml:space="preserve">
+  <data name="Spells_Magic" xml:space="preserve">
     <value>Spells &amp; Magic</value>
   </data>
   <data name="Spells_Magic_Description" xml:space="preserve">
@@ -179,5 +179,23 @@
   </data>
   <data name="Progression_With_Subclass_Active" xml:space="preserve">
     <value>Progression with {0} active</value>
+  </data>
+  <data name="LineagesAndAncestries" xml:space="preserve">
+    <value>Lineages &amp; Ancestries</value>
+  </data>
+  <data name="Humanoid" xml:space="preserve">
+    <value>Humanoid</value>
+  </data>
+  <data name="Monstrosity" xml:space="preserve">
+    <value>Monstrosity</value>
+  </data>
+  <data name="Fey" xml:space="preserve">
+    <value>Fey</value>
+  </data>
+  <data name="Dragon" xml:space="preserve">
+    <value>Dragon</value>
+  </data>
+  <data name="Undead" xml:space="preserve">
+    <value>Undead</value>
   </data>
 </root>

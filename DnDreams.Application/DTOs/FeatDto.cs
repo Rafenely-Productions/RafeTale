@@ -16,7 +16,7 @@ namespace DnDreams.Application.DTOs
         public string Description { get; set; } = "";
         public CategoryFeat Category { get; set; }
         bool SpecialData = false;
-        public List<FeatPrerequisiteModifierData> Prerequisite { get; set; } = new();
-        public List<ModifierData> Modifiers { get; set; } = new();
+        public List<FeatPrerequisiteModifierData> Prerequisite { get; set; } = [];
+        public List<ModifierData> Modifiers { get; set; } = [];
     }
 }

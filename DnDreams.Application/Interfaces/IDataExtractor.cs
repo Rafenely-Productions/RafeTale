@@ -7,7 +7,7 @@ namespace DnDreams.Application.Interfaces
 {
     public interface IDataExtractor
     {
-        Task<ImportDataPackage> ExtractAllAsync(Stream excelStream);
+        ImportDataPackage ExtractAllAsync(Stream excelStream);
 
         List<Language> ExtractLanguages(IXLWorkbook workbook);
         List<Race> ExtractRaces(IXLWorkbook workbook, List<Language> languages);
@@ -21,7 +21,7 @@ namespace DnDreams.Application.Interfaces
         List<XpRules> ExtractXpRules(IXLWorkbook workbook);
         List<Feat> ExtractFeats(IXLWorkbook workbook);
         List<ItemTemplate> ExtractItems(IXLWorkbook workbook, List<Character> characters);
-        List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races);
+        List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races,List<SubRace> subRaces);
         List<SpecialTrait> ExtractSpecialTraits(IXLWorkbook workbook, List<Trait> traits);
         List<SchoolOfMagic> ExtractSchoolsOfMagic(IXLWorkbook workbook);
         List<Background> ExtractBackgrounds(IXLWorkbook workbook, List<Feat> feats);

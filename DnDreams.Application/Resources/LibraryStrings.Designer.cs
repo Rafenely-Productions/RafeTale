@@ -115,6 +115,15 @@ namespace DnDreams.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dragon.
+        /// </summary>
+        public static string Dragon {
+            get {
+                return ResourceManager.GetString("Dragon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feature Compendium.
         /// </summary>
         public static string Feature_Compendium {
@@ -124,11 +133,47 @@ namespace DnDreams.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fey.
+        /// </summary>
+        public static string Fey {
+            get {
+                return ResourceManager.GetString("Fey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Got it.
         /// </summary>
         public static string Got_it {
             get {
                 return ResourceManager.GetString("Got_it", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Humanoid.
+        /// </summary>
+        public static string Humanoid {
+            get {
+                return ResourceManager.GetString("Humanoid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lineages &amp; Ancestries.
+        /// </summary>
+        public static string LineagesAndAncestries {
+            get {
+                return ResourceManager.GetString("LineagesAndAncestries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monstrosity.
+        /// </summary>
+        public static string Monstrosity {
+            get {
+                return ResourceManager.GetString("Monstrosity", resourceCulture);
             }
         }
         
@@ -153,18 +198,18 @@ namespace DnDreams.Application.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Ancestries, traits, and their subrace branches..
         /// </summary>
-        public static string Race_Description_Card {
+        public static string Race_Description {
             get {
-                return ResourceManager.GetString("Race_Description_Card", resourceCulture);
+                return ResourceManager.GetString("Race_Description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Races &amp; Subraces.
         /// </summary>
-        public static string Race_Subrace_Title_Card {
+        public static string Race_Subrace_Title {
             get {
-                return ResourceManager.GetString("Race_Subrace_Title_Card", resourceCulture);
+                return ResourceManager.GetString("Race_Subrace_Title", resourceCulture);
             }
         }
         
@@ -196,20 +241,20 @@ namespace DnDreams.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spells &amp; Magic.
+        /// </summary>
+        public static string Spells_Magic {
+            get {
+                return ResourceManager.GetString("Spells_Magic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter by level, slots, and school of magic..
         /// </summary>
         public static string Spells_Magic_Description {
             get {
                 return ResourceManager.GetString("Spells_Magic_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Spells &amp; Magic.
-        /// </summary>
-        public static string Spells_Magic_Title {
-            get {
-                return ResourceManager.GetString("Spells_Magic_Title", resourceCulture);
             }
         }
         
@@ -246,6 +291,15 @@ namespace DnDreams.Application.Resources {
         public static string Un_Select_Archetype {
             get {
                 return ResourceManager.GetString("Un_Select_Archetype", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undead.
+        /// </summary>
+        public static string Undead {
+            get {
+                return ResourceManager.GetString("Undead", resourceCulture);
             }
         }
     }

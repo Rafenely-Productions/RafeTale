@@ -22,14 +22,16 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
             builder.Property(e => e.TechnicalName).IsRequired().HasMaxLength(100);
             //builder.HasMany(e => e.Modifiers);
 
-                builder.Property(f => f.Modifiers)
-                    .HasConversion(
-                        // Al guardar en la DB: Convertimos la Lista a string (JSON)
-                        v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-                        // Al leer de la DB: Convertimos el string (JSON) de vuelta a Lista
-                        v => JsonSerializer.Deserialize<List<ModifierData>>(v, (JsonSerializerOptions)null)
-                             ?? new List<ModifierData>()
-                    );
+            builder.Property(f => f.Modifiers)
+             .HasConversion(
+                 // Al guardar
+                 v => v == null ? "[]" : JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+
+                 // Al leer (Protección contra strings vacíos o "no-JSON")
+                 v => string.IsNullOrWhiteSpace(v)
+                     ? new List<ModifierData>()
+                     : JsonSerializer.Deserialize<List<ModifierData>>(v, (JsonSerializerOptions)null) ?? new List<ModifierData>()
+             );
         }
     }
 }

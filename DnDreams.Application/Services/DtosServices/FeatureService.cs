@@ -1,4 +1,5 @@
 ﻿using DnDreams.Application.DTOs;
+using DnDreams.Domain.Helpers;
 using DnDreams.Application.Interfaces;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
@@ -14,32 +15,23 @@ using System.Threading.Tasks;
 
 namespace DnDreams.Application.Services.DtosServices
 {
-    public class FeatureService : IService<FeatureDto, Feature>
+    public class FeatureService(IUnitOfWork uow, ILocalizationService loc) : IService<FeatureDto, Feature>
     {
-        private readonly IUnitOfWork _uow;
-        private readonly ILocalizationService _loc;
-
-        public FeatureService(IUnitOfWork uow, ILocalizationService loc)
-        {
-            _uow = uow;
-            _loc = loc;
-        }
-
         public async Task<FeatureDto> ArmDto(Feature entity)
         {
             return new FeatureDto
             {
                 Id = entity.Id,
-                Name = await _loc.GetStringAsync(entity.Id, LocProperty.Name),
-                Description = await _loc.GetStringAsync(entity.Id, LocProperty.Description),
+                Name = await loc.GetStringAsync(entity.Id, LocProperty.Name),
+                Description = await loc.GetStringAsync(entity.Id, LocProperty.Description),
             };
         }
 
-        public FeatureDto ArmDto(Feature entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
+        public FeatureDto ArmDto(Feature entity, Dictionary<LocProperty, Dictionary<Guid, string>>? localizedWords)
         {
             var Name = localizedWords?.TryGetValue(LocProperty.Name, out var nameL) == true && nameL?.TryGetValue(entity.Id, out var entityName) == true ? entityName : "Uknown entity...";
             var Description = localizedWords?.TryGetValue(LocProperty.Description, out var descriptionL) == true && descriptionL?.TryGetValue(entity.Id, out var description) == true ? description : "Uknown entity...";
-            var Material = localizedWords?.TryGetValue(LocProperty.MaterialComponentDescription, out var mateL) == true && mateL?.TryGetValue(entity.Id, out var matel) == true ? matel : "Uknown entity...";
+            //var Material = localizedWords?.TryGetValue(LocProperty.MaterialComponentDescription, out var mateL) == true && mateL?.TryGetValue(entity.Id, out var matel) == true ? matel : "Uknown entity...";
 
             return new FeatureDto
             {
@@ -49,10 +41,10 @@ namespace DnDreams.Application.Services.DtosServices
             };
         }
 
-        public async Task<List<FeatureDto>> GetAllAsync(Expression<Func<Feature, bool>>? filter, params Expression<Func<Feature, object>>[] includes)
+        public async Task<List<FeatureDto>> GetAllAsync(Expression<Func<Feature, bool>>? filter, Action<IncludeAggregator<Feature>>? includes = null)
         {
-            var features = await _uow.Features.GetAllAsync(filter, includes);
-            var descriptions = await _loc.GetAllAsync(LocEntity.Feature, [LocProperty.Name, LocProperty.Description, LocProperty.MaterialComponentDescription]);
+            var features = await uow.Features.GetAllAsync(filter, includes);
+            var descriptions = await loc.GetAllAsync(LocEntity.Feature, [LocProperty.Name, LocProperty.Description, LocProperty.MaterialComponentDescription]);
 
             var featureDtos = new List<FeatureDto>(features.Count());
             foreach (var feature in features)
@@ -67,9 +59,9 @@ namespace DnDreams.Application.Services.DtosServices
             throw new NotImplementedException();
         }
 
-        public async Task<FeatureDto> GetByIdAsync(Guid id, params Expression<Func<Feature, object>>[] includes)
+        public async Task<FeatureDto> GetByIdAsync(Guid id, Action<IncludeAggregator<Feature>>? includes = null)
         {
-            var feature = await _uow.Features.GetByIdAsync(id);
+            var feature = await uow.Features.GetByIdAsync(id);
             if (feature == null)
                 return null!;
 

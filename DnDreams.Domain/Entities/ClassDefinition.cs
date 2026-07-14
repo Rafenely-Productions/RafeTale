@@ -1,7 +1,6 @@
 using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
 using DnDreams.Domain.Modifiers;
-using static DnDreams.Domain.Modifiers.ProgressionSnapshot;
 
 namespace DnDreams.Domain.Entities;
 

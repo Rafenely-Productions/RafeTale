@@ -126,9 +126,11 @@
             query = query.Where(s => s.Level == SpellLevelFilter);
         }
 
-        if (!string.IsNullOrWhiteSpace(SearchText))
+        if (!string.IsNullOrWhiteSpace(SearchText.Trim()))
         {
-            query = query.Where(s => s.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) || s.TechnicalName.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+
+            query = query.Where(s => s.Name.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase) 
+                             || s.TechnicalName.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase));
         }
 
         FilteredSpells = query.ToList();

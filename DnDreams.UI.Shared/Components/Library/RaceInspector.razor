@@ -1,22 +1,144 @@
 ﻿@using Application.DTOs;
 @inject IStringLocalizer<AppStrings> L
-@inject IStringLocalizer<LibraryStrings> LL
 
-<div class="animate-in fade-in duration-300 space-y-6">
-    <div class="border-b border-white/5 pb-4">
-        <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@InspectedRace.Name</h1>
-        <p class="text-slate-400 font-serif italic text-base leading-relaxed mt-2">
-            Core lineage specifications and ancestral biological benefits.
+<div class="animate-in fade-in duration-300 space-y-6 max-w-4xl mx-auto">
+
+    <div class="border-b border-slate-800 pb-5">
+        <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@RaceDto.Name</h1>
+        <p class="text-slate-400 font-sans text-sm leading-relaxed mt-3">
+            @((MarkupString)RaceDto.Description)
         </p>
     </div>
 
-    <div class="p-4 bg-black/40 rounded-xl border border-slate-800">
-        <p class="text-sm font-bold text-amber-500 uppercase tracking-wider mb-2">Ancestral Traits Matrix</p>
-        <span class="text-slate-300 text-sm">Base speed, traits configurations, and racial ability adjustments mapping container.</span>
+    <div class="grid grid-cols-3 gap-3">
+        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Creature Type</p>
+            <p class="text-sm font-semibold text-white mt-1">@RaceDto.CreatureType</p>
+        </div>
+        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Size Category</p>
+            <p class="text-sm font-semibold text-white mt-1">@RaceDto.Size</p>
+        </div>
+        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Speed</p>
+            <p class="text-sm font-semibold text-white mt-1">@RaceDto.Speed</p>
+        </div>
     </div>
+
+    <div class="space-y-4">
+        <h3 class="text-lg font-black text-amber-500 uppercase italic tracking-wider border-b border-slate-800 pb-1">
+            Especie Core Traits
+        </h3>
+
+        <div class="space-y-3">
+            @if (RaceDto.Traits != null && RaceDto.Traits.Any())
+            {
+                @foreach (var trait in RaceDto.Traits)
+                {
+                    <div class="p-4 bg-black/40 rounded-xl border border-slate-800/80 hover:border-slate-700 transition-colors">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                            <p class="text-sm font-black text-white uppercase">
+                                @trait.Name
+                            </p>
+                            @if (trait.RequiredLevel > 1)
+                            {
+                                <span class="text-[9px] font-mono bg-amber-500/10 text-amber-500 px-1.5 py-0.5 rounded border border-amber-500/20">
+                                    Lvl @trait.RequiredLevel
+                                </span>
+                            }
+                        </div>
+                        <p class="text-xs text-slate-400 font-sans leading-relaxed">
+                            @((MarkupString)trait.Description)
+                        </p>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-xs text-slate-500 italic">No core traits registered.</p>
+            }
+        </div>
+    </div>
+
+    @if (RaceDto.SubRaces != null && RaceDto.SubRaces.Any())
+    {
+        <div class="space-y-4 mt-8">
+            <h3 class="text-lg font-black text-amber-500 uppercase italic tracking-wider border-b border-slate-800 pb-1">
+                Lineages & Legacies
+            </h3>
+
+            <div class="flex flex-wrap gap-2">
+                @foreach (var subrace in RaceDto.SubRaces)
+                {
+                    <button @onclick="() => SelectSubrace(subrace)"
+                            class="px-4 py-2 text-xs font-black uppercase tracking-wider rounded-lg border transition-all
+                                           @(selectedSubrace?.Id == subrace.Id
+                                                                    ? "bg-amber-500/10 border-amber-500 text-amber-500"
+                                                                    : "bg-black/30 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700")">
+                @subrace.Name
+            </button>
+                        }
+            </div>
+
+            @if (selectedSubrace != null)
+            {
+                <div class="p-5 bg-slate-900/30 rounded-xl border border-amber-500/10 animate-in slide-in-from-bottom-2 duration-200">
+                    <h4 class="text-sm font-black text-white uppercase mb-2">
+                        About @selectedSubrace.Name
+                    </h4>
+
+                    <p class="text-xs text-slate-400 font-sans leading-relaxed mb-4">
+                        @((MarkupString)selectedSubrace.Description)
+                    </p>
+
+                    <div class="space-y-3">
+                        <p class="text-[10px] font-bold text-amber-500/80 uppercase tracking-widest">Lineage Features</p>
+
+                        @if (selectedSubrace.Traits != null && selectedSubrace.Traits.Any())
+                        {
+                            @foreach (var sTrait in selectedSubrace.Traits)
+                            {
+                                <div class="p-3.5 bg-black/40 rounded-lg border border-slate-800">
+                                    <p class="text-xs font-black text-white uppercase mb-1">
+                                        @sTrait.Name
+                                    </p>
+                                    <p class="text-xs text-slate-400 font-sans leading-relaxed">
+                                        @((MarkupString)sTrait.Description)
+                                    </p>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-xs text-slate-500 italic">This lineage has no exclusive traits.</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
 
 @code {
-    [Parameter] public RaceDto InspectedRace { get; set; } = null!;
+    [Parameter] public RaceDto RaceDto { get; set; } = null!;
 
+    private SubRaceDto? selectedSubrace;
+
+    protected override void OnParametersSet()
+    {
+        if (RaceDto?.SubRaces != null && RaceDto.SubRaces.Any())
+        {
+            selectedSubrace = RaceDto.SubRaces.First();
+        }
+        else
+        {
+            selectedSubrace = null;
+        }
+    }
+
+    private void SelectSubrace(SubRaceDto subrace)
+    {
+        selectedSubrace = subrace;
+    }
 }

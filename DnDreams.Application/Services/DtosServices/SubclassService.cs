@@ -1,4 +1,5 @@
 ﻿using DnDreams.Application.DTOs;
+using DnDreams.Domain.Helpers;
 using DnDreams.Application.Interfaces;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
@@ -44,9 +45,9 @@ namespace DnDreams.Application.Services.DtosServices
             };
         }
 
-        public async Task<List<SubclassDto>> GetAllAsync(Expression<Func<Subclass, bool>>? filter, params Expression<Func<Subclass, object>>[] includes)
+        public async Task<List<SubclassDto>> GetAllAsync(Expression<Func<Subclass, bool>>? filter, Action<IncludeAggregator<Subclass>>? includes = null)
         {
-            var classes = await _uow.Subclasses.GetAllAsync(filter, includes);
+            var classes = await _uow.Subclasses.GetAllAsync(filter, includes!);
             var classesLocations = await _loc.GetAllAsync(LocEntity.Class, [LocProperty.Name, LocProperty.Description]);
             var featuresNames = await _loc.GetTranslationsForLanguageAsync(LocEntity.Feature);
 
@@ -82,7 +83,7 @@ namespace DnDreams.Application.Services.DtosServices
             }
         }
 
-        public async Task<SubclassDto> GetByIdAsync(Guid id, params Expression<Func<Subclass, object>>[] includes)
+        public async Task<SubclassDto> GetByIdAsync(Guid id, Action<IncludeAggregator<Subclass>>? includes = null)
         {
             var race = await _uow.Subclasses.GetByIdAsync(id, includes);
             if (race == null) return null!;

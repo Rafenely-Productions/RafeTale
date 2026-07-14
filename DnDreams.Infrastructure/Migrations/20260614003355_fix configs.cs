@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DnDreams.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class fixconfigs : Migration
+    public partial class Fixconfigs : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

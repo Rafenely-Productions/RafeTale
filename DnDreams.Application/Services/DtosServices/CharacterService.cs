@@ -1,4 +1,5 @@
 ﻿using DnDreams.Application.DTOs;
+using DnDreams.Domain.Helpers;
 using DnDreams.Application.Interfaces;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
@@ -13,21 +14,16 @@ using System.Threading.Tasks;
 
 namespace DnDreams.Application.Services.DtosServices
 {
-    public class CharacterService : IService<CharacterDto, Character>
+    public class CharacterService(IUnitOfWork uow, ILocalizationService loc) : IService<CharacterDto, Character>
     {
-        private readonly IUnitOfWork _uow;
-        private readonly ILocalizationService _loc;
+        private readonly IUnitOfWork _uow = uow;
+        private readonly ILocalizationService _loc = loc;
 
-        public CharacterService(IUnitOfWork uow, ILocalizationService loc)
-        {
-            _uow = uow;
-            _loc = loc;
-        }
-        public async Task<List<CharacterDto>> GetAllAsync(Expression<Func<Character, bool>>? filter, params Expression<Func<Character, object>>[] includes)
+        public async Task<List<CharacterDto>> GetAllAsync(Expression<Func<Character, bool>>? filter, Action<IncludeAggregator<Character>>? includes = null)
         {
             var characters = await _uow.Characters.GetAllAsync(filter, includes);
-            var names = await _loc.GetAllAsync(LocEntity.Character, LocProperty.Name);
-            var descriptions = await _loc.GetAllAsync(LocEntity.Character, LocProperty.Description);
+            //var names = await _loc.GetAllAsync(LocEntity.Character, LocProperty.Name);
+            //var descriptions = await _loc.GetAllAsync(LocEntity.Character, LocProperty.Description);
 
             var characterDtos = new List<CharacterDto>();
             foreach (var character in characters)
@@ -40,7 +36,7 @@ namespace DnDreams.Application.Services.DtosServices
             return characterDtos;
         }
 
-        public async Task<CharacterDto> GetByIdAsync(Guid id, params Expression<Func<Character, object>>[] includes)
+        public async Task<CharacterDto> GetByIdAsync(Guid id, Action<IncludeAggregator<Character>>? includes = null)
         {
             var character = await _uow.Characters.GetByIdAsync(id);
             if (character == null) return null!;
@@ -62,7 +58,7 @@ namespace DnDreams.Application.Services.DtosServices
             throw new NotImplementedException();
         }
 
-        CharacterDto IService<CharacterDto, Character>.ArmDto(Character entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
+        CharacterDto IService<CharacterDto, Character>.ArmDto(Character entity, Dictionary<LocProperty, Dictionary<Guid, string>>? localizedWords)
         {
             throw new NotImplementedException();
         }

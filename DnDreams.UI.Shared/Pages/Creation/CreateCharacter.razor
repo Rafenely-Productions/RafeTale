@@ -131,8 +131,8 @@
 
 @code {
     private CharacterCreationService Model = new();
-    private List<Race> Races = new();
-    private List<ClassDefinition> Classes = new();
+    private List<Race?> Races = new();
+    private List<ClassDefinition?> Classes = new();
 
     private RaceDto? SelectedRace;
     private ClassDefinitionDto? SelectedClass;
@@ -149,11 +149,11 @@
         if (Guid.TryParse(e.Value?.ToString(), out var id))
         {
             Model.SelectedRaceId = id;
-            var race = Races.FirstOrDefault(r => r.Id == id);
+            var race = Races.FirstOrDefault(r => r!.Id == id);
 
             if (race != null)
             {
-                SelectedRace = await RaceService.GetByIdAsync(id);
+                SelectedRace = await RaceService.GetByIdAsync(id,null);
             }
         }
         else
@@ -168,7 +168,7 @@
         if (Guid.TryParse(e.Value?.ToString(), out var id))
         {
             Model.SelectedClassId = id;
-            var classDefinition = Classes.FirstOrDefault(c => c.Id == id);
+            var classDefinition = Classes.FirstOrDefault(c => c!.Id == id);
             if (classDefinition != null)
                 SelectedClass = await ClassService.GetByIdAsync(id);
         }

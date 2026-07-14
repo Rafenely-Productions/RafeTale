@@ -9,7 +9,7 @@ namespace DnDreams.Application.Interfaces
 {
     public interface IFeatureQueryService
     {
-        Task<IEnumerable<Feature>> GetDashboardFeaturesAsync();
+        Task<IEnumerable<Feature?>> GetDashboardFeaturesAsync();
 
     }
 }

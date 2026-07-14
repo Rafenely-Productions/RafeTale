@@ -1,4 +1,5 @@
 ﻿using DnDreams.Application.DTOs;
+using DnDreams.Domain.Helpers;
 using DnDreams.Application.Interfaces;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
@@ -9,28 +10,18 @@ using System.Linq.Expressions;
 
 namespace DnDreams.Application.Services.DtosServices
 {
-    public class ClassService : IService<ClassDefinitionDto, ClassDefinition>
+    public class ClassService(IUnitOfWork uow, ILocalizationService loc) : IService<ClassDefinitionDto, ClassDefinition>
     {
-        private readonly IUnitOfWork _uow;
-        private readonly ILocalizationService _loc;
-
-        public ClassService(IUnitOfWork uow, ILocalizationService loc)
-        {
-            _uow = uow;
-            _loc = loc;
-        }
-
         public async Task<ClassDefinitionDto> ArmDto(ClassDefinition entity)
         {
             // Traemos las traducciones específicas para las subclases e inicializamos las características
-            var subclassesLocations = await _loc.GetAllAsync(LocEntity.Subclass, [LocProperty.Name, LocProperty.Description]);
-            var featuresNames = await _loc.GetTranslationsForLanguageAsync(LocEntity.Feature);
+            var featuresNames = await loc.GetTranslationsForLanguageAsync(LocEntity.Feature);
 
             var dto = new ClassDefinitionDto
             {
                 Id = entity.Id,
-                Name = await _loc.GetStringAsync(entity.Id, LocProperty.Name),
-                Description = await _loc.GetStringAsync(entity.Id, LocProperty.Description),
+                Name = await loc.GetStringAsync(entity.Id, LocProperty.Name),
+                Description = await loc.GetStringAsync(entity.Id, LocProperty.Description),
                 HitDie = entity.HitDie,
                 HitDieValue = entity.HitDieValue,
                 Progressions = entity.Progressions,
@@ -42,13 +33,6 @@ namespace DnDreams.Application.Services.DtosServices
                 SkillProficiencies = entity.SkillProficiencies,
                 SkillToChoose = entity.SkillsToChoose,
 
-                // UNIÓN: Mapeamos las subclases localizándolas en memoria
-                /*Subclasses = entity.Subclasses?.Select(s =>
-                {
-                    var subDto = ArmSubclassDtoInMem(s, subclassesLocations);
-                    ArmSubclassFeatureDtos(subDto, featuresNames);
-                    return subDto;
-                }).ToList() ?? []*/
             };
 
             // Cargamos las características de la clase base
@@ -57,7 +41,7 @@ namespace DnDreams.Application.Services.DtosServices
             return dto;
         }
 
-        public ClassDefinitionDto ArmDto(ClassDefinition entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
+        public ClassDefinitionDto ArmDto(ClassDefinition entity, Dictionary<LocProperty, Dictionary<Guid, string>>? localizedWords)
         {
             var name = localizedWords?.TryGetValue(LocProperty.Name, out var nameL) == true && nameL?.TryGetValue(entity.Id, out var entityName) == true ? entityName : "Unknown entity...";
             var description = localizedWords?.TryGetValue(LocProperty.Description, out var descriptionL) == true && descriptionL?.TryGetValue(entity.Id, out var entityDesc) == true ? entityDesc : "Unknown entity...";
@@ -84,34 +68,34 @@ namespace DnDreams.Application.Services.DtosServices
             };
         }
 
-        public async Task<List<ClassDefinitionDto>> GetAllAsync(Expression<Func<ClassDefinition, bool>>? filter, params Expression<Func<ClassDefinition, object>>[] includes)
+        public async Task<List<ClassDefinitionDto>> GetAllAsync(Expression<Func<ClassDefinition, bool>>? filter, Action<IncludeAggregator<ClassDefinition>>? includes = null)
         {
-            var classes = await _uow.ClassDefinitions.GetClassesWithFeatures(filter, includes);
-            var classesLocations = await _loc.GetAllAsync(LocEntity.Class, [LocProperty.Name, LocProperty.Description]);
-            var subclasesNames = await _loc.GetTranslationsForLanguageAsync(LocEntity.Subclass);
-            var featuresNames = await _loc.GetTranslationsForLanguageAsync(LocEntity.Feature);
+            var classes = await uow.ClassDefinitions.GetAllAsync(filter, includes);
+            var classesLocations = await loc.GetAllAsync(LocEntity.Class, [LocProperty.Name, LocProperty.Description]);
+            var subclasesNames = await loc.GetTranslationsForLanguageAsync(LocEntity.Subclass);
+            var featuresNames = await loc.GetTranslationsForLanguageAsync(LocEntity.Feature);
 
             var dtos = new List<ClassDefinitionDto>();
             foreach (var entity in classes)
             {
-                var classDto = ArmDto(entity, classesLocations);
+                var classDto = ArmDto(entity!, classesLocations);
 
                 // 1. Armamos las características de la Clase Base (Nivel 1 al 20)
                 ArmFeatureDtos(classDto, featuresNames);
-                ArmSubclasesDtos(entity, classDto, subclasesNames, featuresNames);
+                ArmSubclasesDtos(entity!, classDto, subclasesNames, featuresNames);
 
 
                 dtos.Add(classDto);
             }
 
-            return dtos.OrderBy(x => x.Name).ToList();
+            return [.. dtos.OrderBy(x => x.Name)];
         }
         public async Task<List<ClassDefinitionDto>> GetAllAsync()
         {
-            var classes = await _uow.ClassDefinitions.GetClassesWithFeatures(null);
-            var classesLocations = await _loc.GetAllAsync(LocEntity.Class, [LocProperty.Name, LocProperty.Description]);
-            var subclasesNames = await _loc.GetTranslationsForLanguageAsync(LocEntity.Subclass);
-            var featuresNames = await _loc.GetTranslationsForLanguageAsync(LocEntity.Feature);
+            var classes = await uow.ClassDefinitions.GetClassesWithFeatures(null);
+            var classesLocations = await loc.GetAllAsync(LocEntity.Class, [LocProperty.Name, LocProperty.Description]);
+            var subclasesNames = await loc.GetTranslationsForLanguageAsync(LocEntity.Subclass);
+            var featuresNames = await loc.GetTranslationsForLanguageAsync(LocEntity.Feature);
 
             var dtos = new List<ClassDefinitionDto>();
             foreach (var entity in classes)
@@ -126,7 +110,7 @@ namespace DnDreams.Application.Services.DtosServices
                 dtos.Add(classDto);
             }
 
-            return dtos.OrderBy(x => x.Name).ToList();
+            return [.. dtos.OrderBy(x => x.Name)];
         }
         private void ArmSubclasesDtos(ClassDefinition classD, ClassDefinitionDto classDto, List<LocalizedContent> subclasesNames, List<LocalizedContent> featureNames)
         {
@@ -154,7 +138,7 @@ namespace DnDreams.Application.Services.DtosServices
             {
                 foreach (var feature in pro.Features)
                 {
-                    FeatureDto featureDto = new FeatureDto
+                    FeatureDto featureDto = new()
                     {
                         Id = feature.Id,
                         Name = featuresNames.FirstOrDefault(t => t.EntityId == feature.Id && t.Property == LocProperty.Name)?.Text ?? "Sin nombre",
@@ -175,7 +159,7 @@ namespace DnDreams.Application.Services.DtosServices
             {
                 foreach (var feature in pro.Features)
                 {
-                    FeatureDto featureDto = new FeatureDto
+                    FeatureDto featureDto = new ()
                     {
                         Id = feature.Id,
                         Name = featuresNames.FirstOrDefault(t => t.EntityId == feature.Id && t.Property == LocProperty.Name)?.Text ?? "Sin nombre",
@@ -203,9 +187,9 @@ namespace DnDreams.Application.Services.DtosServices
             };
         }
 
-        public async Task<ClassDefinitionDto> GetByIdAsync(Guid id, params Expression<Func<ClassDefinition, object>>[] includes)
+        public async Task<ClassDefinitionDto> GetByIdAsync(Guid id, Action<IncludeAggregator<ClassDefinition>>? includes = null)
         {
-            var classDef = await _uow.ClassDefinitions.GetByIdAsync(id, includes);
+            var classDef = await uow.ClassDefinitions.GetByIdAsync(id, includes);
             if (classDef == null) return null!;
 
             return await ArmDto(classDef);

@@ -14,7 +14,7 @@ public class UnitOfWork : IUnitOfWork
     private IDbContextTransaction? _currentTransaction;
 
     // Inicializamos las propiedades de los repositorios de golpe pasándoles el mismo contexto
-    public IRepository<Race> Races { get; }
+    public IRaceRepository Races { get; }
     public IClassDefinitionRepository ClassDefinitions { get; }
     public IClassLevelProgressionRepository ClassLevelProgressions { get; }
     public ICharacterRepository Characters { get; }
@@ -37,7 +37,7 @@ public class UnitOfWork : IUnitOfWork
     public UnitOfWork(DnDreamsDbContext context)
     {
         _context = context;
-        Races = new Repository<Race>(_context);
+        Races = new RaceRepository(_context);
         ClassDefinitions = new ClassDefinitionRepository(_context);
         ClassLevelProgressions = new ClassLevelProgressionRepository(_context);
         Characters = new CharacterRepository(_context);
@@ -90,6 +90,7 @@ public class UnitOfWork : IUnitOfWork
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Error saving changes: {ex.Message}");
             throw;
         }
     }
