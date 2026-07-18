@@ -1,13 +1,8 @@
 ﻿using DnDreams.Domain.Entities;
-using DocumentFormat.OpenXml.Vml.Office;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace DnDreams.Infrastructure.Persistence.Configurations
 {
@@ -20,20 +15,44 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
             builder.ToTable("Characters");
             builder.HasKey(e => e.Id);
             builder.Property(e => e.Name).IsRequired().HasMaxLength(100);
+
+            // Relaciones Directas con Claves Foráneas Explícitas (Protección estricta de FKs)
+            builder.HasOne(c => c.Race)
+                   .WithMany()
+                   .HasForeignKey(c => c.RaceId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(c => c.ClassDef)
+                   .WithMany()
+                   .HasForeignKey(c => c.ClassDefId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(c => c.Background)
+                   .WithMany()
+                   .HasForeignKey(c => c.BackgroundId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            // Colecciones y Tablas Intermedias relacionales puras
             builder.HasMany(c => c.ClassLevels).WithOne();
             builder.HasMany(c => c.AcquiredFeatures).WithMany();
+            builder.HasMany(c => c.AcquiredFeats).WithMany();
+            builder.HasMany(c => c.KnownSpells).WithMany();
+
+            builder.HasMany(c => c.CharacterModifiers)
+                   .WithOne()
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            // 🚨 NOTA: NO configuramos aquí la relación HasMany(c => c.SpellSlots).
+            // EF Core la unirá automáticamente usando la configuración explícita que ya tienes
+            // declarada en tu otra clase 'CharacterSpellSlotsConfiguration'.
 
             // MAGIA: Convertir el Diccionario de Stats a un string JSON en la base de datos
             builder.Property(e => e.Stats)
                 .HasConversion(
-                    v => JsonSerializer.Serialize(v, jsonOptions), // Cómo se guarda (Dict -> string)
-                    v => JsonSerializer.Deserialize<Dictionary<string, int>>(v, jsonOptions) ?? new Dictionary<string, int>() // Cómo se lee (string -> Dict)
+                    v => JsonSerializer.Serialize(v, jsonOptions),
+                    v => JsonSerializer.Deserialize<Dictionary<string, int>>(v, jsonOptions) ?? new Dictionary<string, int>()
                 )
-                .HasColumnType("TEXT"); // SQLite lo guardará en una columna de tipo texto
-
-            builder.HasMany(c => c.AcquiredFeats).WithMany();
-            builder.HasMany(c => c.KnownSpells).WithMany();
-            builder.HasMany(c => c.CharacterModifiers).WithOne().OnDelete(DeleteBehavior.Cascade);
+                .HasColumnType("TEXT");
         }
     }
 }

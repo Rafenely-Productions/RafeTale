@@ -1,192 +1,379 @@
 ﻿@page "/character/{CharacterId:guid}"
+@using DnDreams.Application.DTOs
+@using DnDreams.Application.Interfaces.DtosInterfaces
 @using DnDreams.Domain.Entities
-@using DnDreams.Domain.Interfaces
-@inject IUnitOfWork UnitOfWork
+@inject IService<CharacterDto, Character> CharacterService
 @inject NavigationManager Navigation
 @inject IStringLocalizer<AppStrings> L
+@inject ISpellServiceSystem SpellService
+@inject ILevelUpService LevelUpService
 
-<div class="min-h-screen bg-black p-6">
-    @if (Char == null)
+<div class="min-h-screen bg-black p-4 md:p-6 text-slate-100 selection:bg-amber-500/30">
+    @if (CharDto == null)
     {
-        <div class="flex flex-col items-center justify-center py-20">
+        <div class="flex flex-col items-center justify-center py-32">
             <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 mb-4"></div>
-            <p class="text-amber-500 italic font-serif">Invocando al héroe desde el plano astral...</p>
+            <p class="text-amber-500 italic font-serif text-sm">@L["Msg_SummoningHero"]</p>
         </div>
     }
     else
     {
-        <div class="max-w-5xl mx-auto">
+        <div class="max-w-5xl mx-auto space-y-6">
 
             <button @onclick="Back"
-                    class="flex items-center gap-2 text-amber-700 hover:text-amber-500 font-black text-xs tracking-[0.2em] mb-6 transition-colors group uppercase">
+                    class="flex items-center gap-2 text-amber-700 hover:text-amber-500 font-black text-[10px] tracking-[0.2em] transition-colors group uppercase">
                 <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
-                Volver a la Taberna
+                @L["Btn_ReturnToTavern"]
             </button>
 
-            <div class="relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-6 mb-8 bg-slate-900 p-10 rounded-[2.5rem] border border-amber-900/30 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
-
-                <div class="absolute -left-10 -top-10 opacity-5 text-[12rem] text-white">
+            <div class="relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-6 bg-slate-900 border border-amber-900/20 p-6 md:p-8 rounded-[2rem] shadow-2xl">
+                
+                <div class="absolute -left-6 -top-6 opacity-5 text-9xl text-white pointer-events-none">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
 
-                <div class="relative z-10 text-center md:text-left">
-                    <h1 class="text-6xl font-black text-amber-500 tracking-tighter italic uppercase mb-2">@Char.Name</h1>
-                    <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                        <span class="text-slate-300 text-xl font-serif italic">@Char.Race?.TechnicalName</span>
-                        <span class="h-2 w-2 rounded-full bg-amber-600"></span>
-                        <span class="text-amber-600 font-black text-xl uppercase">Char.ClassDef?.Name</span>
-                        <span class="bg-black/50 px-4 py-1 rounded-full border border-amber-500/20 text-white font-bold">
-                            Nivel @Char.Level
+                <div class="relative z-10 text-center md:text-left min-w-0">
+                    <h1 class="text-4xl md:text-5xl font-black text-amber-500 tracking-tight italic uppercase mb-2 truncate">@CharDto.Name</h1>
+                    
+                    <div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5">
+                        <div class="inline-flex items-center rounded-lg bg-black/40 border border-slate-800 p-1 pl-2.5 text-xs">
+                            <span class="text-slate-300 font-serif italic mr-2">@CharDto.Race?.Name</span>
+                            <button @onclick="OpenRaceCompendium" class="size-6 rounded-md bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black transition-all flex items-center justify-center">
+                                <i class="fa-solid fa-book-atlas text-[11px]"></i>
+                            </button>
+                        </div>
+
+                        <div class="inline-flex items-center rounded-lg bg-black/40 border border-slate-800 p-1 pl-2.5 text-xs">
+                            <span class="text-amber-500/90 font-black uppercase tracking-wide mr-2 text-[11px]">@CharDto.ClassDef?.Name</span>
+                            <button @onclick="OpenClassCompendium" class="size-6 rounded-md bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black transition-all flex items-center justify-center">
+                                <i class="fa-solid fa-book-atlas text-[11px]"></i>
+                            </button>
+                        </div>
+
+                        <span class="bg-amber-500 text-black px-3 py-1 rounded-lg text-xs font-black uppercase font-mono tracking-wider shadow-sm shadow-amber-500/10">
+                            @L["Label_Level"] @CharDto.Level
                         </span>
                     </div>
                 </div>
 
-                <div class="relative z-10">
+                <div class="relative z-10 shrink-0 w-full md:w-auto">
                     <button @onclick="NavigateToLevelUp"
-                            class="group bg-lime-600 hover:bg-lime-500 text-black px-8 py-4 rounded-2xl font-black transition-all shadow-[0_10px_30px_rgba(77,124,15,0.3)] flex items-center gap-3 active:scale-95">
-                        SUBIR NIVEL <i class="fa-solid fa-arrow-up group-hover:-translate-y-1 transition-transform"></i>
+                            class="group w-full md:w-auto bg-lime-600 hover:bg-lime-500 text-black px-6 py-3.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-lime-900/20 flex items-center justify-center gap-2.5 active:scale-[0.98]">
+                        @L["Btn_LevelUp"] <i class="fa-solid fa-arrow-up group-hover:-translate-y-0.5 transition-transform"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
+                @DisplayAttributeCompact(L["Strength"], "STR", CharDto.Strength, CharDto.StrModifier)
+                @DisplayAttributeCompact(L["Dexterity"], "DEX", CharDto.Dexterity, CharDto.DexModifier)
+                @DisplayAttributeCompact(L["Constitution"], "CON", CharDto.Constitution, CharDto.ConModifier)
+                @DisplayAttributeCompact(L["Intelligence"], "INT", CharDto.Intelligence, CharDto.IntModifier)
+                @DisplayAttributeCompact(L["Wisdom"], "WIS", CharDto.Wisdom, CharDto.WisModifier)
+                @DisplayAttributeCompact(L["Charisma"], "CHA", CharDto.Charisma, CharDto.ChaModifier)
+            </div>
 
-                <div class="md:col-span-1 space-y-4">
-                    <h3 class="text-amber-700 font-black text-xs tracking-[0.3em] uppercase mb-4 ml-2 italic">Atributos</h3>
-
-                    @DisplayAttribute(L["Label_Strength"], "STR", Char.Strength, Char.StrModifier)
-                    @DisplayAttribute("DESTREZA", "DEX", Char.Dexterity, Char.DexModifier)
-                    @DisplayAttribute("CONSTITUCIÓN", "CON", Char.Constitution, Char.ConModifier)
-                    @DisplayAttribute("INTELIGENCIA", "INT", Char.Intelligence, Char.IntModifier)
-                    @DisplayAttribute("SABIDURÍA", "WIS", Char.Wisdom, Char.WisModifier)
-                    @DisplayAttribute("CARISMA", "CHA", Char.Charisma, Char.ChaModifier)
-                </div>
-
-                <div class="md:col-span-3 space-y-8">
-                    <div class="bg-slate-900 border border-amber-900/20 rounded-[2rem] p-8 shadow-xl">
-                        <h3 class="text-amber-500 font-black text-lg mb-6 flex items-center gap-3 italic uppercase tracking-tighter">
-                            <i class="fa-solid fa-book-open text-amber-700"></i> Rasgos de Clase y Raza
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+                
+                <div class="md:col-span-1 bg-slate-900 border border-amber-900/20 rounded-[2rem] p-5 shadow-xl space-y-4">
+                    <div class="flex flex-col gap-1 border-b border-amber-900/10 pb-3">
+                        <h3 class="text-amber-500 font-black text-sm flex items-center gap-2 uppercase tracking-wide">
+                            <i class="fa-solid fa-list-check text-amber-700"></i> @L["Title_Skills"]
                         </h3>
+                        <span class="text-[9px] font-mono font-black text-slate-500 tracking-wider">
+                            @L["Label_ProficiencyBonus"]: +@CharDto.ProficiencyBonus
+                        </span>
+                    </div>
 
-                        <div class="grid grid-cols-1 gap-4">
-                            @if (!Char.AcquiredFeatures.Any())
-                            {
-                                <p class="text-slate-600 italic">El diario de aventuras está vacío aún...</p>
-                            }
-                            @foreach (var feature in Char.AcquiredFeatures)
-                            {
-                                <div class="bg-black/30 border border-slate-800 p-5 rounded-2xl group hover:border-amber-500/30 transition-all duration-300">
-                                    <h4 class="text-white font-bold text-lg mb-1 group-hover:text-amber-500 transition-colors">feature.Name</h4>
-                                    <p class="text-slate-400 text-sm leading-relaxed">feature.Description</p>
-                                </div>
-                            }
-                        </div>
+                    <div class="space-y-1 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
+                        @foreach (var skill in SkillMap.OrderBy(s => L[s.Key].Value))
+                        {
+                            @DisplaySkillRow(skill.Key, skill.Value)
+                        }
                     </div>
                 </div>
-                <div class="md:col-span-4 space-y-8">
 
-                    <div class="bg-slate-900 border border-amber-900/20 rounded-[2rem] p-8 shadow-xl">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-amber-500 font-black text-lg flex items-center gap-3 italic uppercase tracking-tighter">
-                                <i class="fa-solid fa-list-check text-amber-700"></i> Habilidades
-                            </h3>
-                            <span class="text-[10px] font-black text-slate-500 tracking-[0.2em]">BONO DE COMPETENCIA: +@Char.ProficiencyBonus</span>
-                        </div>
+                <div class="md:col-span-2 bg-slate-900 border border-amber-900/20 rounded-[2rem] p-6 shadow-xl space-y-4">
+                    <h3 class="text-amber-500 font-black text-sm flex items-center gap-2 uppercase tracking-wide border-b border-amber-900/10 pb-3">
+                        <i class="fa-solid fa-scroll text-amber-700"></i> @L["Title_ClassAndRaceFeatures"]
+                    </h3>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-1 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-                            @foreach (var skill in SkillMap.OrderBy(s => s.Key))
+                    <div class="space-y-3 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
+                        @if (!CharDto.AcquiredFeatures.Any())
+                        {
+                            <p class="text-slate-600 italic text-xs font-serif p-4 text-center">@L["Msg_EmptyAdventureJournal"]</p>
+                        }
+                        else
+                        {
+                            @foreach (var feature in CharDto.AcquiredFeatures)
                             {
-                                @DisplaySkill(skill.Key, skill.Value)
+                                <div class="bg-black/30 border border-slate-800/80 p-4 rounded-xl group hover:border-amber-500/20 transition-all duration-200">
+                                    <h4 class="text-white font-bold text-sm mb-1 group-hover:text-amber-400 transition-colors uppercase tracking-wide">@feature.Name</h4>
+                                    <p class="text-slate-400 text-xs font-sans leading-relaxed">@((MarkupString)feature.Description)</p>
+                                </div>
                             }
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
+
+            @if (showRaceModal && CharDto.Race != null)
+            {
+                <div class="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-150" @onclick="() => showRaceModal = false">
+                    <div class="relative w-full max-w-3xl rounded-3xl border border-slate-800 bg-slate-950 p-6 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]" @onclick:stopPropagation>
+                        <button @onclick="() => showRaceModal = false" class="absolute top-4 right-4 text-slate-500 hover:text-white size-8 flex items-center justify-center rounded-lg hover:bg-white/5 transition-colors z-20">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                        <div class="overflow-y-auto pr-1 custom-scrollbar flex-1">
+                            <RaceInspector RaceDto="CharDto.Race" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (showClassModal && CharDto.ClassDef != null)
+            {
+                <div class="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-150" @onclick="() => showClassModal = false">
+                    <div class="relative w-full max-w-4xl rounded-3xl border border-slate-800 bg-slate-950 p-6 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]" @onclick:stopPropagation>
+                        <button @onclick="() => showClassModal = false" class="absolute top-4 right-4 text-slate-500 hover:text-white size-8 flex items-center justify-center rounded-lg hover:bg-white/5 transition-colors z-20">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                        <div class="overflow-y-auto pr-1 custom-scrollbar flex-1">
+                            <ClassInspector InspectedClass="CharDto.ClassDef" />
+                        </div>
+                    </div>
+                </div>
+            }
+
         </div>
+        @if (AuditStatus != null && AuditStatus.HasPendingChoices)
+        {
+            <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-in fade-in duration-300">
+                <div class="flex items-center gap-3 text-xs">
+                    <div class="size-8 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-sparkles text-sm animate-pulse"></i>
+                    </div>
+                    <div>
+                        <p class="font-black text-amber-500 uppercase tracking-wider">@L["Title_PendingSelections"]</p>
+                        <p class="text-slate-400 mt-0.5">
+                            @if (AuditStatus.PendingFeats > 0)
+                            {
+                                <span>@L["Msg_PendingFeats", AuditStatus.PendingFeats] </span>
+                            }
+                            @if (AuditStatus.PendingSpells > 0)
+                            {
+                                <span>@L["Msg_PendingSpells", AuditStatus.PendingSpells]</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                <button @onclick="NavigateToClaimRewards" class="w-full sm:w-auto px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-black text-[10px] rounded-lg uppercase tracking-widest shadow-md transition-all active:scale-95">
+                    @L["Btn_ClaimSelections"]
+                </button>
+            </div>
+        }
     }
 </div>
-<style>
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 3px;
-    }
+@if (CharDto.SpellSlots != null && CharDto.SpellSlots.Any())
+{
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: transparent;
-    }
+        <div class="md:col-span-1 bg-slate-900 border border-amber-900/20 rounded-[2rem] p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center border-b border-amber-900/10 pb-3">
+                <h3 class="text-amber-500 font-black text-sm uppercase tracking-wide flex items-center gap-2">
+                    <i class="fa-solid fa-wand-sparkles text-amber-700"></i> @L["Title_SpellSlots"]
+                </h3>
+                <button @onclick="TriggerLongRest" class="px-2.5 py-1 text-[9px] font-black bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black border border-amber-500/20 rounded-lg transition-all uppercase tracking-wider">
+                    <i class="fa-solid fa-bed text-xs"></i> Long Rest
+                </button>
+            </div>
 
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #78350f;
-        border-radius: 10px;
-    }
-</style>
+            <div class="space-y-3">
+                @foreach (var slot in CharDto.SpellSlots.OrderBy(s => s.Level))
+                {
+                    <div class="bg-black/30 border border-slate-800 p-3 rounded-xl flex flex-col gap-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-bold text-slate-300">@L["Label_SlotLevel"] @slot.Level</span>
+                            <span class="font-mono text-[10px] text-amber-500/70 font-black">@slot.RemainingSlots / @slot.MaxSlots</span>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1.5">
+                            @for (int i = 0; i < slot.MaxSlots; i++)
+                            {
+                                var currentPipIndex = i;
+                                bool isUsed = currentPipIndex < slot.UsedSlots;
+
+                                <div class="size-4 rounded-full transition-all duration-300 border cursor-pointer
+                                                                     @(isUsed
+                                                                                                 ? "bg-slate-950 border-slate-800 shadow-inner"
+                                                                                                 : "bg-cyan-500 border-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)] animate-pulse")"
+                         title="@(isUsed? L["Tip_ExpendedSlot"] : L["Tip_AvailableSlot"])">
+                    </div>
+                                        }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="md:col-span-2 bg-slate-900 border border-amber-900/20 rounded-[2rem] p-6 shadow-xl space-y-4">
+            <h3 class="text-amber-500 font-black text-sm uppercase tracking-wide flex items-center gap-2 border-b border-amber-900/10 pb-3">
+                <i class="fa-solid fa-book-sparkles text-amber-700"></i> @L["Title_Spellbook"]
+            </h3>
+
+            <div class="space-y-2 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
+                @DisplaySpellRowMock("Proyectil Mágico (Magic Missile)", 1)
+                @DisplaySpellRowMock("Escudo (Shield)", 1)
+                @DisplaySpellRowMock("Paso Misterioso (Misty Step)", 2)
+            </div>
+        </div>
+
+    </div>
+}
 @code {
     [Parameter] public Guid CharacterId { get; set; }
-    private Character? Char;
+    private CharacterDto? CharDto;
+    private CharacterAuditDto? AuditStatus;
+
+    // Modales de Compendio
+    private bool showRaceModal = false;
+    private bool showClassModal = false;
+
+
+    private List<string> trainedSkills = new();
 
     protected override async Task OnInitializedAsync()
     {
-        // Asegúrate de que el UnitOfWork esté configurado para cargar Includes (Race, ClassDef, Modifiers, Features)
-        var characters = await UnitOfWork.Characters.GetAllWithDetailsAsync();
-        Char = characters.FirstOrDefault(c => c.Id == CharacterId);
+        CharDto = await CharacterService.GetByIdAsync(CharacterId);
+        AuditStatus = await LevelUpService.AuditCharacterAsync(CharacterId);
+
+        if (CharDto?.ClassDef?.SkillProficiencies != null)
+        {
+            trainedSkills = CharDto.ClassDef.SkillProficiencies
+                .Select(s => s.TechnicalName)
+                .ToList();
+        }
     }
 
-    private void NavigateToLevelUp()
-    {
-        Navigation.NavigateTo($"/character/{Char?.Id}/levelup");
-    }
+    private void OpenRaceCompendium() => showRaceModal = true;
+    private void OpenClassCompendium() => showClassModal = true;
 
+    private void NavigateToLevelUp() => Navigation.NavigateTo($"/character/{CharDto?.Id}/levelup");
     private void Back() => Navigation.NavigateTo("/characters");
 
-    private RenderFragment DisplayAttribute(string name, string shortName, int score, int mod) => __builder =>
+    // 🚨 COMPACTO: RenderFragment de Atributo Horizontal optimizado para MAUI
+    private RenderFragment DisplayAttributeCompact(string name, string shortName, int score, int mod) => __builder =>
     {
-        <div class="bg-slate-900 border border-amber-900/10 p-4 rounded-3xl flex items-center justify-between group hover:border-amber-500/40 transition-all duration-300">
+        <div class="bg-slate-900 border border-amber-900/10 p-3 rounded-2xl flex flex-col items-center justify-center relative group hover:border-amber-500/30 transition-all duration-200 shadow-md">
+            <span class="text-[9px] font-black text-slate-500 tracking-wider uppercase">@shortName</span>
+            
+            <span class="text-2xl md:text-3xl font-black tracking-tighter my-0.5 @(mod >= 0 ? "text-lime-500" : "text-red-500")">
+                @(mod >= 0 ? "+" : "")@mod
+            </span>
+            
+            <div class="text-[10px] font-bold text-slate-400 bg-black/40 border border-white/5 px-2 py-0.5 rounded-md mt-0.5 font-mono">
+                @score
+            </div>
+        </div>
+    };
+
+    // Fila compacta de Habilidad
+    private RenderFragment DisplaySkillRow(string skillKey, string stat) => __builder =>
+    {
+        var bonus = CharDto!.GetSkillBonus(skillKey, stat, trainedSkills);
+        bool isProficient = trainedSkills.Contains(skillKey);
+
+        <div class="flex items-center justify-between py-1.5 border-b border-amber-900/5 hover:bg-amber-500/5 transition-all px-2 rounded-lg group text-xs">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <div class="size-2.5 rounded-full shrink-0 transition-all duration-300 @(isProficient ? "bg-lime-500 shadow-[0_0_8px_rgba(132,204,22,0.8)]" : "border border-slate-700 bg-black/20")">
+                </div>
+                <div class="truncate">
+                    <span class="font-medium text-slate-300 group-hover:text-white transition-colors truncate">@L[skillKey]</span>
+                    <span class="text-[8px] text-amber-700/40 font-black uppercase ml-1 tracking-tighter font-mono">@shortStatMap[stat]</span>
+                </div>
+            </div>
+            <span class="font-mono font-black text-xs px-1.5 py-0.5 rounded bg-black/40 border border-white/5 shrink-0 min-w-[28px] text-center @(bonus >= 0 ? "text-lime-500" : "text-red-500")">
+                @(bonus >= 0 ? "+" : "")@bonus
+            </span>
+        </div>
+    };
+    // Gatillo para restaurar slots (Descanso Largo oficial)
+    private async Task TriggerLongRest()
+    {
+        if (CharDto == null) return;
+        await SpellService.RestRestoreSlotsAsync(CharDto.Id);
+
+        // Recargamos el DTO de la base de datos para refrescar las burbujas de inmediato en Blazor
+        CharDto = await CharacterService.GetByIdAsync(CharacterId);
+    }
+
+    // Método para castear conjuros usando el motor de Upcasting
+    private async Task CastSpell(int spellBaseLevel, int slotLevelToUse)
+    {
+        if (CharDto == null) return;
+
+        bool success = await SpellService.CastSpellAsync(CharDto.Id, spellBaseLevel, slotLevelToUse);
+        if (success)
+        {
+            // Refrescar UI reactivamente
+            CharDto = await CharacterService.GetByIdAsync(CharacterId);
+        }
+    }
+
+    // Render auxiliar temporal para simular conjuros en el libro de magia antes de conectarlo a tu tabla Spells
+    private RenderFragment DisplaySpellRowMock(string name, int level) => __builder =>
+    {
+        <div class="bg-black/30 border border-slate-800/80 p-3 rounded-xl flex items-center justify-between hover:border-amber-500/20 transition-all text-xs group">
             <div>
-                <p class="text-[10px] font-black text-amber-700 tracking-widest uppercase mb-1">@name</p>
-                <p class="text-white text-2xl font-black leading-none">@score</p>
+                <h4 class="font-bold text-slate-200 group-hover:text-amber-400 transition-colors uppercase tracking-wide">@name</h4>
+                <span class="text-[9px] font-mono text-slate-500 uppercase">@L["Label_LevelShort"] @level</span>
             </div>
-            <div class="bg-black/50 w-14 h-14 rounded-2xl flex flex-col items-center justify-center border border-amber-500/10 group-hover:border-amber-500/30 transition-all">
-                <span class="text-[9px] font-bold text-slate-500 leading-none mb-1">MOD</span>
-                <span class="text-xl font-black @(mod >= 0 ? "text-lime-500" : "text-red-500") leading-none">
-                    @(mod >= 0 ? "+" : "")@mod
-                </span>
+
+            <div class="flex items-center gap-1.5">
+                <button @onclick="() => CastSpell(level, level)"
+                        disabled="@(!HasSlotsAvailable(level))"
+                        class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-20 disabled:pointer-events-none text-black font-black font-mono rounded-lg transition-all uppercase text-[10px]">
+                    Cast Lvl @level
+                </button>
+
+                @if (level == 1 && HasSlotsAvailable(2))
+                {
+                    <button @onclick="() => CastSpell(level, 2)"
+                            class="px-2 py-1.5 bg-purple-900/40 border border-purple-500/30 text-purple-400 hover:bg-purple-500 hover:text-black font-mono rounded-lg transition-all text-[9px]">
+                        Upcast L2
+                    </button>
+                }
             </div>
         </div>
     };
 
-    private RenderFragment DisplaySkill(string name, string stat) => __builder =>
+    private bool HasSlotsAvailable(int slotLevel)
     {
-        var bonus = Char.GetSkillBonus(name, stat);
-        // Verificamos competencia: Si existe un rasgo con el nombre exacto de la skill
-        bool isProficient = Char.AcquiredFeatures.Any(f => f.TechnicalName.Equals(name, StringComparison.OrdinalIgnoreCase));
-
-        <div class="flex items-center justify-between py-2 border-b border-amber-900/5 hover:bg-amber-500/5 transition-all px-3 rounded-xl group">
-            <div class="flex items-center gap-4">
-                <div class="w-3 h-3 rounded-full transition-all duration-500 @(isProficient ? "bg-lime-500 shadow-[0_0_10px_rgba(132,204,22,0.8)] border-lime-400" : "border border-slate-700 bg-black/20")">
-                </div>
-
-                <div>
-                    <span class="text-sm font-bold text-slate-300 group-hover:text-white transition-colors">@name</span>
-                    <span class="text-[9px] text-amber-700/50 font-black uppercase ml-1 tracking-tighter">@stat.Substring(0, 3)</span>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <span class="text-xs font-black @(bonus >= 0 ? "text-lime-500" : "text-red-500") bg-black/40 px-2 py-1 rounded-lg min-w-[32px] text-center border border-white/5">
-                    @(bonus >= 0 ? "+" : "")@bonus
-                </span>
-            </div>
-        </div>
+        var slot = CharDto?.SpellSlots?.FirstOrDefault(s => s.Level == slotLevel);
+        return slot != null && slot.RemainingSlots > 0;
+    }
+    private readonly Dictionary<string, string> shortStatMap = new()
+    {
+        { "Strength", "STR" }, { "Dexterity", "DEX" }, { "Constitution", "CON" },
+        { "Intelligence", "INT" }, { "Wisdom", "WIS" }, { "Charisma", "CHA" }
     };
-
 
     private readonly Dictionary<string, string> SkillMap = new()
     {
-        { "Acrobacias", "Dexterity" }, { "Atletismo", "Strength" }, { "Arcanos", "Intelligence" },
-        { "Engaño", "Charisma" }, { "Historia", "Intelligence" }, { "Interpretación", "Charisma" },
-        { "Intimidación", "Charisma" }, { "Investigación", "Intelligence" }, { "Juego de Manos", "Dexterity" },
-        { "Medicina", "Wisdom" }, { "Naturaleza", "Intelligence" }, { "Percepción", "Wisdom" },
-        { "Perspicacia", "Wisdom" }, { "Persuasión", "Charisma" }, { "Religión", "Intelligence" },
-        { "Sigilo", "Dexterity" }, { "Supervivencia", "Wisdom" }, { "Trato con Animales", "Wisdom" }
+        { "Acrobatics", "Dexterity" }, { "Athletics", "Strength" }, { "Arcana", "Intelligence" },
+        { "Deception", "Charisma" }, { "History", "Intelligence" }, { "Performance", "Charisma" },
+        { "Intimidation", "Charisma" }, { "Investigation", "Intelligence" }, { "SleightOfHand", "Dexterity" },
+        { "Medicine", "Wisdom" }, { "Nature", "Intelligence" }, { "Perception", "Wisdom" },
+        { "Insight", "Wisdom" }, { "Persuasion", "Charisma" }, { "Religion", "Intelligence" },
+        { "Stealth", "Dexterity" }, { "Survival", "Wisdom" }, { "AnimalHandling", "Wisdom" }
     };
 
+    private void NavigateToClaimRewards()
+    {
+        if (CharDto != null)
+        {
+            Navigation.NavigateTo($"/character/{CharDto.Id}/levelup?mode=claim");
+        }
+    }
 }

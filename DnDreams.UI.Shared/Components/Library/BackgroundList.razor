@@ -1,0 +1,54 @@
+﻿@using Application.DTOs
+@using Domain.Enums
+@inject IStringLocalizer<AppStrings> L
+
+<div class="animate-in fade-in duration-300 space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        @foreach (var bg in Backgrounds)
+        {
+            <div @onclick="() => OnInspectedBackground.InvokeAsync(bg)"
+                 class="rounded-xl border border-slate-800 bg-black/40 px-4 py-4 cursor-pointer hover:border-amber-500/40 transition-all group shadow-md flex flex-col justify-between min-w-0">
+
+                <div>
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <p class="text-base font-black text-white group-hover:text-amber-500 uppercase transition-colors truncate">
+                            @bg.Name
+                        </p>
+
+                        @if (bg.Feat != null)
+                        {
+                            <span class="shrink-0 text-[9px] font-mono bg-amber-500/10 text-amber-500 border border-amber-500/20 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                                🛡️ @bg.Feat.Name
+                            </span>
+                        }
+                    </div>
+
+                    <p class="text-xs text-slate-400 font-sans leading-relaxed line-clamp-2 mb-3">
+                        @((MarkupString)bg.Description)
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap gap-1.5 mt-2 border-t border-slate-800/60 pt-2.5">
+                    @foreach (var asi in bg.ASIs)
+                    {
+                        <span class="text-[9px] font-bold bg-slate-900 border border-slate-800 text-slate-300 px-1.5 py-0.5 rounded uppercase font-mono">
+                            + @L[asi.ToString()]
+                        </span>
+                    }
+
+                    @foreach (var skill in bg.SkillProficiencies)
+                    {
+                        <span class="text-[9px] font-bold bg-amber-500/5 border border-amber-500/10 text-amber-500/90 px-1.5 py-0.5 rounded uppercase font-mono">
+                            @L[skill.ToString()]
+                        </span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<BackgroundDto> Backgrounds { get; set; } = new();
+    [Parameter] public EventCallback<BackgroundDto> OnInspectedBackground { get; set; }
+}

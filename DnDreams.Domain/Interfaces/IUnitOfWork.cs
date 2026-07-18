@@ -27,6 +27,7 @@ public interface IUnitOfWork : IDisposable
     IRepository<Skill> Skills { get; }
     Task BeginTransactionAsync();
     Task CommitAsync();
+    void ModifyState(object m);
     Task RollbackAsync();
     Task<int> SaveChangesAsync();
 }

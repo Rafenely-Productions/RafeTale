@@ -55,3 +55,9 @@ DnDreams.MAUI/design_time_temp.db
 ## ====== FILTROS SISTEMA OPERATIVO Y HERRAMIENTAS ======
 .DS_Store
 Thumbs.db
+
+# Office Temporary Files
+~$*.xlsx
+~$*.xls
+*.tmp
+*.db3

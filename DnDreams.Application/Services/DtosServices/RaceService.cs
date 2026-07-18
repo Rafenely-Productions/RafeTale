@@ -15,13 +15,11 @@ namespace DnDreams.Application.Services.DtosServices
 {
     public class RaceService(IUnitOfWork uow, ILocalizationService loc) : IService<RaceDto, Race>
     {
-        // 1. ArmDto Asíncrono (GetByIdAsync)
         public async Task<RaceDto> ArmDto(Race race)
         {
             var localizedSubraces = await loc.GetAllAsync(LocEntity.SubRace, [LocProperty.Name, LocProperty.Description]);
             var localizedTraits = await loc.GetAllAsync(LocEntity.Trait, [LocProperty.Name, LocProperty.Description]);
 
-            // Se asignan TODAS las propiedades dentro de la inicialización {} para no violar el 'init'
             return new RaceDto
             {
                 Id = race.Id,
@@ -37,7 +35,6 @@ namespace DnDreams.Application.Services.DtosServices
             };
         }
 
-        // 2. ArmDto Síncrono optimizado (GetAllAsync)
         public RaceDto ArmDto(Race race, Dictionary<LocProperty, Dictionary<Guid, string>>? localizedWords)
         {
             return new RaceDto
@@ -55,7 +52,6 @@ namespace DnDreams.Application.Services.DtosServices
             };
         }
 
-        // 3. Obtención masiva de Razas con mapeo relacional
         public async Task<List<RaceDto>> GetAllAsync(Expression<Func<Race, bool>>? filter, Action<IncludeAggregator<Race>>? includes)
         {
             var races = await uow.Races.GetAllAsync(filter, includes);
@@ -98,7 +94,6 @@ namespace DnDreams.Application.Services.DtosServices
             return await ArmDto(race);
         }
 
-        // --- MÉTODOS DE MAPEO AUXILIARES ---
 
         private List<SubRaceDto> ArmSubraceDtos(List<SubRace>? subraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedSubraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedTraits)
         {

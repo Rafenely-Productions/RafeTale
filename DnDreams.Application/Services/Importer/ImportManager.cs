@@ -86,9 +86,9 @@ public class ImportManager(IUnitOfWork unitOfWork, IDataExtractor dataExtractor,
 
         var dbProgressions = await unitOfWork.ClassLevelProgressions.GetAllAsync();
         var existingProgKeys = dbProgressions.Select(p => $"{p!.ClassDefId}_{p.Level}").ToHashSet();
-
-        // Cargamos todas las clases de la BD una sola vez para evitar pegarle al SQLite en cada iteración
         var dbClasses = await unitOfWork.ClassDefinitions.GetAllAsync();
+
+        var updatedProgressionsList = new List<ClassLevelProgression>();
 
         foreach (var prog in progressions)
         {
@@ -105,14 +105,16 @@ public class ImportManager(IUnitOfWork unitOfWork, IDataExtractor dataExtractor,
             {
                 await unitOfWork.ClassLevelProgressions.AddAsync(prog);
                 existingProgKeys.Add(key);
+                updatedProgressionsList.Add(prog);
             }
             else
             {
                 var match = dbProgressions.First(dp => $"{dp!.ClassDefId}_{dp.Level}" == key);
-                prog.Id = match!.Id;
-                prog.Features = match.Features;
+                updatedProgressionsList.Add(match!);
             }
         }
+        progressions.Clear();
+        progressions.AddRange(updatedProgressionsList);
         appInitializer.UpdateStatus("Progresiones de clase vinculadas. Sincronizando dotes y trasfondos...");
     }
 
@@ -162,15 +164,18 @@ public class ImportManager(IUnitOfWork unitOfWork, IDataExtractor dataExtractor,
 
         var raceDict = (await unitOfWork.Races.GetAllAsync()).ToDictionary(r => r!.TechnicalName.ToLower(), r => r);
         var classDict = (await unitOfWork.ClassDefinitions.GetAllAsync()).ToDictionary(c => c!.TechnicalName.ToLower(), c => c);
+        var backgroundDict = (await unitOfWork.Backgrounds.GetAllAsync()).ToDictionary(b => b!.TechnicalName.ToLower().Trim(), b => b);
 
         foreach (Character character in data.Characters)
         {
             var targetRaceName = ((IEnumerable<Race>)data.Races).FirstOrDefault(r => r.Id == character.RaceId)?.TechnicalName ?? string.Empty;
             var targetClassName = ((IEnumerable<ClassDefinition>)data.ClassDefinitions).FirstOrDefault(c => c.Id == character.ClassDefId)?.TechnicalName ?? string.Empty;
+            var targetBackgroundName = ((IEnumerable<Background>)data.Backgrounds).FirstOrDefault(b => b.Id == character.BackgroundId)?.TechnicalName ?? string.Empty;
 
             if (raceDict.TryGetValue(targetRaceName.ToLower(), out var dbRace)) character.RaceId = dbRace!.Id;
             if (classDict.TryGetValue(targetClassName.ToLower(), out var dbClass)) character.ClassDefId = dbClass!.Id;
-
+            if (targetBackgroundName != string.Empty && backgroundDict.TryGetValue(targetBackgroundName.ToLower().Trim(), out var dbBackground)) character.BackgroundId = dbBackground!.Id;
+            
             // Limpieza preventiva de personajes duplicados por nombre
             var existingChar = await unitOfWork.Characters.GetByNameAsync(character.Name);
             if (existingChar != null) await unitOfWork.Characters.RemoveAsync(existingChar);

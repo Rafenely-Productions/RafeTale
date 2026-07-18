@@ -1,124 +1,202 @@
 ﻿@page "/character/{CharacterId:guid}/levelup"
-@using DnDreams.Domain.Entities
+@using DnDreams.Application.DTOs
 @using DnDreams.Application.Interfaces
-@using DnDreams.Application.Models
-@using DnDreams.UI.Shared.Components.LevelUp
-@inject ILevelingService LevelingService
-@inject IUnitOfWork UnitOfWork
+@using DnDreams.Application.Interfaces.DtosInterfaces
+@using DnDreams.Domain.Entities
+@using DnDreams.Domain.Enums
+@inject ILevelUpService LevelUpService
+@inject IService<CharacterDto, Character> CharacterService
+@inject IService<FeatDto, Feat> FeatService
 @inject NavigationManager Navigation
+@inject IStringLocalizer<AppStrings> L
 
-<div class="min-h-screen bg-black p-6">
-    <div class="container mx-auto max-w-4xl">
-        @if (CurrentCharacter == null)
+<div class="grid @(Mode == "claim" ? "grid-cols-2" : "grid-cols-3") gap-2 bg-slate-900/60 p-1.5 rounded-xl border border-slate-800/40 text-center text-xs font-black uppercase tracking-wider">
+
+    @if (Mode != "claim")
+    {
+        <button class="py-2.5 rounded-lg transition-all @(currentStep == 1 ? "bg-amber-500 text-black font-extrabold shadow-md" : "text-slate-400 hover:text-white")" @onclick="() => SetStep(1)">
+            1. @L["Tab_Vitals"]
+        </button>
+    }
+
+    <button class="py-2.5 rounded-lg transition-all @(currentStep == 2 ? "bg-amber-500 text-black font-extrabold shadow-md" : "text-slate-400 hover:text-white")" @onclick="() => SetStep(2)">
+        @(Mode == "claim" ? "1. " : "2. ") @L["Tab_Feats_ASI"]
+    </button>
+
+    <button class="py-2.5 rounded-lg transition-all @(currentStep == 3 ? "bg-amber-500 text-black font-extrabold shadow-md" : "text-slate-400 hover:text-white")" @onclick="() => SetStep(3)">
+        @(Mode == "claim" ? "2. " : "3. ") @L["Tab_Spells"]
+    </button>
+</div>
+<div class="min-h-screen bg-black p-4 md:p-6 text-slate-100">
+    <div class="max-w-4xl mx-auto space-y-6">
+
+        @if (charDto == null || draft == null)
         {
-            <div class="flex flex-col justify-center items-center h-96">
-                <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-amber-500 mb-4"></div>
-                <p class="text-amber-500 italic font-serif animate-pulse">Consultando los archivos del destino...</p>
+            <div class="flex flex-col items-center justify-center py-32">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 mb-4"></div>
+                <p class="text-amber-500 italic font-serif text-sm">@L["Msg_LoadingProgression"]</p>
             </div>
         }
         else
         {
-            <div class="bg-slate-900 border border-amber-900/30 rounded-[2rem] p-8 mb-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-5">
-                    <i class="fa-solid fa-dice-d20 text-8xl text-white"></i>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4">
+                <div>
+                    <button @onclick="Cancel" class="text-slate-500 hover:text-slate-300 text-[10px] font-black tracking-widest mb-2 uppercase flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-xmark"></i> @L["Btn_Cancel"]
+                    </button>
+                    <h1 class="text-3xl font-black text-amber-500 italic uppercase">@L["Title_LevelUp"]: @charDto.Name</h1>
+                    <p class="text-xs text-slate-400 font-sans">
+                        @L["Label_CurrentLevel"] <span class="text-white font-bold">@charDto.Level</span>
+                        → @L["Label_NextLevel"] <span class="text-amber-400 font-black">@draft.TargetLevel</span>
+                    </p>
                 </div>
+            </div>
 
-                <div class="flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
-                    <div class="text-center md:text-left">
-                        <h1 class="text-4xl font-black text-amber-500 tracking-tight mb-2 italic uppercase">Subida de Nivel</h1>
-                        <div class="flex items-center gap-3 justify-center md:justify-start">
-                            <span class="text-white font-bold text-xl">@CurrentCharacter.Name</span>
-                            <span class="bg-black/50 text-amber-600 px-3 py-1 rounded-full text-xs font-black border border-amber-900/40">
-                                CurrentCharacter.ClassDef?.Name.ToUpper()
-                            </span>
+            <div class="grid grid-cols-3 gap-2 bg-slate-900/60 p-1.5 rounded-xl border border-slate-800/40 text-center text-xs font-black uppercase tracking-wider">
+                <button class="py-2.5 rounded-lg transition-all @(currentStep == 1 ? "bg-amber-500 text-black font-extrabold shadow-md" : "text-slate-400 hover:text-white")" @onclick="() => SetStep(1)">
+                    1. @L["Tab_Vitals"]
+                </button>
+                <button disabled="@(!draft.GivesFeat)" class="py-2.5 rounded-lg transition-all @(currentStep == 2 ? "bg-amber-500 text-black font-extrabold shadow-md" : "") @(draft.GivesFeat ? "text-slate-400 hover:text-white cursor-pointer" : "opacity-20 cursor-not-allowed")" @onclick="() => SetStep(2)">
+                    2. @L["Tab_Feats_ASI"]
+                </button>
+                <button disabled="@(draft.SpellsToLearnCount == 0)" class="py-2.5 rounded-lg transition-all @(currentStep == 3 ? "bg-amber-500 text-black font-extrabold shadow-md" : "") @(draft.SpellsToLearnCount > 0 ? "text-slate-400 hover:text-white cursor-pointer" : "opacity-20 cursor-not-allowed")" @onclick="() => SetStep(3)">
+                    3. @L["Tab_Spells"]
+                </button>
+            </div>
+
+            <div class="bg-slate-900 border border-amber-900/20 rounded-[2rem] p-6 md:p-8 shadow-2xl min-h-[300px] flex flex-col justify-between">
+
+                @if (currentStep == 1)
+                {
+                    <div class="space-y-6 animate-in fade-in duration-200">
+                        <div>
+                            <h2 class="text-lg font-black text-white uppercase tracking-wide">@L["Title_HitPointsGain"]</h2>
+                            <p class="text-xs text-slate-400 mt-1">@L["Desc_HitPointsGain"] (@charDto.ClassDef?.Name: 1d@charDto.ClassDef?.HitDie).</p>
                         </div>
-                        <p class="text-slate-500 mt-2 font-bold">
-                            Nivel @CurrentCharacter.Level <i class="fa-solid fa-arrow-right mx-2 text-lime-500"></i> <span class="text-white text-lg">@(CurrentCharacter.Level + 1)</span>
-                        </p>
-                    </div>
 
-                    <div class="flex flex-col items-center md:items-end gap-3">
-                        <div class="text-[10px] font-black text-amber-700 uppercase tracking-[0.2em]">Paso de Senda</div>
-                        <div class="flex gap-3">
-                            @for (int i = 1; i <= 3; i++)
-                            {
-                                <div class="group relative">
-                                    <div class="h-3 w-16 rounded-full transition-all duration-700 @(i <= CurrentStep ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)]" : "bg-black/40 border border-amber-900/20")"></div>
-                                    @if (i == CurrentStep)
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div @onclick="SelectAverageHp" class="p-5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between bg-black/30 @(draft.UseAverageHp ? "border-amber-500 bg-amber-500/[0.02]" : "border-slate-800 hover:border-amber-500/30")">
+                                <div class="space-y-1">
+                                    <p class="text-sm font-bold text-white uppercase">@L["Option_FixedAverage"]</p>
+                                    <p class="text-xs text-slate-400">@L["Desc_FixedAverage"] (+@averageHpBase + CON mod)</p>
+                                </div>
+                                <span class="text-2xl font-black text-amber-500 font-mono">+@CalculateHpGain(true) HP</span>
+                            </div>
+
+                            <div @onclick="RollHp" class="p-5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between bg-black/30 @(!draft.UseAverageHp ? "border-amber-500 bg-amber-500/[0.02]" : "border-slate-800 hover:border-amber-500/30")">
+                                <div class="space-y-1">
+                                    <p class="text-sm font-bold text-white uppercase">@L["Option_RollDice"]</p>
+                                    <p class="text-xs text-slate-400">@L["Desc_RollDice"] (1d@charDto.ClassDef?.HitDie + CON mod)</p>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    @if (hasRolled)
                                     {
-                                        <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] font-black text-amber-500 whitespace-nowrap tracking-tighter">
-                                            @GetStepName(i)
-                                        </div>
+                                        <span class="text-2xl font-black text-lime-500 font-mono animate-in zoom-in-50">+@CalculateHpGain(false) HP</span>
+                                    }
+                                    else
+                                    {
+                                        <button class="px-3 py-1.5 rounded-lg bg-amber-500 text-black text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 animate-pulse shadow-md">
+                                            <i class="fa-solid fa-dice-d20 text-xs"></i> @L["Btn_Roll"]
+                                        </button>
                                     }
                                 </div>
-                            }
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                }
+                else if (currentStep == 2)
+                {
+                    <div class="space-y-6 animate-in fade-in duration-200">
+                        <div>
+                            <h2 class="text-lg font-black text-white uppercase tracking-wide">@L["Title_FeatOrAsiSelection"]</h2>
+                            <p class="text-xs text-slate-400 mt-1">@L["Desc_FeatOrAsiSelection"]</p>
+                        </div>
 
-            <div class="bg-slate-900 border border-amber-900/20 rounded-[2.5rem] p-10 min-h-[550px] shadow-2xl relative">
-                <div class="transition-all duration-500 ease-in-out">
-                    @switch (CurrentStep)
-                    {
-                        case 1:
-                            <div class="animate-in fade-in slide-in-from-right-4 duration-500">
-                                <ASIFeatStep State="WizardState" />
-                            </div>
-                            break;
-                        case 2:
-                            <div class="animate-in fade-in slide-in-from-right-4 duration-500">
-                                <SpellStep State="WizardState" Character="CurrentCharacter" />
-                            </div>
-                            break;
-                        case 3:
-                            <div class="animate-in fade-in slide-in-from-right-4 duration-500">
-                                <HPStep State="WizardState" Character="CurrentCharacter" />
-                            </div>
-                            break;
-                    }
-                </div>
-            </div>
+                        <div class="flex gap-4 border-b border-slate-800/60 pb-4">
+                            <button @onclick="() => isAsiMode = false" class="px-4 py-2 rounded-xl text-xs font-black border uppercase transition-all @(!isAsiMode ? "bg-amber-500 text-black border-amber-500" : "bg-black/40 border-slate-800 text-slate-400")">
+                                @L["Btn_ChooseFeat"]
+                            </button>
+                            <button @onclick="() => { isAsiMode = true; draft.SelectedFeatId = null; }" class="px-4 py-2 rounded-xl text-xs font-black border uppercase transition-all @(isAsiMode ? "bg-amber-500 text-black border-amber-500" : "bg-black/40 border-slate-800 text-slate-400")">
+                                @L["Btn_IncreaseStats"]
+                            </button>
+                        </div>
 
-            <div class="flex justify-between items-center mt-10">
-                <button @onclick="PreviousStep"
-                        disabled="@(CurrentStep == 1 || IsProcessing)"
-                        class="px-8 py-4 bg-black border border-amber-900/40 text-amber-500 font-bold rounded-2xl transition-all disabled:opacity-10 flex items-center gap-2 hover:bg-amber-900/20">
-                    <i class="fa-solid fa-chevron-left"></i> Atrás
+                        @if (isAsiMode)
+                        {
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/20 p-4 rounded-2xl border border-slate-800/60">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-amber-600 uppercase tracking-widest block">Stat Principal (+1 o +2)</label>
+                                    <select @bind="draft.SelectedAsiOne" class="w-full bg-slate-950 border border-slate-800 text-white rounded-xl p-3 text-xs font-bold outline-none focus:border-amber-500">
+                                        <option value="">-- @L["Select_Stat"] --</option>
+                                        @foreach (var val in Enum.GetValues<ASI>())
+                                        {
+                                            <option value="@val">@L[val.ToString()]</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest block">Segundo Stat (Opcional para +1/+1)</label>
+                                    <select @bind="draft.SelectedAsiTwo" class="w-full bg-slate-950 border border-slate-800 text-white rounded-xl p-3 text-xs font-bold outline-none focus:border-amber-500">
+                                        <option value="">-- @L["Leave_Empty_For_PlusTwo"] --</option>
+                                        @foreach (var val in Enum.GetValues<ASI>())
+                                        {
+                                            @if (draft.SelectedAsiOne != val)
+                                            {
+                                                <option value="@val">@L[val.ToString()]</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[250px] overflow-y-auto pr-1 custom-scrollbar">
+                                @foreach (var feat in availableFeats)
+                                {
+                                    bool isSelected = draft.SelectedFeatId == feat.Id;
+                                    <div @onclick="() => draft.SelectedFeatId = feat.Id" class="p-4 rounded-xl border cursor-pointer transition-all bg-black/40 @(isSelected ? "border-amber-500 bg-amber-500/[0.02]" : "border-slate-800 hover:border-amber-500/20")">
+                                        <h4 class="text-xs font-black uppercase text-white">@feat.Name</h4>
+                                        <p class="text-[11px] text-slate-400 line-clamp-2 mt-1">@((MarkupString)feat.Description)</p>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else if (currentStep == 3)
+                {
+                    <div class="space-y-6 animate-in fade-in duration-200">
+                        <div>
+                            <h2 class="text-lg font-black text-white uppercase tracking-wide">@L["Title_SpellsLearning"]</h2>
+                            <p class="text-xs text-slate-400 mt-1">Puedes aprender <span class="text-amber-400 font-bold">@draft.SpellsToLearnCount</span> conjuros nuevos este nivel.</p>
+                        </div>
+                        <p class="text-xs text-slate-500 italic p-6 text-center">Filtro de Magia en construcción...</p>
+                    </div>
+                }
+                <button @onclick="SubmitLevelUp" class="px-6 py-3.5 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-xl text-xs uppercase tracking-wider transition-all shadow-md">
+                    @L["Btn_ConfirmLevelUp"] (Elegir dotes/hechizos después) <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
-
-                <div class="flex gap-4 items-center">
-                    <button @onclick="CancelLevelUp"
-                            class="px-6 py-4 text-slate-500 hover:text-red-400 font-bold transition-colors uppercase text-xs tracking-widest">
-                        Cancelar
+                <div class="flex justify-between items-center border-t border-white/5 pt-4 mt-6 shrink-0">
+                    <button disabled="@(currentStep == 1)" @onclick="PrevStep" class="px-5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 hover:text-white text-xs font-black uppercase tracking-wider transition-all disabled:opacity-0">
+                        <i class="fa-solid fa-angle-left"></i> @L["Btn_StepBack"]
                     </button>
 
-                    @if (CurrentStep < 3)
+                    @if (IsOnLastStep())
                     {
-                        <button @onclick="NextStep"
-                                class="px-12 py-4 bg-amber-600 hover:bg-amber-500 text-black font-black rounded-2xl transition-all shadow-xl shadow-amber-900/20 flex items-center gap-2">
-                            SIGUIENTE <i class="fa-solid fa-chevron-right"></i>
+                        <button @onclick="SubmitLevelUp" class="px-8 py-3.5 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-xl text-xs uppercase tracking-wider transition-all shadow-md shadow-lime-900/10 flex items-center gap-2">
+                            @L["Btn_ConfirmLevelUp"] <i class="fa-solid fa-fire-blaster"></i>
                         </button>
                     }
                     else
                     {
-                        <button @onclick="HandleFinish"
-                                disabled="@(IsProcessing || !IsStepValid())"
-                                class="px-12 py-4 bg-lime-600 text-black font-black rounded-2xl transition-all shadow-xl hover:bg-lime-500 disabled:bg-slate-800 disabled:text-slate-600 group">
-                            @if (IsProcessing)
-                            {
-                                <i class="fa-solid fa-spinner animate-spin"></i>
-                            }
-                            else
-                            {
-                                <span class="flex items-center gap-2">
-                                    FORJAR DESTINO <i class="fa-solid fa-wand-magic-sparkles text-black"></i>
-                                </span>
-                            }
+                        <button @onclick="NextStep" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-black rounded-xl text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5">
+                            @L["Btn_NextStep"] <i class="fa-solid fa-angle-right"></i>
                         </button>
                     }
                 </div>
             </div>
+
         }
     </div>
 </div>
@@ -126,64 +204,117 @@
 @code {
     [Parameter] public Guid CharacterId { get; set; }
 
-    private Character? CurrentCharacter;
-    private LevelUpState WizardState = new();
-    private int CurrentStep = 1;
-    private bool IsProcessing = false;
+    private CharacterDto? charDto;
+    private LevelUpDraft? draft;
+
+    private int currentStep = 1;
+    private int averageHpBase;
+    private int diceRollResult = 0;
+    private bool hasRolled = false;
+    private bool isAsiMode = false;
+
+    private List<FeatDto> availableFeats = new();
+    [SupplyParameterFromQuery(Name = "mode")]
+    public string? Mode { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        CurrentCharacter = await UnitOfWork.Characters.GetByIdAsync(CharacterId);
-        if (CurrentCharacter == null) Navigation.NavigateTo("/characters");
-    }
-
-    private string GetStepName(int step) => step switch
-    {
-        1 => "ATRIBUTOS / DOTES",
-        2 => "CONJUROS",
-        3 => "PUNTOS DE GOLPE",
-        _ => ""
-    };
-
-    private void NextStep() => CurrentStep++;
-    private void PreviousStep() => CurrentStep--;
-    private void CancelLevelUp() => Navigation.NavigateTo("/characters");
-
-    private bool IsStepValid()
-    {
-        if (CurrentStep == 3 && WizardState.SelectedHp <= 0) return false;
-        return true;
-    }
-
-    private async Task HandleFinish()
-    {
-        if (IsProcessing) return;
-        IsProcessing = true;
-
-        try
+        charDto = await CharacterService.GetByIdAsync(CharacterId);
+        if (charDto != null)
         {
-            var finalModifiers = WizardState.GetModifiersFromAsi();
-            var success = await LevelingService.CommitLevelUpAsync(
-                CharacterId,
-                WizardState.SelectedHp,
-                finalModifiers,
-                WizardState.SelectedFeatId.HasValue ? new List<Guid> { WizardState.SelectedFeatId.Value } : new List<Guid>(),
-                WizardState.SelectedSpellIds
-            );
-
-            if (success)
+            draft = await LevelUpService.PrepareLevelUpAsync(CharacterId);
+            if (Mode == "claim")
             {
-                await Task.Delay(500);
-                Navigation.NavigateTo($"/characters");
+                currentStep = 2; // Brinca directo a dotes/hechizos sin tocar la vida
+            }
+
+            // Regla D&D: El promedio es la mitad del dado + 1 (ej: d8 -> 5, d10 -> 6)
+            int hitDie = charDto.ClassDef?.HitDieValue ?? 8;
+            averageHpBase = (hitDie / 2) + 1;
+
+            // Fijar HP Gain inicial por defecto con el promedio
+            draft.HpGain = averageHpBase + charDto.ConModifier;
+
+            // Cargamos dotes por si este nivel le corresponde dote
+            if (draft.GivesFeat)
+            {
+                availableFeats = await FeatService.GetAllAsync(null, null);
             }
         }
-        catch (Exception ex)
+    }
+
+    private void SetStep(int step)
+    {
+        if (step == 2 && !draft!.GivesFeat) return;
+        if (step == 3 && draft!.SpellsToLearnCount == 0) return;
+        currentStep = step;
+    }
+
+    private void SelectAverageHp()
+    {
+        draft!.UseAverageHp = true;
+        draft.HpGain = averageHpBase + charDto!.ConModifier;
+    }
+
+    private void RollHp()
+    {
+        draft!.UseAverageHp = false;
+        if (!hasRolled)
         {
-            Console.WriteLine($"[LevelUp Error]: {ex.Message}");
+            var random = new Random();
+            diceRollResult = random.Next(1, (charDto!.ClassDef?.HitDieValue ?? 8) + 1);
+            // Regla oficial: Mínimo 1 punto de vida ganado por nivel incluso con CON negativa
+            draft.HpGain = Math.Max(1, diceRollResult + charDto.ConModifier);
+            hasRolled = true;
         }
-        finally
+    }
+
+    private int CalculateHpGain(bool useAverage)
+    {
+        if (useAverage) return averageHpBase + charDto!.ConModifier;
+        return hasRolled ? diceRollResult + charDto!.ConModifier : 0;
+    }
+
+    private void NextStep()
+    {
+        if (currentStep == 1 && draft!.GivesFeat) currentStep = 2;
+        else if (currentStep <= 2 && draft!.SpellsToLearnCount > 0) currentStep = 3;
+    }
+
+    private void PrevStep()
+    {
+        if (currentStep == 3 && draft!.GivesFeat) currentStep = 2;
+        else if (currentStep >= 2) currentStep = 1;
+    }
+
+    private bool IsOnLastStep()
+    {
+        if (draft!.SpellsToLearnCount > 0 && currentStep == 3) return true;
+        if (draft.SpellsToLearnCount == 0 && draft.GivesFeat && currentStep == 2) return true;
+        if (!draft.GivesFeat && draft.SpellsToLearnCount == 0 && currentStep == 1) return true;
+        return false;
+    }
+
+    private void Cancel() => Navigation.NavigateTo($"/character/{CharacterId}");
+
+    private async Task SubmitLevelUp()
+    {
+        if (draft == null) return;
+
+        if (Mode == "claim")
         {
-            IsProcessing = false;
+            draft.HpGain = 0;
+            draft.TargetLevel = charDto!.Level; 
+
+            // Pasamos directamente el draft que ya tiene enlazados los dropdowns de la UI
+            await LevelUpService.CommitLevelUpAsync(draft);
         }
+        else
+        {
+            // Ejecutar la magia de consolidación en SQLite a través del servicio
+            await LevelUpService.CommitLevelUpAsync(draft);
+        }
+        // Volvemos a la hoja con los stats e HP actualizados e inyectados reactivamente
+        Navigation.NavigateTo($"/character/{CharacterId}");
     }
 }

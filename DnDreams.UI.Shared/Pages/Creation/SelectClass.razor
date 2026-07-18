@@ -4,7 +4,6 @@
 @using DnDreams.Application.Interfaces.DtosInterfaces
 @using DnDreams.Domain.Interfaces
 @using DnDreams.Domain.Enums
-@using DnDreams.Domain.DTOs
 @using DnDreams.UI.Shared.Components.Library
 @using DnDreams.UI.Shared.Extensions
 @inject IUnitOfWork UnitOfWork
@@ -60,58 +59,6 @@
                                 <i class="fa-solid fa-bolt-lightning"></i>
                             </button>
                         </div>
-
-                       /* <div class="animate-in fade-in duration-500">
-                            <div class="flex flex-wrap justify-between items-start gap-6 mb-8">
-                                <div class="flex-1">
-                                    <h2 class="text-6xl font-black text-white mb-2 uppercase italic tracking-tighter">@SelectedClass.Name</h2>
-                                    <p class="text-slate-400 font-serif italic text-lg leading-relaxed">@((MarkupString)SelectedClass.Description)</p>
-                                </div>
-
-                                <div class="flex gap-4">
-                                    <div class="bg-red-900/10 border border-red-900/30 p-2 rounded-3xl text-center min-w-[90px]">
-                                        <span class="block text-[10px] font-black text-red-700 uppercase mb-1">@L["Label_HitDie"]</span>
-                                        <span class="text-1xl font-black text-white">@SelectedClass.HitDie</span> @* Esto vendrá de la DB *@
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="space-y-8">
-                                <div>
-                                    <h3 class="text-amber-500 font-black text-xs tracking-[0.3em] uppercase mb-4 flex items-center gap-2">
-                                        <i class="fa-solid fa-medal text-amber-700"></i> @L["Label_Progression"]
-                                    </h3>
-
-                                    <div class="space-y-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
-                                        @foreach (var prog in SelectedClass.Progressions.OrderBy(p => p.Level))
-                                        {
-                                            <div class="flex items-start gap-4 p-4 bg-black/20 rounded-2xl border border-white/5 group hover:border-amber-500/30 transition-all">
-                                                <div class="bg-amber-600 text-black font-black text-xs px-2 py-1 rounded-md mt-1">
-                                                    @L["Label_LevelShort"] @prog.Level
-                                                </div>
-                                                @foreach (var feature in prog.Features)
-                                                {
-                                                    var featureDto = SelectedClass.FeatureDtos.FirstOrDefault(f => f.Id == feature.Id);
-
-                                                    <div @onclick="() => InspectFeature(featureDto)"
-                                                         class="flex-1 cursor-pointer group/item flex items-center justify-between bg-white/5 hover:bg-white/10 p-3 rounded-xl transition-all border border-transparent hover:border-amber-500/20">
-
-                                                        <h4 class="text-white font-bold text-sm uppercase group-hover/item:text-amber-500 transition-colors">
-                                                            @featureDto.Name
-                                                        </h4>
-
-                                                        <i class="fa-solid fa-circle-info text-amber-900/40 group-hover/item:text-amber-500 text-xs"></i>
-                                                    </div>
-                                                }
-
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            
-                        </div>*/
                     }
                 </div>
             </div>

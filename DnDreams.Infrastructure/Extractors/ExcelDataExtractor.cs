@@ -37,11 +37,11 @@ namespace DnDreams.Infrastructure.Extractors
             package.ClassLevelProgressions = ExtractClassLevelProgressions(workbook, package.ClassDefinitions);
             package.SubclassLevelProgressions = ExtractSubclassLevelProgressions(workbook, package.Subclasses);
             package.XpRules = ExtractXpRules(workbook);
-            package.Characters = ExtractCharacters(workbook, package.Races, package.ClassDefinitions);
             package.Items = ExtractItems(workbook, package.Characters);
             package.Feats = ExtractFeats(workbook);
             package.Backgrounds = ExtractBackgrounds(workbook, package.Feats);
 
+            package.Characters = ExtractCharacters(workbook, package.Races, package.ClassDefinitions, package.Backgrounds);
             package.LocalizedContents.AddRange(_localizedContentCache.Values);
             return package;
         }
@@ -251,7 +251,7 @@ namespace DnDreams.Infrastructure.Extractors
             return classDefinitionList;
         }
 
-        public List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes)
+        public List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes,List<Background> backgrounds)
         {
             var charactersList = new List<Character>();
             var charSheet = workbook.GetSheet("Personajes", isRequired: true);
@@ -272,7 +272,13 @@ namespace DnDreams.Infrastructure.Extractors
                     Level = row.Cell(4).GetValue<int>(),
                     Experience = row.Cell(5).GetValue<int>(),
                     RaceId = matchedRace?.Id ?? Guid.Empty,
-                    ClassDefId = matchedClass?.Id ?? Guid.Empty
+                    ClassDefId = matchedClass?.Id ?? Guid.Empty,
+                    AcquiredFeats = new List<Feat>(),
+                    Stats = new Dictionary<string, int>(),
+                    AcquiredFeatures = new List<Feature>(),
+                    ActiveModifiers = new List<ActiveModifiers>(),
+                    Background = backgrounds[0],
+                    
                 };
 
                 for (int col = 6; col <= charSheet.LastColumnUsed().ColumnNumber(); col++)
@@ -630,6 +636,7 @@ namespace DnDreams.Infrastructure.Extractors
                     if (feat != null)
                     {
                         background.FeatId = feat.Id;
+                        background.Feat = feat;
                     }
                     else
                     {
@@ -767,19 +774,19 @@ namespace DnDreams.Infrastructure.Extractors
                 string valueStr = keyValue[1].Trim();
 
                 var trait = new ClassTrait();
-
+                trait.Type = ParseEnum<ResourceType>(keyStr);
                 // 1. Tratamiento especial para la matriz de hechizos
                 if (keyStr.Equals("SpellSlots", StringComparison.OrdinalIgnoreCase))
                 {
                     var slots = JsonSerializer.Deserialize<int[]>(valueStr);
                     trait.SpellSlots = slots ?? new int[9];
-
+                    trait.Value = null; // Opcional, asegurar limpieza
                 }
                 else
                 {
                     trait.Value = valueStr;
+                    trait.SpellSlots = null;
                 }
-                trait.Type = ParseEnum<ResourceType>(keyStr);
 
                 traits.Add(trait);
             }

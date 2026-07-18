@@ -5,7 +5,6 @@ using DnDreams.Application.Services;
 using DnDreams.Application.Services.DtosServices;
 using DnDreams.Application.Services.Importer;
 using DnDreams.Application.Services.Importer.Initializer;
-using DnDreams.Domain.DTOs;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Interfaces;
 using DnDreams.Infrastructure;
@@ -47,8 +46,13 @@ public static class MauiProgram
         builder.Services.AddScoped<IService<RaceDto, Race>, RaceService>();
         builder.Services.AddScoped<IService<ClassDefinitionDto, ClassDefinition>, ClassService>();
         builder.Services.AddScoped<IService<SubclassDto, Subclass>, SubclassService>();
-        builder.Services.AddScoped<IService<SpellDto, Spell>, SpellService>();
         builder.Services.AddScoped<IService<LanguageDto, Language>, LanguageService>();
+        builder.Services.AddScoped<IService<BackgroundDto, Background>, BackgroundService>();
+        builder.Services.AddScoped<IService<CharacterDto, Character>, CharacterService>();
+        builder.Services.AddScoped<IService<FeatDto, Feat>, FeatService>();
+        builder.Services.AddScoped<ILevelUpService, LevelUpService>();
+        builder.Services.AddScoped<IService<SpellDto, Spell>, SpellService>();
+        builder.Services.AddScoped<ISpellServiceSystem, SpellServiceSystem>();
 
         var culture = new CultureInfo("es-MX");
         CultureInfo.DefaultThreadCurrentCulture = culture;

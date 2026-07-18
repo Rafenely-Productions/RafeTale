@@ -101,4 +101,9 @@ public class UnitOfWork : IUnitOfWork
         _context.Dispose();
         GC.SuppressFinalize(this);
     }
+
+    public void ModifyState(object m)
+    {
+        _context.Entry(m).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+    }
 }

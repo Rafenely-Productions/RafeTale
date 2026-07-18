@@ -1,24 +1,27 @@
 ﻿using DnDreams.Application.Interfaces.DtosInterfaces;
-using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DnDreams.Application.DTOs
 {
     public class BackgroundDto : IDto
     {
         public Guid Id { get; set; }
+        public string TechnicalName { get; set; } = string.Empty;
+        
+        // Propiedades localizadas que se inyectan ya traducidas
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public string ToolProficiency { get; set; } = string.Empty;
-        public IEnumerable<ASI> ASIs { get; set; } = [];
-        public IEnumerable<SkillType> SkillTypes { get; set; } = [];
+        public string ToolProficiencies { get; set; } = string.Empty;
+        public string Equipment { get; set; } = string.Empty;
 
-        public Feat Feat { get; set; } = null!;
-        
+        // Propiedades mecánicas nativas
+        public ICollection<ASI> ASIs { get; set; } = [];
+        public ICollection<SkillType> SkillProficiencies { get; set; } = [];
+
+        // Relación desacoplada con la Dote de origen de nivel 1
+        public Guid? FeatId { get; set; }
+        public FeatDto? Feat { get; set; }
     }
 }

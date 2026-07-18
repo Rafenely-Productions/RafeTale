@@ -1,71 +1,102 @@
 ﻿using DnDreams.Application.DTOs;
-using DnDreams.Domain.Helpers;
 using DnDreams.Application.Interfaces;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
+using DnDreams.Domain.Helpers;
 using DnDreams.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DnDreams.Application.Services.DtosServices
 {
-    public class CharacterService(IUnitOfWork uow, ILocalizationService loc) : IService<CharacterDto, Character>
+    public class CharacterService(
+        IUnitOfWork uow,
+        ILocalizationService loc,
+        IService<RaceDto, Race> raceService,
+        IService<ClassDefinitionDto, ClassDefinition> classService,
+        IService<BackgroundDto, Background> bgService) : IService<CharacterDto, Character>
     {
-        private readonly IUnitOfWork _uow = uow;
-        private readonly ILocalizationService _loc = loc;
-
-        public async Task<List<CharacterDto>> GetAllAsync(Expression<Func<Character, bool>>? filter, Action<IncludeAggregator<Character>>? includes = null)
+        public async Task<CharacterDto> ArmDto(Character character)
         {
-            var characters = await _uow.Characters.GetAllAsync(filter, includes);
-            //var names = await _loc.GetAllAsync(LocEntity.Character, LocProperty.Name);
-            //var descriptions = await _loc.GetAllAsync(LocEntity.Character, LocProperty.Description);
+            // 1. Resolver los DTOs de sus orígenes usando tus servicios existentes
+            var raceDto = await raceService.GetByIdAsync(character.RaceId);
 
-            var characterDtos = new List<CharacterDto>();
-            foreach (var character in characters)
+            // Usamos los includes de progresiones y features para la clase
+            var classDto = await classService.GetByIdAsync(character.ClassDefId, config => config
+                .Include(x => x.SkillProficiencies)
+                .IncludeCollection(x => x.Progressions, p => p.Features));
+
+            var bgDto = await bgService.GetByIdAsync(character.BackgroundId);
+
+            // 2. Traer traducciones de las características del personaje
+            var localizedFeatures = await loc.GetAllAsync(LocEntity.Feature, [LocProperty.Name, LocProperty.Description]);
+
+            var mappedFeatures = new List<FeatureDto>();
+            foreach (var f in character.AcquiredFeatures)
             {
-                characterDtos.Add(new CharacterDto
+                mappedFeatures.Add(new FeatureDto
                 {
-                    
+                    Id = f.Id,
+                    Name = localizedFeatures.TryGetValue(LocProperty.Name, out var nDict) && nDict.TryGetValue(f.Id, out var name) ? name : f.TechnicalName,
+                    Description = localizedFeatures.TryGetValue(LocProperty.Description, out var dDict) && dDict.TryGetValue(f.Id, out var desc) ? desc : "No Description"
                 });
             }
-            return characterDtos;
+
+            // 3. Ensamblar el DTO definitivo
+            return new CharacterDto
+            {
+                Id = character.Id,
+                Name = character.Name,
+                History = character.History,
+                Strength = character.Strength,
+                Dexterity = character.Dexterity,
+                Constitution = character.Constitution,
+                Intelligence = character.Intelligence,
+                Wisdom = character.Wisdom,
+                Charisma = character.Charisma,
+                MaxHp = character.MaxHp,
+                CurrentHp = character.CurrentHp,
+                Level = character.Level,
+                Experience = character.Experience,
+                Race = raceDto,
+                ClassDef = classDto,
+                Background = bgDto,
+                AcquiredFeatures = mappedFeatures,
+                SpellSlots = character.SpellSlots
+            };
+        }
+
+        public CharacterDto ArmDto(Character entity, Dictionary<LocProperty, Dictionary<Guid, string>>? localizedWords)
+        {
+            // Implementación puente síncrona si se requiere para listas masivas
+            return null!;
+        }
+
+        public async Task<List<CharacterDto>> GetAllAsync(Expression<Func<Character, bool>>? filter, Action<IncludeAggregator<Character>>? includes)
+        {
+            var characters = await uow.Characters.GetAllAsync(filter, includes);
+            var dtos = new List<CharacterDto>();
+            foreach (var c in characters)
+            {
+                dtos.Add(await ArmDto(c!));
+            }
+            return dtos;
         }
 
         public async Task<CharacterDto> GetByIdAsync(Guid id, Action<IncludeAggregator<Character>>? includes = null)
         {
-            var character = await _uow.Characters.GetByIdAsync(id);
+            // Forzamos los includes necesarios para el grafo relacional
+            var character = await uow.Characters.GetByIdAsync(id, config => config
+                .Include(c=> c.ClassDef)
+                .Include(c => c.AcquiredFeatures)
+                .Include(c=> c.SpellSlots));
+
             if (character == null) return null!;
-
             return await ArmDto(character);
-        }
-
-        public async Task<CharacterDto> ArmDto(Character race)
-        {
-            return new CharacterDto
-            {
-                
-            };
-
-        }
-
-        public Task<CharacterDto> ArmDto(Character entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
-        {
-            throw new NotImplementedException();
-        }
-
-        CharacterDto IService<CharacterDto, Character>.ArmDto(Character entity, Dictionary<LocProperty, Dictionary<Guid, string>>? localizedWords)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<CharacterDto>> GetAllAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }

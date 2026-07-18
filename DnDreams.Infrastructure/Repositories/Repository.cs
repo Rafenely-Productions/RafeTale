@@ -74,11 +74,6 @@ namespace DnDreams.Infrastructure.Repositories
                     {
                         query = query.Include(path); // EF Core devora los strings felices
                     }
-                    else
-                    {
-                        query.Include(x => x.Id).ThenInclude(x=>path);
-
-                    }
                 }
             }
             if (filter != null)

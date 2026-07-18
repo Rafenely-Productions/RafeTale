@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
+using System.Text.Json.Serialization; // 🚨 No olvides este using
 using DnDreams.Domain.Enums;
 
 namespace DnDreams.Domain.Modifiers;
+
 public class ClassTrait
 {
-    public ResourceType Type;
-    public string Value = string.Empty;
-    public int[] SpellSlots { get;  set; } = new int[9];
-}
+    // 🚨 AHORA SÍ SON PROPIEDADES REALES CON GET Y SET:
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public ResourceType Type { get; set; }
 
+    public string Value { get; set; } = string.Empty;
+
+    public int[] SpellSlots { get; set; } = new int[9];
+}

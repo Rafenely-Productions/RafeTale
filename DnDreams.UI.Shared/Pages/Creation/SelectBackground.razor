@@ -4,11 +4,11 @@
 @using DnDreams.Application.Interfaces.DtosInterfaces
 @using DnDreams.Domain.Interfaces
 @using DnDreams.Domain.Enums
-@using DnDreams.Domain.DTOs
+@using DnDreams.UI.Shared.Components.Library
 @inject NavigationManager Navigation
 @inject CharacterCreationService CreationService
 @inject IStringLocalizer<AppStrings> L
-@inject IService<FeatDto,Feat> BackgroundService
+@inject IService<BackgroundDto,Background> BackgroundService
 
 <div class="min-h-screen bg-black p-6">
     <div class="max-w-6xl mx-auto">
@@ -23,15 +23,15 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
             <div class="lg:col-span-4 space-y-3">
-                @foreach (var cls in Feats)
+                @foreach (var cls in backgrounds)
                 {
-                    <div @onclick="() => SelectedFeat = cls"
-                         class="group cursor-pointer p-6 rounded-2xl border transition-all duration-300 @(SelectedFeat?.Id == cls.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
+                    <div @onclick="() => selectedBackground = cls"
+                         class="group cursor-pointer p-6 rounded-2xl border transition-all duration-300 @(selectedBackground?.Id == cls.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
                         <div class="flex justify-between items-center">
-                            <span class="text-xl font-black uppercase tracking-tight @(SelectedFeat?.Id == cls.Id ? "text-black" : "text-white group-hover:text-amber-500")">
+                            <span class="text-xl font-black uppercase tracking-tight @(selectedBackground?.Id == cls.Id ? "text-black" : "text-white group-hover:text-amber-500")">
                                 @cls.Name
                             </span>
-                            <i class="fa-solid fa-fire-bolt @(SelectedFeat?.Id == cls.Id ? "text-black" : "text-amber-900/40")"></i>
+                            <i class="fa-solid fa-fire-bolt @(selectedBackground?.Id == cls.Id ? "text-black" : "text-amber-900/40")"></i>
                         </div>
                     </div>
                 }
@@ -40,7 +40,7 @@
             <div class="lg:col-span-8">
                 <div class="bg-slate-900 border border-amber-900/30 rounded-[3rem] p-10 shadow-2xl min-h-[600px]">
 
-                    @if (SelectedFeat == null)
+                    @if (selectedBackground == null)
                     {
                         <div class="flex flex-col items-center justify-center h-full py-20 text-center">
                             <i class="fa-solid fa-hat-wizard text-amber-900/10 text-[10rem] mb-6"></i>
@@ -49,26 +49,8 @@
                     }
                     else
                     {
-                        <div class="animate-in fade-in duration-500">
-                            <div class="flex flex-wrap justify-between items-start gap-6 mb-8">
-                                <div class="flex-1">
-                                    <h2 class="text-6xl font-black text-white mb-2 uppercase italic tracking-tighter">@SelectedFeat.Name</h2>
-                                    <p class="text-slate-400 font-serif italic text-lg leading-relaxed">@SelectedFeat.Description</p>
-                                </div>
+                        <BackgroundInspector BackgroundDto="selectedBackground" />
 
-                            </div>
-
-                            <div class="space-y-8">
-                                <div>
-                                    <h3 class="text-amber-500 font-black text-xs tracking-[0.3em] uppercase mb-4 flex items-center gap-2">
-                                        <i class="fa-solid fa-medal text-amber-700"></i> @L["Label_Progression"]
-                                    </h3>
-
-                                    <div class="space-y-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
-                                        
-                                    </div>
-                                </div>
-                            </div>
 
                             <div class="mt-2 pt-4 border-t border-white/5 flex justify-end">
                                 <button @onclick="Confirm"
@@ -77,14 +59,13 @@
                                     <i class="fa-solid fa-bolt-lightning"></i>
                                 </button>
                             </div>
-                        </div>
                     }
                 </div>
             </div>
         </div>
     </div>
 </div>
-@if (FeatureInInspection != null)
+@if (featureInInspection != null)
 {
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" @onclick="CloseInspection"></div>
@@ -94,14 +75,14 @@
                 <div class="flex justify-between items-start mb-6">
                     <div>
                         <span class="text-amber-700 font-black text-[10px] tracking-[0.3em] uppercase">@L["Skill_Detail"]</span>
-                        <h3 class="text-3xl font-black text-white italic uppercase tracking-tighter">@FeatureInInspection.Name</h3>
+                        <h3 class="text-3xl font-black text-white italic uppercase tracking-tighter">@featureInInspection.Name</h3>
                     </div>
                     <button @onclick="CloseInspection" class="text-slate-500 hover:text-white transition-colors">
                         <i class="fa-solid fa-circle-xmark text-2xl"></i>
                     </button>
                 </div>
                 <div class="mb-6">
-                    @foreach (var modifier in FeatureInInspection.Modifiers)
+                    @foreach (var modifier in featureInInspection.Modifiers)
                     {
                         @switch (modifier.Type)
                         {
@@ -125,12 +106,12 @@
                                         </div>
                                     </div>
 
-                                    @if (IsLoadingSpell)
+                                    @if (isLoadingSpell)
                                     {
                                         <div class="text-center p-4"><i class="fa-solid fa-spinner fa-spin text-amber-500"></i></div>
                                     }
 
-                                    @foreach (var spell in InspectedSpells.Where(s => s.TechnicalName == modifier.Target))
+                                    @foreach (var spell in inspectedSpells.Where(s => s.TechnicalName == modifier.Target))
                                     {
                                         <div class="bg-black/40 border border-purple-500/10 rounded-3xl p-5 mt-2 animate-in slide-in-from-top-2">
                                             <div class="grid grid-cols-2 gap-4 mb-3">
@@ -174,7 +155,7 @@
                 </div>
                 <div class="bg-black/40 p-6 rounded-3xl border border-white/5 max-h-[60vh] overflow-y-auto custom-scrollbar">
                     <p class="text-slate-300 font-serif leading-relaxed italic text-lg">
-                        @FeatureInInspection.Description
+                        @featureInInspection.Description
                     </p>
                 </div>
 
@@ -188,16 +169,16 @@
     </div>
 }
 @code {
-    private List<FeatDto> Feats = new();
-    private FeatDto? SelectedFeat;
-    private FeatureDto? FeatureInInspection;
-    private List<Spell> InspectedSpells = new();
-    private bool IsLoadingSpell = false;
+    private List<BackgroundDto> backgrounds = new();
+    private BackgroundDto? selectedBackground;
+    private FeatureDto? featureInInspection;
+    private List<Spell> inspectedSpells = new();
+    private bool isLoadingSpell = false;
 
     private async Task InspectFeature(FeatureDto? feature)
     {
-        FeatureInInspection = feature;
-        InspectedSpells.Clear();
+        featureInInspection = feature;
+        inspectedSpells.Clear();
 
         if (feature == null) return;
 
@@ -205,27 +186,26 @@
 
         if (grantSpellModifiers.Any())
         {
-            IsLoadingSpell = true;
+            isLoadingSpell = true;
             foreach (var mod in grantSpellModifiers)
             {
-               
+
             }
-            IsLoadingSpell = false;
+            isLoadingSpell = false;
         }
     }
     private void CloseInspection()
     {
-        FeatureInInspection = null;
-        InspectedSpells.Clear();
+        featureInInspection = null;
+        inspectedSpells.Clear();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        Feats = await BackgroundService.GetAllAsync(x=>x.Category == CategoryFeat.Origin);
-
-        if (CreationService.SelectedFeatId != null)
+        backgrounds = await BackgroundService.GetAllAsync(null, config => config .Include(x => x.Feat));
+        if (CreationService.SelectedBackgroundId != null)
         {
-            SelectedFeat = Feats.FirstOrDefault(x=> x.Id == CreationService.SelectedFeatId);
+            selectedBackground = backgrounds.FirstOrDefault(x=> x.Id == CreationService.SelectedBackgroundId);
         }
     }
     protected async Task GetSpell(string target)
@@ -237,9 +217,9 @@
 
     private void Confirm()
     {
-        if (SelectedFeat != null)
+        if (selectedBackground != null)
         {
-            CreationService.SelectedClassId = SelectedFeat.Id;
+            CreationService.SelectedBackgroundId = selectedBackground.Id;
             Navigation.NavigateTo("/character/create");
         }
     }

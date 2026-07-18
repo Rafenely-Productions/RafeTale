@@ -1,0 +1,327 @@
+﻿@page "/character/create/abilities"
+@using DnDreams.Application.DTOs
+@using DnDreams.Application.Interfaces.DtosInterfaces
+@using DnDreams.Application.Services.DtosServices
+@using DnDreams.Domain.Enums
+@using DnDreams.Domain.Entities
+@inject CharacterCreationService CreationService
+@inject IService<BackgroundDto, Background> BackgroundService
+@inject NavigationManager Navigation
+@inject IStringLocalizer<AppStrings> L
+@inject IUnitOfWork UnitOfWork
+
+<div class="min-h-screen bg-black p-6">
+    <div class="max-w-5xl mx-auto">
+
+        <div class="mb-8">
+            <button @onclick="Back" class="text-amber-700 hover:text-amber-500 text-[10px] font-black tracking-widest mb-4 uppercase flex items-center gap-2 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i> @L["Btn_Back"]
+            </button>
+            <h1 class="text-5xl font-black text-amber-500 italic uppercase">@L["Abilities_Title"]</h1>
+            <p class="text-slate-500 font-serif italic text-lg">
+                @L["Abilities_Subtitle"] @(backgroundDto?.Name != null ? $"({L["BasedOn"]} {backgroundDto.Name})" : "")
+            </p>
+        </div>
+
+        @if (backgroundDto == null)
+        {
+            <div class="flex items-center justify-center p-12">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
+            </div>
+        }
+        else
+        {
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-slate-900 border border-amber-900/20 rounded-[2.5rem] p-8 shadow-2xl space-y-6">
+                        <div>
+                            <h2 class="text-lg font-black text-white uppercase tracking-wider mb-1">Standard Array</h2>
+                            <p class="text-xs text-slate-400">@L["StandardArray_Instructions"]</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            @foreach (var ability in Enum.GetValues<ASI>())
+                            {
+                                var finalScore = CalculateFinalScore(ability);
+                                var modifier = CalculateModifier(finalScore);
+                                var isAllowedByBg = backgroundDto.ASIs.Contains(ability);
+
+                                <div class="p-4 bg-black/40 rounded-2xl border border-slate-800/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                    <div class="flex items-center gap-4 min-w-[150px]">
+                                        <div class="size-12 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center justify-center">
+                                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">@ability.ToString().Substring(0, 3)</span>
+                                            <span class="text-xs font-bold text-amber-500">@(modifier >= 0 ? $"+{modifier}" : modifier.ToString())</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-black text-white uppercase">@L[ability.ToString()]</p>
+                                            <p class="text-[10px] text-slate-500">@L["Final_Score"]: <span class="text-white font-bold">@finalScore</span></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-2">
+                                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Base:</label>
+                                        <select value="@baseScores[ability]" @onchange="(e) => AssignBaseScore(ability, e)"
+                                                class="bg-slate-950 border border-slate-800 text-white rounded-lg px-3 py-1.5 text-xs font-bold focus:border-amber-500 outline-none">
+                                            <option value="0">-- Select --</option>
+                                            @foreach (var val in availableScores)
+                                            {
+                                                @if (!baseScores.Values.Contains(val) || baseScores[ability] == val)
+                                                {
+                                                    <option value="@val">@val</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="flex items-center gap-3">
+                                        @if (isAllowedByBg)
+                                        {
+                                            <div class="flex gap-1.5">
+                                                <button @onclick="() => ToggleBonus(ability, 2)"
+                                                        class="px-2.5 py-1 rounded text-[10px] font-mono font-black border transition-all
+                                                                           @(asiPlusTwo == ability
+                                                                                                                            ? "bg-amber-500 text-black border-amber-500"
+                                                                                                                            : "bg-slate-950 border-slate-800 text-slate-400 hover:text-white")">
+                                                                                                                                                                                          +2
+                                                                                                                                                                                      </button>
+                                                                                                                                                                                      <button @onclick="() => ToggleBonus(ability, 1)"
+                                                                                                                                                                                              class="px-2.5 py-1 rounded text-[10px] font-mono font-black border transition-all
+                                                                           @(asiPlusOnes.Contains(ability)
+                                                                                                                            ? "bg-amber-500 text-black border-amber-500"
+                                                                                                                            : "bg-slate-950 border-slate-800 text-slate-400 hover:text-white")">
+                                        +1
+                                    </button>
+                                </div>
+                                                                }
+                                        else
+                                        {
+                                            <span class="text-[9px] font-mono text-slate-600 uppercase">Blocked by BG</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button @onclick="FinishCharacter"
+                                disabled="@(!IsSelectionComplete())"
+                                class="px-12 py-5 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-2xl transition-all shadow-xl shadow-lime-900/20 disabled:opacity-10 disabled:grayscale uppercase tracking-tighter flex items-center gap-3">
+                            @L["Btn_FinishCharacter"] <i class="fa-solid fa-flag-checkered"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <div class="bg-slate-900 border border-amber-900/30 rounded-[2.5rem] p-8 sticky top-6 shadow-2xl space-y-6">
+                        <h3 class="text-amber-500 font-black text-sm italic uppercase tracking-widest border-b border-amber-900/20 pb-2">
+                            @L["Background_Bonus"]
+                        </h3>
+
+                        <div class="p-4 bg-amber-500/5 rounded-2xl border border-amber-500/10 space-y-3">
+                            <p class="text-xs text-slate-300 font-sans leading-relaxed">
+                                @L["BackgroundASI_HelpText"]
+                                <span class="text-amber-400 font-semibold">@backgroundDto.Name</span>:
+                            </p>
+                            <div class="flex flex-wrap gap-1.5">
+                                @foreach (var allowedAsi in backgroundDto.ASIs)
+                                {
+                                    <span class="text-[9px] font-bold bg-slate-950 border border-slate-800 text-slate-300 px-2 py-1 rounded uppercase tracking-wider">
+                                        @L[allowedAsi.ToString()]
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-amber-900/10 space-y-2">
+                            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Standard Array Available</h4>
+                            <div class="flex flex-wrap gap-1.5">
+                                @foreach (var score in availableScores)
+                                {
+                                    bool isAssigned = baseScores.Values.Contains(score);
+                                    <span class="text-xs font-mono font-bold px-2 py-1 rounded-lg border
+                                                         @(isAssigned
+                                                                                              ? "bg-slate-950/20 border-slate-800 text-slate-600 line-through"
+                                                                                              : "bg-slate-950 border-amber-500/20 text-amber-500")">
+                                @score
+                            </span>
+                                                        }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private BackgroundDto? backgroundDto;
+    private readonly List<int> availableScores = new() { 15, 14, 13, 12, 10, 8 };
+
+    private Dictionary<ASI, int> baseScores = new()
+    {
+        { ASI.Strength, 0 },
+        { ASI.Dexterity, 0 },
+        { ASI.Constitution, 0 },
+        { ASI.Intelligence, 0 },
+        { ASI.Wisdom, 0 },
+        { ASI.Charisma, 0 }
+    };
+
+    private ASI? asiPlusTwo;
+    // 🚨 CAMBIO: Ahora usamos una lista para permitir hasta tres +1
+    private List<ASI> asiPlusOnes = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (CreationService.SelectedBackgroundId.HasValue)
+        {
+            backgroundDto = await BackgroundService.GetByIdAsync(CreationService.SelectedBackgroundId.Value);
+        }
+    }
+
+    private void AssignBaseScore(ASI ability, ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var score))
+        {
+            baseScores[ability] = score;
+        }
+    }
+
+    private void ToggleBonus(ASI ability, int value)
+    {
+        if (value == 2)
+        {
+            if (asiPlusTwo == ability)
+            {
+                asiPlusTwo = null; // Toggle off: Quita el +2 si hace clic de nuevo
+            }
+            else
+            {
+                // Activa el +2 en este atributo
+                asiPlusTwo = ability;
+
+                // 🚨 Corrección: Si ya tenía un +1 aquí, lo quitamos de la lista
+                asiPlusOnes.Remove(ability);
+
+                // Regla oficial D&D 2024: Si usas la opción de (+2 y +1),
+                // solo se permite tener UN único +1 activo en total.
+                // Si el usuario tenía múltiples +1 activos, limpiamos la lista y dejamos solo el último.
+                if (asiPlusOnes.Count > 1)
+                {
+                    var lastAdded = asiPlusOnes.Last();
+                    asiPlusOnes.Clear();
+                    asiPlusOnes.Add(lastAdded);
+                }
+            }
+        }
+        else if (value == 1)
+        {
+            if (asiPlusOnes.Contains(ability))
+            {
+                asiPlusOnes.Remove(ability); // Toggle off: Quita el +1 si hace clic de nuevo
+            }
+            else
+            {
+                // 🚨 Corrección: Si este atributo tenía el +2, lo quitamos para permitir poner el +1
+                if (asiPlusTwo == ability)
+                {
+                    asiPlusTwo = null;
+                }
+
+                if (asiPlusTwo != null)
+                {
+                    // Opción A activa (+2 y +1): Solo se permite un único +1 activo en otra estadística
+                    asiPlusOnes.Clear();
+                    asiPlusOnes.Add(ability);
+                }
+                else
+                {
+                    // Opción B activa (Tres +1): Permitimos seleccionar hasta 3 estadísticas diferentes
+                    if (asiPlusOnes.Count < 3)
+                    {
+                        asiPlusOnes.Add(ability);
+                    }
+                    else
+                    {
+                        // Si ya seleccionó 3 y hace clic en una cuarta, rotamos la más antigua (First-In, First-Out)
+                        asiPlusOnes.RemoveAt(0);
+                        asiPlusOnes.Add(ability);
+                    }
+                }
+            }
+        }
+    }
+
+    private int CalculateFinalScore(ASI ability)
+    {
+        var baseScore = baseScores[ability];
+        var bonus = 0;
+        if (asiPlusTwo == ability) bonus = 2;
+        else if (asiPlusOnes.Contains(ability)) bonus = 1;
+        return baseScore + bonus;
+    }
+
+    private int CalculateModifier(int score)
+    {
+        if (score == 0) return 0;
+        return (int)Math.Floor((score - 10) / 2.0);
+    }
+
+    private bool IsSelectionComplete()
+    {
+        bool allBasesAssigned = baseScores.Values.All(v => v > 0);
+
+        // Cumple con la regla de D&D 2024: (+2 y +1) Ó (+1, +1, +1)
+        bool backgroundBonusesAssigned =
+            (asiPlusTwo.HasValue && asiPlusOnes.Count == 1) ||
+            (!asiPlusTwo.HasValue && asiPlusOnes.Count == 3);
+
+        return allBasesAssigned && backgroundBonusesAssigned;
+    }
+
+    private void Back()
+    {
+        Navigation.NavigateTo("/character/create");
+    }
+
+    private async Task FinishCharacter()
+    {
+        if (!IsSelectionComplete()) return;
+
+        // 1. Volcar las estadísticas calculadas en el servicio temporal
+        CreationService.BaseStats[ASI.Strength] = baseScores[ASI.Strength];
+        CreationService.BaseStats[ASI.Dexterity] = baseScores[ASI.Dexterity];
+        CreationService.BaseStats[ASI.Constitution] = baseScores[ASI.Constitution];
+        CreationService.BaseStats[ASI.Intelligence] = baseScores[ASI.Intelligence];
+        CreationService.BaseStats[ASI.Wisdom] = baseScores[ASI.Wisdom];
+        CreationService.BaseStats[ASI.Charisma] = baseScores[ASI.Charisma];
+
+        foreach (var stat in Enum.GetValues<ASI>())
+        {
+            var bonus = 0;
+            if (asiPlusTwo == stat) bonus = 2;
+            else if (asiPlusOnes.Contains(stat)) bonus = 1;
+
+            CreationService.BonusStats[stat] = bonus;
+        }
+
+        try
+        {
+            // 2. ¡CREAR Y GUARDAR DE VERDAD EN LA DB!
+            var savedHero = await CreationService.CreateAndSaveCharacterAsync(UnitOfWork);
+
+            // 3. Navegamos a su nueva hoja de personaje
+            Navigation.NavigateTo($"/characters");
+            // O si ya tienes la hoja detallada: Navigation.NavigateTo($"/character/sheet/{savedHero.Id}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error guardando héroe: {ex.Message}");
+            // Aquí puedes mostrar un modal o alerta si algo falla en SQLite
+        }
+    }
+}

@@ -1,13 +1,18 @@
-using DnDreams.Domain.Enums;
+﻿using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace DnDreams.Domain.Entities;
 
-public class    Character : IEntity
+public class Character : IEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
+    public string History { get; set; } = string.Empty; // 🔮 Añadido para el Lore/Trasfondo escrito
 
-    // Atributos base
+    // --- Atributos Dinámicos ---
     public int Strength
     {
         get
@@ -69,6 +74,7 @@ public class    Character : IEntity
         set => Stats[TargetPropertyType.Charisma.ToString()] = value;
     }
 
+    // --- Modificadores de Atributo ---
     public int StrModifier => CalculateModifier(Strength);
     public int DexModifier => CalculateModifier(Dexterity);
     public int ConModifier => CalculateModifier(Constitution);
@@ -81,34 +87,40 @@ public class    Character : IEntity
         return (int)Math.Floor((score - 10) / 2.0);
     }
 
-    public List<Feature> AcquiredFeatures { get; set; } = new();
-    public List<ClassLevelProgression> ClassLevels { get; set; } = new();
-
-    public Guid RaceId { get; set; }
-    public Race Race { get; set; } = null!;
-
-    public Guid ClassDefId { get; set; }
-    public ClassDefinition ClassDef { get; set; } = null!;
-
+    // --- Estadísticas Vitales (Mapeadas para SQLite) ---
+    public int MaxHp { get; set; } = 10;
+    public int CurrentHp { get; set; } = 10;
     public int Level { get; set; } = 1;
     public int Experience { get; set; } = 0;
     public Dictionary<string, int> Stats { get; set; } = new();
 
+    // --- Relaciones de Origen y Reglas 2024 ---
+    public Guid RaceId { get; set; }
+    public Race Race { get; set; } = null!;
+
+    public Guid ClassDefId { get; set; } // Ajustado para coincidir con tu propiedad 'ClassDef'
+    public ClassDefinition ClassDef { get; set; } = null!;
+
+    public Guid BackgroundId { get; set; } // 🔮 Añadido para guardar de qué trasfondo viene el héroe
+    public Background Background { get; set; } = null!;
+
+    // --- Colecciones y Grafos Relacionales ---
+    public List<Feature> AcquiredFeatures { get; set; } = new();
+    public List<ClassLevelProgression> ClassLevels { get; set; } = new();
     public virtual ICollection<Feat> AcquiredFeats { get; set; } = new List<Feat>();
     public virtual ICollection<Spell> KnownSpells { get; set; } = new List<Spell>();
     public virtual ICollection<CharacterModifier> CharacterModifiers { get; set; } = new List<CharacterModifier>();
-
     public List<CharacterInventory> Inventory { get; set; } = new();
-
     public CharacterStatus Status { get; set; } = null!;
     public List<CharacterSpellSlots> SpellSlots { get; set; } = new();
     public List<ActiveModifiers> ActiveModifiers { get; set; } = new();
     public List<CampaignCharacter> CampaignCharacters { get; set; } = new();
-    public int ProficiencyBonus => 2 + ((Level - 1) / 4); // L�gica oficial de D&D
+
+    // --- Mecánicas de Juego ---
+    public int ProficiencyBonus => 2 + ((Level - 1) / 4);
 
     public int GetSkillBonus(string skillName, string baseStat)
     {
-        // 1. Obtenemos el modificador del atributo base (Fuerza, Destreza, etc.)
         int statMod = baseStat switch
         {
             "Strength" => StrModifier,
@@ -120,10 +132,7 @@ public class    Character : IEntity
             _ => 0
         };
 
-        // 2. Buscamos si el personaje tiene competencia (Proficiency) en esta skill
-        // Por ahora, asumiremos que tienes una lista de strings con las skills entrenadas
         bool isProficient = AcquiredFeatures.Any(f => f.TechnicalName.Contains(skillName));
-
         return statMod + (isProficient ? ProficiencyBonus : 0);
     }
 }

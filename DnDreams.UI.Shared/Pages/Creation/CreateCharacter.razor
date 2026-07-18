@@ -1,14 +1,14 @@
-@page "/character/create"
+﻿@page "/character/create"
 @using DnDreams.Application.Services.DtosServices
 @using DnDreams.Application.DTOs
 @using DnDreams.Application.Interfaces.DtosInterfaces
-@using DnDreams.Domain.DTOs
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
 @inject IStringLocalizer<AppStrings> L
 @inject CharacterCreationService CreationService
 @inject IService<RaceDto,Race> RaceService
 @inject IService<ClassDefinitionDto,ClassDefinition> ClassService
+@inject IService<BackgroundDto,Background> BackgroundService
 
 <div class="min-h-screen bg-black p-6">
     <div class="max-w-5xl mx-auto">
@@ -30,40 +30,41 @@
                     <div class="space-y-6">
                         <div>
                             <label class="block text-amber-700 font-black text-[10px] tracking-widest mb-3 uppercase">@L["Label_HeroName"]</label>
-                            <input @bind="Model.Name" placeholder="@L["Placeholder_Name"]"
+                            <input @bind="CreationService.Name" placeholder="@L["Placeholder_Name"]"
                                    class="w-full bg-black/40 border border-amber-900/20 p-4 rounded-2xl text-white text-xl font-bold focus:border-amber-500 outline-none transition-all" />
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div @onclick='() => Navigation.NavigateTo("/character/create/class")'
+                            <div @onclick='() => NavigateTo("/character/create/class")'
                                  class="cursor-pointer bg-black/40 border border-amber-900/20 p-4 rounded-2xl flex justify-between items-center">
                                 <div>
                                     <label class="block text-amber-700 font-black text-[10px] uppercase">@L["Label_Class"]</label>
                                     <span class="text-white font-bold">
-                                        @(SelectedClass?.Name ?? L["Choose_Class"])
+                                        @(selectedClass?.Name ?? L["Choose_Class"])
                                     </span>
                                 </div>
                                 <i class="fa-solid fa-chevron-right text-amber-500"></i>
                             </div>
 
-                                <div @onclick='() => Navigation.NavigateTo("/character/create/race")'
-                                     class="cursor-pointer bg-black/40 border border-amber-900/20 p-4 rounded-2xl flex justify-between items-center">
-                                    <div>
-                                        <label class="block text-amber-700 font-black text-[10px] uppercase">@L["Label_Race"]</label>
-                                        <span class="text-white font-bold">
-                                            @(SelectedRace?.Name ?? L["Choose_Race"])
-                                        </span>
-                                    </div>
-                                    <i class="fa-solid fa-chevron-right text-amber-500"></i>
+                            <div @onclick='() => NavigateTo("/character/create/race")'
+                                 class="cursor-pointer bg-black/40 border border-amber-900/20 p-4 rounded-2xl flex justify-between items-center">
+                                <div>
+                                    <label class="block text-amber-700 font-black text-[10px] uppercase">@L["Label_Race"]</label>
+                                    <span class="text-white font-bold">
+                                        @(selectedRace?.Name ?? L["Choose_Race"])
+                                    </span>
                                 </div>
+                                <i class="fa-solid fa-chevron-right text-amber-500"></i>
+                            </div>
                         </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div @onclick='() => Navigation.NavigateTo("/character/create/background")'
+                            <div @onclick='() => NavigateTo("/character/create/background")'
                                  class="cursor-pointer bg-black/40 border border-amber-900/20 p-4 rounded-2xl flex justify-between items-center">
                                 <div>
                                     <label class="block text-amber-700 font-black text-[10px] uppercase">@L["Label_Background"]</label>
                                     <span class="text-white font-bold">
-                                        @(SelectedClass?.Name ?? L["Choose_Background"])
+                                        @(selectedBackground?.Name ?? L["Choose_Background"])
                                     </span>
                                 </div>
                                 <i class="fa-solid fa-chevron-right text-amber-500"></i>
@@ -72,7 +73,7 @@
 
                         <div>
                             <label class="block text-amber-700 font-black text-[10px] tracking-widest mb-3 uppercase">@L["Label_History"]</label>
-                            <textarea @bind="Model.History" rows="4" placeholder="@L["Placeholder_History"]"
+                            <textarea @bind="CreationService.History" rows="4" placeholder="@L["Placeholder_History"]"
                                       class="w-full bg-black/40 border border-amber-900/20 p-4 rounded-2xl text-slate-300 font-serif outline-none focus:border-amber-500 transition-all resize-none"></textarea>
                         </div>
                     </div>
@@ -88,38 +89,68 @@
             </div>
 
             <div class="lg:col-span-1">
-                <div class="bg-slate-900 border border-amber-900/30 rounded-[2.5rem] p-8 sticky top-6 shadow-2xl min-h-[400px]">
-                    <h3 class="text-amber-500 font-black text-sm mb-6 italic uppercase tracking-widest border-b border-amber-900/20 pb-2">
+                <div class="bg-slate-900 border border-amber-900/30 rounded-[2.5rem] p-6 sticky top-6 shadow-2xl flex flex-col gap-4 max-h-[calc(100vh-3rem)]">
+
+                    <h3 class="text-amber-500 font-black text-sm italic uppercase tracking-widest border-b border-amber-900/20 pb-2 shrink-0">
                         @L["Label_SelectionDetails"]
                     </h3>
 
-                    @if (SelectedRace == null && SelectedClass == null)
+                    @if (selectedRace == null && selectedClass == null && selectedBackground == null)
                     {
-                        <div class="flex flex-col items-center justify-center h-64 text-center">
+                        <div class="flex flex-col items-center justify-center h-64 text-center my-auto">
                             <i class="fa-solid fa-book-sparkles text-amber-900/20 text-5xl mb-4"></i>
                             <p class="text-slate-600 font-serif italic text-sm px-4">@L["Msg_EmptySelection"]</p>
                         </div>
                     }
                     else
                     {
-                        <div class="space-y-6 animate-in fade-in duration-500">
-                            @if (SelectedRace != null)
+                        <div class="flex-1 min-h-[150px] max-h-[320px] overflow-y-auto pr-1 custom-scrollbar space-y-3">
+                            @if (selectedRace != null)
                             {
-                                <div>
-                                    <span class="text-[10px] font-black text-amber-700 uppercase">@L["Label_Race"]</span>
-                                    <h4 class="text-xl font-bold text-white mb-1">@SelectedRace.Name</h4>
-                                    <p class="text-slate-400 text-xs font-serif leading-relaxed">@SelectedRace.Description</p>
+                                <div class="p-3 bg-black/30 rounded-2xl border border-slate-800/60 animate-in slide-in-from-bottom-2 duration-200">
+                                    <span class="text-[9px] font-black text-amber-700 uppercase tracking-wider">@L["Label_Race"]</span>
+                                    <h4 class="text-sm font-bold text-white mb-1 uppercase tracking-wide">@selectedRace.Name</h4>
+                                    <p class="text-slate-400 text-[11px] font-sans leading-relaxed line-clamp-3">@((MarkupString)selectedRace.Description)</p>
                                 </div>
                             }
 
-                            @if (SelectedClass != null)
+                            @if (selectedClass != null)
                             {
-                                <div class="pt-4 border-t border-amber-900/10">
-                                    <span class="text-[10px] font-black text-amber-700 uppercase">@L["Label_Class"]</span>
-                                    <h4 class="text-xl font-bold text-white mb-1">@SelectedClass.Name</h4>
-                                    <p class="text-slate-400 text-xs font-serif leading-relaxed">@SelectedClass.Description</p>
+                                <div class="p-3 bg-black/30 rounded-2xl border border-slate-800/60 animate-in slide-in-from-bottom-2 duration-200">
+                                    <span class="text-[9px] font-black text-amber-700 uppercase tracking-wider">@L["Label_Class"]</span>
+                                    <h4 class="text-sm font-bold text-white mb-1 uppercase tracking-wide">@selectedClass.Name</h4>
+                                    <p class="text-slate-400 text-[11px] font-sans leading-relaxed line-clamp-3">@((MarkupString)selectedClass.Description)</p>
                                 </div>
                             }
+
+                            @if (selectedBackground != null)
+                            {
+                                <div class="p-3 bg-black/30 rounded-2xl border border-slate-800/60 animate-in slide-in-from-bottom-2 duration-200">
+                                    <span class="text-[9px] font-black text-amber-700 uppercase tracking-wider">@L["Label_Background"]</span>
+                                    <h4 class="text-sm font-bold text-white mb-1 uppercase tracking-wide">@selectedBackground.Name</h4>
+                                    <p class="text-slate-400 text-[11px] font-sans leading-relaxed line-clamp-3">@((MarkupString)selectedBackground.Description)</p>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="shrink-0 p-3.5 bg-amber-500/5 rounded-2xl border border-amber-500/10 space-y-2">
+                            <h4 class="text-[10px] font-bold text-amber-500 uppercase tracking-widest">
+                                @L["Background_Bonus"]
+                            </h4>
+                            <p class="text-[11px] text-slate-300 font-sans leading-relaxed">
+                                @L["BackgroundASI_HelpText"] <span class="text-amber-400 font-semibold">@selectedBackground?.Name</span>:
+                            </p>
+                            <div class="flex flex-wrap gap-1.5">
+                                @if (selectedBackground != null)
+                                {
+                                    @foreach (var allowedAsi in selectedBackground.ASIs)
+                                    {
+                                        <span class="text-[9px] font-mono font-bold bg-slate-950 border border-slate-800 text-slate-300 px-2 py-0.5 rounded uppercase tracking-wider">
+                                            @L[allowedAsi.ToString()]
+                                        </span>
+                                    }
+                                }
+                            </div>
                         </div>
                     }
                 </div>
@@ -130,78 +161,56 @@
 </div>
 
 @code {
-    private CharacterCreationService Model = new();
-    private List<Race?> Races = new();
-    private List<ClassDefinition?> Classes = new();
+    private List<RaceDto> races = [];
+    private List<ClassDefinitionDto> classes = [];
+    private List<BackgroundDto> backgrounds = [];
 
-    private RaceDto? SelectedRace;
-    private ClassDefinitionDto? SelectedClass;
+    private RaceDto? selectedRace;
+    private ClassDefinitionDto? selectedClass;
+    private BackgroundDto? selectedBackground;
 
     protected override async Task OnInitializedAsync()
     {
-        Races = (await UnitOfWork.Races.GetAllAsync()).ToList();
-        Classes = (await UnitOfWork.ClassDefinitions.GetAllAsync()).ToList();
-        // SelectedRace = new RaceDto();
+        races = await RaceService.GetAllAsync(null, null);
+        classes = await ClassService.GetAllAsync(null, null);
+        backgrounds = await BackgroundService.GetAllAsync(null, null);
     }
 
-    private async Task OnRaceChanged(ChangeEventArgs e)
+    // 🚨 Asegura el bindeado de los textos antes de saltar a otra sub-pantalla
+    private void NavigateTo(string path)
     {
-        if (Guid.TryParse(e.Value?.ToString(), out var id))
-        {
-            Model.SelectedRaceId = id;
-            var race = Races.FirstOrDefault(r => r!.Id == id);
-
-            if (race != null)
-            {
-                SelectedRace = await RaceService.GetByIdAsync(id,null);
-            }
-        }
-        else
-        {
-            SelectedRace = null;
-            Model.SelectedRaceId = Guid.Empty;
-        }
-    }
-
-    private async Task OnClassChanged(ChangeEventArgs e)
-    {
-        if (Guid.TryParse(e.Value?.ToString(), out var id))
-        {
-            Model.SelectedClassId = id;
-            var classDefinition = Classes.FirstOrDefault(c => c!.Id == id);
-            if (classDefinition != null)
-                SelectedClass = await ClassService.GetByIdAsync(id);
-        }
-        else { SelectedClass = null; Model.SelectedClassId = Guid.Empty; }
+        Navigation.NavigateTo(path);
     }
 
     private bool IsFormReady() =>
-        !string.IsNullOrWhiteSpace(Model.Name) &&
-        Model.SelectedRaceId != Guid.Empty &&
-        Model.SelectedClassId != Guid.Empty;
+        !string.IsNullOrWhiteSpace(CreationService.Name) &&
+        CreationService.SelectedRaceId.HasValue &&
+        CreationService.SelectedClassId.HasValue &&
+        CreationService.SelectedBackgroundId.HasValue;
 
     private void Back() => Navigation.NavigateTo("/characters");
 
-    private async Task HandleCreate() 
-    { 
-        /* L�gica futura */ 
+    private async Task HandleCreate()
+    {
+        if (!IsFormReady()) return;
+        Navigation.NavigateTo("/character/create/abilities");
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        // Si el servicio ya tiene una raza, la buscamos para mostrarla
         if (CreationService.SelectedRaceId.HasValue)
         {
-            if (SelectedRace != null) SelectedRace = new();
-
-            SelectedRace = await RaceService.GetByIdAsync(CreationService.SelectedRaceId.Value);
+            selectedRace = await RaceService.GetByIdAsync(CreationService.SelectedRaceId.Value);
         }
 
         if (CreationService.SelectedClassId.HasValue)
         {
-            if (SelectedClass != null) SelectedClass = new();
+            selectedClass = await ClassService.GetByIdAsync(CreationService.SelectedClassId.Value);
+        }
 
-            SelectedClass = await ClassService.GetByIdAsync(CreationService.SelectedClassId.Value);
+        if (CreationService.SelectedBackgroundId.HasValue)
+        {
+            selectedBackground = await BackgroundService.GetByIdAsync(CreationService.SelectedBackgroundId.Value);
         }
     }
 }
