@@ -30,4 +30,12 @@ public interface IUnitOfWork : IDisposable
     void ModifyState(object m);
     Task RollbackAsync();
     Task<int> SaveChangesAsync();
+
+    void DetachOrUnchangeEntities<T>() where T : class;
+
+    void SetUnchangedState(object entity);
+    void PureCleanTrackerForCharacter();
+
+    Task<bool> SpellSlotExistsAsync(Guid id);
+    void TrackNewSpellSlot(CharacterSpellSlots cps);
 }

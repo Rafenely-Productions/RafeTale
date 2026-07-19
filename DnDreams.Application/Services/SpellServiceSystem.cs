@@ -2,6 +2,7 @@
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace DnDreams.Application.Services
     {
         public async Task<bool> CastSpellAsync(Guid characterId, int spellLevel, int slotLevelToUse)
         {
-            var character = await uow.Characters.GetByIdAsync(characterId)
+            var character = await uow.Characters.GetByIdAsync(characterId, q => q.Include(x => x.SpellSlots))
                 ?? throw new Exception("Personaje ausente del plano material.");
 
             // Validación de Upcasting: No puedes usar una ranura menor que el nivel base del hechizo
@@ -51,13 +52,9 @@ namespace DnDreams.Application.Services
             await uow.SaveChangesAsync();
         }
 
-        public async Task RecalculateMaxSlotsAsync(Guid characterId)
+        public async Task RecalculateMaxSlotsAsync(Character character)
         {
-            // 1. Cargamos el personaje incluyendo sus ranuras físicas relacionales actuales
-            var character = await uow.Characters.GetByIdAsync(characterId, config => config
-                .Include(c => c.ClassDef)
-                .Include(c => c.SpellSlots))
-                ?? throw new Exception("Personaje ausente.");
+
 
             if (character.ClassDef == null) return;
 
@@ -79,7 +76,7 @@ namespace DnDreams.Application.Services
 
             if (spellcastingTrait == null) return; // Si este nivel no otorga slots (ej: un nivel de Guerrero puro), salimos
 
-            var newSlots = new List<CharacterSpellSlots>();
+            var activeLevels = new List<int>();
 
             // 4. MAPEO DIRECTO DESDE TU ARRAY REAL 'int[] SpellSlots'
             for (int i = 0; i < spellcastingTrait.SpellSlots.Length; i++)
@@ -87,27 +84,52 @@ namespace DnDreams.Application.Services
                 int level = i + 1;
                 int maxSlotsFromDb = spellcastingTrait.SpellSlots[i];
 
-                // Si el nivel de clase otorga ranuras para este círculo de conjuro...
                 if (maxSlotsFromDb > 0)
                 {
-                    // Buscamos si el personaje ya tenía esta burbuja guardada en SQLite para mantener sus UsedSlots intactos
+                    activeLevels.Add(level);
+
                     var existing = character.SpellSlots.FirstOrDefault(s => s.Level == level);
 
-                    newSlots.Add(new CharacterSpellSlots
+                    // 🌟 COMPROBACIÓN ANTIBOMBAS USANDO TU UOW:
+                    bool existsInDatabase = false;
+                    if (existing != null)
                     {
-                        Id = existing?.Id ?? Guid.NewGuid(),
-                        CharacterId = character.Id,
-                        Level = level,
-                        MaxSlots = maxSlotsFromDb,
-                        // Protegemos que los slots usados no queden flotando por encima del máximo permitido
-                        UsedSlots = existing != null ? Math.Min(existing.UsedSlots, maxSlotsFromDb) : 0
-                    });
+                        // Le preguntamos a la infraestructura si el Id realmente existe en SQLite
+                        existsInDatabase = await uow.SpellSlotExistsAsync(existing.Id);
+                    }
+
+                    if (existing != null && existsInDatabase)
+                    {
+                        // ACTUALIZACIÓN IN-PLACE LEGÍTIMA: El registro existe en disco, EF puede hacer UPDATE seguro
+                        existing.MaxSlots = maxSlotsFromDb;
+                        existing.UsedSlots = Math.Min(existing.UsedSlots, maxSlotsFromDb);
+                    }
+                    else
+                    {
+                        // INSERCIÓN LIMPIA (ADDED): Si no existía en disco, limpiamos el rastreador suco
+                        // y lo forzamos a entrar como un registro totalmente nuevo (State: Added)
+                        if (existing != null)
+                        {
+                            character.SpellSlots.Remove(existing);
+                        }
+                        var newSlot = new CharacterSpellSlots
+                        {
+                            Id = Guid.NewGuid(),
+                            CharacterId = character.Id,
+                            Level = level,
+                            MaxSlots = maxSlotsFromDb,
+                            UsedSlots = 0
+                        };
+                        uow.TrackNewSpellSlot(newSlot);
+                        character.SpellSlots.Add(newSlot);
+                    }
                 }
             }
-
-            // 5. Sincronización y persistencia física relacional directa en la tabla SQLite
-            character.SpellSlots = newSlots;
-            await uow.SaveChangesAsync();
+            var slotsToRemove = character.SpellSlots.Where(s => !activeLevels.Contains(s.Level)).ToList();
+            foreach (var oldSlot in slotsToRemove)
+            {
+                character.SpellSlots.Remove(oldSlot);
+            }
         }
     }
 }

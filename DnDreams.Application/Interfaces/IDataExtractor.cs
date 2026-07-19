@@ -17,7 +17,7 @@ namespace DnDreams.Application.Interfaces
 
         List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes,List<Background> backgrounds);
         List<ClassLevelProgression> ExtractClassLevelProgressions(IXLWorkbook workbook, List<ClassDefinition> classes);
-        List<Spell> ExtractSpells(IXLWorkbook workbook,List<ClassDefinition> classDefinitions);
+        List<Spell> ExtractSpells(IXLWorkbook workbook,List<string> classDefinitions);
         List<XpRules> ExtractXpRules(IXLWorkbook workbook);
         List<Feat> ExtractFeats(IXLWorkbook workbook);
         List<ItemTemplate> ExtractItems(IXLWorkbook workbook, List<Character> characters);

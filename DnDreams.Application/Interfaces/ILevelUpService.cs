@@ -15,7 +15,9 @@ namespace DnDreams.Application.Interfaces
         // Aplica las elecciones del Draft, inyecta los nuevos Features/Spells/Stats al Character y guarda en DB
         Task<CharacterDto> CommitLevelUpAsync(LevelUpDraft draft);
         Task<CharacterAuditDto> AuditCharacterAsync(Guid characterId);
-        
+        Task<LevelUpDraft> PrepareClaimDraftAsync(Guid characterId);
+
+
     }
     public class CharacterAuditDto
     {

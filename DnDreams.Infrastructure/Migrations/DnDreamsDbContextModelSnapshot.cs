@@ -15,7 +15,7 @@ namespace DnDreams.Infrastructure.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.17");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.18");
 
             modelBuilder.Entity("CharacterFeat", b =>
                 {
@@ -402,9 +402,6 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Property<int>("SkillsToChoose")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid?>("SpellId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("TechnicalName")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -418,8 +415,6 @@ namespace DnDreams.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SpellId");
 
                     b.ToTable("ClassDefinitions", (string)null);
                 });
@@ -674,6 +669,10 @@ namespace DnDreams.Infrastructure.Migrations
 
                     b.Property<int>("CastingTime")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClassesTechnicalNames")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Concentration")
                         .HasColumnType("INTEGER");
@@ -1017,13 +1016,6 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Navigation("Character");
                 });
 
-            modelBuilder.Entity("DnDreams.Domain.Entities.ClassDefinition", b =>
-                {
-                    b.HasOne("DnDreams.Domain.Entities.Spell", null)
-                        .WithMany("Classes")
-                        .HasForeignKey("SpellId");
-                });
-
             modelBuilder.Entity("DnDreams.Domain.Entities.ClassLevelProgression", b =>
                 {
                     b.HasOne("DnDreams.Domain.Entities.Character", null)
@@ -1172,11 +1164,6 @@ namespace DnDreams.Infrastructure.Migrations
                     b.Navigation("SubRaces");
 
                     b.Navigation("Traits");
-                });
-
-            modelBuilder.Entity("DnDreams.Domain.Entities.Spell", b =>
-                {
-                    b.Navigation("Classes");
                 });
 
             modelBuilder.Entity("DnDreams.Domain.Entities.SubRace", b =>

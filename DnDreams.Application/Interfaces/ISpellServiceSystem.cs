@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DnDreams.Application.DTOs;
+using DnDreams.Domain.Entities;
 
 namespace DnDreams.Application.Interfaces
 {
@@ -14,6 +15,6 @@ namespace DnDreams.Application.Interfaces
 
         // Lógica de automatización: Calcula y sobreescribe cuántas ranuras máximas le tocan al personaje 
         // según su nivel y clase (ideal para invocar tras un CommitLevelUp)
-        Task RecalculateMaxSlotsAsync(Guid characterId);
+        Task RecalculateMaxSlotsAsync(Character character);
     }
 }

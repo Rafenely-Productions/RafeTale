@@ -1,4 +1,5 @@
-﻿using DnDreams.Domain.Enums;
+﻿using DnDreams.Application.Services;
+using DnDreams.Domain.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -24,6 +25,8 @@ namespace DnDreams.Application.DTOs
         // Hechizos / Spells
         public int SpellsToLearnCount { get; init; }
         public List<Guid> SelectedSpellIds { get; set; } = new();
+
+        public SpellBudget SpellBudget { get; set; } = new();
 
     }
 }

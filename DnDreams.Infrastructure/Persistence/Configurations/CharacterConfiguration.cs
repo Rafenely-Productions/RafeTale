@@ -40,13 +40,15 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
 
             builder.HasMany(c => c.CharacterModifiers)
                    .WithOne()
+                   .HasForeignKey(m => m.CharacterId) // 👈 Amarre estricto para evitar Shadow Properties
                    .OnDelete(DeleteBehavior.Cascade);
 
-            // 🚨 NOTA: NO configuramos aquí la relación HasMany(c => c.SpellSlots).
-            // EF Core la unirá automáticamente usando la configuración explícita que ya tienes
-            // declarada en tu otra clase 'CharacterSpellSlotsConfiguration'.
+            // Mapeo explícito para la lista de Slots (Opcional, pero blinda la navegación inversa)
+            builder.HasMany(c => c.SpellSlots)
+                   .WithOne(s => s.Character)
+                   .HasForeignKey(s => s.CharacterId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
-            // MAGIA: Convertir el Diccionario de Stats a un string JSON en la base de datos
             builder.Property(e => e.Stats)
                 .HasConversion(
                     v => JsonSerializer.Serialize(v, jsonOptions),

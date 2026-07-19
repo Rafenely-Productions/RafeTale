@@ -18,7 +18,8 @@ namespace DnDreams.Application.Services.DtosServices
         ILocalizationService loc,
         IService<RaceDto, Race> raceService,
         IService<ClassDefinitionDto, ClassDefinition> classService,
-        IService<BackgroundDto, Background> bgService) : IService<CharacterDto, Character>
+        IService<BackgroundDto, Background> bgService,
+        IService<SpellDto, Spell> spellService) : IService<CharacterDto, Character>
     {
         public async Task<CharacterDto> ArmDto(Character character)
         {
@@ -45,7 +46,14 @@ namespace DnDreams.Application.Services.DtosServices
                     Description = localizedFeatures.TryGetValue(LocProperty.Description, out var dDict) && dDict.TryGetValue(f.Id, out var desc) ? desc : "No Description"
                 });
             }
+            var spellDtos = new List<SpellDto>();
+            var localizedSpells = await loc.GetAllAsync(LocEntity.Spell, [LocProperty.Name, LocProperty.Description, LocProperty.MaterialComponentDescription]);
 
+            foreach (var spell in character.KnownSpells)
+            {
+                var spellDto = spellService.ArmDto(spell, localizedSpells);
+                spellDtos.Add(spellDto);
+            }
             // 3. Ensamblar el DTO definitivo
             return new CharacterDto
             {
@@ -66,7 +74,8 @@ namespace DnDreams.Application.Services.DtosServices
                 ClassDef = classDto,
                 Background = bgDto,
                 AcquiredFeatures = mappedFeatures,
-                SpellSlots = character.SpellSlots
+                SpellSlots = character.SpellSlots,
+                KnownSpells = spellDtos
             };
         }
 
@@ -90,11 +99,13 @@ namespace DnDreams.Application.Services.DtosServices
         public async Task<CharacterDto> GetByIdAsync(Guid id, Action<IncludeAggregator<Character>>? includes = null)
         {
             // Forzamos los includes necesarios para el grafo relacional
-            var character = await uow.Characters.GetByIdAsync(id, config => config
-                .Include(c=> c.ClassDef)
+            var character = await uow.Characters.GetByIdAsync(id, config =>
+            {
+                config.Include(c => c.ClassDef)
                 .Include(c => c.AcquiredFeatures)
-                .Include(c=> c.SpellSlots));
-
+                .Include(c => c.SpellSlots);
+                includes?.Invoke(config);
+            });
             if (character == null) return null!;
             return await ArmDto(character);
         }

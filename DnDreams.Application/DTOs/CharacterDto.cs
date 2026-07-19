@@ -38,10 +38,13 @@ namespace DnDreams.Application.DTOs
         public RaceDto? Race { get; init; }
         public ClassDefinitionDto? ClassDef { get; init; }
         public BackgroundDto? Background { get; init; }
-        public List<CharacterSpellSlots> SpellSlots { get; init; } = new();
+        public List<CharacterSpellSlots> SpellSlots { get; init; } = [];
         // Colecciones de rasgos e idiomas ya traducidos
-        public List<FeatureDto> AcquiredFeatures { get; init; } = new();
-        public List<FeatDto> AcquiredFeats { get; init; } = new();
+        public List<FeatureDto> AcquiredFeatures { get; init; } = [];
+        public List<FeatDto> AcquiredFeats { get; init; } = [];
+
+    public virtual List<SpellDto> KnownSpells { get; set; } = [];
+
 
         // Método calculador de habilidades para el DTO
         public int GetSkillBonus(string skillKey, string baseStat, List<string> trainedSkills)

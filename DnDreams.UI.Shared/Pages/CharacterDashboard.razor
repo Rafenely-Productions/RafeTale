@@ -25,7 +25,33 @@
                 <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
                 @L["Btn_ReturnToTavern"]
             </button>
+            @if (AuditStatus != null && AuditStatus.HasPendingChoices)
+            {
+                <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-in fade-in duration-300">
+                    <div class="flex items-center gap-3 text-xs">
+                        <div class="size-8 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-sparkles text-sm animate-pulse"></i>
+                        </div>
+                        <div>
+                            <p class="font-black text-amber-500 uppercase tracking-wider">@L["Title_PendingSelections"]</p>
+                            <p class="text-slate-400 mt-0.5">
+                                @if (AuditStatus.PendingFeats > 0)
+                                {
+                                    <span>@L["Msg_PendingFeats", AuditStatus.PendingFeats] </span>
+                                }
+                                @if (AuditStatus.PendingSpells > 0)
+                                {
+                                    <span>@L["Msg_PendingSpells", AuditStatus.PendingSpells]</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
 
+                    <button @onclick="NavigateToClaimRewards" class="w-full sm:w-auto px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-black text-[10px] rounded-lg uppercase tracking-widest shadow-md transition-all active:scale-95">
+                        @L["Btn_ClaimSelections"]
+                    </button>
+                </div>
+            }
             <div class="relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-6 bg-slate-900 border border-amber-900/20 p-6 md:p-8 rounded-[2rem] shadow-2xl">
                 
                 <div class="absolute -left-6 -top-6 opacity-5 text-9xl text-white pointer-events-none">
@@ -116,7 +142,70 @@
                     </div>
                 </div>
             </div>
+            @if (CharDto.SpellSlots != null && CharDto.SpellSlots.Any())
+            {
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
+                    <div class="md:col-span-1 bg-slate-900 border border-amber-900/20 rounded-[2rem] p-6 shadow-xl space-y-4">
+                        <div class="flex justify-between items-center border-b border-amber-900/10 pb-3">
+                            <h3 class="text-amber-500 font-black text-sm uppercase tracking-wide flex items-center gap-2">
+                                <i class="fa-solid fa-wand-sparkles text-amber-700"></i> @L["Title_SpellSlots"]
+                            </h3>
+                            <button @onclick="TriggerLongRest" class="px-2.5 py-1 text-[9px] font-black bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black border border-amber-500/20 rounded-lg transition-all uppercase tracking-wider">
+                                <i class="fa-solid fa-bed text-xs"></i> Long Rest
+                            </button>
+                        </div>
+
+                        <div class="space-y-3">
+                            @foreach (var slot in CharDto.SpellSlots.Where(s => s.Level > 0).OrderBy(s => s.Level))
+                            {
+                                <div class="bg-black/30 border border-slate-800 p-3 rounded-xl flex flex-col gap-2">
+                                    <div class="flex justify-between items-center text-xs">
+                                        <span class="font-bold text-slate-300">@L["Label_SlotLevel"] @slot.Level</span>
+                                        <span class="font-mono text-[10px] text-amber-500/70 font-black">@slot.RemainingSlots / @slot.MaxSlots</span>
+                                    </div>
+
+                                    <div class="flex flex-wrap gap-1.5">
+                                        @for (int i = 0; i < slot.MaxSlots; i++)
+                                        {
+                                            var currentPipIndex = i;
+                                            bool isUsed = currentPipIndex < slot.UsedSlots;
+
+                                            <div class="size-4 rounded-full transition-all duration-300 border cursor-pointer
+                                                                         @(isUsed
+                                                                                                            ? "bg-slate-950 border-slate-800 shadow-inner"
+                                                                                                            : "bg-cyan-500 border-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)] animate-pulse")"
+                                 title="@(isUsed? L["Tip_ExpendedSlot"] : L["Tip_AvailableSlot"])">
+                            </div>
+                                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-2 bg-slate-900 border border-amber-900/20 rounded-[2rem] p-6 shadow-xl space-y-4">
+                        <h3 class="text-amber-500 font-black text-sm uppercase tracking-wide flex items-center gap-2 border-b border-amber-900/10 pb-3">
+                            <i class="fa-solid fa-book-sparkles text-amber-700"></i> @L["Title_Spellbook"]
+                        </h3>
+
+                        <div class="space-y-2 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
+                            @if (CharDto.KnownSpells == null || !CharDto.KnownSpells.Any())
+                            {
+                                <p class="text-slate-600 italic text-xs font-serif p-4 text-center">Tu grimorio está vacío. Reclama tus conjuros pendientes.</p>
+                            }
+                            else
+                            {
+                                @foreach (var spell in CharDto.KnownSpells)
+                                {
+                                    @DisplaySpellRowReal(spell)
+                                }
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            }
             @if (showRaceModal && CharDto.Race != null)
             {
                 <div class="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-150" @onclick="() => showRaceModal = false">
@@ -144,93 +233,58 @@
                     </div>
                 </div>
             }
+            @if (showSpellModal && selectedSpellForModal != null)
+            {
+                <div class="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-150" @onclick="CloseSpellModal">
+                    <div class="relative w-full max-w-lg rounded-3xl border border-slate-800 bg-slate-950 p-6 shadow-2xl flex flex-col max-h-[75vh]" @onclick:stopPropagation>
 
-        </div>
-        @if (AuditStatus != null && AuditStatus.HasPendingChoices)
-        {
-            <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-in fade-in duration-300">
-                <div class="flex items-center gap-3 text-xs">
-                    <div class="size-8 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-sparkles text-sm animate-pulse"></i>
-                    </div>
-                    <div>
-                        <p class="font-black text-amber-500 uppercase tracking-wider">@L["Title_PendingSelections"]</p>
-                        <p class="text-slate-400 mt-0.5">
-                            @if (AuditStatus.PendingFeats > 0)
+                        <button @onclick="CloseSpellModal" class="absolute top-4 right-4 text-slate-500 hover:text-white size-8 flex items-center justify-center rounded-lg hover:bg-white/5 transition-colors z-20">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+
+                        <div class="overflow-y-auto pr-1 custom-scrollbar space-y-4">
+                            <div>
+                                <span class="text-[10px] font-mono font-black text-amber-500 uppercase tracking-widest">
+                                    @(selectedSpellForModal.Level == 0 ? "Cantrip" : $"Nivel {selectedSpellForModal.Level}") • @selectedSpellForModal.School
+                                </span>
+                                <h3 class="text-2xl font-black text-white uppercase italic tracking-tight mt-1">@selectedSpellForModal.Name</h3>
+                                <p class="text-[10px] text-slate-500 font-mono mt-0.5">@selectedSpellForModal.TechnicalName</p>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 text-xs font-mono bg-black/40 p-3 rounded-xl border border-slate-800/80">
+                                <div>
+                                    <span class="text-slate-500 text-[10px] block uppercase font-bold">Tiempo</span>
+                                    <span class="text-slate-200">@selectedSpellForModal.CastingTime</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-500 text-[10px] block uppercase font-bold">Alcance</span>
+                                    <span class="text-slate-200">@selectedSpellForModal.Range</span>
+                                </div>
+                                <div class="col-span-2 border-t border-slate-800/60 pt-2 mt-1">
+                                    <span class="text-slate-500 text-[10px] block uppercase font-bold">Duración</span>
+                                    <span class="text-slate-200">@selectedSpellForModal.Duration</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-black/20 p-4 rounded-xl border border-white/5 font-serif text-sm text-slate-300 leading-relaxed break-words">
+                                @((MarkupString)selectedSpellForModal.Description)
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(selectedSpellForModal.MaterialComponentDescription))
                             {
-                                <span>@L["Msg_PendingFeats", AuditStatus.PendingFeats] </span>
+                                <div class="p-3 bg-amber-500/[0.02] rounded-xl border border-amber-500/10 text-xs text-slate-400">
+                                    <span class="font-bold text-amber-500 uppercase block mb-1">Componentes Materiales:</span>
+                                    @selectedSpellForModal.MaterialComponentDescription
+                                </div>
                             }
-                            @if (AuditStatus.PendingSpells > 0)
-                            {
-                                <span>@L["Msg_PendingSpells", AuditStatus.PendingSpells]</span>
-                            }
-                        </p>
+                        </div>
                     </div>
                 </div>
-
-                <button @onclick="NavigateToClaimRewards" class="w-full sm:w-auto px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-black text-[10px] rounded-lg uppercase tracking-widest shadow-md transition-all active:scale-95">
-                    @L["Btn_ClaimSelections"]
-                </button>
-            </div>
-        }
+            }
+        </div>
+        
     }
 </div>
-@if (CharDto.SpellSlots != null && CharDto.SpellSlots.Any())
-{
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        <div class="md:col-span-1 bg-slate-900 border border-amber-900/20 rounded-[2rem] p-6 shadow-xl space-y-4">
-            <div class="flex justify-between items-center border-b border-amber-900/10 pb-3">
-                <h3 class="text-amber-500 font-black text-sm uppercase tracking-wide flex items-center gap-2">
-                    <i class="fa-solid fa-wand-sparkles text-amber-700"></i> @L["Title_SpellSlots"]
-                </h3>
-                <button @onclick="TriggerLongRest" class="px-2.5 py-1 text-[9px] font-black bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black border border-amber-500/20 rounded-lg transition-all uppercase tracking-wider">
-                    <i class="fa-solid fa-bed text-xs"></i> Long Rest
-                </button>
-            </div>
-
-            <div class="space-y-3">
-                @foreach (var slot in CharDto.SpellSlots.OrderBy(s => s.Level))
-                {
-                    <div class="bg-black/30 border border-slate-800 p-3 rounded-xl flex flex-col gap-2">
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="font-bold text-slate-300">@L["Label_SlotLevel"] @slot.Level</span>
-                            <span class="font-mono text-[10px] text-amber-500/70 font-black">@slot.RemainingSlots / @slot.MaxSlots</span>
-                        </div>
-
-                        <div class="flex flex-wrap gap-1.5">
-                            @for (int i = 0; i < slot.MaxSlots; i++)
-                            {
-                                var currentPipIndex = i;
-                                bool isUsed = currentPipIndex < slot.UsedSlots;
-
-                                <div class="size-4 rounded-full transition-all duration-300 border cursor-pointer
-                                                                     @(isUsed
-                                                                                                 ? "bg-slate-950 border-slate-800 shadow-inner"
-                                                                                                 : "bg-cyan-500 border-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)] animate-pulse")"
-                         title="@(isUsed? L["Tip_ExpendedSlot"] : L["Tip_AvailableSlot"])">
-                    </div>
-                                        }
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-
-        <div class="md:col-span-2 bg-slate-900 border border-amber-900/20 rounded-[2rem] p-6 shadow-xl space-y-4">
-            <h3 class="text-amber-500 font-black text-sm uppercase tracking-wide flex items-center gap-2 border-b border-amber-900/10 pb-3">
-                <i class="fa-solid fa-book-sparkles text-amber-700"></i> @L["Title_Spellbook"]
-            </h3>
-
-            <div class="space-y-2 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
-                @DisplaySpellRowMock("Proyectil Mágico (Magic Missile)", 1)
-                @DisplaySpellRowMock("Escudo (Shield)", 1)
-                @DisplaySpellRowMock("Paso Misterioso (Misty Step)", 2)
-            </div>
-        </div>
-
-    </div>
-}
 @code {
     [Parameter] public Guid CharacterId { get; set; }
     private CharacterDto? CharDto;
@@ -240,12 +294,15 @@
     private bool showRaceModal = false;
     private bool showClassModal = false;
 
+    // 🌟 Modales de Hechizos
+    private bool showSpellModal = false;
+    private SpellDto? selectedSpellForModal;
 
     private List<string> trainedSkills = new();
 
     protected override async Task OnInitializedAsync()
     {
-        CharDto = await CharacterService.GetByIdAsync(CharacterId);
+        CharDto = await CharacterService.GetByIdAsync(CharacterId,q=> q .Include(x=>x.KnownSpells) .Include(x=> x.SpellSlots));
         AuditStatus = await LevelUpService.AuditCharacterAsync(CharacterId);
 
         if (CharDto?.ClassDef?.SkillProficiencies != null)
@@ -258,6 +315,13 @@
 
     private void OpenRaceCompendium() => showRaceModal = true;
     private void OpenClassCompendium() => showClassModal = true;
+
+    private void OpenSpellInspector(SpellDto spell)
+    {
+        selectedSpellForModal = spell;
+        showSpellModal = true;
+    }
+    private void CloseSpellModal() => showSpellModal = false;
 
     private void NavigateToLevelUp() => Navigation.NavigateTo($"/character/{CharDto?.Id}/levelup");
     private void Back() => Navigation.NavigateTo("/characters");
@@ -298,28 +362,6 @@
             </span>
         </div>
     };
-    // Gatillo para restaurar slots (Descanso Largo oficial)
-    private async Task TriggerLongRest()
-    {
-        if (CharDto == null) return;
-        await SpellService.RestRestoreSlotsAsync(CharDto.Id);
-
-        // Recargamos el DTO de la base de datos para refrescar las burbujas de inmediato en Blazor
-        CharDto = await CharacterService.GetByIdAsync(CharacterId);
-    }
-
-    // Método para castear conjuros usando el motor de Upcasting
-    private async Task CastSpell(int spellBaseLevel, int slotLevelToUse)
-    {
-        if (CharDto == null) return;
-
-        bool success = await SpellService.CastSpellAsync(CharDto.Id, spellBaseLevel, slotLevelToUse);
-        if (success)
-        {
-            // Refrescar UI reactivamente
-            CharDto = await CharacterService.GetByIdAsync(CharacterId);
-        }
-    }
 
     // Render auxiliar temporal para simular conjuros en el libro de magia antes de conectarlo a tu tabla Spells
     private RenderFragment DisplaySpellRowMock(string name, int level) => __builder =>
@@ -350,6 +392,8 @@
 
     private bool HasSlotsAvailable(int slotLevel)
     {
+        if (slotLevel == 0) return true;
+
         var slot = CharDto?.SpellSlots?.FirstOrDefault(s => s.Level == slotLevel);
         return slot != null && slot.RemainingSlots > 0;
     }
@@ -374,6 +418,54 @@
         if (CharDto != null)
         {
             Navigation.NavigateTo($"/character/{CharDto.Id}/levelup?mode=claim");
+        }
+    }
+    private RenderFragment DisplaySpellRowReal(SpellDto spell) => __builder =>
+    {
+        <div @onclick="() => OpenSpellInspector(spell)"
+             class="bg-black/30 border border-slate-800/80 p-3 rounded-xl flex items-center justify-between hover:border-amber-500/40 cursor-pointer transition-all text-xs group">
+            <div class="min-w-0 pr-2">
+                <h4 class="font-bold text-slate-200 group-hover:text-amber-400 transition-colors uppercase tracking-wide truncate">@spell.Name</h4>
+                <span class="text-[9px] font-mono text-slate-500 uppercase">@L["Label_LevelShort"] @spell.Level</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 shrink-0" @onclick:stopPropagation>
+                <button @onclick="() => CastSpell((int)spell.Level, (int)spell.Level)"
+                        disabled="@(!HasSlotsAvailable((int)spell.Level))"
+                        class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-20 disabled:pointer-events-none text-black font-black font-mono rounded-lg transition-all uppercase text-[10px]">
+                    Cast Lvl @spell.Level
+                </button>
+
+                @if ((int)spell.Level == 1 && HasSlotsAvailable(2))
+                {
+                    <button @onclick="() => CastSpell((int)spell.Level, 2)"
+                            class="px-2 py-1.5 bg-purple-900/40 border border-purple-500/30 text-purple-400 hover:bg-purple-500 hover:text-black font-mono rounded-lg transition-all text-[9px]">
+                        Upcast L2
+                    </button>
+                }
+            </div>
+        </div>
+    };
+
+    // 2. Parcheamos los refrescos reactivos para que NO pierdan el Grimorio:
+    private async Task TriggerLongRest()
+    {
+        if (CharDto == null) return;
+        await SpellService.RestRestoreSlotsAsync(CharDto.Id);
+
+        // 🚨 CORRECCIÓN: Volvemos a inyectar la carga con los Includes relacionales
+        CharDto = await CharacterService.GetByIdAsync(CharacterId, q => q.Include(x => x.KnownSpells).Include(x => x.SpellSlots));
+    }
+
+    private async Task CastSpell(int spellBaseLevel, int slotLevelToUse)
+    {
+        if (CharDto == null) return;
+
+        bool success = await SpellService.CastSpellAsync(CharDto.Id, spellBaseLevel, slotLevelToUse);
+        if (success)
+        {
+            // 🚨 CORRECCIÓN: Mantener los Includes al actualizar slots en memoria
+            CharDto = await CharacterService.GetByIdAsync(CharacterId, q => q.Include(x => x.KnownSpells).Include(x => x.SpellSlots));
         }
     }
 }

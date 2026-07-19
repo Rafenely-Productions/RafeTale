@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DnDreams.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class Initialmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,7 +32,8 @@ namespace DnDreams.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     TechnicalName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Category = table.Column<int>(type: "INTEGER", nullable: false)
+                    Category = table.Column<int>(type: "INTEGER", nullable: false),
+                    Modifiers = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,10 +91,9 @@ namespace DnDreams.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     TechnicalName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Darkvision = table.Column<string>(type: "TEXT", nullable: false),
                     Size = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatureType = table.Column<int>(type: "INTEGER", nullable: false),
-                    Speed = table.Column<float>(type: "REAL", nullable: false)
+                    Speed = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,26 +213,6 @@ namespace DnDreams.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Traits",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    TechnicalName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    RequiredLevel = table.Column<int>(type: "INTEGER", nullable: false),
-                    RaceId = table.Column<Guid>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Traits", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Traits_Races_RaceId",
-                        column: x => x.RaceId,
-                        principalTable: "Races",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ClassDefinitions",
                 columns: table => new
                 {
@@ -258,38 +238,76 @@ namespace DnDreams.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Traits",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    TechnicalName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    RequiredLevel = table.Column<int>(type: "INTEGER", nullable: false),
+                    Modifiers = table.Column<string>(type: "TEXT", nullable: false),
+                    RaceId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    SubraceId = table.Column<Guid>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Traits", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Traits_Races_RaceId",
+                        column: x => x.RaceId,
+                        principalTable: "Races",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Traits_SubRaces_SubraceId",
+                        column: x => x.SubraceId,
+                        principalTable: "SubRaces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Characters",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    History = table.Column<string>(type: "TEXT", nullable: false),
                     Strength = table.Column<int>(type: "INTEGER", nullable: false),
                     Dexterity = table.Column<int>(type: "INTEGER", nullable: false),
                     Constitution = table.Column<int>(type: "INTEGER", nullable: false),
                     Intelligence = table.Column<int>(type: "INTEGER", nullable: false),
                     Wisdom = table.Column<int>(type: "INTEGER", nullable: false),
                     Charisma = table.Column<int>(type: "INTEGER", nullable: false),
-                    RaceId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ClassDefId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    MaxHp = table.Column<int>(type: "INTEGER", nullable: false),
+                    CurrentHp = table.Column<int>(type: "INTEGER", nullable: false),
                     Level = table.Column<int>(type: "INTEGER", nullable: false),
                     Experience = table.Column<int>(type: "INTEGER", nullable: false),
-                    Stats = table.Column<string>(type: "TEXT", nullable: false)
+                    Stats = table.Column<string>(type: "TEXT", nullable: false),
+                    RaceId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ClassDefId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    BackgroundId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Characters", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Characters_Backgrounds_BackgroundId",
+                        column: x => x.BackgroundId,
+                        principalTable: "Backgrounds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Characters_ClassDefinitions_ClassDefId",
                         column: x => x.ClassDefId,
                         principalTable: "ClassDefinitions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Characters_Races_RaceId",
                         column: x => x.RaceId,
                         principalTable: "Races",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -489,8 +507,8 @@ namespace DnDreams.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     CharacterId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    SlotLevel = table.Column<int>(type: "INTEGER", nullable: false),
-                    TotalSlots = table.Column<int>(type: "INTEGER", nullable: false),
+                    Level = table.Column<int>(type: "INTEGER", nullable: false),
+                    MaxSlots = table.Column<int>(type: "INTEGER", nullable: false),
                     UsedSlots = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -528,6 +546,32 @@ namespace DnDreams.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClassLevelProgressions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Level = table.Column<int>(type: "INTEGER", nullable: false),
+                    ClassDefId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CharacterId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    Traits = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClassLevelProgressions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClassLevelProgressions_Characters_CharacterId",
+                        column: x => x.CharacterId,
+                        principalTable: "Characters",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ClassLevelProgressions_ClassDefinitions_ClassDefId",
+                        column: x => x.ClassDefId,
+                        principalTable: "ClassDefinitions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "JournalEntries",
                 columns: table => new
                 {
@@ -554,37 +598,6 @@ namespace DnDreams.Infrastructure.Migrations
                         principalTable: "Characters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ClassLevelProgressions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Level = table.Column<int>(type: "INTEGER", nullable: false),
-                    ClassDefId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CharacterId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    SubclassId = table.Column<Guid>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClassLevelProgressions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ClassLevelProgressions_Characters_CharacterId",
-                        column: x => x.CharacterId,
-                        principalTable: "Characters",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ClassLevelProgressions_ClassDefinitions_ClassDefId",
-                        column: x => x.ClassDefId,
-                        principalTable: "ClassDefinitions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ClassLevelProgressions_Subclasses_SubclassId",
-                        column: x => x.SubclassId,
-                        principalTable: "Subclasses",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -702,6 +715,11 @@ namespace DnDreams.Infrastructure.Migrations
                 column: "CharacterId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Characters_BackgroundId",
+                table: "Characters",
+                column: "BackgroundId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Characters_ClassDefId",
                 table: "Characters",
                 column: "ClassDefId");
@@ -741,11 +759,6 @@ namespace DnDreams.Infrastructure.Migrations
                 name: "IX_ClassLevelProgressions_ClassDefId",
                 table: "ClassLevelProgressions",
                 column: "ClassDefId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ClassLevelProgressions_SubclassId",
-                table: "ClassLevelProgressions",
-                column: "SubclassId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClassSkillProficiencies_SkillProficienciesId",
@@ -802,6 +815,11 @@ namespace DnDreams.Infrastructure.Migrations
                 name: "IX_Traits_RaceId",
                 table: "Traits",
                 column: "RaceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Traits_SubraceId",
+                table: "Traits",
+                column: "SubraceId");
         }
 
         /// <inheritdoc />
@@ -809,9 +827,6 @@ namespace DnDreams.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ActiveModifiers");
-
-            migrationBuilder.DropTable(
-                name: "Backgrounds");
 
             migrationBuilder.DropTable(
                 name: "CampaignCharacters");
@@ -850,16 +865,10 @@ namespace DnDreams.Infrastructure.Migrations
                 name: "LocalizedContents");
 
             migrationBuilder.DropTable(
-                name: "SubRaces");
-
-            migrationBuilder.DropTable(
                 name: "Traits");
 
             migrationBuilder.DropTable(
                 name: "XpRules");
-
-            migrationBuilder.DropTable(
-                name: "Feats");
 
             migrationBuilder.DropTable(
                 name: "Features");
@@ -877,6 +886,9 @@ namespace DnDreams.Infrastructure.Migrations
                 name: "Languages");
 
             migrationBuilder.DropTable(
+                name: "SubRaces");
+
+            migrationBuilder.DropTable(
                 name: "ClassLevelProgressions");
 
             migrationBuilder.DropTable(
@@ -889,10 +901,16 @@ namespace DnDreams.Infrastructure.Migrations
                 name: "Subclasses");
 
             migrationBuilder.DropTable(
+                name: "Backgrounds");
+
+            migrationBuilder.DropTable(
                 name: "Races");
 
             migrationBuilder.DropTable(
                 name: "ClassDefinitions");
+
+            migrationBuilder.DropTable(
+                name: "Feats");
 
             migrationBuilder.DropTable(
                 name: "Spells");

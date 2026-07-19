@@ -13,9 +13,9 @@ public class Spell : IEntity
     public CastingTime CastingTime { get; set; } // 1 Acción, 1 Reacción
     public SpellRange Range { get; set; } // Toque, 120 pies, Personal
     public string RangeDistance{ get; set; } = string.Empty;
-    public List<SpellComponent> Components = new(); // V, S, M (Materiales)
+    public List<SpellComponent> Components = []; // V, S, M (Materiales)
     public List<SpellDuration> Duration { get; set; } = null!; // En turnos, minutos, horas, etc.
     public SpellConcentration Concentration { get; set; } // "Sí" o "No"
     public bool Ritual { get; set; } // Indica si el hechizo se puede lanzar como ritual
-    public List<ClassDefinition> Classes { get; set; } = new();
+    public List<string> ClassesTechnicalNames { get; set; } = [];
 }

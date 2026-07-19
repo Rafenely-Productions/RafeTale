@@ -24,6 +24,6 @@ namespace DnDreams.Application.DTOs
         public string Duration { get; set; } = string.Empty; // En turnos, minutos, horas, etc.
         public bool Concentration { get; set; } // "Sí" o "No"
         public bool Ritual { get; set; } // Indica si el hechizo se puede lanzar como ritual
-        public List<string> Classes { get; set; } = new();
+        public List<string> ClassesTechnicalNames { get; set; } = new();
     }
 }

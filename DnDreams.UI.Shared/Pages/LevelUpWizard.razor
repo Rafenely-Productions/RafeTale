@@ -7,30 +7,30 @@
 @inject ILevelUpService LevelUpService
 @inject IService<CharacterDto, Character> CharacterService
 @inject IService<FeatDto, Feat> FeatService
+@inject IService<SpellDto, Spell> SpellService
 @inject NavigationManager Navigation
 @inject IStringLocalizer<AppStrings> L
+@inject IJSRuntime JS
 
-<div class="grid @(Mode == "claim" ? "grid-cols-2" : "grid-cols-3") gap-2 bg-slate-900/60 p-1.5 rounded-xl border border-slate-800/40 text-center text-xs font-black uppercase tracking-wider">
-
-    @if (Mode != "claim")
+<h1 class="text-3xl font-black text-amber-500 italic uppercase">
+    @(Mode == "claim" ? L["Title_ClaimPendingRewards"] : L["Title_LevelUp"]): @charDto?.Name
+</h1>
+<p class="text-xs text-slate-400 font-sans">
+    @if (Mode == "claim")
     {
-        <button class="py-2.5 rounded-lg transition-all @(currentStep == 1 ? "bg-amber-500 text-black font-extrabold shadow-md" : "text-slate-400 hover:text-white")" @onclick="() => SetStep(1)">
-            1. @L["Tab_Vitals"]
-        </button>
+        <span class="text-amber-400 font-bold">@L["Label_AuditingLevel"] @charDto?.Level</span>
     }
+    else
+    {
+        @L["Label_CurrentLevel"] <span class="text-white font-bold">@charDto?.Level</span>
+        <span>→ @L["Label_NextLevel"] </span><span class="text-amber-400 font-black">@draft?.TargetLevel</span>
+    }
+</p>
 
-    <button class="py-2.5 rounded-lg transition-all @(currentStep == 2 ? "bg-amber-500 text-black font-extrabold shadow-md" : "text-slate-400 hover:text-white")" @onclick="() => SetStep(2)">
-        @(Mode == "claim" ? "1. " : "2. ") @L["Tab_Feats_ASI"]
-    </button>
-
-    <button class="py-2.5 rounded-lg transition-all @(currentStep == 3 ? "bg-amber-500 text-black font-extrabold shadow-md" : "text-slate-400 hover:text-white")" @onclick="() => SetStep(3)">
-        @(Mode == "claim" ? "2. " : "3. ") @L["Tab_Spells"]
-    </button>
-</div>
 <div class="min-h-screen bg-black p-4 md:p-6 text-slate-100">
     <div class="max-w-4xl mx-auto space-y-6">
 
-        @if (charDto == null || draft == null)
+        @if (charDto == null || draft == null || draft.SpellBudget == null)
         {
             <div class="flex flex-col items-center justify-center py-32">
                 <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 mb-4"></div>
@@ -53,14 +53,17 @@
             </div>
 
             <div class="grid grid-cols-3 gap-2 bg-slate-900/60 p-1.5 rounded-xl border border-slate-800/40 text-center text-xs font-black uppercase tracking-wider">
-                <button class="py-2.5 rounded-lg transition-all @(currentStep == 1 ? "bg-amber-500 text-black font-extrabold shadow-md" : "text-slate-400 hover:text-white")" @onclick="() => SetStep(1)">
-                    1. @L["Tab_Vitals"]
-                </button>
+                @if (Mode != "claim")
+                {
+                    <button class="py-2.5 rounded-lg transition-all @(currentStep == 1 ? "bg-amber-500 text-black font-extrabold shadow-md" : "text-slate-400 hover:text-white")" @onclick="() => SetStep(1)">
+                        1. @L["Tab_Vitals"]
+                    </button>
+                }
                 <button disabled="@(!draft.GivesFeat)" class="py-2.5 rounded-lg transition-all @(currentStep == 2 ? "bg-amber-500 text-black font-extrabold shadow-md" : "") @(draft.GivesFeat ? "text-slate-400 hover:text-white cursor-pointer" : "opacity-20 cursor-not-allowed")" @onclick="() => SetStep(2)">
-                    2. @L["Tab_Feats_ASI"]
+                    @(Mode == "claim" ? "1. " : "2. ") @L["Tab_Feats_ASI"]
                 </button>
-                <button disabled="@(draft.SpellsToLearnCount == 0)" class="py-2.5 rounded-lg transition-all @(currentStep == 3 ? "bg-amber-500 text-black font-extrabold shadow-md" : "") @(draft.SpellsToLearnCount > 0 ? "text-slate-400 hover:text-white cursor-pointer" : "opacity-20 cursor-not-allowed")" @onclick="() => SetStep(3)">
-                    3. @L["Tab_Spells"]
+                <button disabled="@(draft.SpellsToLearnCount == 0 && Mode != "claim")" class="py-2.5 rounded-lg transition-all @(currentStep == 3 ? "bg-amber-500 text-black font-extrabold shadow-md" : "") @(draft.SpellsToLearnCount > 0 || Mode == "claim" ? "text-slate-400 hover:text-white cursor-pointer" : "opacity-20 cursor-not-allowed")" @onclick="() => SetStep(3)">
+                    @(Mode == "claim" ? "2. " : "3. ") @L["Tab_Spells"]
                 </button>
             </div>
 
@@ -95,7 +98,7 @@
                                     }
                                     else
                                     {
-                                        <button class="px-3 py-1.5 rounded-lg bg-amber-500 text-black text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 animate-pulse shadow-md">
+                                        <button @onclick="RollHp" class="px-3 py-1.5 rounded-lg bg-amber-500 text-black text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 animate-pulse shadow-md">
                                             <i class="fa-solid fa-dice-d20 text-xs"></i> @L["Btn_Roll"]
                                         </button>
                                     }
@@ -166,19 +169,160 @@
                 }
                 else if (currentStep == 3)
                 {
-                    <div class="space-y-6 animate-in fade-in duration-200">
-                        <div>
-                            <h2 class="text-lg font-black text-white uppercase tracking-wide">@L["Title_SpellsLearning"]</h2>
-                            <p class="text-xs text-slate-400 mt-1">Puedes aprender <span class="text-amber-400 font-bold">@draft.SpellsToLearnCount</span> conjuros nuevos este nivel.</p>
+                    <div class="space-y-4 animate-in fade-in duration-200">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-white/5 pb-3 gap-2">
+                            <div>
+                                <h2 class="text-lg font-black text-white uppercase tracking-wide">@L["Title_SpellsLearning"]</h2>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    @L["Label_ClassSpellsAvailable"]: <span class="text-amber-400 font-bold">@charDto?.ClassDef?.Name</span>
+                                </p>
+                            </div>
+                            <div class="flex gap-3">
+                                <div class="bg-black/40 px-3 py-1.5 rounded-xl border border-slate-800 text-center shadow-md">
+                                    <span class="text-[9px] text-slate-500 block uppercase font-black tracking-widest">Trucos</span>
+                                    <span class="text-sm font-mono font-black @(draft.SpellBudget.SelectedCantripsCount(availableSpells) == draft.SpellBudget.MaxCantrips ? "text-lime-500" : "text-amber-500")">
+                                        @draft.SpellBudget.SelectedCantripsCount(availableSpells) / @draft.SpellBudget.MaxCantrips
+                                    </span>
+                                </div>
+                                <div class="bg-black/40 px-3 py-1.5 rounded-xl border border-slate-800 text-center shadow-md">
+                                    <span class="text-[9px] text-slate-500 block uppercase font-black tracking-widest">Preparados</span>
+                                    <span class="text-sm font-mono font-black @(draft.SpellBudget.SelectedSpellsCount(availableSpells) == draft.SpellBudget.MaxPreparedSpells ? "text-lime-500" : "text-amber-500")">
+                                        @draft.SpellBudget.SelectedSpellsCount(availableSpells) / @draft.SpellBudget.MaxPreparedSpells
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-xs text-slate-500 italic p-6 text-center">Filtro de Magia en construcción...</p>
+
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 bg-black/20 p-3 rounded-xl border border-slate-800/50">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider shrink-0 flex items-center gap-1.5">
+                                <i class="fa-solid fa-magnifying-glass text-amber-500/80"></i> @L["Spell_Searcher"]
+                            </span>
+                            <input type="text"
+                                   class="w-full sm:max-w-xs px-4 py-1.5 rounded-xl text-xs font-medium border border-slate-800 bg-black/40 text-slate-200 placeholder-slate-500 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all shadow-md"
+                                   placeholder="Buscar conjuro por nombre..."
+                                   @bind-value="SearchText"
+                                   @bind-value:event="oninput" />
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-1.5 max-h-[75px] overflow-y-auto p-1 bg-black/10 rounded-xl">
+                            <button class="px-2.5 py-1 rounded-full text-[11px] font-bold border transition-all @(SpellLevelFilter == SpellLevel.All ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white hover:border-slate-700")"
+                                    @onclick='() => FilterSpellsByLevel(SpellLevel.All)'>
+                                <span>All</span>
+                                <span class="text-[9px] opacity-60 font-mono bg-white/10 px-1 rounded-md">
+                                    @availableSpells.Count(s => string.IsNullOrWhiteSpace(SearchText) || s.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                                </span>
+                            </button>
+                            @for (int i = 0; i <= draft.SpellBudget.MaxSpellLevel; i++)
+                            {
+                                int lvl = i;
+                                int countForThisLevel = availableSpells.Count(s => s.Level == (SpellLevel)lvl && 
+                                    (string.IsNullOrWhiteSpace(SearchText) || s.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)));
+
+                                <button class="px-2.5 py-1 rounded-full text-[11px] font-bold border transition-all @(SpellLevelFilter == (SpellLevel)lvl ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white hover:border-slate-700")"
+                                        @onclick="() => FilterSpellsByLevel((SpellLevel)lvl)">
+                                    <span>@(lvl == 0 ? "Cantrip" : $"Lvl {lvl}")</span>
+                                    <span class="text-[9px] opacity-60 font-mono bg-white/10 px-1 rounded-md @(countForThisLevel > 0 && SpellLevelFilter == (SpellLevel)lvl ? "bg-amber-500/20 text-amber-400" : "")">
+                                        @countForThisLevel
+                                    </span>
+                                </button>
+                            }
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div @ref="SpellListElement" class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[340px] overflow-y-auto pr-1 custom-scrollbar">
+                                @if (!displayedSpells.Any())
+                                {
+                                    <div class="col-span-2 text-center py-12 text-slate-500 italic text-xs">
+                                        No se encontraron conjuros que coincidan con los filtros actuales.
+                                    </div>
+                                }
+                                else
+                                {
+                                    @foreach (var spell in displayedSpells)
+                                    {
+                                        bool isChecked = draft.SpellBudget.CurrentSelectionIds.Contains(spell.Id);
+                                        
+                                        // Validaciones reactivas visuales basadas en el presupuesto encapsulado
+                                        int currentCantrips = draft.SpellBudget.SelectedCantripsCount(availableSpells);
+                                        int currentSpells = draft.SpellBudget.SelectedSpellsCount(availableSpells);
+                                        bool isDisabled = !isChecked && (
+                                            ((int)spell.Level == 0 && currentCantrips >= draft.SpellBudget.MaxCantrips) ||
+                                            ((int)spell.Level > 0 && currentSpells >= draft.SpellBudget.MaxPreparedSpells)
+                                        );
+
+                                        <div class="p-2.5 rounded-xl border transition-all bg-black/40 flex items-center justify-between gap-3 group 
+                                                    @(isChecked ? "border-lime-500 bg-lime-500/[0.02]" : "border-slate-800/80 hover:border-slate-700") 
+                                                    @(isDisabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer")"
+                                             @onclick="() => { if(!isDisabled) ToggleSpellSelection(spell.Id); selectedSpellForPreview = spell; }">
+                                            
+                                            <div class="space-y-0.5 min-w-0">
+                                                <div class="flex items-center gap-1.5">
+                                                    <span class="px-1.5 py-0.2 bg-slate-950 rounded text-[9px] font-mono font-bold text-slate-400">
+                                                        @(spell.Level == 0 ? "Can" : $"L{spell.Level}")
+                                                    </span>
+                                                    <h4 class="text-xs font-black uppercase text-white truncate group-hover:text-amber-400 transition-colors">
+                                                        @spell.Name
+                                                    </h4>
+                                                </div>
+                                                <p class="text-[10px] text-slate-400 font-sans truncate">@spell.School</p>
+                                            </div>
+
+                                            <div class="shrink-0 flex items-center">
+                                                @if (isChecked)
+                                                {
+                                                    <span class="h-5 w-5 rounded-full bg-lime-600 text-black flex items-center justify-center text-xs shadow-md shadow-lime-900/20">
+                                                        <i class="fa-solid fa-check font-black"></i>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="h-5 w-5 rounded-full border border-slate-700 group-hover:border-slate-500 transition-colors"></span>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+
+                            <div class="bg-black/30 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between min-h-[200px] max-h-[340px] overflow-y-auto custom-scrollbar shadow-inner">
+                                @if (selectedSpellForPreview == null)
+                                {
+                                    <div class="flex flex-col items-center justify-center h-full text-center p-4 text-slate-500 space-y-2">
+                                        <i class="fa-solid fa-wand-magic-sparkles text-2xl text-slate-600 animate-pulse"></i>
+                                        <p class="text-[10px] uppercase font-black tracking-wider">@L["Msg_SelectSpellToInspect"]</p>
+                                        <p class="text-[9px] font-sans text-slate-400/80">Toca un conjuro para auditar sus estadísticas e inyectarlo en tu grimorio.</p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="space-y-3 animate-in fade-in duration-300">
+                                        <div>
+                                            <span class="text-[9px] font-mono font-bold px-2 py-0.5 bg-amber-500/10 text-amber-400 rounded-md uppercase tracking-wider">
+                                                @(selectedSpellForPreview.Level == 0 ? "Cantrip" : $"Level {selectedSpellForPreview.Level}") • @selectedSpellForPreview.School
+                                            </span>
+                                            <h3 class="text-xs font-black text-white uppercase mt-1.5 tracking-wide">@selectedSpellForPreview.Name</h3>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-2 text-[10px] font-mono bg-black/40 p-2 rounded-xl border border-slate-800/40">
+                                            <div><span class="text-slate-500 text-[9px] block">Time</span><span class="text-slate-300 font-bold">@selectedSpellForPreview.CastingTime</span></div>
+                                            <div><span class="text-slate-500 text-[9px] block">Range</span><span class="text-slate-300 font-bold">@selectedSpellForPreview.Range</span></div>
+                                            <div class="col-span-2 border-t border-slate-800/40 pt-1 mt-0.5">
+                                                <span class="text-slate-500 text-[9px] block">Duration</span><span class="text-slate-300 font-bold">@selectedSpellForPreview.Duration</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-[11px] text-slate-400 font-serif leading-relaxed max-h-[140px] overflow-y-auto pr-1">
+                                            @((MarkupString)selectedSpellForPreview.Description)
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
                 }
-                <button @onclick="SubmitLevelUp" class="px-6 py-3.5 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-xl text-xs uppercase tracking-wider transition-all shadow-md">
-                    @L["Btn_ConfirmLevelUp"] (Elegir dotes/hechizos después) <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                </button>
+                
                 <div class="flex justify-between items-center border-t border-white/5 pt-4 mt-6 shrink-0">
-                    <button disabled="@(currentStep == 1)" @onclick="PrevStep" class="px-5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 hover:text-white text-xs font-black uppercase tracking-wider transition-all disabled:opacity-0">
+                    <button disabled="@(currentStep == 1 || (Mode == "claim" && currentStep == 2))" @onclick="PrevStep" class="px-5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 hover:text-white text-xs font-black uppercase tracking-wider transition-all disabled:opacity-0">
                         <i class="fa-solid fa-angle-left"></i> @L["Btn_StepBack"]
                     </button>
 
@@ -196,7 +340,6 @@
                     }
                 </div>
             </div>
-
         }
     </div>
 </div>
@@ -216,54 +359,82 @@
     private List<FeatDto> availableFeats = new();
     [SupplyParameterFromQuery(Name = "mode")]
     public string? Mode { get; set; }
+    private List<SpellDto> availableSpells = new();
+    private SpellDto? selectedSpellForPreview; 
+
+    private SpellLevel SpellLevelFilter = SpellLevel.All;
+    private List<SpellDto> displayedSpells = new();
+    private string _searchText = string.Empty;
+    private ElementReference SpellListElement;
 
     protected override async Task OnInitializedAsync()
     {
         charDto = await CharacterService.GetByIdAsync(CharacterId);
         if (charDto != null)
         {
-            draft = await LevelUpService.PrepareLevelUpAsync(CharacterId);
             if (Mode == "claim")
             {
-                currentStep = 2; // Brinca directo a dotes/hechizos sin tocar la vida
+                draft = await LevelUpService.PrepareClaimDraftAsync(CharacterId);
+                currentStep = draft.GivesFeat ? 2 : 3; 
+            }
+            else
+            {
+                draft = await LevelUpService.PrepareLevelUpAsync(CharacterId);
+                currentStep = 1;
             }
 
-            // Regla D&D: El promedio es la mitad del dado + 1 (ej: d8 -> 5, d10 -> 6)
             int hitDie = charDto.ClassDef?.HitDieValue ?? 8;
             averageHpBase = (hitDie / 2) + 1;
 
-            // Fijar HP Gain inicial por defecto con el promedio
-            draft.HpGain = averageHpBase + charDto.ConModifier;
+            if (Mode != "claim")
+            {
+                draft.HpGain = averageHpBase + charDto.ConModifier;
+            }
 
-            // Cargamos dotes por si este nivel le corresponde dote
             if (draft.GivesFeat)
             {
                 availableFeats = await FeatService.GetAllAsync(null, null);
+            }
+
+            var allSpells = await SpellService.GetAllAsync(null);
+
+            if (allSpells != null && charDto.ClassDef != null && draft.SpellBudget != null)
+            {
+               availableSpells = allSpells
+                    .Where(s => s.ClassesTechnicalNames.Contains(charDto.ClassDef.TechnicalName, StringComparer.OrdinalIgnoreCase) &&
+                        ((int)s.Level == 0 || (int)s.Level <= draft.SpellBudget.MaxSpellLevel))
+                    .OrderBy(s => s.Level)
+                    .ThenBy(s => s.Name)
+                    .ToList();
+
+                ApplySpellsFilter();
             }
         }
     }
 
     private void SetStep(int step)
     {
+        if (Mode == "claim" && step == 1) return;
         if (step == 2 && !draft!.GivesFeat) return;
-        if (step == 3 && draft!.SpellsToLearnCount == 0) return;
+        if (step == 3 && draft!.SpellsToLearnCount == 0 && Mode != "claim") return;
         currentStep = step;
     }
 
     private void SelectAverageHp()
     {
-        draft!.UseAverageHp = true;
+        if (draft == null) return;
+        draft.UseAverageHp = true;
         draft.HpGain = averageHpBase + charDto!.ConModifier;
     }
 
     private void RollHp()
     {
-        draft!.UseAverageHp = false;
+        if (draft == null) return;
+        draft.UseAverageHp = false;
         if (!hasRolled)
         {
             var random = new Random();
             diceRollResult = random.Next(1, (charDto!.ClassDef?.HitDieValue ?? 8) + 1);
-            // Regla oficial: Mínimo 1 punto de vida ganado por nivel incluso con CON negativa
             draft.HpGain = Math.Max(1, diceRollResult + charDto.ConModifier);
             hasRolled = true;
         }
@@ -278,18 +449,18 @@
     private void NextStep()
     {
         if (currentStep == 1 && draft!.GivesFeat) currentStep = 2;
-        else if (currentStep <= 2 && draft!.SpellsToLearnCount > 0) currentStep = 3;
+        else if (currentStep <= 2 && (draft!.SpellsToLearnCount > 0 || Mode == "claim")) currentStep = 3;
     }
 
     private void PrevStep()
     {
         if (currentStep == 3 && draft!.GivesFeat) currentStep = 2;
-        else if (currentStep >= 2) currentStep = 1;
+        else if (currentStep >= 2 && Mode != "claim") currentStep = 1;
     }
 
     private bool IsOnLastStep()
     {
-        if (draft!.SpellsToLearnCount > 0 && currentStep == 3) return true;
+        if ((draft!.SpellsToLearnCount > 0 || Mode == "claim") && currentStep == 3) return true;
         if (draft.SpellsToLearnCount == 0 && draft.GivesFeat && currentStep == 2) return true;
         if (!draft.GivesFeat && draft.SpellsToLearnCount == 0 && currentStep == 1) return true;
         return false;
@@ -301,20 +472,80 @@
     {
         if (draft == null) return;
 
-        if (Mode == "claim")
-        {
-            draft.HpGain = 0;
-            draft.TargetLevel = charDto!.Level; 
+        await LevelUpService.CommitLevelUpAsync(draft);
+        Navigation.NavigateTo($"/character/{CharacterId}", forceLoad: true);
+    }
 
-            // Pasamos directamente el draft que ya tiene enlazados los dropdowns de la UI
-            await LevelUpService.CommitLevelUpAsync(draft);
+    private void ToggleSpellSelection(Guid spellId)
+    {
+        if (draft?.SpellBudget == null) return;
+
+        if (draft.SpellBudget.CurrentSelectionIds.Contains(spellId))
+        {
+            draft.SpellBudget.CurrentSelectionIds.Remove(spellId);
         }
         else
         {
-            // Ejecutar la magia de consolidación en SQLite a través del servicio
-            await LevelUpService.CommitLevelUpAsync(draft);
+            draft.SpellBudget.CurrentSelectionIds.Add(spellId);
+            
+            var validation = draft.SpellBudget.Validate(availableSpells);
+            if (!validation.IsValid)
+            {
+                draft.SpellBudget.CurrentSelectionIds.Remove(spellId);
+            }
         }
-        // Volvemos a la hoja con los stats e HP actualizados e inyectados reactivamente
-        Navigation.NavigateTo($"/character/{CharacterId}");
+    }
+
+    private string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            if (_searchText != value)
+            {
+                _searchText = value;
+                ApplySpellsFilter(); 
+            }
+        }
+    }
+
+    private async Task FilterSpellsByLevel(SpellLevel filter)
+    {
+        if (filter == SpellLevelFilter) return;
+        SpellLevelFilter = filter;
+
+        ApplySpellsFilter();
+        StateHasChanged();
+        await Task.Delay(1);
+
+        try
+        {
+            // 🚨 LA SOLUCIÓN DEFINITIVA Y SEGURA PARA MAUI/HYBRID:
+            // Le pasamos el elemento físico (SpellListElement) como argumento a una función inline
+            // que ejecuta el .scrollTo(0,0) de forma nativa e inmediata en el DOM.
+            await JS.InvokeVoidAsync("eval", "(el => { if (el) el.scrollTop = 0; })", SpellListElement);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error de scroll controlado: {ex.Message}");
+        }
+    }
+
+    private void ApplySpellsFilter()
+    {
+        var query = availableSpells.AsEnumerable();
+
+        if (SpellLevelFilter != SpellLevel.All)
+        {
+            query = query.Where(s => s.Level == SpellLevelFilter);
+        }
+
+        if (!string.IsNullOrWhiteSpace(SearchText.Trim()))
+        {
+            query = query.Where(s => s.Name.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase) 
+                                 || s.TechnicalName.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase));
+        }
+
+        displayedSpells = query.ToList();
     }
 }

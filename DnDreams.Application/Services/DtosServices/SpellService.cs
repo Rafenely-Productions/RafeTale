@@ -46,7 +46,8 @@ namespace DnDreams.Application.Services.DtosServices
                 Name = Name,
                 Description = Description,
                 MaterialComponentDescription = Material,
-                Level = spell.Level
+                Level = spell.Level,
+                ClassesTechnicalNames = spell.ClassesTechnicalNames,
             };
 
         }

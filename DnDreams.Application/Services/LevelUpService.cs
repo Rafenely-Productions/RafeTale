@@ -4,20 +4,18 @@ using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
-using DocumentFormat.OpenXml.InkML;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static DnDreams.Application.Interfaces.ILevelUpService;
 
 namespace DnDreams.Application.Services.DtosServices
 {
-    public class LevelUpService(IUnitOfWork uow, IService<CharacterDto, Character> characterDtoService,ISpellServiceSystem spellService) : ILevelUpService
+    public class LevelUpService(IUnitOfWork uow, IService<CharacterDto, Character> characterDtoService, ISpellServiceSystem spellService) : ILevelUpService
     {
         public async Task<LevelUpDraft> PrepareLevelUpAsync(Guid characterId)
         {
-            var character = await uow.Characters.GetByIdAsync(characterId)
+            var character = await uow.Characters.GetByIdAsync(characterId, config => config.Include(c => c.KnownSpells))
                 ?? throw new Exception("Héroe no encontrado en el plano material.");
 
             var classDef = await uow.ClassDefinitions.GetByIdAsync(character.ClassDefId, config => config
@@ -25,45 +23,117 @@ namespace DnDreams.Application.Services.DtosServices
                 ?? throw new Exception("La definición de clase del personaje está corrupta.");
 
             int nextLevel = character.Level + 1;
-
-            // Buscamos si la progresión de la base de datos para este nivel específico tiene configurado algo especial
             var nextProgression = classDef.Progressions.FirstOrDefault(p => p.Level == nextLevel);
 
-            // Regla General D&D 2024: Se otorgan dotes/ASI en niveles 4, 8, 12, 16 y 19
             bool givesFeatThisLevel = new[] { 4, 8, 12, 16, 19 }.Contains(nextLevel);
 
-            // Verificar si la progresión le permite aprender Spells (Si tiene slots o marcador en la progresión)
             int spellsToLearn = 0;
-            // Aquí podrías expandir con tu lógica de tablas: si es Wizard, Cleric, etc., leyendo campos de tu Excel de progresión
+            var budget = BuildSpellBudget(character, nextProgression);
+
+            if (nextProgression?.Traits != null)
+            {
+                var nextSpellsTrait = nextProgression.Traits.FirstOrDefault(t =>
+                    t.Type.ToString().Contains("PreparedSpells", StringComparison.OrdinalIgnoreCase) ||
+                    t.Type.ToString().Contains("Spellcasting", StringComparison.OrdinalIgnoreCase));
+
+                if (nextSpellsTrait != null && int.TryParse(nextSpellsTrait.Value, out int nextMax))
+                {
+                    spellsToLearn = Math.Max(0, nextMax - character.KnownSpells.Count);
+                }
+            }
 
             return new LevelUpDraft
             {
                 CharacterId = characterId,
                 TargetLevel = nextLevel,
                 GivesFeat = givesFeatThisLevel,
-                SpellsToLearnCount = spellsToLearn
+                SpellsToLearnCount = spellsToLearn,
+                SpellBudget = budget
             };
+        }
+
+        public async Task<LevelUpDraft> PrepareClaimDraftAsync(Guid characterId)
+        {
+            var character = await uow.Characters.GetByIdAsync(characterId, config => config.Include(c => c.KnownSpells))
+                ?? throw new Exception("Héroe no encontrado.");
+
+            var classDef = await uow.ClassDefinitions.GetByIdAsync(character.ClassDefId, config => config
+                .IncludeCollection(x => x.Progressions, p => p.Features))!;
+
+            var currentProgression = classDef.Progressions.FirstOrDefault(p => p.Level == character.Level);
+            var audit = await AuditCharacterAsync(characterId);
+            var budget = BuildSpellBudget(character, currentProgression);
+
+            return new LevelUpDraft
+            {
+                CharacterId = characterId,
+                TargetLevel = character.Level,
+                HpGain = 0,
+                GivesFeat = audit.PendingFeats > 0,
+                SpellsToLearnCount = audit.PendingSpells,
+                SpellBudget = budget
+            };
+        }
+
+        // 🚨 HELPER ARQUITECTÓNICO CENTRALIZADO: Mapea cualquier renglón de Excel a un presupuesto tipado
+        private SpellBudget BuildSpellBudget(Character character, ClassLevelProgression? progression)
+        {
+            var budget = new SpellBudget();
+            if (character.KnownSpells != null)
+            {
+                budget.InitiallyKnownSpellIds = character.KnownSpells.Select(s => s.Id).ToList();
+                budget.CurrentSelectionIds = new List<Guid>(budget.InitiallyKnownSpellIds); // Clonamos estado
+            }
+
+            if (progression?.Traits != null)
+            {
+                // 1. Extraer Trucos oficiales
+                var cantripsTrait = progression.Traits.FirstOrDefault(t => t.Type.ToString().Contains("CantripsKnown", StringComparison.OrdinalIgnoreCase));
+                if (cantripsTrait != null && int.TryParse(cantripsTrait.Value, out int cMax)) budget.MaxCantrips = cMax;
+
+                // 2. Extraer Hechizos Preparados oficiales
+                var preparedTrait = progression.Traits.FirstOrDefault(t => t.Type.ToString().Contains("PreparedSpells", StringComparison.OrdinalIgnoreCase));
+                if (preparedTrait != null && int.TryParse(preparedTrait.Value, out int pMax)) budget.MaxPreparedSpells = pMax;
+
+                // 3. Evaluar dinámicamente la matriz de SpellSlots de tu renglón de Excel
+                var slotsTrait = progression.Traits.FirstOrDefault(t => t.SpellSlots != null && t.SpellSlots.Any(s => s > 0));
+                if (slotsTrait?.SpellSlots != null)
+                {
+                    for (int i = 0; i < slotsTrait.SpellSlots.Length; i++)
+                    {
+                        if (slotsTrait.SpellSlots[i] > 0)
+                        {
+                            budget.MaxSpellLevel = i + 1; // Mapea índice de array a Nivel de Magia real (0=Lvl1, 1=Lvl2...)
+                        }
+                    }
+                }
+            }
+            return budget;
         }
 
         public async Task<CharacterDto> CommitLevelUpAsync(LevelUpDraft draft)
         {
-            // 1. CARGA INICIAL CON TODOS LOS INCLUDES QUE SE VAN A MODIFICAR
+            // 1. CARGA UNIFICADA CON TODOS LOS INCLUDES DESDE EL INICIO
             var character = await uow.Characters.GetByIdAsync(draft.CharacterId, config => config
                 .Include(c => c.AcquiredFeatures)
                 .Include(c => c.CharacterModifiers)
-                .Include(c => c.AcquiredFeats) // 🚨 Agregado
-                .Include(c => c.KnownSpells))  // 🚨 Agregado
+                .Include(c => c.AcquiredFeats)
+                .Include(c => c.KnownSpells)
+                .Include(c => c.SpellSlots)) // 🌟 Indispensable incluir los slots desde el inicio
                 ?? throw new Exception("Héroe no encontrado al consolidar nivel.");
 
             var classDef = await uow.ClassDefinitions.GetByIdAsync(character.ClassDefId, config => config
                 .IncludeCollection(x => x.Progressions, p => p.Features))!;
 
-            // 1. Aplicar ganancia de puntos de vida (HP)
-            character.Level = draft.TargetLevel;
-            character.MaxHp += draft.HpGain;
-            character.CurrentHp = character.MaxHp;
+            // 2. Actualizar vida y nivel si corresponde
+            if (character.Level != draft.TargetLevel)
+            {
+                character.Level = draft.TargetLevel;
+                character.MaxHp += draft.HpGain;
+                character.CurrentHp = character.MaxHp;
+            }
 
-            // 2. Inyectar automáticamente los Features nativos
+            // 3. Inyectar automáticamente los Features nativos
             var currentProgression = classDef.Progressions.FirstOrDefault(p => p.Level == character.Level);
             if (currentProgression?.Features != null)
             {
@@ -71,13 +141,13 @@ namespace DnDreams.Application.Services.DtosServices
                 {
                     if (!character.AcquiredFeatures.Any(f => f.Id == feature.Id))
                     {
+                        uow.SetUnchangedState(feature);
                         character.AcquiredFeatures.Add(feature);
                     }
                 }
             }
-            await uow.SaveChangesAsync();
 
-            // 3. Modificadores de Atributo (ASI)
+            // 4. Procesar Incremento de Atributos (ASI)
             if (draft.GivesFeat && !draft.SelectedFeatId.HasValue)
             {
                 if (draft.SelectedAsiOne.HasValue)
@@ -91,7 +161,6 @@ namespace DnDreams.Application.Services.DtosServices
                         Value = draft.SelectedAsiTwo.HasValue ? 1 : 2
                     };
                     character.CharacterModifiers.Add(m);
-                    uow.ModifyState (m);
                 }
 
                 if (draft.SelectedAsiTwo.HasValue && draft.SelectedAsiTwo != draft.SelectedAsiOne)
@@ -105,46 +174,45 @@ namespace DnDreams.Application.Services.DtosServices
                         Value = 1
                     };
                     character.CharacterModifiers.Add(m);
-                    uow.ModifyState(m);
-
                 }
             }
-            await uow.SaveChangesAsync();
 
-            // 4. Si eligió una Dote específica
+            // 5. Procesar Dote
             if (draft.SelectedFeatId.HasValue)
             {
                 var feat = await uow.Feats.GetByIdAsync(draft.SelectedFeatId.Value);
-                if (feat != null)
+                if (feat != null && !character.AcquiredFeats.Any(f => f.Id == feat.Id))
                 {
                     character.AcquiredFeats.Add(feat);
                 }
             }
 
-            // 5. Vincular hechizos nuevos aprendidos
-            if (draft.SelectedSpellIds != null && draft.SelectedSpellIds.Any())
+            // 6. Sincronizar Grimorio de Hechizos
+            var selectedIds = draft.SpellBudget?.CurrentSelectionIds ?? draft.SelectedSpellIds ?? new List<Guid>();
+            var spellsToRemove = character.KnownSpells.Where(s => !selectedIds.Contains(s.Id)).ToList();
+            foreach (var spell in spellsToRemove)
             {
-                foreach (var spellId in draft.SelectedSpellIds)
+                character.KnownSpells.Remove(spell);
+            }
+
+            foreach (var spellId in selectedIds)
+            {
+                if (!character.KnownSpells.Any(s => s.Id == spellId))
                 {
                     var spell = await uow.Spells.GetByIdAsync(spellId);
-                    if (spell != null && !character.KnownSpells.Any(s => s.Id == spellId))
+                    if (spell != null)
                     {
+                        uow.SetUnchangedState(spell);
                         character.KnownSpells.Add(spell);
                     }
                 }
             }
+
             await uow.SaveChangesAsync();
 
-            await spellService.RecalculateMaxSlotsAsync(character.Id);
+            await spellService.RecalculateMaxSlotsAsync(character);
 
-            try
-            {
-                await uow.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Error al guardar cambios de nivel: {e.Message}");
-            }
+            await uow.SaveChangesAsync();
 
             return await characterDtoService.ArmDto(character);
         }
@@ -154,39 +222,46 @@ namespace DnDreams.Application.Services.DtosServices
                 .Include(c => c.AcquiredFeats)
                 .Include(c => c.KnownSpells)
                 .Include(c => c.CharacterModifiers)
-                .IncludePaths.Add("ClassDef.Progressions"))
+                .IncludePaths.Add("ClassDef.Progressions.Features"))
                 ?? throw new Exception("Personaje ausente.");
-            var progressions =character.ClassDef.Progressions;
-            var currentProg = character.ClassDef.Progressions.FirstOrDefault(p => p.Level == character.Level);
 
+            var progressions = character.ClassDef.Progressions.Where(x => x.Level <= character.Level).ToList();
             int allowedSpells = 0;
+            int expectedFeats = 0;
 
+            var currentProg = progressions.FirstOrDefault(p => p.Level == character.Level);
             if (currentProg?.Traits != null)
             {
-                // Buscamos el rasgo que maneja los conjuros en tu Sorcerer
-                var spellcastingTrait = currentProg.Traits.FirstOrDefault(t => t.SpellSlots != null && t.SpellSlots.Any(s => s > 0));
-                if (spellcastingTrait != null && int.TryParse(spellcastingTrait.Value, out int count))
+                var preparedSpellsTrait = currentProg.Traits.FirstOrDefault(t =>
+                    t.Type.ToString().Contains("PreparedSpells", StringComparison.OrdinalIgnoreCase) ||
+                    t.Type.ToString().Contains("Spellcasting", StringComparison.OrdinalIgnoreCase));
+
+                if (preparedSpellsTrait != null && int.TryParse(preparedSpellsTrait.Value, out int count))
                 {
-                    // 'Value' en tu Sorcerer contiene "PreparedSpellsCount:X", parseamos el entero correspondiente
                     allowedSpells = count;
                 }
             }
+
+            foreach (var prog in progressions)
+            {
+                if (prog.Features != null)
+                {
+                    bool givesFeatThisLevel = prog.Features.Any(f =>
+                        f.RequiresChoice ||
+                        f.TechnicalName.Contains("Feat", StringComparison.OrdinalIgnoreCase) ||
+                        f.TechnicalName.Contains("AbilityScoreImprovement", StringComparison.OrdinalIgnoreCase) ||
+                        f.TechnicalName.Contains("Ability Score Improvement", StringComparison.OrdinalIgnoreCase));
+
+                    if (givesFeatThisLevel) expectedFeats++;
+                }
+            }
+
             int pendingSpells = Math.Max(0, allowedSpells - character.KnownSpells.Count);
-
-            // 3. AUDITAR DOTES DESDE TU LISTA DE RASGOS (CERO HARDCODEO DE NIVELES)
-            // Contamos cuántas dotes exige la progresión histórica basándonos en si el nivel otorgó un Feature tipo Feat/ASI
-            int expectedFeats = progressions.Count(p => p.Features != null && p.Features.Any(f => f.TechnicalName.Contains("Ability Score Improvement", StringComparison.OrdinalIgnoreCase) || f.TechnicalName.Contains("Feat", StringComparison.OrdinalIgnoreCase)));
-
             int takenFeats = character.AcquiredFeats.Count;
             int takenAsis = character.CharacterModifiers.Count(m => m.Type == ModifierType.AttributeBonus);
-
             int pendingFeats = Math.Max(0, expectedFeats - (takenFeats + takenAsis));
 
-            return new CharacterAuditDto
-            {
-                PendingFeats = pendingFeats,
-                PendingSpells = pendingSpells
-            };
+            return new CharacterAuditDto { PendingFeats = pendingFeats, PendingSpells = pendingSpells };
         }
     }
 }

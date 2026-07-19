@@ -32,6 +32,7 @@ namespace DnDreams.Application.Services.DtosServices
                 ToolProficiencies = entity.ToolProficiencies,
                 SkillProficiencies = entity.SkillProficiencies,
                 SkillToChoose = entity.SkillsToChoose,
+                TechnicalName = entity.TechnicalName
 
             };
 
@@ -61,6 +62,7 @@ namespace DnDreams.Application.Services.DtosServices
                 ToolProficiencies = entity.ToolProficiencies,
                 SkillProficiencies = entity.SkillProficiencies,
                 SkillToChoose = entity.SkillsToChoose,
+                TechnicalName = entity.TechnicalName,
 
                 // UNIÓN EN BULK: Reutilizamos el diccionario de palabras localizadas de la Clase 
                 // ya que tu enum 'LocEntity.Class' engloba también a las Subclases+

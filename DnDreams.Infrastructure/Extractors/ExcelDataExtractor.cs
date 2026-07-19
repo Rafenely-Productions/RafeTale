@@ -33,7 +33,7 @@ namespace DnDreams.Infrastructure.Extractors
             package.SkillProficiencies = ExtractSkillProficiencies(workbook);
             package.ClassDefinitions = ExtractClasses(workbook, package.SkillProficiencies);
             package.Subclasses = ExtractSubclasses(workbook, package.ClassDefinitions);
-            package.Spells = ExtractSpells(workbook, package.ClassDefinitions);
+            package.Spells = ExtractSpells(workbook, package.ClassDefinitions.Select(x=> x.TechnicalName).ToList());
             package.ClassLevelProgressions = ExtractClassLevelProgressions(workbook, package.ClassDefinitions);
             package.SubclassLevelProgressions = ExtractSubclassLevelProgressions(workbook, package.Subclasses);
             package.XpRules = ExtractXpRules(workbook);
@@ -277,6 +277,7 @@ namespace DnDreams.Infrastructure.Extractors
                     Stats = new Dictionary<string, int>(),
                     AcquiredFeatures = new List<Feature>(),
                     ActiveModifiers = new List<ActiveModifiers>(),
+                    BackgroundId = backgrounds[0].Id,
                     Background = backgrounds[0],
                     
                 };
@@ -452,7 +453,7 @@ namespace DnDreams.Infrastructure.Extractors
             }
             return progressionsList;
         }
-        public List<Spell> ExtractSpells(IXLWorkbook workbook, List<ClassDefinition> classDefinitions)
+        public List<Spell> ExtractSpells(IXLWorkbook workbook, List<string> classDefinitions)
         {
             var spellsList = new List<Spell>();
             var spellSheet = workbook.GetSheet("Spells", isRequired: true);
@@ -708,18 +709,18 @@ namespace DnDreams.Infrastructure.Extractors
                 if (matched != null) classDef.SkillProficiencies.Add(matched);
             }
         }
-        private void MapSpellClass(Spell spell, string rawClass, List<ClassDefinition> allClasses)
+        private void MapSpellClass(Spell spell, string rawClass, List<string> allClasses)
         {
             var classNames = rawClass.Split(',').Select(s => s.Trim());
             if (classNames.Contains("Any"))
             {
-                spell.Classes.AddRange(allClasses);
+                spell.ClassesTechnicalNames.AddRange(allClasses);
                 return;
             }
             foreach (var name in classNames)
             {
-                var matched = allClasses.FirstOrDefault(s => s.TechnicalName.Equals(name, StringComparison.OrdinalIgnoreCase));
-                if (matched != null) spell.Classes.Add(matched);
+                var matched = allClasses.FirstOrDefault(s => s.Equals(name, StringComparison.OrdinalIgnoreCase));
+                if (matched != null) spell.ClassesTechnicalNames.Add(matched);
             }
         }
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
