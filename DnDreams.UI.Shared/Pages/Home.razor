@@ -1,46 +1,41 @@
 @page "/"
 @inject NavigationManager Nav
 
-<div class="home-container animate__animated animate__fadeIn">
-    <header class="hero-section text-center">
-        <div class="logo-circle">
-            <img src="images/logo.svg" alt="Logo" class="hero-logo" />
-        </div>
-        <h1 class="dnd-title">DnDreams</h1>
-        <p class="dnd-motto">Escribe tu propia leyenda</p>
-    </header>
+<div class="min-h-[85vh] flex flex-col justify-between items-center p-6 text-slate-100 animate__animated animate__fadeIn">
 
-    <div class="actions-grid mt-5">
-        <div class="action-card main" @onclick='() => Nav.NavigateTo("/characters")'>
-            <div class="card-content">
-                <i class="bi bi-person-badge-fill"></i>
-                <h3>Mis Personajes</h3>
-                <p>Gestiona tus héroes y sube de nivel.</p>
-            </div>
-            <div class="card-badge">Explorar</div>
+    <div class="my-auto text-center space-y-4">
+        <div class="size-28 mx-auto rounded-3xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shadow-2xl shadow-amber-500/10 p-4">
+            <img src="images/logo.svg" alt="Logo" class="w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(245,158,11,0.3)]" />
         </div>
 
-        <div class="secondary-actions">
-            <div class="action-card" @onclick='() => Nav.NavigateTo("/campaigns")'>
-                <i class="bi bi-journal-bookmark-fill"></i>
-                <div>
-                    <h4>Campañas</h4>
-                    <p>Mesas de juego activas.</p>
-                </div>
-            </div>
-
-            <div class="action-card" @onclick='() => Nav.NavigateTo("/sandbox")'>
-                <i class="bi bi-file-earmark-excel"></i>
-                <div>
-                    <h4>Importar</h4>
-                    <p>Traer datos desde Excel.</p>
-                </div>
-            </div>
-        </div>
+        <h1 class="text-4xl font-black text-amber-500 tracking-tighter italic uppercase mt-4">DnDreams</h1>
+        <p class="text-xs font-serif italic text-slate-400 tracking-widest uppercase">Escribe tu propia leyenda</p>
     </div>
 
-    <footer class="home-footer">
-        <div class="footer-divider"></div>
-        <p><i class="bi bi-dice-2 me-2"></i> Listo para la próxima sesión</p>
-    </footer>
+    <div class="w-full grid grid-cols-2 gap-4 mt-8 pb-4">
+
+        <NavLink href="/characters" Match="NavLinkMatch.All"
+                 class="flex flex-col items-center justify-center gap-2 p-5 rounded-2xl bg-slate-900 border border-amber-900/30 hover:border-amber-500/50 hover:bg-slate-800/80 transition-all shadow-xl group">
+            <div class="size-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-users text-xl"></i>
+            </div>
+            <span class="text-xs font-black uppercase tracking-wider text-slate-200 group-hover:text-amber-400">Personajes</span>
+        </NavLink>
+
+        <NavLink href="/library"
+                 class="flex flex-col items-center justify-center gap-2 p-5 rounded-2xl bg-slate-900 border border-amber-900/30 hover:border-amber-500/50 hover:bg-slate-800/80 transition-all shadow-xl group">
+            <div class="size-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-book-atlas text-xl"></i>
+            </div>
+            <span class="text-xs font-black uppercase tracking-wider text-slate-200 group-hover:text-amber-400">Librería</span>
+        </NavLink>
+        <NavLink href="/character/create"
+                 class="flex flex-col items-center justify-center gap-2 p-5 rounded-2xl bg-slate-900 border border-amber-900/30 hover:border-amber-500/50 hover:bg-slate-800/80 transition-all shadow-xl group">
+            <div class="size-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-book-atlas text-xl"></i>
+            </div>
+            <span class="text-xs font-black uppercase tracking-wider text-slate-200 group-hover:text-amber-400">Creacion</span>
+        </NavLink>
+    </div>
+
 </div>

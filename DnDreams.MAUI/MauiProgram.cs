@@ -53,7 +53,7 @@ public static class MauiProgram
         builder.Services.AddScoped<ILevelUpService, LevelUpService>();
         builder.Services.AddScoped<IService<SpellDto, Spell>, SpellService>();
         builder.Services.AddScoped<ISpellServiceSystem, SpellServiceSystem>();
-
+        builder.Services.AddDbContext<DnDreamsDbContext>(options => options.UseSqlite($"Data Source={dbPath}"));
         var culture = new CultureInfo("es-MX");
         CultureInfo.DefaultThreadCurrentCulture = culture;
         CultureInfo.DefaultThreadCurrentUICulture = culture;
@@ -74,9 +74,15 @@ public static class MauiProgram
 
         using (var scope = app.Services.CreateScope())
         {
-            var context = scope.ServiceProvider.GetRequiredService<DnDreams.Infrastructure.Persistence.DnDreamsDbContext>();
+            Task.Run(async () =>
+            {
+                await SeedDatabaseFromAssetAsync(app.Services, initializer);
+
+
+            }).Wait();
+            //var context = scope.ServiceProvider.GetRequiredService<DnDreams.Infrastructure.Persistence.DnDreamsDbContext>();
             //if (File.Exists(dbPath)) File.Delete(dbPath);
-            Task.Run(async () => await InitializeDatabaseFromExcelAsync(app.Services, initializer));
+            //Task.Run(async () => await SeedDatabaseFromAssetAsync(app.Services, initializer));
             //_ = InitializeDatabaseFromExcelAsync(app.Services,initializer);
 
         }
@@ -84,7 +90,29 @@ public static class MauiProgram
 
         return app;
     }
+    public static async Task SeedDatabaseFromAssetAsync(IServiceProvider services, IAppInitializer initializer)
+    {
+        await initializer.InitializeAsync(async () =>
+        {
+            initializer.UpdateStatus("Preparando la taberna...");
 
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "dndreams.db3");
+
+            // Verificamos si la base de datos no existe o está corrupta/vacía
+            if (!File.Exists(dbPath) || new FileInfo(dbPath).Length == 0)
+            {
+                initializer.UpdateStatus("Desempacando grimorio (Primera vez)...");
+
+                using Stream assetStream = await FileSystem.OpenAppPackageFileAsync("dndreams.db3");
+                using FileStream writeStream = File.OpenWrite(dbPath);
+
+                await assetStream.CopyToAsync(writeStream);
+                await writeStream.FlushAsync(); // 🌟 Aseguramos que se escriba físicamente en el disco del celular
+            }
+
+            initializer.UpdateStatus("¡Todo listo para la aventura!");
+        });
+    }
     // Lógica conceptual que se integra en tu capa de persistencia/arranque
     public static async Task InitializeDatabaseFromExcelAsync(IServiceProvider services,IAppInitializer initializer)
     {
