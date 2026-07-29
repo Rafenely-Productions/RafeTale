@@ -19,20 +19,6 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
 
-        ConfigureMaui(builder);
-        ConfigureLogging(builder);
-        ConfigureLocalization(builder);
-        ConfigureDatabase(builder);
-        ConfigureServices(builder);
-
-        var app = builder.Build();
-        ConfigureUnhandledExceptions(app);
-
-        return app;
-    }
-
-    private static void ConfigureMaui(MauiAppBuilder builder)
-    {
         builder
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
@@ -41,40 +27,26 @@ public static class MauiProgram
             });
 
         builder.Services.AddMauiBlazorWebView();
-    }
 
-    private static void ConfigureLogging(MauiAppBuilder builder)
-    {
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
         builder.Logging.AddDebug();
 #endif
-    }
 
-    private static void ConfigureLocalization(MauiAppBuilder builder)
-    {
-        var culture = new CultureInfo("es-MX");
-        CultureInfo.DefaultThreadCurrentCulture = culture;
-        CultureInfo.DefaultThreadCurrentUICulture = culture;
-        builder.Services.AddLocalization();
-    }
-
-    private static void ConfigureDatabase(MauiAppBuilder builder)
-    {
         var dbPath = Path.Combine(FileSystem.AppDataDirectory, "dndreams.db3");
         builder.Services.AddSingleton(dbPath);
         builder.Services.AddInfrastructure(dbPath);
-        // ⚠️ NO llamar AddDbContext aquí — AddInfrastructure ya lo hace
-    }
+        builder.Services.AddLocalization();
 
-    private static void ConfigureServices(MauiAppBuilder builder)
-    {
-        // --- Core Services ---
-        builder.Services.AddScoped<IAppInitializer, AppInitializer>();
-        builder.Services.AddScoped<ICharacterQueryService, CharacterQueryService>();
-        builder.Services.AddScoped<IFeatureQueryService, FeatureQueryService>();
+        var culture = new CultureInfo("es-MX");
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
 
-        // --- Specific Domain Services ---
+        // --- Core / Infrastructure Services ---
+        builder.Services.AddSingleton<IAppInitializer, AppInitializer>();
+        builder.Services.AddScoped<ILocalizationService, LocalizationService>();
+
+        // --- Domain Services (interfaces específicas) ---
         builder.Services.AddScoped<IService<ClassDefinitionDto, ClassDefinition>, ClassService>();
         builder.Services.AddScoped<IService<RaceDto, Race>, RaceService>();
         builder.Services.AddScoped<IService<SubclassDto, Subclass>, SubclassService>();
@@ -83,11 +55,13 @@ public static class MauiProgram
         builder.Services.AddScoped<IService<BackgroundDto, Background>, BackgroundService>();
         builder.Services.AddScoped<IService<CharacterDto, Character>, CharacterService>();
         builder.Services.AddScoped<IService<FeatDto, Feat>, FeatService>();
+        builder.Services.AddScoped<ICharacterQueryService, CharacterQueryService>();
+        builder.Services.AddScoped<IFeatureQueryService, FeatureQueryService>();
         builder.Services.AddScoped<ILevelingService, LevelingService>();
         builder.Services.AddScoped<ISpellServiceSystem, SpellServiceSystem>();
         builder.Services.AddScoped<ILevelUpService, LevelUpService>();
 
-        // --- DTO Services (respetando tu IService<TDto, TEntity>) ---
+        // --- DTO Services ---
         builder.Services.AddScoped<IService<CharacterDto, Character>, CharacterService>();
         builder.Services.AddScoped<IService<SpellDto, Spell>, SpellService>();
         builder.Services.AddScoped<IService<RaceDto, Race>, RaceService>();
@@ -96,19 +70,17 @@ public static class MauiProgram
         builder.Services.AddScoped<IService<BackgroundDto, Background>, BackgroundService>();
         builder.Services.AddScoped<IService<FeatDto, Feat>, FeatService>();
         builder.Services.AddScoped<IService<LanguageDto, Language>, LanguageService>();
-    }
 
-    private static void ConfigureUnhandledExceptions(MauiApp app)
-    {
+        //Excel
+        builder.Services.AddScoped<IExcelImportService, ImportManager>();
+
         AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
         {
             var ex = args.ExceptionObject as Exception;
-            var logger = app.Services.GetService<ILogger<App>>();
-
-            if (ex is not null)
-            {
-                logger?.LogCritical(ex, "Unhandled exception crashed the app");
-            }
+            var logger = builder.Services.BuildServiceProvider().GetService<ILogger<App>>();
+            logger?.LogCritical(ex, "Unhandled exception crashed the app");
         };
+
+        return builder.Build();
     }
 }
