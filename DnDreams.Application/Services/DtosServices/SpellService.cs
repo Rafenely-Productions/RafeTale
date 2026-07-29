@@ -48,6 +48,10 @@ namespace DnDreams.Application.Services.DtosServices
                 MaterialComponentDescription = Material,
                 Level = spell.Level,
                 ClassesTechnicalNames = spell.ClassesTechnicalNames,
+                Range = spell.Range.ToString(),
+                School = spell.School,
+                CastingTime = spell.CastingTime.ToString(),
+                Duration = spell.Duration.Select(x=> x.ToString()).ToList(),
             };
 
         }

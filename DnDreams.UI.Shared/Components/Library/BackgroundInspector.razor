@@ -1,6 +1,7 @@
 ﻿@using Application.DTOs
 @using Domain.Enums
 @inject IStringLocalizer<AppStrings> L
+@inject IJSRuntime JS
 
 <div class="animate-in fade-in duration-300 space-y-6 max-w-4xl mx-auto">
 
@@ -14,7 +15,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
         <div class="p-4 bg-slate-900/40 rounded-xl border border-slate-800">
-            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-3">Ability Scores (ASI)</p>
+            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-3">@L["Background_AbilityScores"]</p>
             <div class="flex flex-wrap gap-2">
                 @foreach (var asi in BackgroundDto.ASIs)
                 {
@@ -25,12 +26,12 @@
                 }
             </div>
             <p class="text-[10px] text-slate-500 font-sans mt-2.5">
-                * Puedes aplicar un aumento de +2 a uno de estos atributos y +1 a otro, o un +1 a los tres.
+                @L["Background_ASINote"]
             </p>
         </div>
 
         <div class="p-4 bg-slate-900/40 rounded-xl border border-slate-800">
-            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-3">Skill Proficiencies</p>
+            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-3">@L["Background_SkillProficiencies"]</p>
             <div class="flex flex-wrap gap-2">
                 @foreach (var skill in BackgroundDto.SkillProficiencies)
                 {
@@ -47,14 +48,14 @@
     <div class="p-5 bg-black/30 rounded-xl border border-slate-800/80 space-y-4">
 
         <div>
-            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Tool Proficiencies</p>
+            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">@L["Background_ToolProficiencies"]</p>
             <p class="text-xs text-slate-300 font-sans leading-relaxed">
-                @(string.IsNullOrWhiteSpace(BackgroundDto.ToolProficiencies) ? "None" : BackgroundDto.ToolProficiencies)
+                @(string.IsNullOrWhiteSpace(BackgroundDto.ToolProficiencies) ? L["Common_None"] : BackgroundDto.ToolProficiencies)
             </p>
         </div>
 
         <div class="border-t border-slate-800/50 pt-3">
-            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Starting Equipment</p>
+            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">@L["Background_StartingEquipment"]</p>
             <p class="text-xs text-slate-300 font-sans leading-relaxed">
                 @BackgroundDto.Equipment
             </p>
@@ -65,14 +66,15 @@
     @if (BackgroundDto.Feat != null)
     {
         <div class="space-y-3 mt-6">
-            <p class="text-xs font-bold text-amber-500 uppercase tracking-widest">Origin Feat (Lvl 1)</p>
+            <p class="text-xs font-bold text-amber-500 uppercase tracking-widest">@L["Background_OriginFeat"]</p>
             <div class="p-5 bg-amber-500/[0.02] rounded-xl border border-amber-500/10 hover:border-amber-500/20 transition-all duration-200">
                 <div class="flex items-center gap-2 mb-2">
                     <span class="text-xl">🛡️</span>
                     <h3 class="text-base font-black text-white uppercase tracking-wide">@BackgroundDto.Feat.Name</h3>
                     <span class="text-[9px] font-mono bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded border border-amber-500/20 uppercase">
-                        Origin Feat
+                        @L["Background_OriginFeatBadge"]
                     </span>
+
                 </div>
                 <p class="text-xs text-slate-400 font-sans leading-relaxed">
                     @((MarkupString)BackgroundDto.Feat.Description)
@@ -85,4 +87,13 @@
 
 @code {
     [Parameter] public BackgroundDto BackgroundDto { get; set; } = null!;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("eval", "document.getElementById('main-scroll-view')?.scrollTo({ top: 0, behavior: 'instant' });");
+        }
+        catch { }
+    }
 }

@@ -1,11 +1,12 @@
 ﻿@using Application.DTOs;
 @inject IStringLocalizer<LibraryStrings> LL
+@inject IJSRuntime JS
 
 <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">@LL["LineagesAndAncestries"]</h2>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
     @foreach (var race in Races)
     {
-        <div @onclick="() => OnInspectedRace.InvokeAsync(race)"
+        <div @onclick="() => InspectRace(race)"
              class="rounded-xl border border-slate-800 bg-black/40 px-4 py-3.5 cursor-pointer hover:border-amber-500/40 transition-all group shadow-md flex flex-col justify-between min-w-0">
 
             <div class="flex items-center justify-between gap-2 mb-1.5">
@@ -27,4 +28,31 @@
 @code {
     [Parameter] public List<RaceDto> Races { get; set; } = new();
     [Parameter] public EventCallback<RaceDto> OnInspectedRace { get; set; }
+    [Parameter] public double InitialScrollPosition { get; set; } = 0;
+    private ElementReference ListContainerRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (InitialScrollPosition > 0)
+            {
+                // Si tiene una posición guardada, se posiciona ahí de forma instantánea al cargar
+                await JS.InvokeVoidAsync("eval", $"document.getElementById('main-scroll-view')?.scrollTo({{ top: {InitialScrollPosition}, behavior: 'instant' }});");
+                //await JS.InvokeVoidAsync("eval", $"arguments[0].scrollTop = {InitialScrollPosition};", ListContainerRef);
+                //await JS.InvokeVoidAsync("eval", "document.getElementById('main-scroll-view')?.scrollTo({ top: 0, behavior: 'instant' });");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("eval", "document.getElementById('main-scroll-view')?.scrollTo({ top: 0, behavior: 'instant' });");
+            }
+        }
+
+    }
+    private async Task InspectRace(RaceDto race)
+    {
+        //savedScrollPosition = await JS.InvokeAsync<double>("eval", "document.getElementById('main-scroll-view')?.scrollTop || 0");
+
+        await OnInspectedRace.InvokeAsync(race);
+    }
 }

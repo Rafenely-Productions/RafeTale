@@ -21,7 +21,7 @@ namespace DnDreams.Application.DTOs
         public string Range { get; set; } = string.Empty; // Toque, 120 pies, Personal
         public string RangeDistance { get; set; } = string.Empty;
         public List<string> Components { get; set; } = new(); // V, S, M (Materiales)
-        public string Duration { get; set; } = string.Empty; // En turnos, minutos, horas, etc.
+        public List<string> Duration { get; set; } = []; // En turnos, minutos, horas, etc.
         public bool Concentration { get; set; } // "Sí" o "No"
         public bool Ritual { get; set; } // Indica si el hechizo se puede lanzar como ritual
         public List<string> ClassesTechnicalNames { get; set; } = new();

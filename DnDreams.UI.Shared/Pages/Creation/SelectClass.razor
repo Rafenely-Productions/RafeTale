@@ -12,50 +12,59 @@
 @inject IStringLocalizer<AppStrings> L
 @inject IService<ClassDefinitionDto,ClassDefinition> ClassService
 
-<div class="min-h-screen bg-black p-6">
+<div class="min-h-screen bg-black p-4 md:p-6 text-white">
     <div class="max-w-6xl mx-auto">
 
-        <div class="mb-8">
-            <button @onclick='Back' class="text-amber-700 hover:text-amber-500 text-[10px] font-black tracking-[0.3em] mb-4 uppercase flex items-center gap-2 transition-all">
+        <!-- Encabezado adaptable -->
+        <div class="mb-6 md:mb-8">
+            <button @onclick='Back' class="text-amber-700 hover:text-amber-500 text-[10px] font-black tracking-[0.3em] mb-3 uppercase flex items-center gap-2 transition-all">
                 <i class="fa-solid fa-arrow-left"></i> @L["Btn_Back"]
             </button>
-            <h1 class="text-5xl font-black text-amber-500 italic uppercase tracking-tighter">@L["Title_SelectClass"]</h1>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-amber-500 italic uppercase tracking-tighter">@L["Title_SelectClass"]</h1>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Layout responsivo: En móvil se apila, en escritorio usa grid de 12 columnas -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
 
-            <div class="lg:col-span-3 space-y-3">
-                @foreach (var cls in Classes)
-                {
-                    <div @onclick="() => SelectedClass = cls"
-                         class="group cursor-pointer p-6 rounded-2xl border transition-all duration-300 @(SelectedClass?.Id == cls.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xl font-black uppercase tracking-tight @(SelectedClass?.Id == cls.Id ? "text-black" : "text-white group-hover:text-amber-500")">
-                                @cls.Name
-                            </span>
-                            <i class="fa-solid fa-fire-bolt @(SelectedClass?.Id == cls.Id ? "text-black" : "text-amber-900/40")"></i>
+            <!-- Selector de Clases (Columna Izquierda / Superior en móvil) -->
+            <div class="lg:col-span-3 space-y-2">
+                <div class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 custom-scrollbar">
+                    @foreach (var cls in Classes)
+                    {
+                        <div @onclick="() => SelectedClass = cls"
+                             class="group cursor-pointer px-3.5 py-2.5 lg:p-4 rounded-xl border transition-all duration-300 shrink-0 lg:shrink w-auto lg:w-auto @(SelectedClass?.Id == cls.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
+                            <div class="flex justify-between items-center gap-3">
+                                <span class="text-xs lg:text-sm font-black uppercase tracking-tight truncate @(SelectedClass?.Id == cls.Id ? "text-black" : "text-white group-hover:text-amber-500")">
+                                    @cls.Name
+                                </span>
+                                <i class="fa-solid fa-fire-bolt text-xs shrink-0 @(SelectedClass?.Id == cls.Id ? "text-black" : "text-amber-900/40")"></i>
+                            </div>
                         </div>
-                    </div>
-                }
+                    }
+                </div>
             </div>
 
-            <div class="lg:col-span-8">
-                <div class="bg-slate-900 border border-amber-900/30 rounded-[3rem] p-10 shadow-2xl min-h-[600px]">
+            <!-- Inspector de la Clase Seleccionada (Columna Derecha / Principal) -->
+            <div class="lg:col-span-9">
+                <div class="bg-slate-900 border border-amber-900/30 rounded-3xl lg:rounded-[3rem] p-5 sm:p-8 lg:p-10 shadow-2xl min-h-[500px] lg:min-h-[600px] flex flex-col justify-between">
 
                     @if (SelectedClass == null)
                     {
-                        <div class="flex flex-col items-center justify-center h-full py-20 text-center">
-                            <i class="fa-solid fa-hat-wizard text-amber-900/10 text-[10rem] mb-6"></i>
-                            <p class="text-amber-700 font-serif italic text-xl">@L["Choose_Class"]</p>
+                        <div class="flex flex-col items-center justify-center h-full py-20 text-center my-auto">
+                            <i class="fa-solid fa-hat-wizard text-amber-900/10 text-6xl lg:text-[10rem] mb-6"></i>
+                            <p class="text-amber-700 font-serif italic text-lg lg:text-xl">@L["Choose_Class"]</p>
                         </div>
                     }
                     else
                     {
-                        <ClassInspector InspectedClass="SelectedClass"/>
-                        <div class="mt-2 pt-4 border-t border-white/5 flex justify-end">
+                        <div>
+                            <ClassInspector InspectedClass="SelectedClass"/>
+                        </div>
+                        
+                        <div class="mt-6 pt-4 border-t border-white/5 flex justify-end">
                             <button @onclick="Confirm"
-                                    class="px-6 py-2 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-[2rem] transition-all shadow-xl shadow-lime-900/20 flex items-center gap-4">
-                                <span class="uppercase tracking-widest">@L["Btn_ConfirmClass"]</span>
+                                    class="w-full sm:w-auto px-8 py-3.5 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-2xl lg:rounded-[2rem] transition-all shadow-xl shadow-lime-900/20 flex items-center justify-center gap-4">
+                                <span class="uppercase tracking-widest text-xs lg:text-sm">@L["Btn_ConfirmClass"]</span>
                                 <i class="fa-solid fa-bolt-lightning"></i>
                             </button>
                         </div>
@@ -65,41 +74,41 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de Inspección de Características / Features -->
 @if (FeatureInInspection != null)
 {
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" @onclick="CloseInspection"></div>
 
-        <div class="relative bg-slate-900 border border-amber-500/30 w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div class="p-8">
+        <div class="relative bg-slate-900 border border-amber-500/30 w-full max-w-3xl rounded-3xl lg:rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
+            <div class="p-6 lg:p-8 overflow-y-auto custom-scrollbar">
+                
                 <div class="flex justify-between items-start mb-6">
                     <div>
                         <span class="text-amber-700 font-black text-[10px] tracking-[0.3em] uppercase">@L["Skill_Detail"]</span>
-                        <h3 class="text-3xl font-black text-white italic uppercase tracking-tighter">@FeatureInInspection.Name</h3>
+                        <h3 class="text-2xl lg:text-3xl font-black text-white italic uppercase tracking-tighter">@FeatureInInspection.Name</h3>
                     </div>
                     <button @onclick="CloseInspection" class="text-slate-500 hover:text-white transition-colors">
                         <i class="fa-solid fa-circle-xmark text-2xl"></i>
                     </button>
                 </div>
+
                 <div class="mb-6 w-full max-w-full overflow-hidden">
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-
                         @foreach (var modifier in FeatureInInspection.Modifiers)
                         {
                             var meta = modifier.Type.GetVisualMetadata();
 
-                            <div class="flex flex-col gap-3 p-2 rounded-2xl border @meta.CssClasses shadow-lg w-full min-w-0 transition-all duration-300">
-
+                            <div class="flex flex-col gap-3 p-3 rounded-2xl border @meta.CssClasses shadow-lg w-full min-w-0 transition-all duration-300">
                                 <div class="flex items-start sm:items-center gap-4 w-full min-w-0 flex-wrap sm:flex-nowrap">
                                     <i class="fa-solid @meta.Icon text-2xl w-8 min-w-[32px] text-center mt-1 sm:mt-0"></i>
-
                                     <div class="flex-1 min-w-0 break-words">
                                         <p class="opacity-60 font-black text-[10px] uppercase tracking-wider block">@meta.Label</p>
                                         <p class="text-white font-bold text-sm sm:text-base leading-snug break-words">
                                             @if (modifier.Value != 99 && modifier.Value != 0 && modifier.Value != 1)
                                             {
-                                                <span class="text-white/90">@($"+{modifier.Value}") </span>
+                                                <span class="text-white/95">@($"+{modifier.Value}") </span>
                                             }
                                             @L[modifier.Target]
                                         </p>
@@ -107,8 +116,8 @@
                                 </div>
 
                                 @if (modifier.Type == ModifierType.GrantSpell ||
-                                                        modifier.Type == ModifierType.GrantAlwaysPreparedSpell ||
-                                                        modifier.Type == ModifierType.AlwaysPreparedSpell)
+                                     modifier.Type == ModifierType.AlwaysPreparedSpell ||
+                                     modifier.Type == ModifierType.GrantAlwaysPreparedSpell)
                                 {
                                     @if (IsLoadingSpell)
                                     {
@@ -117,7 +126,7 @@
 
                                     @foreach (var spell in InspectedSpells.Where(s => s.TechnicalName == modifier.Target))
                                     {
-                                        <div class="bg-black/60 border border-white/5 rounded-xl p-2 mt-1 animate-in slide-in-from-top-2 w-full min-w-0 overflow-hidden">
+                                        <div class="bg-black/60 border border-white/5 rounded-xl p-3 mt-1 animate-in slide-in-from-top-2 w-full min-w-0 overflow-hidden">
                                             <div class="grid grid-cols-2 gap-4 mb-2 border-b border-white/5 pb-2 w-full">
                                                 <div class="min-w-0">
                                                     <span class="block text-[9px] text-slate-500 uppercase font-black">@L["Label_CastingTime"]</span>
@@ -136,24 +145,27 @@
                                 }
                             </div>
                         }
-
                     </div>
                 </div>
-                <div class="bg-black/40 p-6 rounded-3xl border border-white/5 max-h-[35vh] overflow-y-auto custom-scrollbar">
-                    <p class="text-slate-300 font-serif leading-relaxed italic text-lg">
+
+                <div class="bg-black/40 p-5 rounded-3xl border border-white/5 max-h-[35vh] overflow-y-auto custom-scrollbar mb-6">
+                    <p class="text-slate-300 font-serif leading-relaxed italic text-base lg:text-lg">
                         @((MarkupString)FeatureInInspection.Description)
                     </p>
                 </div>
 
-                <div class="mt-8 flex justify-end">
-                    <button @onclick="CloseInspection" class="px-8 py-3 bg-amber-600 text-black font-black rounded-2xl hover:bg-amber-500 transition-all uppercase text-xs tracking-widest">
-                        @L["Btn_Confirm"]
+                <div class="flex justify-end pt-4 border-t border-amber-500/10">
+                    <button @onclick="CloseInspection"
+                            class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-black rounded-xl transition-all duration-300 shadow-lg shadow-amber-600/20 uppercase text-xs tracking-widest flex items-center justify-center gap-2 group">
+                        <span>@L["Btn_Confirm"]</span>s
+                        <i class="fa-solid fa-check transition-transform group-hover:scale-110"></i>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 }
+
 @code {
     private List<ClassDefinitionDto> Classes = new();
     private ClassDefinitionDto? SelectedClass;
@@ -188,6 +200,7 @@
             IsLoadingSpell = false;
         }
     }
+
     private void CloseInspection()
     { 
         FeatureInInspection = null; 
@@ -202,10 +215,6 @@
         {
             SelectedClass = Classes.FirstOrDefault(x => x.Id == CreationService.SelectedClassId);
         }
-    }
-    protected async Task GetSpell(string target)
-    {
-        
     }
 
     private void Back() => Navigation.NavigateTo("/character/create");

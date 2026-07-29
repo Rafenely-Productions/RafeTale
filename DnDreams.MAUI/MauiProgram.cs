@@ -82,9 +82,7 @@ public static class MauiProgram
             }).Wait();
             //var context = scope.ServiceProvider.GetRequiredService<DnDreams.Infrastructure.Persistence.DnDreamsDbContext>();
             //if (File.Exists(dbPath)) File.Delete(dbPath);
-            //Task.Run(async () => await SeedDatabaseFromAssetAsync(app.Services, initializer));
             //_ = InitializeDatabaseFromExcelAsync(app.Services,initializer);
-
         }
 
 
@@ -114,7 +112,7 @@ public static class MauiProgram
         });
     }
     // Lógica conceptual que se integra en tu capa de persistencia/arranque
-    public static async Task InitializeDatabaseFromExcelAsync(IServiceProvider services,IAppInitializer initializer)
+    public static async Task InitializeDatabaseFromExcelAsync(IServiceProvider services, IAppInitializer initializer)
     {
         //var initializer = services.GetRequiredService<IAppInitializer>();
 

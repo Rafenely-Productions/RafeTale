@@ -3,6 +3,7 @@
 @inject IStringLocalizer<AppStrings> L
 @inject IStringLocalizer<LibraryStrings> LL
 @inject IJSRuntime JS
+@using System.Text.RegularExpressions;
 
 <div class="flex flex-col gap-4 border-b border-white/5 pb-4">
     <div class="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -12,17 +13,17 @@
 
         <input type="text"
                class="w-full sm:max-w-xs px-4 py-1.5 rounded-xl text-xs font-medium border border-slate-800 bg-black/40 text-slate-200 placeholder-slate-500 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all shadow-md"
-               placeholder="Buscar conjuro por nombre..."
+               placeholder="@L["Placeholder_SearchSpell"]"
                @bind-value="SearchText"
                @bind-value:event="oninput" />
     </div>
 
     <div class="flex flex-wrap items-center gap-2 border-b border-white/5 pb-4">
         <div class="flex flex-wrap items-center gap-2">
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Filter Level:</span>
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">@L["Label_FilterLevel"]:</span>
             <button class="px-3 py-1 rounded-full text-xs font-medium border @(SpellLevelFilter == SpellLevel.All ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white")"
                     @onclick='() => FilterSpellsByLevel(SpellLevel.All)'>
-                <span>All</span>
+                <span>@L["Filter_All"]</span>
                 <span class="text-[10px] opacity-60 font-mono bg-white/10 px-1.5 py-0.2 rounded-md">
                     @(string.IsNullOrWhiteSpace(SearchText) ? AllSpells.Count : AllSpells.Count(s => s.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)))
                 </span>
@@ -40,7 +41,7 @@
 
                 <button class="px-3 py-1 rounded-full text-xs font-medium border @(SpellLevelFilter == (SpellLevel)lvl ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white")"
                         @onclick="() => FilterSpellsByLevel((SpellLevel)lvl)">
-                    <span>@(lvl == 0 ? "Cantrip" : $"Lvl {lvl}")</span>
+                    <span>@(lvl == 0 ? L["Spell_Cantrip"] : $"Lvl {lvl}")</span>
                     <span class="text-[10px] opacity-60 font-mono bg-white/10 px-1.5 py-0.2 rounded-md @(countForThisLevel > 0 && SpellLevelFilter == (SpellLevel)lvl ? "bg-amber-500/20 text-amber-400" : "")">
                         @countForThisLevel
                     </span>
@@ -56,27 +57,115 @@
                 <div class="flex items-center justify-between gap-2">
                     <p class="text-sm font-bold text-white uppercase">@spell.Name <span class="text-slate-400 text-xs">@spell.TechnicalName</span></p>
                     <span class="rounded-full bg-slate-800 border border-white/5 px-2.5 py-0.5 text-xs font-semibold text-slate-300">
-                        @(spell.Level == 0 ? "Cantrip" : $"Level {spell.Level}")
+                        @(spell.Level == 0 ? L["Spell_Cantrip"] : $"{L["Spell_LevelText"]} {(int)spell.Level}")
                     </span>
                 </div>
                 <div class="mt-1 flex flex-wrap items-center gap-x-3 text-xs text-amber-500/80 font-mono">
-                    <span>Time: @spell.CastingTime</span>
+                    <span>@L["Spell_Time"]: @L[$"SpellCastTime_{spell.CastingTime}"]</span>
                     <span class="text-slate-500">|</span>
-                    <span>Range: @spell.Range</span>
+                    <span>@L["Spell_Range"]: @L[$"SpellRange_{spell.Range}"]</span>
+                    <span class="text-slate-500">|</span>
+                    <span>@L["Spell_Classes"]: @string.Join(", ", spell.ClassesTechnicalNames.Select(c => L[$"Class_{c}"].Value))</span>
+                    <span>@L["Spell_Duration"]: @string.Join(", ", spell.Duration.Select(c => L[$"SpellDuration_{c}"].Value))</span>
                 </div>
-                <p class="mt-2 text-xs text-slate-400 font-serif leading-relaxed">
-                    @((MarkupString)spell.Description)
-                </p>
+
+                <div class="mt-2 text-xs text-slate-400 font-serif leading-relaxed break-words space-y-2">
+                    @if (HasTable(spell.Description))
+                    {
+                        var nDescription = FormatSpellDescription(spell.Description);
+                        @((MarkupString)GetDescriptionBeforeTable(spell.Description))
+
+                        <div>
+                            <button type="button" @onclick="() => OpenModal(ExtractTable(spell.Description))"
+                                    class="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold inline-flex items-center gap-2 hover:bg-amber-500/20 transition-all shadow-md">
+                                <i class="fa-solid fa-table"></i> @L["Table_Reference"]
+                            </button>
+                        </div>
+
+                        @((MarkupString)GetDescriptionAfterTable(spell.Description))
+                    }
+                    else
+                    {
+                        @((MarkupString)FormatSpellDescription(spell.Description))
+                    }
+                </div>
             </li>
         }
     </ul>
 </div>
+
+@if (IsModalOpen)
+{
+    <div class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-center items-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-4 shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-table"></i> @L["Modal_Table_Title"]
+                </h3>
+                <button @onclick="CloseModal" class="text-slate-400 hover:text-white px-2 py-1 text-sm font-bold">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="overflow-x-auto py-4 custom-scrollbar flex-1">
+                <div class="min-w-[400px] text-slate-300 text-xs">
+                    @((MarkupString)ModalTableContent)
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800 flex justify-end">
+                <button @onclick="CloseModal" class="px-4 py-1.5 rounded-xl bg-slate-800 text-white text-xs font-semibold hover:bg-slate-700 transition-all">
+                    @L["Close"]
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .spell-description-container table {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        border-collapse: collapse !important;
+        font-size: 11px !important;
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+
+    .spell-description-container th,
+    .spell-description-container td {
+        padding: 6px 8px !important;
+        border: 1px solid #334155 !important;
+        color: #94a3b8 !important;
+    }
+
+    .spell-description-container tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.02);
+    }
+</style>
+
 @code {
     private SpellLevel SpellLevelFilter = SpellLevel.All;
 
     [Parameter] public List<SpellDto> AllSpells { get; set; } = [];
     private List<SpellDto> FilteredSpells = [];
     private ElementReference SpellListElement;
+
+    //Spell description modal
+    private bool IsModalOpen = false;
+    private string ModalTableContent = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JS.InvokeVoidAsync("eval", "document.getElementById('main-scroll-view')?.scrollTo({ top: 0, behavior: 'instant' });");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        //await JS.InvokeVoidAsync("eval", "document.getElementById('main-scroll-view')?.scrollTo({ top: 0, behavior: 'instant' });");
+    }
 
     protected override void OnInitialized()
     {
@@ -92,7 +181,7 @@
             if (_searchText != value)
             {
                 _searchText = value;
-                ApplySpellsFilter(); // Cada vez que el usuario escribe, aplicamos el filtro de inmediato
+                ApplySpellsFilter();
             }
         }
     }
@@ -103,7 +192,6 @@
         SpellLevelFilter = filter;
 
         ApplySpellsFilter();
-
 
         StateHasChanged();
         await Task.Delay(1);
@@ -117,6 +205,7 @@
             System.Diagnostics.Debug.WriteLine($"Error de scroll: {ex.Message}");
         }
     }
+
     private void ApplySpellsFilter()
     {
         var query = AllSpells.AsEnumerable();
@@ -128,11 +217,97 @@
 
         if (!string.IsNullOrWhiteSpace(SearchText.Trim()))
         {
-
-            query = query.Where(s => s.Name.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase) 
-                             || s.TechnicalName.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase));
+            query = query.Where(s => s.Name.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase)
+                                   || s.TechnicalName.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase));
         }
 
         FilteredSpells = query.ToList();
+    }
+
+    private bool HasTable(string desc) => !string.IsNullOrEmpty(desc) && desc.Contains("<table");
+
+    private string GetDescriptionBeforeTable(string desc)
+    {
+        if (string.IsNullOrEmpty(desc)) return string.Empty;
+        int tableIndex = desc.IndexOf("<table");
+        return tableIndex > 0 ? desc.Substring(0, tableIndex) : string.Empty;
+    }
+
+    private string GetDescriptionAfterTable(string desc)
+    {
+        if (string.IsNullOrEmpty(desc)) return string.Empty;
+        int endIndex = desc.IndexOf("</table>");
+        if (endIndex >= 0)
+        {
+            int afterTableIndex = endIndex + 8;
+            if (afterTableIndex < desc.Length)
+            {
+                return desc.Substring(afterTableIndex);
+            }
+        }
+        return string.Empty;
+    }
+
+    private string ExtractTable(string desc)
+    {
+        if (string.IsNullOrEmpty(desc)) return string.Empty;
+        int startIndex = desc.IndexOf("<table");
+        int endIndex = desc.IndexOf("</table>") + 8;
+        if (startIndex >= 0 && endIndex > startIndex)
+        {
+            string rawTable = desc.Substring(startIndex, endIndex - startIndex);
+            return rawTable.Replace("style=\"border:1px_solid_gray;border-collapse:collapse;\"", "class=\"w-full border-collapse border border-slate-700 text-center text-[11px]\"")
+                           .Replace("style=border:1px_solid_gray;border-collapse:collapse;", "class=\"w-full border-collapse border border-slate-700 text-center text-[11px]\"")
+                           .Replace("style=\"background-color:#f2f2f2;\"", "class=\"bg-amber-500/20 text-amber-400 font-bold p-2\"")
+                           .Replace("style=background-color:#f2f2f2;", "class=\"bg-amber-500/20 text-amber-400 font-bold p-2\"")
+                           .Replace("style=\"padding:3px;border:1px_solid_gray;\"", "class=\"p-2 border border-slate-700 bg-black/40 text-slate-300\"")
+                           .Replace("style=padding:3px;border:1px_solid_gray;", "class=\"p-2 border border-slate-700 bg-black/40 text-slate-300\"");
+        }
+        return string.Empty;
+    }
+
+    private void OpenModal(string tableHtml)
+    {
+        ModalTableContent = tableHtml;
+        IsModalOpen = true;
+        StateHasChanged();
+    }
+
+    private void CloseModal()
+    {
+        IsModalOpen = false;
+        ModalTableContent = string.Empty;
+        StateHasChanged();
+    }
+
+    private string FormatSpellDescription(string rawDescription)
+    {
+        if (string.IsNullOrEmpty(rawDescription)) return string.Empty;
+
+        string processed = rawDescription;
+
+        // Obtenemos la etiqueta traducida de "Alcance" (o "Range") desde tus recursos de forma segura
+        string rangeLabel = L["Label_Range"].Value;
+        string metersLabel = L["Label_mt"].Value;
+        string feetLabel = L["Label_ft"].Value;
+
+        // 1. Detectar etiquetas de distancia en metros, ej: {dist:18_M} o {range:9_M}
+        processed = Regex.Replace(processed, @"{(?:dist|range):(\d+)_M}", match =>
+        {
+            string meters = match.Groups[1].Value;
+            return $"<span class=\"text-amber-400 font-mono\">{rangeLabel}: {meters} {metersLabel}</span>";
+        });
+
+        // 2. Detectar etiquetas de distancia en pies, ej: {dist:60_FT} o {range:30_FT}
+        processed = Regex.Replace(processed, @"{(?:dist|range):(\d+)_FT}", match =>
+        {
+            string feet = match.Groups[1].Value;
+            return $"<span class=\"text-amber-400 font-mono\">{rangeLabel}: {feet} {feetLabel}</span>";
+        });
+
+        // 3. Limpiar cualquier otra llave residual o metadato perdido
+        processed = Regex.Replace(processed, @"{[a-zA-Z0-9_:]+}", string.Empty);
+
+        return processed;
     }
 }

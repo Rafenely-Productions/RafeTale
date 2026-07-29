@@ -2,8 +2,11 @@
 @inherits LayoutComponentBase
 @using DnDreams.Application.Services.Importer.Initializer
 @inject IAppInitializer Initializer
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+@implements IDisposable
 
-<div class="min-h-screen bg-black text-slate-100 flex flex-col selection:bg-amber-500/30">
+<div class="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col selection:bg-amber-500/30">
     @if (!Initializer.IsDatabaseReady)
     {
         <div class="fixed inset-0 bg-black flex flex-col justify-center items-center z-50 p-6">
@@ -17,21 +20,77 @@
     }
     else
     {
-        <header class="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-amber-900/20">
-            <NavMenu />
+        <header class="sticky top-0 z-50">
+            <div class="w-full flex flex-col sm:flex-row items-center justify-center px-3 sm:px-5 py-3 sm:py-4 gap-3 sm:gap-0">
+                <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto">
+                    <div class="size-8 rounded-xl flex items-center justify-center text-amber-500 font-black text-xs font-mono shadow-inner">
+                        D&D
+                    </div>
+                    <span class="text-sm font-black text-amber-500 uppercase tracking-widest font-mono italic">DnDreams</span>
+                </div>
+            </div>
         </header>
 
-        <main class="flex-1 p-4 md:p-6 overflow-y-auto">
+        <main id="main-scroll-view" style="position: relative;" class="flex-1 w-full max-w-7xl mx-auto overflow-y-auto">
             @Body
         </main>
+
+        <div class="text-[10px] font-mono text-slate-600 uppercase tracking-widest text-center py-2 bg-slate-950">
+            DnDreams v @AppVersionString
+        </div>
+
+        <footer>
+            <NavMenu />
+        </footer>
     }
 </div>
 
+<style>
+    .border {
+        border: none !important;
+    }
+
+    html, body, #main-scroll-view {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scroll-transition {
+        opacity: 1;
+        transition: opacity 0.15s ease-in-out;
+    }
+
+        .scroll-transition.is-scrolling {
+            opacity: 0;
+        }
+</style>
+
 @code {
+    private string AppVersionString = "0.1.2-beta";
+
     protected override void OnInitialized()
     {
         Initializer.OnInitializationCompleted += HandleInitializationCompleted;
         Initializer.OnStatusMessageChanged += HandleStatusMessageChanged;
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e) => await ScrollToTop();
+
+    private async Task ScrollToTop()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("eval", @"
+                const container = document.getElementById('main-scroll-view');
+                if (container) { container.scrollTo({ top: 0, behavior: 'instant' }); }
+            ");
+        }
+        catch { }
     }
 
     private void HandleStatusMessageChanged(string newMessage) => InvokeAsync(StateHasChanged);
@@ -41,5 +100,6 @@
     {
         Initializer.OnInitializationCompleted -= HandleInitializationCompleted;
         Initializer.OnStatusMessageChanged -= HandleStatusMessageChanged;
+        Navigation.LocationChanged -= OnLocationChanged;
     }
 }

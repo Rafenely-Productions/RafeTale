@@ -37,7 +37,7 @@
 
                     <div class="absolute top-0 right-0 w-12 h-12 bg-amber-500/5 rotate-45 translate-x-6 -translate-y-6 pointer-events-none"></div>
 
-                    <div class="p-4 pb-1">
+                    <div class="p-4 pb-1" @onclick="() => NavigateToSheet(p.Id)">
                         <div class="flex justify-between items-start gap-3 mb-4">
                             <div class="min-w-0">
                                 <h3 class="text-lg font-black text-amber-500 tracking-tight truncate uppercase">@p.Name</h3>
@@ -51,28 +51,28 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-6 gap-1.5 mb-4">
-                            @DisplayStatMinimal("STR", p.StrModifier)
-                            @DisplayStatMinimal("DEX", p.DexModifier)
-                            @DisplayStatMinimal("CON", p.ConModifier)
-                            @DisplayStatMinimal("INT", p.IntModifier)
-                            @DisplayStatMinimal("WIS", p.WisModifier)
-                            @DisplayStatMinimal("CHA", p.ChaModifier)
+                        <!--<div class="grid grid-cols-6 gap-1.5 mb-4">
+                                @DisplayStatMinimal("STR", p.StrModifier)
+                                @DisplayStatMinimal("DEX", p.DexModifier)
+                                @DisplayStatMinimal("CON", p.ConModifier)
+                                @DisplayStatMinimal("INT", p.IntModifier)
+                                @DisplayStatMinimal("WIS", p.WisModifier)
+                                @DisplayStatMinimal("CHA", p.ChaModifier)
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="p-5 py-0 pb-4 mt-auto">
-                        <div class="flex gap-2.5">
-                            <button @onclick="() => NavigateToSheet(p.Id)"
-                                    class="flex-1 py-3 bg-black border border-amber-900/40 text-amber-500 text-xs font-black rounded-xl hover:bg-amber-900/20 transition-all flex items-center justify-center gap-2 uppercase tracking-wide shadow-sm">
-                                <i class="fa-solid fa-eye opacity-60"></i> @L["Btn_ViewSheet"]
-                            </button>
+                        <div class="p-5 py-0 pb-4 mt-auto">
+                            <div class="flex gap-2.5">
+                                <button @onclick="() => NavigateToSheet(p.Id)"
+                                        class="flex-1 py-3 bg-black border border-amber-900/40 text-amber-500 text-xs font-black rounded-xl hover:bg-amber-900/20 transition-all flex items-center justify-center gap-2 uppercase tracking-wide shadow-sm">
+                                    <i class="fa-solid fa-eye opacity-60"></i> @L["Btn_ViewSheet"]
+                                </button>
 
-                            <button @onclick="() => NavigateToLevelUp(p.Id)"
-                                    class="px-4 py-3 bg-lime-600 text-black rounded-xl hover:bg-lime-500 transition-all shadow-md flex items-center justify-center">
-                                <i class="fa-solid fa-arrow-up"></i>
-                            </button>
-                        </div>
+                                <button @onclick="() => NavigateToLevelUp(p.Id)"
+                                        class="px-4 py-3 bg-lime-600 text-black rounded-xl hover:bg-lime-500 transition-all shadow-md flex items-center justify-center">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                </button>
+                                </div>-->
                     </div>
                 </div>
             }

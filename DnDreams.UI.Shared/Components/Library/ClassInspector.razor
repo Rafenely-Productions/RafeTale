@@ -3,6 +3,7 @@
 @inject IStringLocalizer<AppStrings> L
 @inject IStringLocalizer<LibraryStrings> LL
 @inject IService<ClassDefinitionDto, ClassDefinition> ClassService
+@inject IJSRuntime JS
 
 <div class="animate-in fade-in duration-300 space-y-6">
     @if (_fullClass == null)
@@ -16,14 +17,11 @@
         <div class="flex flex-col lg:flex-row items-start gap-6 border-b border-white/5 pb-6 w-full">
             <div class="flex-1 min-w-0 w-full">
                 <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@_fullClass.Name</h1>
-                <p class="text-slate-400 font-sans text-sm leading-relaxed mt-3">
-                    @((MarkupString)_fullClass.Description)
-                </p>
             </div>
 
             <div class="flex flex-col justify-start w-full lg:w-80 shrink-0 mt-4 lg:mt-0">
                 <h3 class="text-amber-500 font-black text-[10px] tracking-[0.2em] uppercase mb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-list-check"></i> @LL["Class_Basic_Atributes"]
+                    <i class="fa-solid fa-list-check"></i> @L["Class_Basic_Atributes"]
                 </h3>
 
                 <div class="w-full rounded-xl border border-slate-800/80 bg-black/30 shadow-xl overflow-hidden">
@@ -39,7 +37,7 @@
                             </tr>
                             <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
                                 <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
-                                    @LL["Hit_Die"]
+                                    @L["Hit_Die"]
                                 </td>
                                 <td class="px-3 py-2.5 font-mono font-black text-red-400 text-right text-base">
                                     @_fullClass.HitDie
@@ -47,7 +45,7 @@
                             </tr>
                             <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
                                 <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
-                                    @LL["Saving_Throws"]
+                                    @L["Saving_Throws"]
                                 </td>
                                 <td class="px-3 py-2.5 font-sans font-medium text-slate-300 text-right text-xs">
                                     @string.Join(" / ", _fullClass.SavingThrowProficiencies.Select(a => L[a.ToString()].Value))
@@ -55,15 +53,26 @@
                             </tr>
                             <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
                                 <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
-                                    @LL["Skill_Proficiencies"]
+                                    @L["Skill_Proficiencies"]
                                 </td>
                                 <td class="px-1 py-2.5 font-sans font-medium text-slate-300 text-right text-xs">
                                     @string.Join(", ", _fullClass.SkillProficiencies.Select(a => L[a.TechnicalName.ToString()].Value))
                                 </td>
                             </tr>
+                            @if (_fullClass.ToolProficiencies.Any())
+                            {
+                                <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
+                                    <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
+                                        @L["Tools_Proficiencies"]
+                                    </td>
+                                    <td class="px-1 py-2.5 font-sans font-medium text-slate-300 text-right text-xs">
+                                        @string.Join(", ", _fullClass.ToolProficiencies.Select(a => L[a.ToString()].Value))
+                                    </td>
+                                </tr>
+                            }
                             <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
                                 <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
-                                    @LL["Weapon_Proficiencies"]
+                                    @L["Weapon_Proficiencies"]
                                 </td>
                                 <td class="px-3 py-2.5 font-sans font-medium text-slate-300 text-right text-xs">
                                     @string.Join(" / ", _fullClass.WeaponProficiencies.Select(a => L[a.ToString()].Value))
@@ -71,7 +80,7 @@
                             </tr>
                             <tr class="hover:bg-white/5 transition-colors">
                                 <td class="px-3 py-2.5 font-bold text-slate-400 uppercase text-[11px] tracking-wider bg-slate-900/30">
-                                    @LL["Armor_Proficiencies"]
+                                    @L["Armor_Proficiencies"]
                                 </td>
                                 <td class="px-3 py-2.5 font-sans font-medium text-slate-300 text-right text-xs">
                                     @string.Join(" / ", _fullClass.ArmorProficiencies.Select(a => L[a.ToString()].Value))
@@ -80,6 +89,12 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <div class="flex-1 min-w-0 w-full">
+                <p class="text-slate-400 font-sans text-sm leading-relaxed mt-3">
+                    @((MarkupString)_fullClass.Description)
+                </p>
             </div>
         </div>
 
@@ -104,7 +119,7 @@
                         bool isSelected = SelectedSubclass?.Id == subclass.Id;
                         <div @onclick="() => ToggleSubclass(subclass)"
                              class="relative overflow-hidden p-4 rounded-xl border cursor-pointer shadow-md backdrop-blur-sm group transition-all duration-200
-                                                @(isSelected ? "border-amber-500 bg-amber-500/10 shadow-amber-500/5" : "border-slate-800 bg-black/30 hover:border-amber-500/30")">
+                                                                                                            @(isSelected ? "border-amber-500 bg-amber-500/10 shadow-amber-500/5" : "border-slate-800 bg-black/30 hover:border-amber-500/30")">
 
                             <div class="absolute -right-3 -bottom-3 text-white/5 pointer-events-none transition-transform group-hover:scale-110 duration-300">
                                 <i class="fa-solid fa-shield-halved text-5xl @(isSelected ? "text-amber-500/10" : "")"></i>
@@ -151,13 +166,55 @@
             <div class="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
                 @foreach (var prog in _fullClass.Progressions.OrderBy(p => p.Level))
                 {
+
                     <div class="flex flex-col md:flex-row items-start gap-4 p-4 bg-black/30 rounded-2xl border border-white/5">
                         <div class="bg-amber-500 text-black font-black text-xs px-3 py-1 rounded-md shrink-0">
                             @L["Level"] @prog.Level
                         </div>
+                       <!-- <div class="flex flex-wrap gap-1.5">
+                            @foreach (var trait in prog.Traits)
+                            {
+                                <div class="bg-slate-900 border border-amber-500/30 text-slate-200 text-[10px] px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1.5">
+                                    <span class="font-bold text-amber-400 uppercase tracking-wider">
+                                        @L[$"TraitType_{trait.Type}"]
+                                    </span>
+
+                                    <span class="text-slate-600 font-bold">|</span>
+
+                                    @if (trait.Type.ToString() == "SpellSlots")
+                                    {
+                                        <div class="overflow-x-auto custom-scrollbar max-w-[200px] sm:max-w-xs">
+                                            <div class="flex items-center gap-1.5 font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20 whitespace-nowrap">
+                                                @for (int i = 0; i < trait.SpellSlots.Length; i++)
+                                                {
+                                                    @if (i > 0)
+                                                    {
+                                                        <span class="text-amber-500/40">|</span>
+                                                    }
+                                                    <span class="flex items-baseline gap-0.5">
+                                                        <span class="text-[8px] text-amber-400/60 font-sans">L@(i + 1)</span>
+                                                        <span>@trait.SpellSlots[i]</span>
+                                                    </span>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="font-mono text-slate-300">
+                                            @trait.Value
+                                        </span>
+                                    }
+                                </div>
+                            }
+
+                         </div>-->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full min-w-0">
                             @foreach (var feature in prog.Features)
                             {
+                                if (SelectedSubclass != null && feature.TechnicalName == "Subclass Feature")
+                                    continue;
+
                                 var matchedFeature = _fullClass.FeatureDtos.FirstOrDefault(f => f.Id == feature.Id);
                                 if (matchedFeature != null)
                                 {
@@ -232,7 +289,7 @@
                 <div class="mt-6 flex justify-end">
                     <button @onclick="CloseFeatureModal"
                             class="px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/30 font-medium text-xs uppercase tracking-wider text-slate-300 hover:text-white transition-all shadow-md">
-                        @LL["Got_It"]
+                        @LL["Got_it"]
                     </button>
                 </div>
             </div>
@@ -248,6 +305,14 @@
     private SubclassDto? SelectedSubclass;
     private FeatureDto? ActiveFeatureForModal;
 
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("eval", "document.getElementById('main-scroll-view')?.scrollTo({ top: 0, behavior: 'instant' });");
+        }
+        catch { }
+    }
     // 🚨 CAMBIADO: Usamos OnParametersSetAsync en lugar de OnInitializedAsync
     protected override async Task OnParametersSetAsync()
     {
@@ -263,9 +328,15 @@
                 .IncludeCollection(x => x.Progressions, u => u.Features)
                 .IncludeCollection(x => x.Subclasses, sc => sc.Progressions, p => p.Features));
         }
+
+
     }
 
-    private void CloseFeatureModal() => ActiveFeatureForModal = null;
+    private void CloseFeatureModal()
+    {
+        ActiveFeatureForModal = null;
+
+    }
     private void OpenFeatureModal(FeatureDto feature) => ActiveFeatureForModal = feature;
 
     private void ToggleSubclass(SubclassDto subclass)

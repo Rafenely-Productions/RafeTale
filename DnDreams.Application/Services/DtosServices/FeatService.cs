@@ -23,6 +23,8 @@ namespace DnDreams.Application.Services.DtosServices
                 Id = feat.Id,
                 Name = await loc.GetStringAsync(feat.Id, LocProperty.Name),
                 Description = await loc.GetStringAsync(feat.Id, LocProperty.Description),
+                Category = feat.Category,
+                Prerequisite = feat.Prerequisite,
                 Modifiers = feat.Modifiers ?? new()
             };
         }
@@ -35,7 +37,9 @@ namespace DnDreams.Application.Services.DtosServices
                 Id = feat.Id,
                 Name = localizedWords != null && localizedWords.TryGetValue(LocProperty.Name, out var nameDict) && nameDict.TryGetValue(feat.Id, out var n) ? n : feat.TechnicalName,
                 Description = localizedWords != null && localizedWords.TryGetValue(LocProperty.Description, out var descDict) && descDict.TryGetValue(feat.Id, out var d) ? d : "No description available",
-                Modifiers = feat.Modifiers ?? new()
+                Modifiers = feat.Modifiers ?? new(),
+                Category = feat.Category,
+                Prerequisite = feat.Prerequisite,
             };
         }
 
@@ -54,7 +58,7 @@ namespace DnDreams.Application.Services.DtosServices
                 featDtos.Add(ArmDto(feat, localizedWords));
             }
 
-            return featDtos;
+            return featDtos.OrderBy(x => x.Category).ThenBy(x => x.Name).ToList();
         }
 
         // 4. Consulta Unitaria por ID

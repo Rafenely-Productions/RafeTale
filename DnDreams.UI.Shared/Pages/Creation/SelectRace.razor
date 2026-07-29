@@ -21,21 +21,23 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-            <div class="lg:col-span-4 space-y-3">
-                @foreach (var dtoRace in DtoRaces)
-                {
-                    <div @onclick="() => SelectingRace(dtoRace)"
-                         class="group cursor-pointer p-6 rounded-2xl border transition-all duration-300 @(SelectedRace?.Id == dtoRace.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xl font-black uppercase tracking-tight @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-white group-hover:text-amber-500")">
-                                @dtoRace.Name
-                            </span>
-                            <i class="fa-solid fa-chevron-right @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-amber-900/40")"></i>
+            <div class="lg:col-span-3 space-y-2">
+                <div class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 custom-scrollbar">
+                    @foreach (var dtoRace in DtoRaces)
+                    {
+                        <div @onclick="() => SelectingRace(dtoRace)"
+                             class="group cursor-pointer px-3.5 py-2.5 lg:p-4 rounded-xl border transition-all duration-300 shrink-0 lg:shrink w-auto lg:w-auto @(SelectedRace?.Id == dtoRace.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
+                            <div class="flex justify-between items-center gap-3">
+                                <span class="text-xs lg:text-sm font-black uppercase tracking-tight truncate @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-white group-hover:text-amber-500")">
+                                    @dtoRace.Name
+                                </span>
+                                <i class="fa-solid fa-fire-bolt text-xs shrink-0 @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-amber-900/40")"></i>
+                            </div>
                         </div>
-                    </div>
-                }
+                    }
+                </div>
             </div>
+
 
             <div class="lg:col-span-8">
                 <div class="bg-slate-900 border border-amber-900/30 rounded-[3rem] p-10 shadow-2xl min-h-[600px] relative overflow-hidden">
@@ -50,14 +52,12 @@
                     else
                     {
                         <RaceInspector RaceDto="SelectedRace" />
-                        <div class="mt-12 pt-8 border-t border-white/5 flex justify-end">
+                        <div class="mt-12 pt-8 border-t border-amber-500/10 flex justify-end">
                             <button @onclick="Confirm"
-                                    class="group px-12 py-5 bg-amber-600 hover:bg-amber-500 text-black font-black rounded-[2rem] transition-all shadow-xl shadow-amber-900/20 flex items-center gap-4">
-                                <span class="uppercase tracking-widest">@L["Btn_ConfirmRace"]</span>
-                                <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                                    class="group w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-black rounded-2xl transition-all duration-300 shadow-xl shadow-amber-600/20 flex items-center justify-center gap-3">
+                                <span class="uppercase tracking-widest text-xs">@L["Btn_ConfirmRace"]</span>
+                                <i class="fa-solid fa-arrow-right text-sm transition-transform duration-300 group-hover:translate-x-1"></i>
                             </button>
-
-
                         </div>
                     }
 

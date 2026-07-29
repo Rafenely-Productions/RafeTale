@@ -535,11 +535,11 @@ namespace DnDreams.Infrastructure.Extractors
                 };
                 featsList.Add(feat);
 
-                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Name, feat.TechnicalName, LocLanguage.en);
-                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Description, row.Cell(5).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Feat, LocProperty.Name, feat.TechnicalName, LocLanguage.en);
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Feat, LocProperty.Description, row.Cell(5).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Name, row.Cell(6).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Description, row.Cell(7).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Feat, LocProperty.Name, row.Cell(6).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Feat, LocProperty.Description, row.Cell(7).GetString(), _currentCulture);
 
             }
             return featsList;

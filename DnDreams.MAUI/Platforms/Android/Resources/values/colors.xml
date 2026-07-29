@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#512BD4</color>
-    <color name="colorPrimaryDark">#2B0B98</color>
-    <color name="colorAccent">#2B0B98</color>
+  <!-- Color principal de la app (Ámbar / Dorado D&D) -->
+  <color name="colorPrimary">#f59e0b</color>
+
+  <!-- Color oscuro para barras y acentos del sistema (Negro Absoluto) -->
+  <color name="colorPrimaryDark">#000000</color>
+
+  <!-- Color de acento para elementos interactivos -->
+  <color name="colorAccent">#d97706</color>
 </resources>
