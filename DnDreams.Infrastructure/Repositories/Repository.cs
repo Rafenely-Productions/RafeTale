@@ -1,7 +1,9 @@
-﻿using DnDreams.Domain.Entities;
+﻿using DnDreams.Domain.Helpers;
+using DnDreams.Domain.Entities;
 using DnDreams.Domain.Interfaces;
 using DnDreams.Domain.Interfaces.IRepositories;
 using DnDreams.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore.Query;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,14 +15,9 @@ using System.Threading.Tasks;
 
 namespace DnDreams.Infrastructure.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class, IEntity
+    public class Repository<T>(DnDreamsDbContext context) : IRepository<T> where T : class, IEntity
     {
-        protected readonly DnDreamsDbContext _context;
-
-        public Repository(DnDreamsDbContext context)
-        {
-            _context = context;
-        }
+        protected readonly DnDreamsDbContext _context = context;
 
         public async Task AddAsync(T? data)
         {
@@ -49,27 +46,34 @@ namespace DnDreams.Infrastructure.Repositories
             return await _context.Set<T>().Where(predicate).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<T?>> GetAllAsync(Expression<Func<T, bool>>? filter, params Expression<Func<T, object>>[] includes)
+        public async Task<IEnumerable<T?>> GetAllAsync(Expression<Func<T, bool>>? filter, Action<IncludeAggregator<T>>? includes = null)
         {
             IQueryable<T> query = GetValues(filter, includes);
 
+
             return await query.ToListAsync();
         }
-        public async Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes)
+        public async Task<T?> GetByIdAsync(Guid id, Action<IncludeAggregator<T>>? includes = null)
         {
             IQueryable<T> query = GetValues(x => x.Id == id, includes);
 
             return await query.FirstOrDefaultAsync();
         }
 
-        private IQueryable<T> GetValues(Expression<Func<T, bool>>? filter, params Expression<Func<T, object>>[] includes)
+        private IQueryable<T> GetValues(Expression<Func<T, bool>>? filter, Action<IncludeAggregator<T>>? includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
             if (includes != null)
             {
-                foreach (var include in includes)
+                var aggregator = new IncludeAggregator<T>();
+                includes(aggregator); // Esto llena la lista de strings 'IncludePaths'
+
+                foreach (var path in aggregator.IncludePaths)
                 {
-                    query = query.Include(include);
+                    if (!string.IsNullOrWhiteSpace(path))
+                    {
+                        query = query.Include(path); // EF Core devora los strings felices
+                    }
                 }
             }
             if (filter != null)

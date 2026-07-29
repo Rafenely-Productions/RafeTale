@@ -1,19 +1,26 @@
 ﻿@using Application.DTOs;
-@inject IStringLocalizer<AppStrings> L
 @inject IStringLocalizer<LibraryStrings> LL
+@inject IJSRuntime JS
 
-<h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">Lineages & Ancestries</h2>
+<h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">@LL["LineagesAndAncestries"]</h2>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
     @foreach (var race in Races)
     {
-        <div @onclick="() => OnInspectedRace.InvokeAsync(race)"
-             class="rounded-xl border border-slate-800 bg-black/40 px-4 py-4 cursor-pointer hover:border-amber-500/40 transition-all group shadow-md">
-            <div class="flex items-center justify-between gap-2">
-                <p class="text-base font-black text-white group-hover:text-amber-500 uppercase transition-colors">@race.Name</p>
-                <span class="shrink-0 text-xs text-slate-400 font-mono bg-slate-800 px-2 py-0.5 rounded">
-                    Traits View
+        <div @onclick="() => InspectRace(race)"
+             class="rounded-xl border border-slate-800 bg-black/40 px-4 py-3.5 cursor-pointer hover:border-amber-500/40 transition-all group shadow-md flex flex-col justify-between min-w-0">
+
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="text-base font-black text-white group-hover:text-amber-500 uppercase transition-colors truncate">
+                    @race.Name
+                </p>
+                <span class="shrink-0 text-[10px] text-slate-400 font-mono bg-slate-900 border border-slate-800 px-2 py-0.5 rounded uppercase tracking-wider">
+                    @LL[race.CreatureType.ToString()]
                 </span>
             </div>
+
+            <p class="text-xs text-slate-400 font-sans leading-relaxed line-clamp-2 min-w-0">
+                @((MarkupString)race.Description)
+            </p>
         </div>
     }
 </div>
@@ -21,4 +28,31 @@
 @code {
     [Parameter] public List<RaceDto> Races { get; set; } = new();
     [Parameter] public EventCallback<RaceDto> OnInspectedRace { get; set; }
+    [Parameter] public double InitialScrollPosition { get; set; } = 0;
+    private ElementReference ListContainerRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (InitialScrollPosition > 0)
+            {
+                // Si tiene una posición guardada, se posiciona ahí de forma instantánea al cargar
+                await JS.InvokeVoidAsync("eval", $"document.getElementById('main-scroll-view')?.scrollTo({{ top: {InitialScrollPosition}, behavior: 'instant' }});");
+                //await JS.InvokeVoidAsync("eval", $"arguments[0].scrollTop = {InitialScrollPosition};", ListContainerRef);
+                //await JS.InvokeVoidAsync("eval", "document.getElementById('main-scroll-view')?.scrollTo({ top: 0, behavior: 'instant' });");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("eval", "document.getElementById('main-scroll-view')?.scrollTo({ top: 0, behavior: 'instant' });");
+            }
+        }
+
+    }
+    private async Task InspectRace(RaceDto race)
+    {
+        //savedScrollPosition = await JS.InvokeAsync<double>("eval", "document.getElementById('main-scroll-view')?.scrollTop || 0");
+
+        await OnInspectedRace.InvokeAsync(race);
+    }
 }

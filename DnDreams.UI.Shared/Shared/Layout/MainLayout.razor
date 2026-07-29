@@ -2,64 +2,104 @@
 @inherits LayoutComponentBase
 @using DnDreams.Application.Services.Importer.Initializer
 @inject IAppInitializer Initializer
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+@implements IDisposable
 
-<div class="main-layout">
+<div class="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col selection:bg-amber-500/30">
     @if (!Initializer.IsDatabaseReady)
     {
-        <div class="fixed inset-0 bg-black flex flex-col justify-center items-center z-50">
-            <div class="loading-wrapper">
-                <img src="images/logo.svg" class="loading-logo" alt="Logo DnDreams" />
-
-                <div class="text-center">
-                    <i class="bi bi-dice-6-fill dice-icon"></i>
-                    <div class="loading-text-glow font-mono text-sm tracking-widest uppercase text-white mt-3">
-                        @Initializer.CurrentStatusMessage
-                    </div>
-
-                    
-                </div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar-fill"></div>
+        <div class="fixed inset-0 bg-black flex flex-col justify-center items-center z-50 p-6">
+            <div class="loading-wrapper text-center space-y-4">
+                <img src="images/logo.svg" class="loading-logo size-20 mx-auto" alt="Logo DnDreams" />
+                <div class="loading-text-glow font-mono text-xs tracking-widest uppercase text-amber-500 mt-2">
+                    @Initializer.CurrentStatusMessage
                 </div>
             </div>
         </div>
     }
     else
     {
+        <header class="sticky top-0 z-50">
+            <div class="w-full flex flex-col sm:flex-row items-center justify-center px-3 sm:px-5 py-3 sm:py-4 gap-3 sm:gap-0">
+                <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto">
+                    <div class="size-8 rounded-xl flex items-center justify-center text-amber-500 font-black text-xs font-mono shadow-inner">
+                        D&D
+                    </div>
+                    <span class="text-sm font-black text-amber-500 uppercase tracking-widest font-mono italic">DnDreams</span>
+                </div>
+            </div>
+        </header>
 
-        <aside class="sidebar-container">
-            <NavMenu />
-        </aside>
-
-        <main class="content-container">
+        <main id="main-scroll-view" style="position: relative;" class="flex-1 w-full max-w-7xl mx-auto overflow-y-auto">
             @Body
-    </main>
+        </main>
+
+        <div class="text-[10px] font-mono text-slate-600 uppercase tracking-widest text-center py-2 bg-slate-950">
+            DnDreams v @AppVersionString
+        </div>
+
+        <footer>
+            <NavMenu />
+        </footer>
     }
 </div>
+
+<style>
+    .border {
+        border: none !important;
+    }
+
+    html, body, #main-scroll-view {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scroll-transition {
+        opacity: 1;
+        transition: opacity 0.15s ease-in-out;
+    }
+
+        .scroll-transition.is-scrolling {
+            opacity: 0;
+        }
+</style>
+
 @code {
+    private string AppVersionString = "0.1.2-beta";
+
     protected override void OnInitialized()
     {
-        // Nos colgamos a ambos eventos
         Initializer.OnInitializationCompleted += HandleInitializationCompleted;
         Initializer.OnStatusMessageChanged += HandleStatusMessageChanged;
+        Navigation.LocationChanged += OnLocationChanged;
     }
 
-    // Este se dispara cuando el Excel avisa que cambió de texto
-    private void HandleStatusMessageChanged(string newMessage)
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e) => await ScrollToTop();
+
+    private async Task ScrollToTop()
     {
-        // Forzamos a Blazor a refrescar la pantalla para pintar el nuevo texto en vivo
-        InvokeAsync(StateHasChanged);
+        try
+        {
+            await JS.InvokeVoidAsync("eval", @"
+                const container = document.getElementById('main-scroll-view');
+                if (container) { container.scrollTo({ top: 0, behavior: 'instant' }); }
+            ");
+        }
+        catch { }
     }
 
-    private void HandleInitializationCompleted()
-    {
-        InvokeAsync(StateHasChanged);
-    }
+    private void HandleStatusMessageChanged(string newMessage) => InvokeAsync(StateHasChanged);
+    private void HandleInitializationCompleted() => InvokeAsync(StateHasChanged);
 
     public void Dispose()
     {
-        // Limpieza de eventos
         Initializer.OnInitializationCompleted -= HandleInitializationCompleted;
         Initializer.OnStatusMessageChanged -= HandleStatusMessageChanged;
+        Navigation.LocationChanged -= OnLocationChanged;
     }
 }

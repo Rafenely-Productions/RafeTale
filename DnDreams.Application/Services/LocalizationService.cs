@@ -11,25 +11,18 @@ using System.Threading.Tasks;
 
 namespace DnDreams.Application.Services
 {
-    public class LocalizationService : ILocalizationService
+    public class LocalizationService(IUnitOfWork unitOfWork) : ILocalizationService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly LocLanguage _currentCulture;
-
-        public LocalizationService(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-            _currentCulture = LocLanguage.es;
-        }
+        private readonly LocLanguage _currentCulture = LocLanguage.es;
 
         public async Task<string> GetStringAsync(Guid entityId, LocProperty property)
         {
-            var entry = await _unitOfWork.LocalizedContents.GetTranslationAsync(entityId, property, _currentCulture);
+            var entry = await unitOfWork.LocalizedContents.GetTranslationAsync(entityId, property, _currentCulture);
 
             // Fallback: Si no hay en español, intenta buscar en inglés ("en")
             if (entry == null && _currentCulture != LocLanguage.en)
             {
-                entry = await _unitOfWork.LocalizedContents.GetTranslationAsync(entityId, property, LocLanguage.en);
+                entry = await unitOfWork.LocalizedContents.GetTranslationAsync(entityId, property, LocLanguage.en);
             }
 
             return entry?.Text ?? $"[{property}_Missing]";
@@ -37,36 +30,37 @@ namespace DnDreams.Application.Services
 
         public async Task<Dictionary<Guid, string>> GetAllAsync(LocEntity entityType, LocProperty property = LocProperty.Name)
         {
-            var translations = await _unitOfWork.LocalizedContents.GetManyAsync(x =>
+            var translations = await unitOfWork.LocalizedContents.GetManyAsync(x =>
                 x.EntityType == entityType &&
                 x.Property == property &&
                 x.LanguageCode == _currentCulture);
 
-            return translations.ToDictionary(t => t.EntityId, t => t.Text);
+            return translations.ToDictionary(t => t!.EntityId, t => t!.Text);
         }
-        public async Task<List<LocalizedContent?>> GetTranslationsForLanguageAsync(LocEntity entityType)
+
+        public async Task<List<LocalizedContent>> GetTranslationsForLanguageAsync(LocEntity entityType)
         {
-            var translations = await _unitOfWork.LocalizedContents.GetManyAsync(x =>
+            var translations = await unitOfWork.LocalizedContents.GetManyAsync(x =>
                 x.EntityType == entityType &&
                 x.LanguageCode == _currentCulture);
 
-            return translations.ToList();
+            return [.. translations];
         }
 
         public async Task<Dictionary<LocProperty,Dictionary<Guid, string>>> GetAllAsync(LocEntity entityType, LocProperty[] propertyType)
         {
             try
             {
-                Dictionary<LocProperty, Dictionary<Guid, string>> result = new Dictionary<LocProperty, Dictionary<Guid, string>>();
+                Dictionary<LocProperty, Dictionary<Guid, string>> result = [];
                 
                 foreach (var property in propertyType)
                 {
-                    var translations = await _unitOfWork.LocalizedContents.GetManyAsync(x =>
+                    var translations = await unitOfWork.LocalizedContents.GetManyAsync(x =>
                         x.EntityType == entityType &&
                         x.Property == property &&
                         x.LanguageCode == _currentCulture);
 
-                    result.Add(property, translations.ToDictionary(t => t.EntityId, t => t.Text));
+                    result.Add(property, translations.ToDictionary(t => t!.EntityId, t => t!.Text));
                 }
 
                 return result;
@@ -75,7 +69,7 @@ namespace DnDreams.Application.Services
             {
                 // Manejo de errores, por ejemplo, loguear el error
                 Console.WriteLine($"Error al obtener traducciones: {ex.Message}");
-                return new Dictionary<LocProperty, Dictionary<Guid, string>>();
+                return [];
             }
 
         }

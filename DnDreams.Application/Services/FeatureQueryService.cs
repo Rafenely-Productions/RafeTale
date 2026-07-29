@@ -7,17 +7,10 @@ using System.Threading.Tasks;
 
 namespace DnDreams.Application.Services;
 
-public class FeatureQueryService : IFeatureQueryService
+public class FeatureQueryService(IUnitOfWork unitOfWork) : IFeatureQueryService
 {
-    private readonly IUnitOfWork _unitOfWork;
-
-    public FeatureQueryService(IUnitOfWork unitOfWork)
+    public async Task<IEnumerable<Feature?>> GetDashboardFeaturesAsync()
     {
-        _unitOfWork = unitOfWork;
-    }
-
-    public async Task<IEnumerable<Feature>> GetDashboardFeaturesAsync()
-    {
-        return await _unitOfWork.Features.GetAllAsync();
+        return await unitOfWork.Features.GetAllAsync();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DnDreams.Application.DTOs;
+using DnDreams.Domain.Helpers;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
@@ -18,22 +19,17 @@ namespace DnDreams.Application.Services.DtosServices
             throw new NotImplementedException();
         }
 
-        public Task<LanguageDto> ArmDto(Language entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
+        public LanguageDto ArmDto(Language entity, Dictionary<LocProperty, Dictionary<Guid, string>>? localizedWords = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<LanguageDto>> GetAllAsync(Expression<Func<Language, bool>>? filter, params Expression<Func<Language, object>>[] includes)
+        public Task<List<LanguageDto>> GetAllAsync(Expression<Func<Language, bool>>? filter, params Expression<Func<IQueryable<Language>, IQueryable<Language>>>?[] includes)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<LanguageDto>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<LanguageDto> GetByIdAsync(Guid id)
+        public Task<List<LanguageDto>> GetAllAsync(Expression<Func<Language, bool>>? filter, Action<IncludeAggregator<Language>>? includes = null)
         {
             throw new NotImplementedException();
         }
@@ -43,7 +39,7 @@ namespace DnDreams.Application.Services.DtosServices
             throw new NotImplementedException();
         }
 
-        LanguageDto IService<LanguageDto, Language>.ArmDto(Language entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
+        public Task<LanguageDto> GetByIdAsync(Guid id, Action<IncludeAggregator<Language>>? includes = null)
         {
             throw new NotImplementedException();
         }

@@ -12,11 +12,10 @@ namespace DnDreams.Domain.Entities
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string TechnicalName { get; set; } = string.Empty;
-        public string Darkvision { get; set; } = "60 ft.";
         public SizeCategory Size { get; set; }
         public CreatureType CreatureType { get; set; }
 
-        public float Speed { get; set; } = 30;
+        public string Speed { get; set; } = string.Empty;
         public List<Language> Languages { get; set; } = new();
         public List<SubRace> SubRaces { get; set; } = new();
 

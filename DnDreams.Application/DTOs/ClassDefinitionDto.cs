@@ -12,6 +12,7 @@ namespace DnDreams.Application.DTOs
     public class ClassDefinitionDto : IDto 
     {
         public Guid Id { get; set; }
+        public string TechnicalName { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = "";
         public string HitDie { get; set; } = "d8";

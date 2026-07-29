@@ -23,7 +23,9 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
             .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(cd => cd.Progressions)
-                .WithOne();
+                .WithOne()
+                .HasForeignKey(p => p.SubclassId) 
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

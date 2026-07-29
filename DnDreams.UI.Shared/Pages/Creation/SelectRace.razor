@@ -1,9 +1,9 @@
 ﻿@page "/character/create/race"
 @using DnDreams.Application.DTOs
 @using DnDreams.Application.Interfaces.DtosInterfaces
-@using DnDreams.Domain.DTOs
 @using DnDreams.Domain.Entities
 @using DnDreams.Domain.Interfaces
+@using DnDreams.UI.Shared.Components.Library
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
 @inject IStringLocalizer<AppStrings> L
@@ -21,21 +21,23 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-            <div class="lg:col-span-4 space-y-3">
-                @foreach (var dtoRace in DtoRaces)
-                {
-                    <div @onclick="() => SelectingRace(dtoRace)"
-                         class="group cursor-pointer p-6 rounded-2xl border transition-all duration-300 @(SelectedRace?.Id == dtoRace.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xl font-black uppercase tracking-tight @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-white group-hover:text-amber-500")">
-                                @dtoRace.Name
-                            </span>
-                            <i class="fa-solid fa-chevron-right @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-amber-900/40")"></i>
+            <div class="lg:col-span-3 space-y-2">
+                <div class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 custom-scrollbar">
+                    @foreach (var dtoRace in DtoRaces)
+                    {
+                        <div @onclick="() => SelectingRace(dtoRace)"
+                             class="group cursor-pointer px-3.5 py-2.5 lg:p-4 rounded-xl border transition-all duration-300 shrink-0 lg:shrink w-auto lg:w-auto @(SelectedRace?.Id == dtoRace.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
+                            <div class="flex justify-between items-center gap-3">
+                                <span class="text-xs lg:text-sm font-black uppercase tracking-tight truncate @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-white group-hover:text-amber-500")">
+                                    @dtoRace.Name
+                                </span>
+                                <i class="fa-solid fa-fire-bolt text-xs shrink-0 @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-amber-900/40")"></i>
+                            </div>
                         </div>
-                    </div>
-                }
+                    }
+                </div>
             </div>
+
 
             <div class="lg:col-span-8">
                 <div class="bg-slate-900 border border-amber-900/30 rounded-[3rem] p-10 shadow-2xl min-h-[600px] relative overflow-hidden">
@@ -49,82 +51,16 @@
                     }
                     else
                     {
-                        <div class="animate-in fade-in duration-500">
-                            <div class="flex flex-wrap justify-between items-start gap-6 mb-8">
-                                <div class="flex-1">
-                                    <h2 class="text-6xl font-black text-white mb-2 uppercase italic tracking-tighter">@SelectedRace.Name</h2>
-                                    <p class="text-slate-400 font-serif italic text-lg">@SelectedRace.Description</p>
-                                </div>
-
-                                <div class="flex gap-4">
-                                    <div class="bg-amber-600/10 border border-amber-600/30 p-4 rounded-3xl text-center min-w-[90px]">
-                                        <span class="block text-[10px] font-black text-amber-600 uppercase mb-1">@L["Label_Speed"]</span>
-                                        <span class="text-2xl font-black text-white">@SelectedRace.Speed <small class="text-xs uppercase">@L["Unit_Feet"]</small></span>
-                                    </div>
-                                    <div class="bg-amber-600/10 border border-amber-600/30 p-4 rounded-3xl text-center min-w-[90px]">
-                                        <span class="block text-[10px] font-black text-amber-600 uppercase mb-1">@L["Label_Size"]</span>
-                                        <span class="text-2xl font-black text-white">@SelectedRace.Size</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                <div class="space-y-8">
-                                    <div>
-                                        <h3 class="text-amber-500 font-black text-xs tracking-[0.3em] uppercase mb-4 flex items-center gap-2">
-                                            <i class="fa-solid fa-dna text-amber-700"></i> @L["Label_Traits"]
-                                        </h3>
-                                        <div class="space-y-3">
-                                            @* Aquí iteramos los rasgos que vienen de la DB *@
-                                            @foreach (var trait in SelectedRace.Traits)
-                                            {
-                                                <div class="group bg-black/20 p-5 rounded-3xl border border-white/5 hover:border-amber-500/30 transition-colors">
-                                                    <h4 class="text-amber-500 font-bold text-sm uppercase mb-1">@trait.TechnicalName</h4>
-                                                    <p class="text-slate-400 text-xs leading-relaxed">//trait.Description</p>
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="space-y-8">
-                                    <div style="display:none">
-                                        <h3 class="text-amber-500 font-black text-xs tracking-[0.3em] uppercase mb-4 flex items-center gap-2">
-                                            <i class="fa-solid fa-bolt text-amber-700"></i> @L["Label_RaceAbilities"]
-                                        </h3>
-                                        <div class="flex flex-wrap gap-2">
-                                            @* Ejemplo de visualización de bonos *@
-                                            <div class="bg-lime-600/20 border border-lime-600/30 px-4 py-2 rounded-xl">
-                                                <span class="text-lime-500 font-black text-lg">+2 @L["Stat_Str"]</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <h3 class="text-amber-500 font-black text-xs tracking-[0.3em] uppercase mb-4 flex items-center gap-2">
-                                            <i class="fa-solid fa-comment text-amber-700"></i> @L["Label_Languages"]
-                                        </h3>
-                                        <p class="text-slate-400 text-sm font-serif italic">
-                                            @* Aquí irían los idiomas separados por coma *@
-                                            @{
-                                                var language = string.Join(", ", SelectedRace.Languages.Select(x=> x.TechnicalName).ToList());
-                                            }
-
-                                            @language
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-12 pt-8 border-t border-white/5 flex justify-end">
-                                <button @onclick="Confirm"
-                                        class="group px-12 py-5 bg-amber-600 hover:bg-amber-500 text-black font-black rounded-[2rem] transition-all shadow-xl shadow-amber-900/20 flex items-center gap-4">
-                                    <span class="uppercase tracking-widest">@L["Btn_ConfirmRace"]</span>
-                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
-                                </button>
-                            </div>
+                        <RaceInspector RaceDto="SelectedRace" />
+                        <div class="mt-12 pt-8 border-t border-amber-500/10 flex justify-end">
+                            <button @onclick="Confirm"
+                                    class="group w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-black rounded-2xl transition-all duration-300 shadow-xl shadow-amber-600/20 flex items-center justify-center gap-3">
+                                <span class="uppercase tracking-widest text-xs">@L["Btn_ConfirmRace"]</span>
+                                <i class="fa-solid fa-arrow-right text-sm transition-transform duration-300 group-hover:translate-x-1"></i>
+                            </button>
                         </div>
                     }
+
                 </div>
             </div>
 
@@ -138,9 +74,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        DtoRaces = await RaceService.GetAllAsync(null,x=> x.Traits,x=> x.Languages);
+        DtoRaces = await RaceService.GetAllAsync(null, includes: query => query.Include(x => x.Languages).IncludeCollection(x => x.SubRaces, z => z.Traits).Include(x => x.Traits));
 
-        if(CreationService.SelectedRaceId != null)
+        if (CreationService.SelectedRaceId != null)
         {
             SelectedRace = DtoRaces.FirstOrDefault(x => x.Id == CreationService.SelectedRaceId);
         }

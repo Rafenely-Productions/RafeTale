@@ -19,11 +19,19 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(e => e.Id);
             builder.Property(e => e.TechnicalName).IsRequired().HasMaxLength(100);
-            builder.HasMany(e => e.Modifiers);
+            builder.Property(f => f.Modifiers)
+             .HasConversion(
+                 // Al guardar
+                 v => v == null ? "[]" : JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+
+                 // Al leer (Protección contra strings vacíos o "no-JSON")
+                 v => string.IsNullOrWhiteSpace(v)
+                     ? new List<ModifierData>()
+                     : JsonSerializer.Deserialize<List<ModifierData>>(v, (JsonSerializerOptions)null) ?? new List<ModifierData>()
+             );
             builder.HasMany(e => e.Prerequisite);
 
             builder.Ignore(e => e.Prerequisite);
-            builder.Ignore(e => e.Modifiers);
         }
     }
 }

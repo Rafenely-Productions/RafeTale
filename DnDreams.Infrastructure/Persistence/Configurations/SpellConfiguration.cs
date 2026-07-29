@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json; 
 
 namespace DnDreams.Infrastructure.Persistence.Configurations
 {
@@ -27,7 +28,11 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
             builder.Property(s => s.School)
                 .HasConversion<string>();
 
-            builder.HasMany(s => s.Classes);
+            builder.Property(s => s.ClassesTechnicalNames)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null!),
+                v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions)null!) ?? new List<string>())
+            .HasColumnType("TEXT");
         }
-    }
+        }
 }
