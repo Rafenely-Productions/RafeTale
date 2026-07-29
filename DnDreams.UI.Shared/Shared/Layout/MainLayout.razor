@@ -73,10 +73,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // ⬇️ NUEVO: Esperamos a que la DB esté lista antes de mostrar contenido
-        if (!Initializer.IsDatabaseReady)
+        // Polling: cada 100ms revisamos si la DB ya está lista
+        // Esto evita depender de eventos que pueden no existir o no funcionar en MAUI Blazor Hybrid
+        while (!Initializer.IsDatabaseReady)
         {
-            await Initializer.InitializationTask;
+            await Task.Delay(100);
+            StateHasChanged();  // Fuerza re-render para actualizar el mensaje de status
         }
     }
 

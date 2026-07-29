@@ -2,21 +2,12 @@
 
 public class AppInitializer : IAppInitializer
 {
-    private readonly TaskCompletionSource _tcs = new();
-
     public bool IsDatabaseReady { get; private set; } = false;
     public string CurrentStatusMessage { get; private set; } = "Lanzando iniciativa...";
-
-    // ⬇️ NUEVO: Task que los componentes pueden await
-    public Task InitializationTask => _tcs.Task;
-
-    public event Action? OnInitializationCompleted;
-    public event Action? OnStatusMessageChanged;
 
     public void UpdateStatus(string newMessage)
     {
         CurrentStatusMessage = newMessage;
-        OnStatusMessageChanged?.Invoke();
     }
 
     public async Task InitializeAsync(Func<Task> coreDataLoadingTask)
@@ -32,8 +23,6 @@ public class AppInitializer : IAppInitializer
         finally
         {
             IsDatabaseReady = true;
-            _tcs.SetResult();           // ⬅️ Libera el Task
-            OnInitializationCompleted?.Invoke();
         }
     }
 }
