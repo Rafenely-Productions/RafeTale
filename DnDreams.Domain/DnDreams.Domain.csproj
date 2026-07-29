@@ -10,4 +10,8 @@
     <Compile Remove="Interfaces\IDataRepository.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
 </Project>

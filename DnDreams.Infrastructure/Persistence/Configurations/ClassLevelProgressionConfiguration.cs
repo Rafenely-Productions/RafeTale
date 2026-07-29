@@ -1,17 +1,20 @@
 ﻿using DnDreams.Domain.Entities;
-using DocumentFormat.OpenXml.Vml.Office;
+using DnDreams.Domain.Modifiers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace DnDreams.Infrastructure.Persistence.Configurations
 {
     public class ClassLevelProgressionConfiguration : IEntityTypeConfiguration<ClassLevelProgression>
     {
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            WriteIndented = false,
+            PropertyNameCaseInsensitive = true, // Ignora si en el JSON viene 'type' o 'Type'
+            Converters = { new JsonStringEnumConverter() } // Permite leer "SpellSlots" o "RagesCount" en texto
+        };
         public void Configure(EntityTypeBuilder<ClassLevelProgression> builder)
         {
             builder.HasKey(e => e.Id);
@@ -24,6 +27,12 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
 
             builder.HasMany(e => e.Features)
               .WithOne();
+            builder.Property(e => e.Traits)
+                   .HasConversion(
+                       v => JsonSerializer.Serialize(v, _jsonOptions),
+                       v => JsonSerializer.Deserialize<List<ClassTrait>>(v, _jsonOptions) ?? new List<ClassTrait>()
+                   )
+                   .HasColumnType("TEXT");
         }
     }
 }

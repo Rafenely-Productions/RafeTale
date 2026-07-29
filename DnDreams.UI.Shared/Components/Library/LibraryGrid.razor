@@ -1,0 +1,127 @@
+@using DnDreams.Domain.Enums
+@inject IStringLocalizer<LibraryStrings> LL
+
+<header class="mb-6">
+    <h1 class="font-heading text-2xl font-bold tracking-tight text-white md:text-3xl text-balance">
+        @LL["Title_Name"]
+    </h1>
+    <p class="mt-1 text-sm text-slate-400 text-pretty">
+        @LL["Title_Description"]
+    </p>
+</header>
+
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <!-- Clases -->
+    <button type="button" @onclick="() => OnTabSelected.InvokeAsync(CodexKey.Classes)"
+            class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-2 text-left transition-colors hover:border-amber-500/40">
+        <div class="flex items-start justify-between gap-3 w-full">
+            <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+                <i class="fa-solid fa-khanda text-lg"></i>
+            </div>
+            <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
+        </div>
+        <div class="min-w-0">
+            <h2 class="text-base font-semibold text-white">@LL["Classes_Subclasses"]</h2>
+            <p class="mt-1 break-words text-sm text-slate-400">@LL["Classes_CardDescription"]</p>
+        </div>
+        <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
+            @ClassesCount classes
+        </span>
+    </button>
+
+    <!-- Razas / Lineages -->
+    <button type="button" @onclick="() => OnTabSelected.InvokeAsync(CodexKey.Races)"
+            class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-2 text-left transition-colors hover:border-amber-500/40">
+        <div class="flex items-start justify-between gap-3 w-full">
+            <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+                <i class="fa-solid fa-users text-lg"></i>
+            </div>
+            <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
+        </div>
+        <div class="min-w-0">
+            <h2 class="text-base font-semibold text-white">@LL["Race_Subrace_Title"]</h2>
+            <p class="mt-1 break-words text-sm text-slate-400">@LL["Race_Description"]</p>
+        </div>
+        <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
+            @RacesCount lineages
+        </span>
+    </button>
+
+    <!-- Spells -->
+    <button type="button" @onclick="() => OnTabSelected.InvokeAsync(CodexKey.Spells)"
+            class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-2 text-left transition-colors hover:border-amber-500/40">
+        <div class="flex items-start justify-between gap-3 w-full">
+            <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+                <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+            </div>
+            <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
+        </div>
+        <div class="min-w-0">
+            <h2 class="text-base font-semibold text-white">@LL["Spells_Magic"]</h2>
+            <p class="mt-1 break-words text-sm text-slate-400">@LL["Spells_Magic_Description"]</p>
+        </div>
+        <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
+            @SpellsCount spells
+        </span>
+    </button>
+
+    <!-- Backgrounds -->
+    <button type="button" @onclick="() => OnTabSelected.InvokeAsync(CodexKey.Backgrounds)"
+            class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-2 text-left transition-colors hover:border-amber-500/40">
+        <div class="flex items-start justify-between gap-3 w-full">
+            <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+                <i class="fa-solid fa-scroll text-lg"></i>
+            </div>
+            <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
+        </div>
+        <div class="min-w-0">
+            <h2 class="text-base font-semibold text-white">@LL["Background_Lib"]</h2>
+            <p class="mt-1 break-words text-sm text-slate-400">@LL["Background_Lib_Description"]</p>
+        </div>
+        <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
+            @BackgroundsCount @LL["Backgrounds_Label"]
+        </span>
+    </button>
+    <button type="button" @onclick="() => OnTabSelected.InvokeAsync(CodexKey.Feats)"
+            class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-2 text-left transition-colors hover:border-amber-500/40">
+        <div class="flex items-start justify-between gap-3 w-full">
+            <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+                <i class="fa-solid fa-medal text-lg"></i>
+            </div>
+            <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
+        </div>
+        <div class="min-w-0">
+            <h2 class="text-base font-semibold text-white">@LL["Feats_Lib"]</h2>
+            <p class="mt-1 break-words text-sm text-slate-400">@LL["Feats_Lib_Description"]</p>
+        </div>
+        <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
+            @FeatsCount @LL["Feats_Label"]
+        </span>
+    </button>
+    <!-- Rules -->
+    <button type="button" @onclick="() => OnTabSelected.InvokeAsync(CodexKey.Rules)"
+            class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-2 text-left transition-colors hover:border-amber-500/40">
+        <div class="flex items-start justify-between gap-3 w-full">
+            <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+                <i class="fa-solid fa-book-bookmark text-lg"></i>
+            </div>
+            <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
+        </div>
+        <div class="min-w-0">
+            <h2 class="text-base font-semibold text-white">System Core Rules</h2>
+            <p class="mt-1 break-words text-sm text-slate-400">Experience progression and proficiency bonus charts.</p>
+        </div>
+        <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
+            XP Table
+        </span>
+    </button>
+</div>
+
+@code {
+    [Parameter] public int ClassesCount { get; set; }
+    [Parameter] public int RacesCount { get; set; }
+    [Parameter] public int SpellsCount { get; set; }
+    [Parameter] public int BackgroundsCount { get; set; }
+    [Parameter] public int FeatsCount { get; set; }
+    [Parameter] public EventCallback<CodexKey> OnTabSelected { get; set; }
+}

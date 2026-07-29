@@ -148,3 +148,18 @@
     <script src="_framework/blazor.webview.js" autostart="false"></script>
 </body>
 </html>
+
+<script>
+    // Cada vez que Blazor termine de renderizar una página, sube el scroll hasta arriba
+    window.scrollToTop = () => {
+        window.scrollTo(0, 0);
+        // Por si acaso el scroll está en un contenedor interno o en el body principal:
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    };
+    window.InteropScrollTop = (element) => {
+        if (element) {
+            element.scrollTop = 0;
+        }
+    };
+</script>

@@ -14,17 +14,17 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<ClassDefinition> builder)
         {
             builder.ToTable("ClassDefinitions");
+            
             builder.HasMany(c => c.Subclasses)
                 .WithOne()
                 .HasForeignKey("ClassDefinitionId");
+            
             builder.HasMany(c => c.SkillProficiencies)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("ClassSkillProficiencies"));
 
             builder.HasMany(cd => cd.Progressions)
                 .WithOne();
-
-            
         }
     }
 }

@@ -127,7 +127,7 @@
     <value>Habilidad Primaria</value>
   </data>
   <data name="Title_Description" xml:space="preserve">
-    <value>Navega el catalogo completo de D&amp;D.</value>
+    <value>Navega el catalogo completo de D&amp;D</value>
   </data>
   <data name="Title_Name" xml:space="preserve">
     <value>El Códice</value>
@@ -141,13 +141,13 @@
   <data name="Return_DirectoryBtn" xml:space="preserve">
     <value>Regresa a las Clases</value>
   </data>
-  <data name="Race_Description_Card" xml:space="preserve">
+  <data name="Race_Description" xml:space="preserve">
     <value>Razas, Subrazas y sus rasgos</value>
   </data>
-  <data name="Race_Subrace_Title_Card" xml:space="preserve">
+  <data name="Race_Subrace_Title" xml:space="preserve">
     <value>Razas y Subrazas</value>
   </data>
-  <data name="Spells_Magic_Title" xml:space="preserve">
+  <data name="Spells_Magic" xml:space="preserve">
     <value>Hechizos y Magia</value>
   </data>
   <data name="Spells_Magic_Description" xml:space="preserve">
@@ -179,5 +179,401 @@
   </data>
   <data name="Progression_With_Subclass_Active" xml:space="preserve">
     <value>Progresión con {0} activa</value>
+  </data>
+  <data name="LineagesAndAncestries" xml:space="preserve">
+    <value>Linajes y Especies</value>
+  </data>
+  <data name="Humanoid" xml:space="preserve">
+    <value>Humanoide</value>
+  </data>
+  <data name="Monstrosity" xml:space="preserve">
+    <value>Monstruosidad</value>
+  </data>
+  <data name="Fey" xml:space="preserve">
+    <value>Feérico</value>
+  </data>
+  <data name="Dragon" xml:space="preserve">
+    <value>Dragón</value>
+  </data>
+  <data name="Undead" xml:space="preserve">
+    <value>Muerto Viviente</value>
+  </data>
+  <data name="Label_Speed" xml:space="preserve">
+    <value>Velocidad</value>
+  </data>
+  <data name="Label_Size" xml:space="preserve">
+    <value>Tamaño</value>
+  </data>
+  <data name="Label_Languages" xml:space="preserve">
+    <value>Idiomas</value>
+  </data>
+  <data name="Unit_Feet" xml:space="preserve">
+    <value>pies</value>
+  </data>
+  <data name="Title_SelectClass" xml:space="preserve">
+    <value>Elige tu Senda</value>
+  </data>
+  <data name="Label_HitDie" xml:space="preserve">
+    <value>Dado de Golpe</value>
+  </data>
+  <data name="Label_PrimaryStat" xml:space="preserve">
+    <value>Atributo Principal</value>
+  </data>
+  <data name="Label_Progression" xml:space="preserve">
+    <value>Progresión de Clase</value>
+  </data>
+  <data name="Btn_ConfirmClass" xml:space="preserve">
+    <value>Confirmar Senda</value>
+  </data>
+  <data name="Label_LevelShort" xml:space="preserve">
+    <value>Nivel</value>
+  </data>
+  <data name="Msg_PerLevel" xml:space="preserve">
+    <value>por nivel</value>
+  </data>
+  <data name="Stat_Str" xml:space="preserve">
+    <value>Fuerza</value>
+  </data>
+  <data name="Stat_Cha" xml:space="preserve">
+    <value>Carisma</value>
+  </data>
+  <data name="Stat_Con" xml:space="preserve">
+    <value>Constitución</value>
+  </data>
+  <data name="Btn_Confirm" xml:space="preserve">
+    <value>Entendido</value>
+  </data>
+  <data name="Label_GrantSpell" xml:space="preserve">
+    <value>Hechizo Otorgado</value>
+  </data>
+  <data name="Label_CastingTime" xml:space="preserve">
+    <value>Tiempo de Lanzamiento</value>
+  </data>
+  <data name="Label_Range" xml:space="preserve">
+    <value>Alcance</value>
+  </data>
+  <data name="Skill_Detail" xml:space="preserve">
+    <value>Detalle de Habilidad</value>
+  </data>
+  <data name="Abilities_Title" xml:space="preserve">
+    <value>Atributos y Estadísticas</value>
+  </data>
+  <data name="Abilities_Subtitle" xml:space="preserve">
+    <value>Distribuye tu poder e integra el legado de tu trasfondo</value>
+  </data>
+  <data name="StandardArray_Instructions" xml:space="preserve">
+    <value>Asigna los valores 15, 14, 13, 12, 10, 8 estratégicamente. No puedes repetir ningún número.</value>
+  </data>
+  <data name="BasedOn" xml:space="preserve">
+    <value>basado en</value>
+  </data>
+  <data name="Final_Score" xml:space="preserve">
+    <value>Puntuación Final</value>
+  </data>
+  <data name="Background_Bonus" xml:space="preserve">
+    <value>Bonificaciones de Trasfondo</value>
+  </data>
+  <data name="BackgroundASI_HelpText" xml:space="preserve">
+    <value>Tu trasfondo te permite aplicar un +2 y un +1 únicamente en:</value>
+  </data>
+  <data name="Btn_FinishCharacter" xml:space="preserve">
+    <value>Concluir Leyenda</value>
+  </data>
+  <data name="Strength" xml:space="preserve">
+    <value>Fuerza</value>
+  </data>
+  <data name="Dexterity" xml:space="preserve">
+    <value>Destreza</value>
+  </data>
+  <data name="Constitution" xml:space="preserve">
+    <value>Constitución</value>
+  </data>
+  <data name="Intelligence" xml:space="preserve">
+    <value>Inteligencia</value>
+  </data>
+  <data name="Wisdom" xml:space="preserve">
+    <value>Sabiduría</value>
+  </data>
+  <data name="Charisma" xml:space="preserve">
+    <value>Carisma</value>
+  </data>
+  <data name="Msg_SummoningHero" xml:space="preserve">
+    <value>Invocando al héroe desde el plano astral...</value>
+  </data>
+  <data name="Btn_ReturnToTavern" xml:space="preserve">
+    <value>Volver a la Taberna</value>
+  </data>
+  <data name="Btn_LevelUp" xml:space="preserve">
+    <value>SUBIR NIVEL</value>
+  </data>
+  <data name="Label_Attributes" xml:space="preserve">
+    <value>Atributos</value>
+  </data>
+  <data name="Title_ClassAndRaceFeatures" xml:space="preserve">
+    <value>Rasgos de Clase y Raza</value>
+  </data>
+  <data name="Msg_EmptyAdventureJournal" xml:space="preserve">
+    <value>El diario de aventuras está vacío aún...</value>
+  </data>
+  <data name="Title_Skills" xml:space="preserve">
+    <value>Habilidades</value>
+  </data>
+  <data name="Label_ProficiencyBonus" xml:space="preserve">
+    <value>BONO DE COMPETENCIA</value>
+  </data>
+  <data name="Acrobatics" xml:space="preserve">
+    <value>Acrobacias</value>
+  </data>
+  <data name="Athletics" xml:space="preserve">
+    <value>Atletismo</value>
+  </data>
+  <data name="Arcana" xml:space="preserve">
+    <value>Arcanos</value>
+  </data>
+  <data name="Deception" xml:space="preserve">
+    <value>Engaño</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Historia</value>
+  </data>
+  <data name="Performance" xml:space="preserve">
+    <value>Interpretación</value>
+  </data>
+  <data name="Intimidation" xml:space="preserve">
+    <value>Intimidación</value>
+  </data>
+  <data name="Investigation" xml:space="preserve">
+    <value>Investigación</value>
+  </data>
+  <data name="SleightOfHand" xml:space="preserve">
+    <value>Juego de Manos</value>
+  </data>
+  <data name="Medicine" xml:space="preserve">
+    <value>Medicina</value>
+  </data>
+  <data name="Nature" xml:space="preserve">
+    <value>Naturaleza</value>
+  </data>
+  <data name="Perception" xml:space="preserve">
+    <value>Percepción</value>
+  </data>
+  <data name="Insight" xml:space="preserve">
+    <value>Perspicacia</value>
+  </data>
+  <data name="Persuasion" xml:space="preserve">
+    <value>Persuasión</value>
+  </data>
+  <data name="Religion" xml:space="preserve">
+    <value>Religión</value>
+  </data>
+  <data name="Stealth" xml:space="preserve">
+    <value>Sigilo</value>
+  </data>
+  <data name="Survival" xml:space="preserve">
+    <value>Supervivencia</value>
+  </data>
+  <data name="AnimalHandling" xml:space="preserve">
+    <value>Trato con Animales</value>
+  </data>
+  <data name="Msg_LoadingProgression" xml:space="preserve">
+    <value>Leyendo pergaminos de destino...</value>
+  </data>
+  <data name="Title_LevelUp" xml:space="preserve">
+    <value>Ascenso de Nivel</value>
+  </data>
+  <data name="Label_CurrentLevel" xml:space="preserve">
+    <value>Nivel Actual</value>
+  </data>
+  <data name="Label_NextLevel" xml:space="preserve">
+    <value>Siguiente Nivel</value>
+  </data>
+  <data name="Tab_Vitals" xml:space="preserve">
+    <value>Vitalidad</value>
+  </data>
+  <data name="Tab_Feats_ASI" xml:space="preserve">
+    <value>Dotes y Atributos</value>
+  </data>
+  <data name="Tab_Spells" xml:space="preserve">
+    <value>Conjuros</value>
+  </data>
+  <data name="Title_HitPointsGain" xml:space="preserve">
+    <value>Incremento de Puntos de Vida</value>
+  </data>
+  <data name="Desc_HitPointsGain" xml:space="preserve">
+    <value>Elige cómo deseas forjar tu nueva resistencia física al subir de nivel</value>
+  </data>
+  <data name="Option_FixedAverage" xml:space="preserve">
+    <value>Tomar Promedio Fijo</value>
+  </data>
+  <data name="Desc_FixedAverage" xml:space="preserve">
+    <value>Método seguro y equilibrado recomendado por las reglas</value>
+  </data>
+  <data name="Option_RollDice" xml:space="preserve">
+    <value>Lanzar Dados de Vida</value>
+  </data>
+  <data name="Desc_RollDice" xml:space="preserve">
+    <value>Deja tu destino en manos de los dados</value>
+  </data>
+  <data name="Btn_Roll" xml:space="preserve">
+    <value>Lanzar Dado</value>
+  </data>
+  <data name="Title_FeatOrAsiSelection" xml:space="preserve">
+    <value>Selección de Dotes y Mejoras</value>
+  </data>
+  <data name="Desc_FeatOrAsiSelection" xml:space="preserve">
+    <value>Tu héroe alcanza un hito de entrenamiento. Elige una dote o incrementa tus puntuaciones.</value>
+  </data>
+  <data name="Btn_ChooseFeat" xml:space="preserve">
+    <value>Elegir Dote</value>
+  </data>
+  <data name="Btn_IncreaseStats" xml:space="preserve">
+    <value>Subir Atributos</value>
+  </data>
+  <data name="Select_Stat" xml:space="preserve">
+    <value>Seleccionar Atributo</value>
+  </data>
+  <data name="Leave_Empty_For_PlusTwo" xml:space="preserve">
+    <value>Dejar vacío (Otorga +2 al primero)</value>
+  </data>
+  <data name="Title_SpellsLearning" xml:space="preserve">
+    <value>Conocimiento de Conjuros</value>
+  </data>
+  <data name="Btn_StepBack" xml:space="preserve">
+    <value>Atrás</value>
+  </data>
+  <data name="Btn_NextStep" xml:space="preserve">
+    <value>Continuar</value>
+  </data>
+  <data name="Btn_ConfirmLevelUp" xml:space="preserve">
+    <value>Consolidar Ascenso</value>
+  </data>
+  <data name="Title_PendingSelections" xml:space="preserve">
+    <value>Decisiones Pendientes</value>
+  </data>
+  <data name="Msg_PendingFeats" xml:space="preserve">
+    <value>Tienes {0} dote(s) o ASI pendiente(s) por elegir.</value>
+  </data>
+  <data name="Msg_PendingSpells" xml:space="preserve">
+    <value>Tienes {0} conjuro(s) pendiente(s) por aprender.</value>
+  </data>
+  <data name="Btn_ClaimSelections" xml:space="preserve">
+    <value>Asignar Ahora</value>
+  </data>
+  <data name="Title_MyAdventurers" xml:space="preserve">
+    <value>Mis Aventureros</value>
+  </data>
+  <data name="Msg_CheckingTavernLogs" xml:space="preserve">
+    <value>Consultando los archivos de la taberna...</value>
+  </data>
+  <data name="Msg_EmptyTavernHelp" xml:space="preserve">
+    <value>Nadie ha llegado a la posada aún. ¡Ve a la forja e importa o crea tus héroes!</value>
+  </data>
+  <data name="Btn_ViewSheet" xml:space="preserve">
+    <value>Ver Ficha</value>
+  </data>
+  <data name="Title_SpellSlots" xml:space="preserve">
+    <value>Ranuras de Conjuro</value>
+  </data>
+  <data name="Title_Spellbook" xml:space="preserve">
+    <value>Libro de Conjuros</value>
+  </data>
+  <data name="Label_SlotLevel" xml:space="preserve">
+    <value>Círculo / Nivel</value>
+  </data>
+  <data name="Tip_ExpendedSlot" xml:space="preserve">
+    <value>Ranura Agotada (Requiere Descanso Largo)</value>
+  </data>
+  <data name="Tip_AvailableSlot" xml:space="preserve">
+    <value>Energía Mágica Disponible</value>
+  </data>
+  <data name="TraitType_RagesCount" xml:space="preserve">
+    <value>Furia (Usos)</value>
+  </data>
+  <data name="TraitType_RageDamage" xml:space="preserve">
+    <value>Daño de Furia</value>
+  </data>
+  <data name="TraitType_WeaponMasteryCount" xml:space="preserve">
+    <value>Maestría con Armas</value>
+  </data>
+  <data name="TraitType_BardicDie" xml:space="preserve">
+    <value>Dado de Inspiración Bardo</value>
+  </data>
+  <data name="TraitType_CantripsKnown" xml:space="preserve">
+    <value>Trucos Conocidos</value>
+  </data>
+  <data name="TraitType_PreparedSpellsCount" xml:space="preserve">
+    <value>Conjuros Preparados</value>
+  </data>
+  <data name="TraitType_SpellSlots" xml:space="preserve">
+    <value>Espacios de Conjuros</value>
+  </data>
+  <data name="TraitType_InvocationsKnown" xml:space="preserve">
+    <value>Invocaciones Conocidas</value>
+  </data>
+  <data name="TraitType_PactSlots" xml:space="preserve">
+    <value>Espacios de Magia de Pacto</value>
+  </data>
+  <data name="TraitType_SlotLevel" xml:space="preserve">
+    <value>Nivel de Espacio</value>
+  </data>
+  <data name="TraitType_ChannelDivinityUses" xml:space="preserve">
+    <value>Canalizar Divinidad (Usos)</value>
+  </data>
+  <data name="TraitType_WildShapeCount" xml:space="preserve">
+    <value>Forma Salvaje (Usos)</value>
+  </data>
+  <data name="TraitType_FavoredEnemyUses" xml:space="preserve">
+    <value>Enemigo Favorecido (Usos)</value>
+  </data>
+  <data name="TraitType_SecondWindUses" xml:space="preserve">
+    <value>Segundo Aliento (Usos)</value>
+  </data>
+  <data name="TraitType_SorceryPoints" xml:space="preserve">
+    <value>Puntos de Hechicería</value>
+  </data>
+  <data name="TraitType_MartialArtsDie" xml:space="preserve">
+    <value>Dado de Artes Marciales</value>
+  </data>
+  <data name="TraitType_FocusPoints" xml:space="preserve">
+    <value>Puntos de Enfoque (Ki)</value>
+  </data>
+  <data name="TraitType_UnarmoredMovement" xml:space="preserve">
+    <value>Movimiento sin Armadura</value>
+  </data>
+  <data name="TraitType_ChannelDivinityCount" xml:space="preserve">
+    <value>Canalizar Divinidad</value>
+  </data>
+  <data name="TraitType_SneakAttackDie" xml:space="preserve">
+    <value>Dado de Ataque Furtivo</value>
+  </data>
+  <data name="Character_Advancement" xml:space="preserve">
+    <value>Avance de Personaje</value>
+  </data>
+  <data name="Table_Level" xml:space="preserve">
+    <value>Nivel</value>
+  </data>
+  <data name="Table_XpRequired" xml:space="preserve">
+    <value>XP Requerida</value>
+  </data>
+  <data name="Table_ProficiencyBonus" xml:space="preserve">
+    <value>Bonificador por competencia</value>
+  </data>
+  <data name="Feats_Lib" xml:space="preserve">
+    <value>Dotes</value>
+  </data>
+  <data name="Feats_Lib_Description" xml:space="preserve">
+    <value>Explora las dotes y talentos especiales para personalizar tu personaje.</value>
+  </data>
+  <data name="Feats_Label" xml:space="preserve">
+    <value>dotes</value>
+  </data>
+  <data name="Background_Lib" xml:space="preserve">
+    <value>Trasfondos</value>
+  </data>
+  <data name="Background_Lib_Description" xml:space="preserve">
+    <value>Explora los trasfondos de los personajes y sus beneficios de origen.</value>
+  </data>
+  <data name="Backgrounds_Label" xml:space="preserve">
+    <value>trasfondos</value>
   </data>
 </root>

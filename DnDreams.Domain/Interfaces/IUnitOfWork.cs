@@ -7,7 +7,7 @@ namespace DnDreams.Domain.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {
-    IRepository<Race> Races { get; }
+    IRaceRepository Races { get; }
     IClassDefinitionRepository ClassDefinitions { get; }
     IClassLevelProgressionRepository ClassLevelProgressions { get; }
     ICharacterRepository Characters { get; }
@@ -27,6 +27,15 @@ public interface IUnitOfWork : IDisposable
     IRepository<Skill> Skills { get; }
     Task BeginTransactionAsync();
     Task CommitAsync();
+    void ModifyState(object m);
     Task RollbackAsync();
     Task<int> SaveChangesAsync();
+
+    void DetachOrUnchangeEntities<T>() where T : class;
+
+    void SetUnchangedState(object entity);
+    void PureCleanTrackerForCharacter();
+
+    Task<bool> SpellSlotExistsAsync(Guid id);
+    void TrackNewSpellSlot(CharacterSpellSlots cps);
 }

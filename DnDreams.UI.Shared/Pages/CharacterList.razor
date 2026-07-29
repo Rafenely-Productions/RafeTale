@@ -1,76 +1,78 @@
 ﻿@page "/characters"
+@using DnDreams.Application.DTOs
+@using DnDreams.Application.Interfaces.DtosInterfaces
 @using DnDreams.Domain.Entities
-@using DnDreams.Domain.Interfaces
-@inject IUnitOfWork UnitOfWork
+@inject IService<CharacterDto, Character> CharacterService
 @inject NavigationManager Navigation
+@inject IStringLocalizer<AppStrings> L
 
-<div class="p-6 max-w-7xl mx-auto min-h-screen bg-black">
-    <div class="flex justify-between items-center mb-10">
+<div class="p-4 max-w-4xl mx-auto min-h-screen bg-black pb-24 text-slate-100">
+    <div class="flex justify-between items-center mb-6 pt-2">
         <div>
-            <h1 class="text-4xl font-black text-amber-500 tracking-tighter italic uppercase">Mis Aventureros</h1>
-            <div class="h-1 w-20 bg-amber-600 mt-1 rounded-full"></div>
+            <h1 class="text-3xl font-black text-amber-500 tracking-tighter italic uppercase">@L["Title_MyAdventurers"]</h1>
+            <div class="h-1 w-16 bg-amber-600 mt-1 rounded-full"></div>
         </div>
     </div>
 
     @if (Characters == null)
     {
         <div class="flex flex-col items-center justify-center py-20">
-            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 mb-4"></div>
-            <p class="text-amber-500/50 font-serif italic">Consultando los archivos de la taberna...</p>
+            <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-500 mb-3"></div>
+            <p class="text-amber-500/50 font-serif italic text-xs">@L["Msg_CheckingTavernLogs"]</p>
         </div>
     }
     else if (!Characters.Any())
     {
-        <div class="bg-slate-900 border-2 border-dashed border-amber-900/30 p-20 rounded-[2rem] text-center">
-            <i class="fa-solid fa-scroll text-5xl text-amber-900/20 mb-4"></i>
-            <p class="text-slate-500 text-lg font-serif italic">Nadie ha llegado a la posada aún. ¡Importa tu Excel!</p>
+        <div class="bg-slate-900 border border-dashed border-amber-900/30 p-8 rounded-3xl text-center max-w-lg mx-auto shadow-xl">
+            <i class="fa-solid fa-scroll text-4xl text-amber-900/30 mb-3"></i>
+            <p class="text-slate-400 text-xs font-serif italic leading-relaxed">@L["Msg_EmptyTavernHelp"]</p>
         </div>
     }
     else
     {
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             @foreach (var p in Characters)
             {
-                <div class="bg-slate-900 border border-amber-900/20 rounded-[2rem] overflow-hidden hover:border-amber-500/50 transition-all duration-500 group shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative">
+                <div class="bg-slate-900 border border-amber-900/20 rounded-3xl overflow-hidden hover:border-amber-500/40 transition-all shadow-xl relative flex flex-col justify-between">
 
-                    <div class="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rotate-45 translate-x-8 -translate-y-8 border-b border-amber-500/20"></div>
+                    <div class="absolute top-0 right-0 w-12 h-12 bg-amber-500/5 rotate-45 translate-x-6 -translate-y-6 pointer-events-none"></div>
 
-                    <div class="p-8 pb-0">
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <h3 class="text-2xl font-black text-amber-500 group-hover:text-amber-400 transition-colors tracking-tight">@p.Name.ToUpper()</h3>
-                                <span class="text-xs font-black text-slate-400 tracking-[0.2em] uppercase">
-                                    p.ClassDef?.Name
+                    <div class="p-4 pb-1" @onclick="() => NavigateToSheet(p.Id)">
+                        <div class="flex justify-between items-start gap-3 mb-4">
+                            <div class="min-w-0">
+                                <h3 class="text-lg font-black text-amber-500 tracking-tight truncate uppercase">@p.Name</h3>
+                                <span class="text-[10px] font-mono font-black text-slate-400 tracking-wider uppercase block truncate mt-0.5">
+                                    @(p.ClassDef?.Name ?? "[No Class]")
                                 </span>
                             </div>
-                            <div class="bg-black/40 border border-amber-500/20 px-4 py-2 rounded-2xl text-center">
-                                <span class="text-[10px] text-amber-600 font-black block leading-none mb-1">NIVEL</span>
-                                <span class="text-2xl font-black text-white leading-none">@p.Level</span>
+                            <div class="bg-black/50 border border-amber-500/20 px-3 py-1 rounded-xl text-center shrink-0">
+                                <span class="text-[11px] text-amber-600 font-mono font-black block leading-none mb-0.5">@L["Label_LevelShort"]</span>
+                                <span class="text-lg font-black text-white leading-none font-mono">@p.Level</span>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-3 gap-3 mb-8">
-                            @DisplayStat("STR", p.Strength, p.StrModifier)
-                            @DisplayStat("DEX", p.Dexterity, p.DexModifier)
-                            @DisplayStat("CON", p.Constitution, p.ConModifier)
-                            @DisplayStat("INT", p.Intelligence, p.IntModifier)
-                            @DisplayStat("WIS", p.Wisdom, p.WisModifier)
-                            @DisplayStat("CHA", p.Charisma, p.ChaModifier)
+                        <!--<div class="grid grid-cols-6 gap-1.5 mb-4">
+                                @DisplayStatMinimal("STR", p.StrModifier)
+                                @DisplayStatMinimal("DEX", p.DexModifier)
+                                @DisplayStatMinimal("CON", p.ConModifier)
+                                @DisplayStatMinimal("INT", p.IntModifier)
+                                @DisplayStatMinimal("WIS", p.WisModifier)
+                                @DisplayStatMinimal("CHA", p.ChaModifier)
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="p-8 pt-0 mt-auto">
-                        <div class="flex gap-4">
-                            <button @onclick="() => NavigateToSheet(p.Id)"
-                                    class="flex-1 py-4 bg-black border border-amber-900/40 text-amber-500 rounded-2xl font-bold hover:bg-amber-900/20 transition-all flex items-center justify-center gap-3 active:scale-95">
-                                <i class="fa-solid fa-eye text-sm opacity-50"></i> VER FICHA
-                            </button>
+                        <div class="p-5 py-0 pb-4 mt-auto">
+                            <div class="flex gap-2.5">
+                                <button @onclick="() => NavigateToSheet(p.Id)"
+                                        class="flex-1 py-3 bg-black border border-amber-900/40 text-amber-500 text-xs font-black rounded-xl hover:bg-amber-900/20 transition-all flex items-center justify-center gap-2 uppercase tracking-wide shadow-sm">
+                                    <i class="fa-solid fa-eye opacity-60"></i> @L["Btn_ViewSheet"]
+                                </button>
 
-                            <button @onclick="() => NavigateToLevelUp(p.Id)"
-                                    class="px-6 py-4 bg-lime-600 text-black rounded-2xl font-black hover:bg-lime-500 transition-all shadow-[0_10px_20px_rgba(77,124,15,0.3)] active:scale-95 group">
-                                <i class="fa-solid fa-arrow-up group-hover:-translate-y-1 transition-transform"></i>
-                            </button>
-                        </div>
+                                <button @onclick="() => NavigateToLevelUp(p.Id)"
+                                        class="px-4 py-3 bg-lime-600 text-black rounded-xl hover:bg-lime-500 transition-all shadow-md flex items-center justify-center">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                </button>
+                                </div>-->
                     </div>
                 </div>
             }
@@ -79,7 +81,7 @@
 </div>
 
 @code {
-    private IEnumerable<Character>? Characters;
+    private List<CharacterDto>? Characters;
 
     protected override async Task OnInitializedAsync()
     {
@@ -88,20 +90,20 @@
 
     private async Task LoadCharacters()
     {
-        Characters = await UnitOfWork.Characters.GetAllWithDetailsAsync();
+        Characters = await CharacterService.GetAllAsync(null, null);
     }
 
     private void NavigateToLevelUp(Guid id) => Navigation.NavigateTo($"/character/{id}/levelup");
     private void NavigateToSheet(Guid id) => Navigation.NavigateTo($"/character/{id}");
 
-    private RenderFragment DisplayStat(string label, int value, int modifier) => __builder =>
+    // 🌟 Renderizador de Stat minimalista optimizado para cartas de lista
+    private RenderFragment DisplayStatMinimal(string shortName, int modifier) => __builder =>
     {
-        <div class="bg-black/30 border border-amber-900/10 p-3 rounded-2xl text-center hover:border-amber-500/20 transition-colors">
-            <span class="text-[9px] font-black text-amber-700 block mb-1 tracking-widest">@label</span>
-            <div class="text-white font-black text-base">@value</div>
-            <div class="text-[10px] @(modifier >= 0 ? "text-lime-500" : "text-red-500") font-bold mt-1">
+        <div class="bg-black/40 border border-white/5 py-1.5 px-1 rounded-xl text-center">
+            <span class="text-[15px] font-mono font-bold text-slate-500 block uppercase">@shortName</span>
+            <span class="text-[15px] font-mono font-black @(modifier >= 0 ? "text-lime-500" : "text-red-500")">
                 @(modifier >= 0 ? "+" : "")@modifier
-            </div>
+            </span>
         </div>
     };
 }

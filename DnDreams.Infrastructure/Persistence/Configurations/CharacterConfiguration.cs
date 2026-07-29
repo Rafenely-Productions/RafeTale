@@ -1,13 +1,8 @@
 ﻿using DnDreams.Domain.Entities;
-using DocumentFormat.OpenXml.Vml.Office;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace DnDreams.Infrastructure.Persistence.Configurations
 {
@@ -20,20 +15,46 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
             builder.ToTable("Characters");
             builder.HasKey(e => e.Id);
             builder.Property(e => e.Name).IsRequired().HasMaxLength(100);
+
+            // Relaciones Directas con Claves Foráneas Explícitas (Protección estricta de FKs)
+            builder.HasOne(c => c.Race)
+                   .WithMany()
+                   .HasForeignKey(c => c.RaceId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(c => c.ClassDef)
+                   .WithMany()
+                   .HasForeignKey(c => c.ClassDefId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(c => c.Background)
+                   .WithMany()
+                   .HasForeignKey(c => c.BackgroundId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            // Colecciones y Tablas Intermedias relacionales puras
             builder.HasMany(c => c.ClassLevels).WithOne();
             builder.HasMany(c => c.AcquiredFeatures).WithMany();
-
-            // MAGIA: Convertir el Diccionario de Stats a un string JSON en la base de datos
-            builder.Property(e => e.Stats)
-                .HasConversion(
-                    v => JsonSerializer.Serialize(v, jsonOptions), // Cómo se guarda (Dict -> string)
-                    v => JsonSerializer.Deserialize<Dictionary<string, int>>(v, jsonOptions) ?? new Dictionary<string, int>() // Cómo se lee (string -> Dict)
-                )
-                .HasColumnType("TEXT"); // SQLite lo guardará en una columna de tipo texto
-
             builder.HasMany(c => c.AcquiredFeats).WithMany();
             builder.HasMany(c => c.KnownSpells).WithMany();
-            builder.HasMany(c => c.CharacterModifiers).WithOne().OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(c => c.CharacterModifiers)
+                   .WithOne()
+                   .HasForeignKey(m => m.CharacterId) // 👈 Amarre estricto para evitar Shadow Properties
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            // Mapeo explícito para la lista de Slots (Opcional, pero blinda la navegación inversa)
+            builder.HasMany(c => c.SpellSlots)
+                   .WithOne(s => s.Character)
+                   .HasForeignKey(s => s.CharacterId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(e => e.Stats)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, jsonOptions),
+                    v => JsonSerializer.Deserialize<Dictionary<string, int>>(v, jsonOptions) ?? new Dictionary<string, int>()
+                )
+                .HasColumnType("TEXT");
         }
     }
 }

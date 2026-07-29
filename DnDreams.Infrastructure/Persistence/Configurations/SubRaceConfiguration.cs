@@ -17,6 +17,12 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
             builder.ToTable("SubRaces");
             builder.HasKey(sr => sr.Id);
             builder.Property(sr => sr.TechnicalName).IsRequired().HasMaxLength(50);
+
+            builder.HasOne(s => s.Race)
+            .WithMany(c => c.SubRaces)
+            .HasForeignKey(s => s.RaceId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

@@ -23,14 +23,12 @@ namespace DnDreams.Infrastructure.Persistence.Configurations
             builder.Property(e => e.TechnicalName).HasMaxLength(50);
 
             builder.HasMany(e => e.SubRaces)
-                .WithOne(e=> e.Race)
-                .HasForeignKey(sr => sr.RaceId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(e => e.Race)
+                .HasForeignKey("RaceId");
+
 
             builder.HasMany(e => e.Traits)
-                .WithOne(t => t.Race)
-                .HasForeignKey(t => t.RaceId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(t => t.Race);
 
             builder.HasMany(e => e.Languages).WithMany(l => l.Races);
         }

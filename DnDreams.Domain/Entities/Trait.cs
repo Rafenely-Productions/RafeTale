@@ -15,8 +15,10 @@ namespace DnDreams.Domain.Entities
         public int RequiredLevel { get; set; } = 1;
         public List<ModifierData> Modifiers { get; set; } = new();
 
-        // Relación con la Raza
-        public Guid RaceId { get; set; }
-        public Race Race { get; set; } = null!;
+        public Guid? RaceId { get; set; }
+        public Race? Race { get; set; }
+
+        public Guid? SubraceId { get; set; }
+        public SubRace? Subrace { get; set; }
     }
 }

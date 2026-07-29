@@ -8,5 +8,7 @@ namespace DnDreams.Domain.Entities
         public string TechnicalName { get; set; } = string.Empty;
         public Guid RaceId { get; set; }
         public Race Race { get; set; } = null!;
+
+        public List<Trait>? Traits { get; set; }
     }
 }

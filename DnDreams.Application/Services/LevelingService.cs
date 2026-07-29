@@ -8,26 +8,19 @@ using DnDreams.Domain.Interfaces;
 
 namespace DnDreams.Application.Services;
 
-public class LevelingService : ILevelingService
+public class LevelingService(IUnitOfWork unitOfWork) : ILevelingService
 {
-    private readonly IUnitOfWork _unitOfWork;
-
-    public LevelingService(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<bool> AddExperienceAsync(Guid characterId, int xpAmount)
     {
         // 1. Traer al personaje con sus detalles y rasgos actuales
         // (Nota: necesitaremos mapear el Include de AcquiredFeatures en el repositorio más adelante)
-        var character = await _unitOfWork.Characters.GetAllWithDetailsAsync();
+        var character = await unitOfWork.Characters.GetAllWithDetailsAsync();
         var targetChar = character.FirstOrDefault(c => c.Id == characterId);
-        var xpRules = await _unitOfWork.XpRules.GetXpThresholdsAsync();
+        var xpRules = await unitOfWork.XpRules.GetXpThresholdsAsync();
 
         if (targetChar == null) return false;
 
-        await _unitOfWork.BeginTransactionAsync();
+        await unitOfWork.BeginTransactionAsync();
         try
         {
             targetChar.Experience += xpAmount;
@@ -42,9 +35,9 @@ public class LevelingService : ILevelingService
 
                 // 3. Buscar qué rasgos otorga su clase en este nuevo nivel
                 // Para esto ocupamos consultar la tabla de progresiones que cargamos desde el Excel
-                var progressions = await _unitOfWork.ClassLevelProgressions.GetProgressionsByClassAndLevelAsync(targetChar.ClassDefId, targetChar.Level);
+                var progressions = await unitOfWork.ClassLevelProgressions.GetProgressionsByClassAndLevelAsync(targetChar.ClassDefId, targetChar.Level);
 
-                if (progressions != null && progressions.Features.Any())
+                if (progressions != null && progressions.Features.Count != 0)
                 {
                     foreach (var feature in progressions.Features)
                     {
@@ -75,19 +68,19 @@ public class LevelingService : ILevelingService
 
             if (leveledUp)
             {
-                await _unitOfWork.SaveChangesAsync();
-                await _unitOfWork.CommitAsync();
+                await unitOfWork.SaveChangesAsync();
+                await unitOfWork.CommitAsync();
                 return true; // Avisamos que sí hubo subida de nivel
             }
 
             // Si solo ganó XP pero no subió de nivel, igual guardamos el progreso de la XP
-            await _unitOfWork.SaveChangesAsync();
-            await _unitOfWork.CommitAsync();
+            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.CommitAsync();
             return false;
         }
         catch (Exception)
         {
-            await _unitOfWork.RollbackAsync();
+            await unitOfWork.RollbackAsync();
             throw;
         }
     }
@@ -142,12 +135,12 @@ public class LevelingService : ILevelingService
     }
     public async Task<bool> CommitLevelUpAsync(Guid characterId, int chosenHp, List<CharacterModifier> chosenModifiers, List<Guid> chosenFeatIds, List<Guid> chosenSpellIds)
     {
-        var characters = await _unitOfWork.Characters.GetAllWithDetailsAsync();
+        var characters = await unitOfWork.Characters.GetAllWithDetailsAsync();
         var targetChar = characters.FirstOrDefault(c => c.Id == characterId);
 
         if (targetChar == null) return false;
 
-        await _unitOfWork.BeginTransactionAsync();
+        await unitOfWork.BeginTransactionAsync();
         try
         {
             // 1. Aplicar incremento de Puntos de Golpe Maximos (HP)
@@ -163,10 +156,10 @@ public class LevelingService : ILevelingService
             // 3. Vincular los Dotes elegidos desde el catálogo mestro
             if (chosenFeatIds != null)
             {
-                var allFeats = await _unitOfWork.Feats.GetAllAsync();
+                var allFeats = await unitOfWork.Feats.GetAllAsync();
                 foreach (var featId in chosenFeatIds)
                 {
-                    var feat = allFeats.FirstOrDefault(f => f.Id == featId);
+                    var feat = allFeats.FirstOrDefault(f => f!.Id == featId);
                     if (feat != null && !targetChar.AcquiredFeats.Any(f => f.Id == featId))
                     {
                         targetChar.AcquiredFeats.Add(feat);
@@ -188,10 +181,10 @@ public class LevelingService : ILevelingService
             // 4. Vincular los Hechizos elegidos desde el catálogo maestro
             if (chosenSpellIds != null)
             {
-                var allSpells = await _unitOfWork.Spells.GetAllAsync();
+                var allSpells = await unitOfWork.Spells.GetAllAsync();
                 foreach (var spellId in chosenSpellIds)
                 {
-                    var spell = allSpells.FirstOrDefault(s => s.Id == spellId);
+                    var spell = allSpells.FirstOrDefault(s => s!.Id == spellId);
                     if (spell != null && !targetChar.KnownSpells.Any(s => s.Id == spellId))
                     {
                         targetChar.KnownSpells.Add(spell);
@@ -200,13 +193,13 @@ public class LevelingService : ILevelingService
             }
 
             // Guardamos todo con la Unidad de Trabajo
-            await _unitOfWork.SaveChangesAsync();
-            await _unitOfWork.CommitAsync();
+            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.CommitAsync();
             return true;
         }
         catch (Exception)
         {
-            await _unitOfWork.RollbackAsync();
+            await unitOfWork.RollbackAsync();
             throw;
         }
     }

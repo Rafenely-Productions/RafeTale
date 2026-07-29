@@ -1,32 +1,23 @@
 ﻿@namespace DnDreams.UI.Shared.Shared
+@inject IStringLocalizer<AppStrings> L
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">DNDREAMS</a>
+<div class="w-full flex flex-col sm:flex-row items-center justify-center px-3 sm:px-5 py-3 sm:py-4 bg-slate-950 border-b border-amber-900/30 gap-3 sm:gap-0">
+
+    <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto">
+
+        <NavLink class="flex flex-col items-center justify-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white transition-all [&.active]:bg-amber-500 [&.active]:text-black [&.active]:shadow-lg [&.active]:shadow-amber-500/20" href="/" Match="NavLinkMatch.All">
+            <i class="fa-solid fa-house-chimney text-xs mb-0.5"></i>
+        </NavLink>
+
+        <NavLink class="flex flex-col items-center justify-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white transition-all [&.active]:bg-amber-500 [&.active]:text-black [&.active]:shadow-lg [&.active]:shadow-amber-500/20" href="/characters" Match="NavLinkMatch.All">
+            <i class="fa-solid fa-users text-xs"></i>
+        </NavLink>
+
+        <NavLink class="flex flex-col items-center justify-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white transition-all [&.active]:bg-amber-500 [&.active]:text-black [&.active]:shadow-lg [&.active]:shadow-amber-500/20" href="/library">
+            <i class="fa-solid fa-book-atlas text-xs"></i>
+        </NavLink>
+        <NavLink class="flex flex-col items-center justify-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white transition-all [&.active]:bg-amber-500 [&.active]:text-black [&.active]:shadow-lg [&.active]:shadow-amber-500/20" href="/dice">
+            <i class="fa-solid fa-dice-d20 text-xs"></i>
+        </NavLink>
     </div>
-</div>
-
-<div class="nav-scrollable">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <i class="fa-solid fa-house me-2"></i> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="sandbox">
-                <i class="fa-solid fa-flask me-2"></i> Laboratorio
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/character/create">
-                <i class="fa-solid fa-flask me-2"></i> Laboratorio
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/library">
-                <i class="fa-solid fa-flask me-2"></i> Libreria
-            </NavLink>
-        </div>
-    </nav>
 </div>

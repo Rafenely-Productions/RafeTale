@@ -19,7 +19,7 @@ namespace DnDreams.Infrastructure.Extractors
         private List<string> _LanguagesCache = new List<string>();
         private readonly LocLanguage _currentCulture = LocLanguage.es;
 
-        public async Task<ImportDataPackage> ExtractAllAsync(Stream excelStream)
+        public ImportDataPackage ExtractAllAsync(Stream excelStream)
         {
             var package = new ImportDataPackage();
             using var workbook = new XLWorkbook(excelStream);
@@ -28,20 +28,20 @@ namespace DnDreams.Infrastructure.Extractors
             package.Languages = ExtractLanguages(workbook);
             package.Races = ExtractRaces(workbook, package.Languages);
             package.SubRaces = ExtractSubRaces(workbook, package.Races);
-            package.Traits = ExtractTraits(workbook, package.Races);
+            package.Traits = ExtractTraits(workbook, package.Races,package.SubRaces);
             package.SpecialTraits = ExtractSpecialTraits(workbook, package.Traits);
             package.SkillProficiencies = ExtractSkillProficiencies(workbook);
             package.ClassDefinitions = ExtractClasses(workbook, package.SkillProficiencies);
             package.Subclasses = ExtractSubclasses(workbook, package.ClassDefinitions);
-            package.Spells = ExtractSpells(workbook, package.ClassDefinitions);
+            package.Spells = ExtractSpells(workbook, package.ClassDefinitions.Select(x=> x.TechnicalName).ToList());
             package.ClassLevelProgressions = ExtractClassLevelProgressions(workbook, package.ClassDefinitions);
             package.SubclassLevelProgressions = ExtractSubclassLevelProgressions(workbook, package.Subclasses);
             package.XpRules = ExtractXpRules(workbook);
-            package.Characters = ExtractCharacters(workbook, package.Races, package.ClassDefinitions);
             package.Items = ExtractItems(workbook, package.Characters);
             package.Feats = ExtractFeats(workbook);
             package.Backgrounds = ExtractBackgrounds(workbook, package.Feats);
 
+            package.Characters = ExtractCharacters(workbook, package.Races, package.ClassDefinitions, package.Backgrounds);
             package.LocalizedContents.AddRange(_localizedContentCache.Values);
             return package;
         }
@@ -107,19 +107,16 @@ namespace DnDreams.Infrastructure.Extractors
                 {
                     Id = Guid.NewGuid(),
                     TechnicalName = row.Cell(1).GetString(),
-                    Speed = row.Cell(2).GetValue<float>(),
-                    Size = Enum.TryParse<SizeCategory>(row.Cell(3).GetString(), true, out var size) ? size : SizeCategory.Medium,
-                    CreatureType = Enum.TryParse<CreatureType>(row.Cell(5).GetString(), true, out var type) ? type : CreatureType.Humanoid,
-                    Darkvision = row.Cell(6).GetString(),
+                    Speed = row.Cell(4).GetValue<string>(),
+                    Size = ParseEnum<SizeCategory>(row.Cell(3).GetString()),
+                    CreatureType = ParseEnum<CreatureType>(row.Cell(2).GetString()),
                 };
 
                 SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Name, row.Cell(1).GetString(), LocLanguage.en);
-                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Description, row.Cell(4).GetString(), LocLanguage.en);
-                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Resistances, row.Cell(7).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Description, row.Cell(7).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Name, row.Cell(9).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Description, row.Cell(10).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Resistances, row.Cell(11).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Name, row.Cell(5).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Description, row.Cell(6).GetString(), _currentCulture);
 
                 var languagesInCell = row.Cell(8).GetString().Split(',').Select(l => l.Trim());
 
@@ -139,7 +136,7 @@ namespace DnDreams.Infrastructure.Extractors
             var subRaces = new List<SubRace>();
             var sheet = workbook.GetSheet("Sub Races", isRequired: true);
 
-            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = sheet.RangeUsed()!.RowsUsed().Skip(1);
             foreach (var row in rows)
             {
                 var sub = new SubRace
@@ -148,9 +145,9 @@ namespace DnDreams.Infrastructure.Extractors
                     TechnicalName = row.Cell(2).GetString()
                 };
                 SaveValidateLocalizedContent(sub.Id, LocEntity.SubRace, LocProperty.Name, row.Cell(2).GetString(), LocLanguage.en);
-                SaveValidateLocalizedContent(sub.Id, LocEntity.SubRace, LocProperty.Description, row.Cell(3).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(sub.Id, LocEntity.SubRace, LocProperty.Description, row.Cell(6).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(sub.Id, LocEntity.SubRace, LocProperty.Name, row.Cell(4).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(sub.Id, LocEntity.SubRace, LocProperty.Name, row.Cell(3).GetString(), _currentCulture);
                 SaveValidateLocalizedContent(sub.Id, LocEntity.SubRace, LocProperty.Description, row.Cell(5).GetString(), _currentCulture);
 
                 var race = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase));
@@ -162,28 +159,30 @@ namespace DnDreams.Infrastructure.Extractors
             }
             return subRaces;
         }
-        public List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races)
+        public List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races,List<SubRace> subRace)
         {
             var sheet = workbook.GetSheet("Traits", isRequired: true);
 
             var traits = new List<Trait>();
-            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = sheet.RangeUsed()!.RowsUsed().Skip(1);
             foreach (var row in rows)
             {
                 var trait = new Trait
                 {
                     Id = Guid.NewGuid(),
-                    TechnicalName = row.Cell(2).GetString(),
-                    RequiredLevel = row.Cell(4).TryGetValue<int>(out var res) ? res : 0,
-                    Modifiers = GetModifierData(row.Cell(5).GetString())
+                    TechnicalName = row.Cell(1).GetString(),
+                    RequiredLevel = row.Cell(2).TryGetValue<int>(out var res) ? res : 0,
                 };
-                trait.RaceId = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty;
+                if(row.Cell(3).GetString().Length > 0)
+                    trait.Race = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(3).GetString(), StringComparison.OrdinalIgnoreCase))!;
+                else
+                    trait.Subrace = subRace.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(4).GetString(), StringComparison.OrdinalIgnoreCase))!;
 
                 SaveValidateLocalizedContent(trait.Id, LocEntity.Trait, LocProperty.Name, trait.TechnicalName, LocLanguage.en);
-                SaveValidateLocalizedContent(trait.Id, LocEntity.Trait, LocProperty.Description, row.Cell(3).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(trait.Id, LocEntity.Trait, LocProperty.Description, row.Cell(7).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(trait.Id, LocEntity.Trait, LocProperty.Name, row.Cell(6).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(trait.Id, LocEntity.Trait, LocProperty.Description, row.Cell(7).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(trait.Id, LocEntity.Trait, LocProperty.Name, row.Cell(5).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(trait.Id, LocEntity.Trait, LocProperty.Description, row.Cell(6).GetString(), _currentCulture);
 
                 traits.Add(trait);
             }
@@ -252,7 +251,7 @@ namespace DnDreams.Infrastructure.Extractors
             return classDefinitionList;
         }
 
-        public List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes)
+        public List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes,List<Background> backgrounds)
         {
             var charactersList = new List<Character>();
             var charSheet = workbook.GetSheet("Personajes", isRequired: true);
@@ -273,7 +272,14 @@ namespace DnDreams.Infrastructure.Extractors
                     Level = row.Cell(4).GetValue<int>(),
                     Experience = row.Cell(5).GetValue<int>(),
                     RaceId = matchedRace?.Id ?? Guid.Empty,
-                    ClassDefId = matchedClass?.Id ?? Guid.Empty
+                    ClassDefId = matchedClass?.Id ?? Guid.Empty,
+                    AcquiredFeats = new List<Feat>(),
+                    Stats = new Dictionary<string, int>(),
+                    AcquiredFeatures = new List<Feature>(),
+                    ActiveModifiers = new List<ActiveModifiers>(),
+                    BackgroundId = backgrounds[0].Id,
+                    Background = backgrounds[0],
+                    
                 };
 
                 for (int col = 6; col <= charSheet.LastColumnUsed().ColumnNumber(); col++)
@@ -369,7 +375,15 @@ namespace DnDreams.Infrastructure.Extractors
                     Id = Guid.NewGuid(),
                     ClassDefinition = classDefinition!,
                     TechnicalName = subClassTechnicalName,
+                    Progressions = []
                 };
+
+                if (classDefinition != null)
+                {
+                    classDefinition.Subclasses ??= [];
+                    classDefinition.Subclasses.Add(subClass);
+                }
+
                 subClassList.Add(subClass);
                 SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Name, subClassTechnicalName, LocLanguage.en);
                 SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Description, row.Cell(3).GetString(), LocLanguage.en);
@@ -394,10 +408,9 @@ namespace DnDreams.Infrastructure.Extractors
                 var level = row.Cell(4).GetValue<int>();
                 var modifiersRaw = row.Cell(5).GetString();
 
-
                 var targetSubclass = subclasses.FirstOrDefault(c => c.TechnicalName.Equals(subclassName, StringComparison.OrdinalIgnoreCase));
 
-                if (targetSubclass == null && targetSubclass!.ClassDefinition == null) 
+                if (targetSubclass == null) 
                     continue;
 
                 var feature = new Feature
@@ -428,15 +441,19 @@ namespace DnDreams.Infrastructure.Extractors
                         Id = Guid.NewGuid(),
                         Level = level,
                         SubclassId = targetSubclass.Id,
+                        Subclass = targetSubclass,
                         Features = new List<Feature> { feature } // <-- Metemos el Feature real con sus datos
+
                     };
+                    targetSubclass.Progressions ??= new List<SubclassLevelProgression>();
+                    targetSubclass.Progressions.Add(newProgression);
 
                     progressionsList.Add(newProgression);
                 }
             }
             return progressionsList;
         }
-        public List<Spell> ExtractSpells(IXLWorkbook workbook, List<ClassDefinition> classDefinitions)
+        public List<Spell> ExtractSpells(IXLWorkbook workbook, List<string> classDefinitions)
         {
             var spellsList = new List<Spell>();
             var spellSheet = workbook.GetSheet("Spells", isRequired: true);
@@ -518,11 +535,11 @@ namespace DnDreams.Infrastructure.Extractors
                 };
                 featsList.Add(feat);
 
-                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Name, feat.TechnicalName, LocLanguage.en);
-                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Description, row.Cell(5).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Feat, LocProperty.Name, feat.TechnicalName, LocLanguage.en);
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Feat, LocProperty.Description, row.Cell(5).GetString(), LocLanguage.en);
 
-                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Name, row.Cell(6).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(feat.Id, LocEntity.Spell, LocProperty.Description, row.Cell(7).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Feat, LocProperty.Name, row.Cell(6).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(feat.Id, LocEntity.Feat, LocProperty.Description, row.Cell(7).GetString(), _currentCulture);
 
             }
             return featsList;
@@ -620,6 +637,7 @@ namespace DnDreams.Infrastructure.Extractors
                     if (feat != null)
                     {
                         background.FeatId = feat.Id;
+                        background.Feat = feat;
                     }
                     else
                     {
@@ -691,18 +709,18 @@ namespace DnDreams.Infrastructure.Extractors
                 if (matched != null) classDef.SkillProficiencies.Add(matched);
             }
         }
-        private void MapSpellClass(Spell spell, string rawClass, List<ClassDefinition> allClasses)
+        private void MapSpellClass(Spell spell, string rawClass, List<string> allClasses)
         {
             var classNames = rawClass.Split(',').Select(s => s.Trim());
             if (classNames.Contains("Any"))
             {
-                spell.Classes.AddRange(allClasses);
+                spell.ClassesTechnicalNames.AddRange(allClasses);
                 return;
             }
             foreach (var name in classNames)
             {
-                var matched = allClasses.FirstOrDefault(s => s.TechnicalName.Equals(name, StringComparison.OrdinalIgnoreCase));
-                if (matched != null) spell.Classes.Add(matched);
+                var matched = allClasses.FirstOrDefault(s => s.Equals(name, StringComparison.OrdinalIgnoreCase));
+                if (matched != null) spell.ClassesTechnicalNames.Add(matched);
             }
         }
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
@@ -757,19 +775,19 @@ namespace DnDreams.Infrastructure.Extractors
                 string valueStr = keyValue[1].Trim();
 
                 var trait = new ClassTrait();
-
+                trait.Type = ParseEnum<ResourceType>(keyStr);
                 // 1. Tratamiento especial para la matriz de hechizos
                 if (keyStr.Equals("SpellSlots", StringComparison.OrdinalIgnoreCase))
                 {
                     var slots = JsonSerializer.Deserialize<int[]>(valueStr);
                     trait.SpellSlots = slots ?? new int[9];
-
+                    trait.Value = null; // Opcional, asegurar limpieza
                 }
                 else
                 {
                     trait.Value = valueStr;
+                    trait.SpellSlots = null;
                 }
-                trait.Type = ParseEnum<ResourceType>(keyStr);
 
                 traits.Add(trait);
             }

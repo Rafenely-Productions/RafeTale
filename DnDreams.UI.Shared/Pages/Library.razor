@@ -10,212 +10,268 @@
 @inject IService<SubclassDto, Subclass> SubclassService
 @inject IService<RaceDto, Race> RaceService
 @inject IService<SpellDto, Spell> SpellService
+@inject IService<BackgroundDto, Background> BackgroundService
+@inject IService<FeatDto, Feat> FeatService
 @inject IStringLocalizer<AppStrings> L
 @inject IStringLocalizer<LibraryStrings> LL
 @inject IJSRuntime JS
 
-<div class="mx-auto w-full max-w-6xl px-4 py-6 md:px-8 md:py-8 text-white min-h-screen">
+<div @ref="containerRef" class="w-full max-w-7xl mx-auto px-2 sm:px-4 py-2 text-white h-auto min-h-fit">
     @if (SelectedTab == CodexKey.None)
     {
-        <header class="mb-6">
-            <h1 class="font-heading text-2xl font-bold tracking-tight text-white md:text-3xl text-balance">
-                @LL["Title_Name"]
-            </h1>
-            <p class="mt-1 text-sm text-slate-400 text-pretty">
-                @LL["Title_Description"]
-            </p>
-        </header>
-
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <button type="button" @onclick="() => NavigateToTab(CodexKey.Classes)"
-                    class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
-                <div class="flex items-start justify-between gap-3 w-full">
-                    <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
-                        <i class="fa-solid fa-swords text-lg"></i>
-                    </div>
-                    <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
-                </div>
-                <div class="min-w-0">
-                    <h2 class="text-base font-semibold text-white">@LL["Classes_Subclasses"]</h2>
-                    <p class="mt-1 break-words text-sm text-slate-400">@LL["Classes_CardDescription"]</p>
-                </div>
-                <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-                    @Classes.Count classes
-                </span>
-            </button>
-
-            <button type="button" @onclick="() => NavigateToTab(CodexKey.Races)"
-                    class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
-                <div class="flex items-start justify-between gap-3 w-full">
-                    <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
-                        <i class="fa-solid fa-users text-lg"></i>
-                    </div>
-                    <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
-                </div>
-                <div class="min-w-0">
-                    <h2 class="text-base font-semibold text-white">@LL["Race_Subrace_Title"]</h2>
-                    <p class="mt-1 break-words text-sm text-slate-400">@LL["Race_Description"]</p>
-                </div>
-                <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-                    @Races.Count lineages
-                </span>
-            </button>
-
-            <button type="button" @onclick="() => NavigateToTab(CodexKey.Spells)"
-                    class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
-                <div class="flex items-start justify-between gap-3 w-full">
-                    <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
-                        <i class="fa-solid fa-sparkles text-lg"></i>
-                    </div>
-                    <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
-                </div>
-                <div class="min-w-0">
-                    <h2 class="text-base font-semibold text-white">@LL["Spells_Magic"]</h2>
-                    <p class="mt-1 break-words text-sm text-slate-400">@LL["Spells_Magic_Description"]</p>
-                </div>
-                <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-                    @TotalSpellsCount spells
-                </span>
-            </button>
-
-            <button type="button" @onclick="() => NavigateToTab(CodexKey.Rules)"
-                    class="group flex min-w-0 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-left transition-colors hover:border-amber-500/40">
-                <div class="flex items-start justify-between gap-3 w-full">
-                    <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
-                        <i class="fa-solid fa-book-bookmark text-lg"></i>
-                    </div>
-                    <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
-                </div>
-                <div class="min-w-0">
-                    <h2 class="text-base font-semibold text-white">System Core Rules</h2>
-                    <p class="mt-1 break-words text-sm text-slate-400">Experience progression and proficiency bonus charts.</p>
-                </div>
-                <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-                    XP Table
-                </span>
-            </button>
-        </div>
+        <LibraryGrid ClassesCount="Classes.Count"
+                     RacesCount="Races.Count"
+                     SpellsCount="TotalSpellsCount"
+                     BackgroundsCount="totalBackgroundsCount"
+                     FeatsCount="Feats.Count"
+                     OnTabSelected="NavigateToTab" />
     }
     else
     {
-        @if (InspectedClass == null && InspectedRace == null)
-        {
-            <button type="button" @onclick="() => NavigateToTab(CodexKey.None)"
-                    class="mb-5 inline-flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-sm font-medium text-slate-400 transition-colors hover:border-amber-500/40 hover:text-white">
-                <i class="fa-solid fa-arrow-left"></i>@LL["Back_LibraryBtn"]
-            </button>
-        }
-        else
-        {
-            <button type="button" @onclick="ClearInspections"
-                    class="mb-5 inline-flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-950/20 px-3 py-1.5 text-sm font-medium text-amber-500 transition-colors hover:bg-amber-500/20 hover:text-white">
-                <i class="fa-solid fa-arrow-left-long"></i> @LL["Return_DirectoryBtn"]
-            </button>
-        }
 
-        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 md:p-6 shadow-2xl min-h-[500px]">
-            @switch (SelectedTab)
-            {
-                case CodexKey.Classes:
-                    if (InspectedClass == null)
-                    {
-                        <ClassList Classes="Classes" OnClassSelected="(cls) => InspectedClass = cls" />
-                    }
-                    else
-                    {
-                        <ClassInspector InspectedClass="InspectedClass" />
-                    }
-                    break;
-                case CodexKey.Races:
-                    @if (InspectedRace == null)
-                    {
-                        <RaceList Races="Races" OnInspectedRace="(cls) => InspectedRace = cls" />
-                    }
-                    else
-                    {
-                        <RaceInspector InspectedRace="InspectedRace" />
-                    }
-                    break;
-                case CodexKey.Spells:
-                    <SpellList AllSpells="AllSpells" />
-                    break;
-                case CodexKey.Rules:
-                    <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">Character Advancement</h2>
-                    <div class="overflow-x-auto w-full min-w-0">
-                        <table class="w-full text-left text-sm min-w-[400px]">
-                            <thead>
-                                <tr class="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-400 font-black">
-                                    <th class="px-3 py-3">Level</th>
-                                    <th class="px-3 py-3">XP Required</th>
-                                    <th class="px-3 py-3">Proficiency Bonus</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var row in XpProgressionTable)
-                                {
-                                    <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
-                                        <td class="px-3 py-3 font-mono font-bold text-amber-500">@row.Level</td>
-                                        <td class="px-3 py-3 text-white">@row.Xp.ToString("N0") XP</td>
-                                        <td class="px-3 py-3 font-mono text-slate-400">+@row.Proficiency</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                    break;
-                default:
-                    break;
-            }
+            <div class="absolute left-0 z-50">
+                <LibraryNavigationBar IsAtRoot="false"
+                                      IsInspecting="IsCurrentlyInspecting()"
+                                      OnBackToLibrary="HandleBackAction"
+                                      OnReturnFromChild="HandleBackActionFromChildren" />
+            </div>
+        <div class="relative rounded-xl border border-slate-800 bg-slate-900/60 p-3 sm:p-6 shadow-2xl h-auto pt-14">
+            <div class="w-full">
+                @switch (SelectedTab)
+                {
+                    case CodexKey.Classes:
+                        if (InspectedClass == null)
+                        {
+                            <ClassList Classes="Classes" OnClassSelected="InspectClass" />
+                        }
+                        else
+                        {
+                            <ClassInspector InspectedClass="InspectedClass" />
+                        }
+                        break;
+                    case CodexKey.Races:
+                        @if (InspectedRace == null)
+                        {
+                            <RaceList Races="Races"
+                                      OnInspectedRace="InspectRace"
+                                      InitialScrollPosition="savedScrollPosition" />
+                        }
+                        else
+                        {
+                            <RaceInspector RaceDto="InspectedRace" />
+                        }
+                        break;
+                    case CodexKey.Spells:
+                        <SpellList AllSpells="AllSpells" />
+                        break;
+                    case CodexKey.Backgrounds:
+                        @if (InspectedBackground == null)
+                        {
+                            <BackgroundList Backgrounds="backgrounds" OnInspectedBackground="InspectBackground" InitialScrollPosition="savedScrollPosition" />
+                        }
+                        else
+                        {
+                            <BackgroundInspector BackgroundDto="InspectedBackground" />
+                        }
+                        break;
+                    case CodexKey.Feats:
+                        @if (InspectedFeat == null)
+                        {
+                            <FeatList Feats="Feats"
+                                      OnInspectedFeat="InspectFeat"
+                                      InitialScrollPosition="savedScrollPosition" />
+                        }
+                        else
+                        {
+                            <FeatInspector FeatDto="InspectedFeat" />
+                        }
+                        break;
+                    case CodexKey.Rules:
+                        <div class="w-full max-w-full overflow-hidden">
+                            <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">@LL["Character_Advancement"]</h2>
+                            <div class="w-full overflow-x-auto custom-scrollbar pb-2">
+                                <table class="w-full text-left text-sm">
+                                    <thead>
+                                        <tr class="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-400 font-black">
+                                            <th class="px-3 py-3">@LL["Table_Level"]</th>
+                                            <th class="px-3 py-3">@LL["Table_XpRequired"]</th>
+                                            <th class="px-3 py-3 max-w-[130px] leading-tight break-words">
+                                                @LL["Table_ProficiencyBonus"]
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var row in XpProgressionTable)
+                                        {
+                                            <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
+                                                <td class="px-3 py-3 font-mono font-bold text-amber-500">@row.Level</td>
+                                                <td class="px-3 py-3 text-white">@row.Xp.ToString("N0") XP</td>
+                                                <td class="px-3 py-3 font-mono text-slate-400">+@row.Proficiency</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        break;
+                    default:
+                        break;
+                }
+            </div>
         </div>
     }
 </div>
 
 @code {
-    private CodexKey SelectedTab = CodexKey.None;
-    private SpellLevel SpellLevelFilter = SpellLevel.All;
+    private ElementReference containerRef;
 
-    // Deep inspectors state holders
+    private CodexKey SelectedTab = CodexKey.None;
+    private double savedScrollPosition = 0;
+    private double savedLibScrollPosition = 0;
+
     private ClassDefinitionDto? InspectedClass;
-    private SubclassDto? SelectedSubclass;
     private RaceDto? InspectedRace;
-    private FeatureDto? ActiveFeatureForModal;
+    private BackgroundDto? InspectedBackground;
+    private FeatDto? InspectedFeat;
 
     private List<ClassDefinitionDto> Classes = [];
     private List<RaceDto> Races = [];
     private List<SpellDto> AllSpells = [];
-    private List<SpellDto> FilteredSpells = [];
+    private List<FeatDto> Feats = [];
     private int TotalSpellsCount = 0;
 
     private List<(int Level, int Xp, int Proficiency)> XpProgressionTable = [];
+    private int totalBackgroundsCount;
+    private List<BackgroundDto> backgrounds = new();
+
+    private bool IsCurrentlyInspecting() => InspectedClass != null || InspectedRace != null || InspectedBackground != null || InspectedFeat != null;
 
     protected override async Task OnInitializedAsync()
     {
-        Classes = await ClassService.GetAllAsync();
-        Races = await RaceService.GetAllAsync(null);
+        Classes = await ClassService.GetAllAsync(null, null);
+        Races = await RaceService.GetAllAsync(null, includes: query => query.Include(x => x.Languages).IncludeCollection(x => x.SubRaces, z => z.Traits).Include(x => x.Traits));
         AllSpells = await SpellService.GetAllAsync(null);
         TotalSpellsCount = AllSpells.Count;
-
+        Feats = await FeatService.GetAllAsync(null, null);
+        backgrounds = await BackgroundService.GetAllAsync(null, null);
+        totalBackgroundsCount = backgrounds.Count;
         LoadXpProgressionRules();
     }
 
-    private void NavigateToTab(CodexKey key)
+    private async Task NavigateToTab(CodexKey key)
     {
+        StateHasChanged();
+
+        if (SelectedTab == CodexKey.None)
+        {
+            try
+            {
+                savedLibScrollPosition = await JS.InvokeAsync<double>("eval", "document.getElementById('main-scroll-view')?.scrollTop || 0");
+            }
+            catch { }
+        }
+
         SelectedTab = key;
-        SpellLevelFilter = SpellLevel.All;
-        FilteredSpells = AllSpells;
-        ClearInspections();
+
+        if (key != CodexKey.None)
+        {
+            await ClearInspectionsAndScrollTop();
+
+            if (key == CodexKey.Rules)
+                await ScrollTop();
+        }
+        else
+        {
+            //await Task.Delay(1);
+            try
+            {
+                await JS.InvokeVoidAsync("eval", $"document.getElementById('main-scroll-view')?.scrollTo({{ top: {savedLibScrollPosition}, behavior: 'instant' }});");
+            }
+            catch { }
+        }
     }
 
-    private void ClearInspections()
+    private async Task InspectBackground(BackgroundDto bg) => await InspectItem(() => InspectedBackground = bg);
+    private async Task InspectClass(ClassDefinitionDto bg) => await InspectItem(() => InspectedClass = bg);
+    private async Task InspectRace(RaceDto bg) => await InspectItem(() => InspectedRace = bg);
+    private async Task InspectFeat(FeatDto bg) => await InspectItem(() => InspectedFeat = bg);
+
+    private async Task InspectItem(Action inspectionAction)
+    {
+        try
+        {
+            savedScrollPosition = await JS.InvokeAsync<double>("eval", "document.getElementById('main-scroll-view')?.scrollTop || 0");
+        }
+        catch { }
+
+        inspectionAction();
+    }
+
+    private async Task HandleBackAction()
+    {
+        if (IsCurrentlyInspecting())
+        {
+            InspectedClass = null;
+            InspectedRace = null;
+            InspectedBackground = null;
+            InspectedFeat = null;
+
+            try
+            {
+                await JS.InvokeVoidAsync("eval", $"document.getElementById('main-scroll-view')?.scrollTo({{ top: {savedScrollPosition}, behavior: 'instant' }});");
+            }
+            catch { }
+        }
+        else
+        {
+            await NavigateToTab(CodexKey.None);
+        }
+    }
+
+    private async Task HandleBackActionFromChildren()
+    {
+        if (IsCurrentlyInspecting())
+        {
+            InspectedClass = null;
+            InspectedRace = null;
+            InspectedBackground = null;
+            InspectedFeat = null;
+
+            try
+            {
+                await JS.InvokeVoidAsync("eval", $"document.getElementById('main-scroll-view')?.scrollTo({{ top: {savedScrollPosition}, behavior: 'instant' }});");
+            }
+            catch { }
+        }
+        else
+        {
+            await NavigateToTab(CodexKey.None);
+        }
+    }
+
+
+    private async Task ClearInspectionsAndScrollTop()
     {
         InspectedClass = null;
         InspectedRace = null;
-        SelectedSubclass = null;
+        InspectedBackground = null;
+        InspectedFeat = null;
+
+        savedScrollPosition = 0;
+
+        await ScrollTop();
+
+        StateHasChanged();
     }
 
-
-
-
+    private async Task ScrollTop()
+    {
+        try
+        {
+            //await JS.InvokeVoidAsync("eval", "document.getElementById('main-scroll-view')?.scrollTo({ top: 0, behavior: 'instant' });");
+        }
+        catch { }
+    }
 
     private void LoadXpProgressionRules()
     {

@@ -5,20 +5,14 @@ namespace DnDreams.Domain.Entities;
 
 public class CharacterSpellSlots : IEntity
 {
-    public Guid Id { get; set; }
-    public Guid CharacterId { get; set; }
-    public Character Character { get; set; } = null!;
+    public Guid Id { get; set; } // Tu clave primaria física
+    public Guid CharacterId { get; set; } // Tu FK
+    public virtual Character Character { get; set; } = null!; // Propiedad de navegación
 
-    // 🛠️ MODIFICADO: Aunque son enteros, limitamos por lógica de negocio
-    private int _slotLevel;
-    public int SlotLevel
-    {
-        get => _slotLevel;
-        set => _slotLevel = (value >= 1 && value <= 9) ? value : throw new ArgumentOutOfRangeException("Los slots de conjuro van del nivel 1 al 9.");
-    }
-
-    public int TotalSlots { get; set; }
+    public int Level { get; set; }
+    public int MaxSlots { get; set; }
     public int UsedSlots { get; set; }
 
-    public int AvailableSlots => Math.Max(0, TotalSlots - UsedSlots);
+    // Propiedad calculada para Blazor/MAUI
+    public int RemainingSlots => Math.Max(0, MaxSlots - UsedSlots);
 }

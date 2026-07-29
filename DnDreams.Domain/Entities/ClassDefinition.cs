@@ -1,7 +1,6 @@
 using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
 using DnDreams.Domain.Modifiers;
-using static DnDreams.Domain.Modifiers.ProgressionSnapshot;
 
 namespace DnDreams.Domain.Entities;
 
@@ -26,6 +25,6 @@ public class ClassDefinition : IEntity
 
         return int.Parse(die);
     }
-    public virtual ICollection<ClassLevelProgression> Progressions { get; set; } = new List<ClassLevelProgression>();
+    public ICollection<ClassLevelProgression> Progressions { get; set; } = new List<ClassLevelProgression>();
     public ICollection<Subclass> Subclasses { get; set; } = new List<Subclass>();
 }
