@@ -1,0 +1,18 @@
+﻿<div class="loading-screen">
+    <div class="loading-content">
+        <div class="loading-logo">
+            <span class="dice-icon">🎲</span>
+            <h1>DnDreams</h1>
+        </div>
+
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+        </div>
+
+        <p class="loading-status">@StatusMessage</p>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string StatusMessage { get; set; } = "Lanzando iniciativa...";
+}
