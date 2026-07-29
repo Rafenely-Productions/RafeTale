@@ -1,15 +1,11 @@
-﻿namespace DnDreams.Application.Services.Importer.Initializer
+﻿namespace DnDreams.Application.Services.Importer.Initializer;
+
+public interface IAppInitializer
 {
-    public interface IAppInitializer
-    {
-        public bool IsDatabaseReady { get;  }
-        public event Action? OnInitializationCompleted;
+    bool IsDatabaseReady { get; }
+    string CurrentStatusMessage { get; }
+    Task InitializationTask { get; }
 
-        public string CurrentStatusMessage { get; }
-        public event Action<string>? OnStatusMessageChanged;
-
-        public void UpdateStatus(string newMessage);
-
-        public Task InitializeAsync(Func<Task> coreDataLoadingTask);
-    }
+    Task InitializeAsync(Func<Task> coreDataLoadingTask);
+    void UpdateStatus(string newMessage);
 }

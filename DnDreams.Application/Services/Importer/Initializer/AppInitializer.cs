@@ -1,42 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace DnDreams.Application.Services.Importer.Initializer;
 
-namespace DnDreams.Application.Services.Importer.Initializer
+public class AppInitializer : IAppInitializer
 {
-    public class AppInitializer : IAppInitializer
+    private readonly TaskCompletionSource _tcs = new();
+
+    public bool IsDatabaseReady { get; private set; } = false;
+    public string CurrentStatusMessage { get; private set; } = "Lanzando iniciativa...";
+
+    // ⬇️ NUEVO: Task que los componentes pueden await
+    public Task InitializationTask => _tcs.Task;
+
+    public event Action? OnInitializationCompleted;
+    public event Action? OnStatusMessageChanged;
+
+    public void UpdateStatus(string newMessage)
     {
-        // Propiedad que expone si la base de datos ya está lista
-        public bool IsDatabaseReady { get; private set; } = false;
-        public event Action? OnInitializationCompleted;
+        CurrentStatusMessage = newMessage;
+        OnStatusMessageChanged?.Invoke();
+    }
 
-        public string CurrentStatusMessage { get; private set; } = "Lanzando iniciativa...";
-        public event Action<string>? OnStatusMessageChanged;
-
-        public void UpdateStatus(string newMessage)
+    public async Task InitializeAsync(Func<Task> coreDataLoadingTask)
+    {
+        try
         {
-            CurrentStatusMessage = newMessage;
-            OnStatusMessageChanged?.Invoke(newMessage);
+            await coreDataLoadingTask();
         }
-
-        public async Task InitializeAsync(Func<Task> coreDataLoadingTask)
+        catch (Exception ex)
         {
-            try
-            {
-                await coreDataLoadingTask();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error en inicialización global: {ex.Message}");
-            }
-            finally
-            {
-                // Pase lo que pase, liberamos el Splash
-                IsDatabaseReady = true;
-                OnInitializationCompleted?.Invoke();
-            }
+            System.Diagnostics.Debug.WriteLine($"Error en inicialización global: {ex.Message}");
+        }
+        finally
+        {
+            IsDatabaseReady = true;
+            _tcs.SetResult();           // ⬅️ Libera el Task
+            OnInitializationCompleted?.Invoke();
         }
     }
 }

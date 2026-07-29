@@ -4,7 +4,6 @@
 @inject IAppInitializer Initializer
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
-@implements IDisposable
 
 <div class="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col selection:bg-amber-500/30">
     @if (!Initializer.IsDatabaseReady)
@@ -72,10 +71,17 @@
 @code {
     private string AppVersionString = "0.1.2-beta";
 
+    protected override async Task OnInitializedAsync()
+    {
+        // ⬇️ NUEVO: Esperamos a que la DB esté lista antes de mostrar contenido
+        if (!Initializer.IsDatabaseReady)
+        {
+            await Initializer.InitializationTask;
+        }
+    }
+
     protected override void OnInitialized()
     {
-        Initializer.OnInitializationCompleted += HandleInitializationCompleted;
-        Initializer.OnStatusMessageChanged += HandleStatusMessageChanged;
         Navigation.LocationChanged += OnLocationChanged;
     }
 
@@ -93,13 +99,8 @@
         catch { }
     }
 
-    private void HandleStatusMessageChanged(string newMessage) => InvokeAsync(StateHasChanged);
-    private void HandleInitializationCompleted() => InvokeAsync(StateHasChanged);
-
     public void Dispose()
     {
-        Initializer.OnInitializationCompleted -= HandleInitializationCompleted;
-        Initializer.OnStatusMessageChanged -= HandleStatusMessageChanged;
         Navigation.LocationChanged -= OnLocationChanged;
     }
 }
