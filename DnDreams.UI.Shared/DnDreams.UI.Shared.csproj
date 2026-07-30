@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -19,6 +19,11 @@
   <ItemGroup>
     <ProjectReference Include="..\DnDreams.Application\DnDreams.Application.csproj" />
     <ProjectReference Include="..\DnDreams.Domain\DnDreams.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\Character\" />
+    <Folder Include="Components\UI\" />
   </ItemGroup>
 
 </Project>
