@@ -18,7 +18,10 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
-
+        if(builder == null)
+        {
+            throw new InvalidOperationException("Failed to create MauiApp builder.");
+        }
         builder
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
@@ -70,6 +73,8 @@ public static class MauiProgram
         builder.Services.AddScoped<IService<BackgroundDto, Background>, BackgroundService>();
         builder.Services.AddScoped<IService<FeatDto, Feat>, FeatService>();
         builder.Services.AddScoped<IService<LanguageDto, Language>, LanguageService>();
+        builder.Services.AddScoped<ILibraryDataService, LibraryDataService>();
+        builder.Services.AddScoped<ILibraryCountsService, LibraryCountsService>();
 
         //Excel
         builder.Services.AddScoped<IExcelImportService, ImportManager>();

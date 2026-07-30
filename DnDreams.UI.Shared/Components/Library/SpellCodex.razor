@@ -1,0 +1,27 @@
+@using DnDreams.Application.DTOs
+@using DnDreams.Application.Interfaces.DtosInterfaces
+@using DnDreams.Domain.Entities
+@inject IService<SpellDto, Spell> SpellService
+@inject IStringLocalizer<LibraryStrings> LL
+
+@if (isLoading)
+{
+    <div class="text-center py-8 text-amber-500 font-mono animate-pulse">
+        @LL["SpellCodex_Loading"]
+    </div>
+}
+else
+{
+    <SpellList AllSpells="spells" />
+}
+
+@code {
+    private List<SpellDto> spells = [];
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        spells = await SpellService.GetAllAsync(null);
+        isLoading = false;
+    }
+}
