@@ -466,18 +466,18 @@ public enum LocEntity
     Race,
     SubRace,
     Class,
-    Subclass, 
+    Subclass,
     Background,
-    Feat, 
-    Spell, 
-    Item, 
+    Feat,
+    Spell,
+    Item,
     Monster,
-    Condition, 
+    Condition,
     Action,
     Trait,
     SpecialTrait,
     Language,
-    Proficiency, 
+    Proficiency,
     Feature,
     Character,
     SchoolOfMagic,
@@ -506,4 +506,11 @@ public enum LocLanguage
 {
     en,
     es
+}
+
+public enum CharacterTab 
+{ 
+    Spells, 
+    Skills, 
+    Features 
 }

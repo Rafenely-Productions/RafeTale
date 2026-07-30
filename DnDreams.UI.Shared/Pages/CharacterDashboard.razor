@@ -1,13 +1,14 @@
 ﻿@page "/character/{CharacterId:guid}"
 @using DnDreams.Application.DTOs
+@using DnDreams.Application.Interfaces
 @using DnDreams.Application.Interfaces.DtosInterfaces
 @using DnDreams.Domain.Entities
+@using DnDreams.Domain.Enums
+@using DnDreams.UI.Shared.Components.Character
 @inject IService<CharacterDto, Character> CharacterService
 @inject NavigationManager Navigation
 @inject IStringLocalizer<AppStrings> L
-@inject ISpellServiceSystem SpellService
 @inject ILevelUpService LevelUpService
-@using System.Text.RegularExpressions;
 
 <div class="min-h-screen bg-black p-3 sm:p-5 text-slate-100 selection:bg-amber-500/30 pb-24">
     @if (CharDto == null)
@@ -20,193 +21,35 @@
     else
     {
         <div class="max-w-4xl mx-auto space-y-4">
+            <CharacterHeader CharDto="CharDto"
+                             AuditStatus="AuditStatus"
+                             OnBack="Back"
+                             OnLevelUp="NavigateToLevelUp"
+                             OnClaimRewards="NavigateToClaimRewards"
+                             OnOpenRaceCompendium="() => showRaceModal = true"
+                             OnOpenClassCompendium="() => showClassModal = true" />
 
-            <button @onclick="Back"
-                    class="flex items-center gap-2 text-amber-700 hover:text-amber-500 font-black text-[10px] tracking-[0.2em] transition-colors group uppercase">
-                <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
-                @L["Btn_ReturnToTavern"]
-            </button>
-
-            @if (AuditStatus != null && AuditStatus.HasPendingChoices)
-            {
-                <div class="bg-amber-500/5 border border-amber-500/20 p-3.5 rounded-2xl flex flex-col gap-2.5 shadow-lg">
-                    <div class="flex items-center gap-3 text-xs">
-                        <div class="size-7 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-sparkles text-xs animate-pulse"></i>
-                        </div>
-                        <div>
-                            <p class="font-black text-amber-500 uppercase tracking-wider text-xs">@L["Title_PendingSelections"]</p>
-                            <p class="text-slate-400 mt-0.5 text-[11px]">
-                                @if (AuditStatus.PendingFeats > 0) { <span>@L["Msg_PendingFeats", AuditStatus.PendingFeats] </span> }
-                                @if (AuditStatus.PendingSpells > 0) { <span>@L["Msg_PendingSpells", AuditStatus.PendingSpells]</span> }
-                            </p>
-                        </div>
-                    </div>
-                    <button @onclick="NavigateToClaimRewards" class="w-full py-2 bg-amber-500 hover:bg-amber-400 text-black font-black text-[11px] rounded-xl uppercase tracking-widest shadow-md transition-all">
-                        @L["Btn_ClaimSelections"]
-                    </button>
-                </div>
-            }
-
-            <div class="relative bg-slate-950/80 border border-amber-900/20 p-4 rounded-2xl shadow-md space-y-3">
-                <div class="flex justify-between items-start gap-3">
-                    <div>
-                        <h1 class="text-2xl sm:text-3xl font-black text-amber-500 tracking-tight italic uppercase leading-none">@CharDto.Name</h1>
-                    </div>
-                    <span class="bg-amber-500 text-black px-2.5 py-0.5 rounded-lg text-xs font-black uppercase font-mono tracking-wider shrink-0 shadow">
-                        @L["Label_LevelShort"] @CharDto.Level
-                    </span>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-2 text-xs border-t border-slate-800/60 pt-2.5">
-                    <div class="inline-flex items-center rounded-full bg-black/40 border border-slate-800 p-0.5 pl-2.5 pr-1 gap-1.5">
-                        <span class="text-slate-300 font-serif italic text-xs">@CharDto.Race?.Name</span>
-                        <button @onclick="OpenRaceCompendium" class="size-5 rounded-full bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black transition-all flex items-center justify-center">
-                            <i class="fa-solid fa-book-atlas text-[9px]"></i>
-                        </button>
-                    </div>
-
-                    <div class="inline-flex items-center rounded-full bg-black/40 border border-slate-800 p-0.5 pl-2.5 pr-1 gap-1.5">
-                        <span class="text-amber-400 font-black uppercase tracking-wide text-[10px]">@CharDto.ClassDef?.Name</span>
-                        <button @onclick="OpenClassCompendium" class="size-5 rounded-full bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black transition-all flex items-center justify-center">
-                            <i class="fa-solid fa-book-atlas text-[9px]"></i>
-                        </button>
-                    </div>
-
-                    <button @onclick="NavigateToLevelUp"
-                            class="ml-auto group bg-lime-950/60 hover:bg-lime-600 text-lime-400 hover:text-black px-3 py-1 rounded-full font-bold text-[10px] uppercase tracking-wider transition-all flex items-center gap-1.5 border border-lime-500/20">
-                        @L["Btn_LevelUp"] <i class="fa-solid fa-arrow-up group-hover:-translate-y-0.5 transition-transform text-[8px]"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-6 gap-1.5">
-                @DisplayAttributeMinimalist("STR", CharDto.Strength, CharDto.StrModifier)
-                @DisplayAttributeMinimalist("DEX", CharDto.Dexterity, CharDto.DexModifier)
-                @DisplayAttributeMinimalist("CON", CharDto.Constitution, CharDto.ConModifier)
-                @DisplayAttributeMinimalist("INT", CharDto.Intelligence, CharDto.IntModifier)
-                @DisplayAttributeMinimalist("WIS", CharDto.Wisdom, CharDto.WisModifier)
-                @DisplayAttributeMinimalist("CHA", CharDto.Charisma, CharDto.ChaModifier)
-            </div>
-
-            <div class="flex bg-slate-950 p-1 rounded-2xl border border-slate-800/80 gap-1 overflow-x-auto">
-                <button @onclick="() => activeTab = CharacterTab.Spells" 
-                        class="flex-1 py-2 px-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap @(activeTab == CharacterTab.Spells ? "bg-amber-500 text-black shadow" : "text-slate-400 hover:text-white")">
-                    <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> @L["Tab_Grimoire"]
-                </button>
-                <button @onclick="() => activeTab = CharacterTab.Skills" 
-                        class="flex-1 py-2 px-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap @(activeTab == CharacterTab.Skills ? "bg-amber-500 text-black shadow" : "text-slate-400 hover:text-white")">
-                    <i class="fa-solid fa-list-check mr-1.5"></i> @L["Tab_Skills"]
-                </button>
-                <button @onclick="() => activeTab = CharacterTab.Features" 
-                        class="flex-1 py-2 px-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap @(activeTab == CharacterTab.Features ? "bg-amber-500 text-black shadow" : "text-slate-400 hover:text-white")">
-                    <i class="fa-solid fa-scroll mr-1.5"></i> @L["Tab_Features"]
-                </button>
-            </div>
+            <CharacterTabBar ActiveTab="activeTab" OnTabChanged="OnTabChanged" />
 
             <div class="space-y-4">
-
-                @if (activeTab == CharacterTab.Spells)
+                @switch (activeTab)
                 {
-                    @if (CharDto.SpellSlots != null && CharDto.SpellSlots.Any())
-                    {
-                        <div class="bg-slate-900 border border-amber-900/20 rounded-2xl p-4 shadow-xl space-y-3">
-                            <div class="flex justify-between items-center border-b border-amber-900/10 pb-2.5">
-                                <h3 class="text-amber-500 font-black text-xs uppercase tracking-wider flex items-center gap-2">
-                                    <i class="fa-solid fa-wand-sparkles text-amber-700"></i> @L["Title_SpellSlots"]
-                                </h3>
-                                <button @onclick="TriggerLongRest" class="px-2.5 py-1 text-[10px] font-black bg-amber-500/10 text-amber-400 hover:bg-amber-500 hover:text-black border border-amber-500/20 rounded-xl transition-all uppercase tracking-wider flex items-center gap-1">
-                                    <i class="fa-solid fa-bed"></i> @L["Btn_LongRest"]
-                                </button>
-                            </div>
-
-                            <div class="space-y-2">
-                                @foreach (var slot in CharDto.SpellSlots.Where(s => s.Level > 0).OrderBy(s => s.Level))
-                                {
-                                    <div class="bg-black/40 border border-slate-800/80 p-2.5 rounded-xl flex flex-col gap-1.5">
-                                        <div class="flex justify-between items-center text-xs">
-                                            <span class="font-bold text-slate-200 text-[11px]">@L["Label_SlotLevel"] @slot.Level</span>
-                                            <span class="font-mono text-[10px] text-amber-400 font-black bg-black/60 px-2 py-0.5 rounded">@slot.RemainingSlots / @slot.MaxSlots</span>
-                                        </div>
-                                        <div class="flex flex-wrap gap-1">
-                                            @for (int i = 0; i < slot.MaxSlots; i++)
-                                            {
-                                                bool isUsed = i < slot.UsedSlots;
-                                                <div class="size-3 rounded-full border @(isUsed ? "bg-slate-950 border-slate-700" : "bg-cyan-400 border-cyan-300 shadow-[0_0_6px_rgba(34,211,238,0.5)]")"></div>
-                                            }
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    }
-
-                    <div class="bg-slate-900 border border-amber-900/20 rounded-2xl p-4 shadow-xl space-y-3">
-                        <h3 class="text-amber-500 font-black text-xs uppercase tracking-wider flex items-center gap-2 border-b border-amber-900/10 pb-2.5">
-                            <i class="fa-solid fa-book-sparkles text-amber-700"></i> @L["Title_Spellbook"]
-                        </h3>
-                        <div class="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
-                            @if (CharDto.KnownSpells == null || !CharDto.KnownSpells.Any())
-                            {
-                                <p class="text-slate-600 italic text-xs font-serif p-4 text-center bg-black/20 rounded-xl">@L["Msg_EmptyGrimoire"]</p>
-                            }
-                            else
-                            {
-                                @foreach (var spell in CharDto.KnownSpells)
-                                {
-                                    @DisplaySpellRowClean(spell)
-                                }
-                            }
-                        </div>
-                    </div>
+                    case CharacterTab.Spells:
+                        <SpellTab CharDto="CharDto"
+                                  OnInspectSpell="OpenSpellInspector"
+                                  OnCharacterUpdated="StateHasChanged" />
+                        break;
+                    case CharacterTab.Skills:
+                        <SkillsTab CharDto="CharDto" TrainedSkills="trainedSkills" />
+                        break;
+                    case CharacterTab.Features:
+                        <FeaturesTab CharDto="CharDto" />
+                        break;
                 }
-                else if (activeTab == CharacterTab.Skills)
-                {
-                    <div class="bg-slate-900 border border-amber-900/20 rounded-2xl p-4 shadow-xl space-y-3">
-                        <div class="flex justify-between items-center border-b border-amber-900/10 pb-2.5">
-                            <h3 class="text-amber-500 font-black text-xs flex items-center gap-2 uppercase tracking-wider">
-                                <i class="fa-solid fa-list-check text-amber-700"></i> @L["Title_Skills"]
-                            </h3>
-                            <span class="text-[10px] font-mono font-black text-slate-400 bg-black/50 px-2 py-0.5 rounded-full border border-slate-800">
-                                @L["Label_Proficiency"]: +@CharDto.ProficiencyBonus
-                            </span>
-                        </div>
-                        <div class="space-y-1 max-h-[55vh] overflow-y-auto pr-1">
-                            @foreach (var skill in SkillMap.OrderBy(s => L[s.Key].Value))
-                            {
-                                @DisplaySkillRowClean(skill.Key, skill.Value)
-                            }
-                        </div>
-                    </div>
-                }
-                else if (activeTab == CharacterTab.Features)
-                {
-                    <div class="bg-slate-900 border border-amber-900/20 rounded-2xl p-4 shadow-xl space-y-3">
-                        <h3 class="text-amber-500 font-black text-xs flex items-center gap-2 uppercase tracking-wider border-b border-amber-900/10 pb-2.5">
-                            <i class="fa-solid fa-scroll text-amber-700"></i> @L["Title_ClassAndRaceFeatures"]
-                        </h3>
-                        <div class="space-y-2.5 max-h-[55vh] overflow-y-auto pr-1">
-                            @if (!CharDto.AcquiredFeatures.Any())
-                            {
-                                <p class="text-slate-600 italic text-xs font-serif p-4 text-center bg-black/20 rounded-xl">@L["Msg_EmptyAdventureJournal"]</p>
-                            }
-                            else
-                            {
-                                @foreach (var feature in CharDto.AcquiredFeatures)
-                                {
-                                    <div class="bg-black/40 border border-slate-800/80 p-3 rounded-xl space-y-1">
-                                        <h4 class="text-white font-bold text-xs uppercase tracking-wide">@feature.Name</h4>
-                                        <p class="text-slate-400 text-[11px] leading-relaxed">@((MarkupString)feature.Description)</p>
-                                    </div>
-                                }
-                            }
-                        </div>
-                    </div>
-                }
-
             </div>
 
-            <RollDices></RollDices>
+            <RollDices />
+
             @if (showRaceModal && CharDto.Race != null)
             {
                 <div class="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50" @onclick="() => showRaceModal = false">
@@ -235,45 +78,7 @@
                 </div>
             }
 
-            @if (showSpellModal && selectedSpellForModal != null)
-            {
-                <div class="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50" @onclick="CloseSpellModal">
-                    <div class="relative w-full max-w-md rounded-3xl border border-slate-800 bg-slate-950 p-5 shadow-2xl flex flex-col max-h-[75vh]" @onclick:stopPropagation>
-                        <button @onclick="CloseSpellModal" class="absolute top-4 right-4 text-slate-500 hover:text-white size-8 flex items-center justify-center rounded-full bg-white/5 z-20">
-                            <i class="fa-solid fa-xmark text-sm"></i>
-                        </button>
-
-                        <div class="overflow-y-auto pr-1 space-y-3">
-                            <div>
-                                <span class="text-[9px] font-mono font-black text-amber-500 uppercase tracking-widest">
-                                    @(selectedSpellForModal.Level == 0 ? L["Label_Cantrip"] : $"{L["Spell_LevelText"]} {selectedSpellForModal.Level}") • @selectedSpellForModal.School
-                                </span>
-                                <h3 class="text-lg font-black text-white uppercase italic tracking-tight mt-0.5">@selectedSpellForModal.Name</h3>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono bg-black/40 p-2.5 rounded-xl border border-slate-800/80">
-                                <div>
-                                    <span class="text-slate-500 text-[9px] block uppercase font-bold">@L["Label_CastingTime"]</span>
-                                    <span class="text-slate-200">@selectedSpellForModal.CastingTime</span>
-                                </div>
-                                <div>
-                                    <span class="text-slate-500 text-[9px] block uppercase font-bold">@L["Label_Range"]</span>
-                                    <span class="text-slate-200">@selectedSpellForModal.Range</span>
-                                </div>
-                                <div class="col-span-2 border-t border-slate-800/60 pt-1.5 mt-0.5">
-                                    <span class="text-slate-500 text-[9px] block uppercase font-bold">@L["Spell_Duration"]</span>
-                                    <span>@string.Join(", ", selectedSpellForModal.Duration.Select(c => L[$"SpellDuration_{c}"].Value))</span>
-                                </div>
-                            </div>
-
-                            <div class="bg-black/20 p-3 rounded-xl border border-white/5 font-serif text-xs text-slate-300 leading-relaxed">
-                                @((MarkupString)FormatDescription(selectedSpellForModal.Description))
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-
+            <SpellModal Spell="selectedSpellForModal" OnClose="CloseSpellModal" />
         </div>
     }
 </div>
@@ -283,14 +88,10 @@
     private CharacterDto? CharDto;
     private CharacterAuditDto? AuditStatus;
 
-    private enum CharacterTab { Spells, Skills, Features }
     private CharacterTab activeTab = CharacterTab.Spells;
-
     private bool showRaceModal = false;
     private bool showClassModal = false;
-    private bool showSpellModal = false;
     private SpellDto? selectedSpellForModal;
-
     private List<string> trainedSkills = new();
 
     protected override async Task OnInitializedAsync()
@@ -306,135 +107,12 @@
         }
     }
 
-    private void OpenRaceCompendium() => showRaceModal = true;
-    private void OpenClassCompendium() => showClassModal = true;
-    private void OpenSpellInspector(SpellDto spell) { selectedSpellForModal = spell; showSpellModal = true; }
-    private void CloseSpellModal() => showSpellModal = false;
+    private void OnTabChanged(CharacterTab tab) => activeTab = tab;
+
+    private void OpenSpellInspector(SpellDto spell) { selectedSpellForModal = spell; }
+    private void CloseSpellModal() => selectedSpellForModal = null;
 
     private void NavigateToLevelUp() => Navigation.NavigateTo($"/character/{CharDto?.Id}/levelup");
     private void Back() => Navigation.NavigateTo("/characters");
-
-    private RenderFragment DisplayAttributeMinimalist(string label, int baseValue, int modifier) => __builder =>
-    {
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-center flex flex-col items-center justify-center shadow-md">
-            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider">@label</span>
-
-            <div class="flex items-baseline gap-1 mt-0.5">
-                <span class="text-sm font-black text-white font-mono">@baseValue</span>
-
-                <span class="text-[9px] font-bold font-mono @(modifier >= 0 ? "text-amber-400" : "text-red-400")">
-                    @(modifier >= 0 ? $"+{modifier}" : modifier.ToString())
-                </span>
-            </div>
-        </div>
-    };
-
-    private RenderFragment DisplaySkillRowClean(string skillKey, string stat) => __builder =>
-    {
-        var bonus = CharDto!.GetSkillBonus(skillKey, stat, trainedSkills);
-        bool isProficient = trainedSkills.Contains(skillKey);
-
-        <div class="flex items-center justify-between py-1.5 border-b border-amber-900/5 px-2 text-xs">
-            <div class="flex items-center gap-2.5 min-w-0">
-                <div class="size-2 rounded-full shrink-0 @(isProficient ? "bg-lime-500 shadow-[0_0_6px_rgba(132,204,22,0.8)]" : "border border-slate-700 bg-black/20")"></div>
-                <div class="truncate">
-                    <span class="font-medium text-slate-300">@L[skillKey]</span>
-                    <span class="text-[8px] text-amber-700/50 font-black uppercase ml-1 font-mono">@shortStatMap[stat]</span>
-                </div>
-            </div>
-            <span class="font-mono font-black text-xs px-2 py-0.5 rounded bg-black/40 border border-white/5 min-w-[28px] text-center @(bonus >= 0 ? "text-lime-500" : "text-red-500")">
-                @(bonus >= 0 ? "+" : "")@bonus
-            </span>
-        </div>
-    };
-
-    private RenderFragment DisplaySpellRowClean(SpellDto spell) => __builder =>
-    {
-        <div @onclick="() => OpenSpellInspector(spell)"
-             class="bg-black/30 border border-slate-800/80 p-2.5 rounded-xl flex items-center justify-between cursor-pointer text-xs group">
-            <div class="min-w-0 pr-2">
-                <h4 class="font-bold text-slate-200 group-hover:text-amber-400 transition-colors uppercase tracking-wide truncate">@spell.Name</h4>
-                <span class="text-[9px] font-mono text-slate-500 uppercase">@L["Label_LevelShort"] @spell.Level</span>
-            </div>
-
-            <div class="flex items-center gap-1.5 shrink-0" @onclick:stopPropagation>
-                <button @onclick="() => CastSpell((int)spell.Level, (int)spell.Level)"
-                        disabled="@(!HasSlotsAvailable((int)spell.Level))"
-                        class="px-2.5 py-1 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-20 text-black font-black font-mono rounded-xl uppercase text-[10px]">
-                    @L["Btn_Cast"] @spell.Level
-                </button>
-            </div>
-        </div>
-    };
-
-    private bool HasSlotsAvailable(int slotLevel)
-    {
-        if (slotLevel == 0) return true;
-        var slot = CharDto?.SpellSlots?.FirstOrDefault(s => s.Level == slotLevel);
-        return slot != null && slot.RemainingSlots > 0;
-    }
-
-    private readonly Dictionary<string, string> shortStatMap = new()
-    {
-        { "Strength", "STR" }, { "Dexterity", "DEX" }, { "Constitution", "CON" },
-        { "Intelligence", "INT" }, { "Wisdom", "WIS" }, { "Charisma", "CHA" }
-    };
-
-    private readonly Dictionary<string, string> SkillMap = new()
-    {
-        { "Acrobatics", "Dexterity" }, { "Athletics", "Strength" }, { "Arcana", "Intelligence" },
-        { "Deception", "Charisma" }, { "History", "Intelligence" }, { "Performance", "Charisma" },
-        { "Intimidation", "Charisma" }, { "Investigation", "Intelligence" }, { "SleightOfHand", "Dexterity" },
-        { "Medicine", "Wisdom" }, { "Nature", "Intelligence" }, { "Perception", "Wisdom" },
-        { "Insight", "Wisdom" }, { "Persuasion", "Charisma" }, { "Religion", "Intelligence" },
-        { "Stealth", "Dexterity" }, { "Survival", "Wisdom" }, { "AnimalHandling", "Wisdom" }
-    };
-
-    private void NavigateToClaimRewards()
-    {
-        if (CharDto != null) Navigation.NavigateTo($"/character/{CharDto.Id}/levelup?mode=claim");
-    }
-
-    private async Task TriggerLongRest()
-    {
-        if (CharDto == null) return;
-        await SpellService.RestRestoreSlotsAsync(CharDto.Id);
-        CharDto = await CharacterService.GetByIdAsync(CharacterId, q => q.Include(x => x.KnownSpells).Include(x => x.SpellSlots));
-    }
-
-    private async Task CastSpell(int spellBaseLevel, int slotLevelToUse)
-    {
-        if (CharDto == null) return;
-        bool success = await SpellService.CastSpellAsync(CharDto.Id, spellBaseLevel, slotLevelToUse);
-        if (success)
-        {
-            CharDto = await CharacterService.GetByIdAsync(CharacterId, q => q.Include(x => x.KnownSpells).Include(x => x.SpellSlots));
-        }
-    }
-
-    private string FormatDescription(string rawDescription)
-    {
-        if (string.IsNullOrEmpty(rawDescription)) return string.Empty;
-
-        string processed = rawDescription;
-
-        string metersLabel = L["Label_mt"].Value;
-        string feetLabel = L["Label_ft"].Value;
-
-        processed = Regex.Replace(processed, @"{(?:dist|range):(\d+(?:\.\d+)?)_M}", match =>
-        {
-            string meters = match.Groups[1].Value;
-            return $"<span class=\"font-mono\">{meters} {metersLabel}</span>";
-        });
-
-        processed = Regex.Replace(processed, @"{(?:dist|range):(\d+(?:\.\d+)?)_FT}", match =>
-        {
-            string feet = match.Groups[1].Value;
-            return $"<span class=\"font-mono\">{feet} {feetLabel}</span>";
-        });
-
-        processed = Regex.Replace(processed, @"{[a-zA-Z0-9_.:]+}", string.Empty);
-
-        return processed;
-    }
+    private void NavigateToClaimRewards() => Navigation.NavigateTo($"/character/{CharDto?.Id}/levelup?mode=claim");
 }
