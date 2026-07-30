@@ -1,0 +1,41 @@
+﻿@using DnDreams.Application.DTOs
+@using DnDreams.Application.Interfaces.DtosInterfaces
+@using DnDreams.Domain.Entities
+@inject IService<BackgroundDto, Background> BackgroundService
+@inject IStringLocalizer<LibraryStrings> LL
+
+@if (isLoading)
+{
+    <div class="text-center py-8 text-amber-500 font-mono animate-pulse">
+        @LL["BackgroundCodex_Loading"]
+    </div>
+}
+else if (inspectedBackground == null)
+{
+    <BackgroundList Backgrounds="backgrounds" OnInspectedBackground="InspectBackground" />
+}
+else
+{
+    <div class="mb-4">
+        <button @onclick="BackToList"
+                class="text-amber-500 hover:text-amber-400 font-mono text-sm flex items-center gap-2 transition-colors">
+            <span class="text-lg">←</span> @LL["BackgroundCodex_BackToList"]
+        </button>
+    </div>
+    <BackgroundInspector BackgroundDto="inspectedBackground" />
+}
+
+@code {
+    private List<BackgroundDto> backgrounds = [];
+    private BackgroundDto? inspectedBackground;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        backgrounds = await BackgroundService.GetAllAsync(null, null);
+        isLoading = false;
+    }
+
+    private void InspectBackground(BackgroundDto dto) => inspectedBackground = dto;
+    private void BackToList() => inspectedBackground = null;
+}
