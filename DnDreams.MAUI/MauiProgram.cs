@@ -47,6 +47,7 @@ public static class MauiProgram
 
         // --- Core / Infrastructure Services ---
         builder.Services.AddSingleton<IAppInitializer, AppInitializer>();
+        builder.Services.AddSingleton<IDiceService, DiceService>();
         builder.Services.AddScoped<ILocalizationService, LocalizationService>();
 
         // --- Domain Services (interfaces específicas) ---

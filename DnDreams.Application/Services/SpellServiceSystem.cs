@@ -1,8 +1,9 @@
-﻿using DnDreams.Application.Interfaces;
+using DnDreams.Application.Interfaces;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DnDreams.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace DnDreams.Application.Services
         public async Task<bool> CastSpellAsync(Guid characterId, int spellLevel, int slotLevelToUse)
         {
             var character = await uow.Characters.GetByIdAsync(characterId, q => q.Include(x => x.SpellSlots))
-                ?? throw new Exception("Personaje ausente del plano material.");
+                ?? throw new NotFoundException("Personaje", characterId);
 
             // Validación de Upcasting: No puedes usar una ranura menor que el nivel base del hechizo
             if (slotLevelToUse < spellLevel) return false;
@@ -41,7 +42,7 @@ namespace DnDreams.Application.Services
         public async Task RestRestoreSlotsAsync(Guid characterId)
         {
             var character = await uow.Characters.GetByIdAsync(characterId)
-                ?? throw new Exception("Personaje ausente.");
+                ?? throw new NotFoundException("Personaje", characterId);
 
             // Descanso largo: Ponemos los UsedSlots de cada nivel de vuelta en cero
             foreach (var slot in character.SpellSlots)

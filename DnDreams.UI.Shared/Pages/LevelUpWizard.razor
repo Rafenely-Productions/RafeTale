@@ -3,14 +3,13 @@
 @using DnDreams.Application.Interfaces
 @using DnDreams.Application.Interfaces.DtosInterfaces
 @using DnDreams.Domain.Entities
-@using DnDreams.Domain.Enums
+@using DnDreams.UI.Shared.Components.LevelUp
 @inject ILevelUpService LevelUpService
 @inject IService<CharacterDto, Character> CharacterService
 @inject IService<FeatDto, Feat> FeatService
 @inject IService<SpellDto, Spell> SpellService
 @inject NavigationManager Navigation
 @inject IStringLocalizer<AppStrings> L
-@inject IJSRuntime JS
 
 <div class="min-h-screen bg-black p-4 md:p-6 text-slate-100 selection:bg-amber-500/30 pb-24">
     <div class="max-w-4xl mx-auto space-y-6">
@@ -46,251 +45,24 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-2 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/40 text-center text-xs font-black uppercase tracking-wider shadow-inner">
-                @if (Mode != "claim")
-                {
-                    <button class="py-2.5 rounded-xl transition-all @(currentStep == 1 ? "bg-amber-500 text-black font-extrabold shadow-md" : "text-slate-400 hover:text-white")" @onclick="() => SetStep(1)">
-                        1. @L["Tab_Vitals"]
-                    </button>
-                }
-                <button disabled="@(!draft.GivesFeat)" class="py-2.5 rounded-xl transition-all @(currentStep == 2 ? "bg-amber-500 text-black font-extrabold shadow-md" : "") @(draft.GivesFeat ? "text-slate-400 hover:text-white cursor-pointer" : "opacity-20 cursor-not-allowed")" @onclick="() => SetStep(2)">
-                    @(Mode == "claim" ? "1. " : "2. ") @L["Tab_Feats_ASI"]
-                </button>
-                <button disabled="@(draft.SpellsToLearnCount == 0 && Mode != "claim")" class="py-2.5 rounded-xl transition-all @(currentStep == 3 ? "bg-amber-500 text-black font-extrabold shadow-md" : "") @(draft.SpellsToLearnCount > 0 || Mode == "claim" ? "text-slate-400 hover:text-white cursor-pointer" : "opacity-20 cursor-not-allowed")" @onclick="() => SetStep(3)">
-                    @(Mode == "claim" ? "2. " : "3. ") @L["Tab_Spells"]
-                </button>
-            </div>
+            <LevelUpStepper Draft="draft" CurrentStep="currentStep" Mode="Mode" OnStepSelected="SetStep" />
 
             <div class="bg-slate-900 border border-amber-900/20 rounded-3xl p-5 sm:p-8 shadow-2xl min-h-[350px] flex flex-col justify-between">
 
                 @if (currentStep == 1)
                 {
-                    <div class="space-y-6 animate-in fade-in duration-200">
-                        <div>
-                            <h2 class="text-base sm:text-lg font-black text-white uppercase tracking-wide">@L["Title_HitPointsGain"]</h2>
-                            <p class="text-xs text-slate-400 mt-1">@L["Desc_HitPointsGain"] (@charDto.ClassDef?.Name: 1d@charDto.ClassDef?.HitDie).</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div @onclick="SelectAverageHp" class="p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between bg-black/30 @(draft.UseAverageHp ? "border-amber-500 bg-amber-500/[0.02]" : "border-slate-800 hover:border-amber-500/30")">
-                                <div class="space-y-1">
-                                    <p class="text-xs sm:text-sm font-bold text-white uppercase">@L["Option_FixedAverage"]</p>
-                                    <p class="text-[11px] text-slate-400">@L["Desc_FixedAverage"] (+@averageHpBase + CON mod)</p>
-                                </div>
-                                <span class="text-xl sm:text-2xl font-black text-amber-500 font-mono">+@CalculateHpGain(true) HP</span>
-                            </div>
-
-                            <div @onclick="RollHp" class="p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between bg-black/30 @(!draft.UseAverageHp ? "border-amber-500 bg-amber-500/[0.02]" : "border-slate-800 hover:border-amber-500/30")">
-                                <div class="space-y-1">
-                                    <p class="text-xs sm:text-sm font-bold text-white uppercase">@L["Option_RollDice"]</p>
-                                    <p class="text-[11px] text-slate-400">@L["Desc_RollDice"] (1d@charDto.ClassDef?.HitDie + CON mod)</p>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    @if (hasRolled)
-                                    {
-                                        <span class="text-xl sm:text-2xl font-black text-lime-500 font-mono">+@CalculateHpGain(false) HP</span>
-                                    }
-                                    else
-                                    {
-                                        <button @onclick="RollHp" class="px-3 py-1.5 rounded-xl bg-amber-500 text-black text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-md">
-                                            <i class="fa-solid fa-dice-d20 text-xs"></i> @L["Btn_Roll"]
-                                        </button>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <HpSelectionStep CharDto="charDto" Draft="draft" AverageHpBase="averageHpBase" />
                 }
                 else if (currentStep == 2)
                 {
-                    <div class="space-y-6 animate-in fade-in duration-200">
-                        <div>
-                            <h2 class="text-base sm:text-lg font-black text-white uppercase tracking-wide">@L["Title_FeatOrAsiSelection"]</h2>
-                            <p class="text-xs text-slate-400 mt-1">@L["Desc_FeatOrAsiSelection"]</p>
-                        </div>
-
-                        <div class="flex gap-3 border-b border-slate-800/60 pb-3">
-                            <button @onclick="() => isAsiMode = false" class="px-4 py-2 rounded-xl text-xs font-black border uppercase transition-all @(!isAsiMode ? "bg-amber-500 text-black border-amber-500 shadow" : "bg-black/40 border-slate-800 text-slate-400")">
-                                @L["Btn_ChooseFeat"]
-                            </button>
-                            <button @onclick="() => { isAsiMode = true; draft.SelectedFeatId = null; }" class="px-4 py-2 rounded-xl text-xs font-black border uppercase transition-all @(isAsiMode ? "bg-amber-500 text-black border-amber-500 shadow" : "bg-black/40 border-slate-800 text-slate-400")">
-                                @L["Btn_IncreaseStats"]
-                            </button>
-                        </div>
-
-                        @if (isAsiMode)
-                        {
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/20 p-4 rounded-2xl border border-slate-800/60">
-                                <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-amber-500 uppercase tracking-widest block">Stat Principal (+1 o +2)</label>
-                                    <select @bind="draft.SelectedAsiOne" class="w-full bg-slate-950 border border-slate-800 text-white rounded-xl p-3 text-xs font-bold outline-none focus:border-amber-500">
-                                        <option value="">-- @L["Select_Stat"] --</option>
-                                        @foreach (var val in Enum.GetValues<ASI>())
-                                        {
-                                            <option value="@val">@L[val.ToString()]</option>
-                                        }
-                                    </select>
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest block">Segundo Stat (Opcional para +1/+1)</label>
-                                    <select @bind="draft.SelectedAsiTwo" class="w-full bg-slate-950 border border-slate-800 text-white rounded-xl p-3 text-xs font-bold outline-none focus:border-amber-500">
-                                        <option value="">-- @L["Leave_Empty_For_PlusTwo"] --</option>
-                                        @foreach (var val in Enum.GetValues<ASI>())
-                                        {
-                                            @if (draft.SelectedAsiOne != val)
-                                            {
-                                                <option value="@val">@L[val.ToString()]</option>
-                                            }
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[280px] overflow-y-auto pr-1 custom-scrollbar">
-                                @foreach (var feat in availableFeats)
-                                {
-                                    bool isSelected = draft.SelectedFeatId == feat.Id;
-                                    <div @onclick="() => draft.SelectedFeatId = feat.Id" class="p-3.5 rounded-2xl border cursor-pointer transition-all bg-black/40 @(isSelected ? "border-amber-500 bg-amber-500/[0.02]" : "border-slate-800 hover:border-amber-500/20")">
-                                        <h4 class="text-xs font-black uppercase text-white">@feat.Name</h4>
-                                        <p class="text-[11px] text-slate-400 line-clamp-2 mt-1">@((MarkupString)feat.Description)</p>
-                                    </div>
-                                }
-                            </div>
-                        }
-                    </div>
+                    <FeatAsiSelectionStep Draft="draft" AvailableFeats="availableFeats" />
                 }
                 else if (currentStep == 3)
                 {
-                    <div class="space-y-4 animate-in fade-in duration-200">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-white/5 pb-3 gap-2">
-                            <div>
-                                <h2 class="text-base sm:text-lg font-black text-white uppercase tracking-wide">@L["Title_SpellsLearning"]</h2>
-                                <p class="text-xs text-slate-400 mt-0.5">
-                                    @L["Label_ClassSpellsAvailable"]: <span class="text-amber-400 font-bold">@charDto?.ClassDef?.Name</span>
-                                </p>
-                            </div>
-                            <div class="flex gap-2.5">
-                                <div class="bg-black/40 px-3 py-1 rounded-xl border border-slate-800 text-center shadow">
-                                    <span class="text-[8px] text-slate-500 block uppercase font-black">Trucos</span>
-                                    <span class="text-xs font-mono font-black @(draft.SpellBudget.SelectedCantripsCount(availableSpells) == draft.SpellBudget.MaxCantrips ? "text-lime-500" : "text-amber-500")">
-                                        @draft.SpellBudget.SelectedCantripsCount(availableSpells) / @draft.SpellBudget.MaxCantrips
-                                    </span>
-                                </div>
-                                <div class="bg-black/40 px-3 py-1 rounded-xl border border-slate-800 text-center shadow">
-                                    <span class="text-[8px] text-slate-500 block uppercase font-black">Prep</span>
-                                    <span class="text-xs font-mono font-black @(draft.SpellBudget.SelectedSpellsCount(availableSpells) == draft.SpellBudget.MaxPreparedSpells ? "text-lime-500" : "text-amber-500")">
-                                        @draft.SpellBudget.SelectedSpellsCount(availableSpells) / @draft.SpellBudget.MaxPreparedSpells
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2">
-                            <input type="text"
-                                   class="w-full px-3.5 py-2 rounded-xl text-xs font-medium border border-slate-800 bg-black/40 text-slate-200 placeholder-slate-500 focus:border-amber-500/50 outline-none transition-all shadow-inner"
-                                   placeholder="Buscar conjuro por nombre..."
-                                   @bind-value="SearchText"
-                                   @bind-value:event="oninput" />
-
-                            <div class="flex flex-wrap items-center gap-1">
-                                <button class="px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all @(SpellLevelFilter == SpellLevel.All ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white")"
-                                        @onclick='() => FilterSpellsByLevel(SpellLevel.All)'>
-                                    All
-                                </button>
-                                @for (int i = 0; i <= draft.SpellBudget.MaxSpellLevel; i++)
-                                {
-                                    int lvl = i;
-                                    <button class="px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all @(SpellLevelFilter == (SpellLevel)lvl ? "border-amber-500 bg-amber-500/10 text-amber-500" : "border-slate-800 bg-slate-900 text-white")"
-                                            @onclick="() => FilterSpellsByLevel((SpellLevel)lvl)">
-                                        @(lvl == 0 ? "Can" : $"L{lvl}")
-                                    </button>
-                                }
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div @ref="SpellListElement" class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[280px] overflow-y-auto pr-1 custom-scrollbar">
-                                @if (!displayedSpells.Any())
-                                {
-                                    <div class="col-span-2 text-center py-8 text-slate-500 italic text-xs">
-                                        No se encontraron conjuros.
-                                    </div>
-                                }
-                                else
-                                {
-                                    @foreach (var spell in displayedSpells)
-                                    {
-                                        bool isChecked = draft.SpellBudget.CurrentSelectionIds.Contains(spell.Id);
-                                        int currentCantrips = draft.SpellBudget.SelectedCantripsCount(availableSpells);
-                                        int currentSpells = draft.SpellBudget.SelectedSpellsCount(availableSpells);
-                                        bool isDisabled = !isChecked && (
-                                            ((int)spell.Level == 0 && currentCantrips >= draft.SpellBudget.MaxCantrips) ||
-                                            ((int)spell.Level > 0 && currentSpells >= draft.SpellBudget.MaxPreparedSpells)
-                                        );
-
-                                        <div class="p-2.5 rounded-xl border transition-all bg-black/40 flex items-center justify-between gap-2 group @(isChecked ? "border-lime-500 bg-lime-500/[0.02]" : "border-slate-800/80 hover:border-slate-700") @(isDisabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer")"
-                                             @onclick="() => { if(!isDisabled) ToggleSpellSelection(spell.Id); selectedSpellForPreview = spell; }">
-                                            
-                                            <div class="space-y-0.5 min-w-0">
-                                                <div class="flex items-center gap-1.5">
-                                                    <span class="px-1 py-0.2 bg-slate-950 rounded text-[8px] font-mono font-bold text-slate-400">
-                                                        @(spell.Level == 0 ? "Can" : $"L{spell.Level}")
-                                                    </span>
-                                                    <h4 class="text-xs font-black uppercase text-white truncate group-hover:text-amber-400 transition-colors">
-                                                        @spell.Name
-                                                    </h4>
-                                                </div>
-                                                <p class="text-[10px] text-slate-400 truncate">@spell.School</p>
-                                            </div>
-
-                                            <div class="shrink-0 flex items-center">
-                                                @if (isChecked)
-                                                {
-                                                    <span class="size-4 rounded-full bg-lime-600 text-black flex items-center justify-center text-[10px] shadow">
-                                                        <i class="fa-solid fa-check font-black"></i>
-                                                    </span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="size-4 rounded-full border border-slate-700"></span>
-                                                }
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                            </div>
-
-                            <div class="bg-black/30 border border-slate-800 rounded-2xl p-3 flex flex-col justify-between min-h-[180px] max-h-[280px] overflow-y-auto custom-scrollbar shadow-inner">
-                                @if (selectedSpellForPreview == null)
-                                {
-                                    <div class="flex flex-col items-center justify-center h-full text-center p-3 text-slate-500 space-y-1 my-auto">
-                                        <i class="fa-solid fa-wand-magic-sparkles text-xl text-slate-600 animate-pulse"></i>
-                                        <p class="text-[10px] uppercase font-black tracking-wider">@L["Msg_SelectSpellToInspect"]</p>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="space-y-2 animate-in fade-in duration-300">
-                                        <div>
-                                            <span class="text-[8px] font-mono font-bold px-1.5 py-0.2 bg-amber-500/10 text-amber-400 rounded uppercase">
-                                                @(selectedSpellForPreview.Level == 0 ? "Cantrip" : $"Level {selectedSpellForPreview.Level}")
-                                            </span>
-                                            <h3 class="text-xs font-black text-white uppercase mt-1 tracking-wide">@selectedSpellForPreview.Name</h3>
-                                        </div>
-                                        <div class="text-[10px] text-slate-400 font-serif leading-relaxed max-h-[130px] overflow-y-auto pr-1">
-                                            @((MarkupString)selectedSpellForPreview.Description)
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
+                    <SpellSelectionStep CharDto="charDto" Draft="draft" AvailableSpells="availableSpells" />
                 }
-                
+
                 <div class="grid grid-cols-2 items-center border-t border-white/5 pt-3 mt-4 shrink-0 gap-3">
-    
                     <div class="flex justify-start">
                         <button disabled="@(currentStep == 1 || (Mode == "claim" && currentStep == 2))" @onclick="PrevStep" class="px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 hover:text-white text-[10px] font-black uppercase tracking-wider transition-all disabled:opacity-0">
                             <i class="fa-solid fa-angle-left mr-1"></i> @L["Btn_StepBack"]
@@ -311,7 +83,6 @@
                             </button>
                         }
                     </div>
-
                 </div>
             </div>
         }
@@ -320,26 +91,14 @@
 
 @code {
     [Parameter] public Guid CharacterId { get; set; }
+    [SupplyParameterFromQuery(Name = "mode")] public string? Mode { get; set; }
 
     private CharacterDto? charDto;
     private LevelUpDraft? draft;
-
     private int currentStep = 1;
     private int averageHpBase;
-    private int diceRollResult = 0;
-    private bool hasRolled = false;
-    private bool isAsiMode = false;
-
     private List<FeatDto> availableFeats = new();
-    [SupplyParameterFromQuery(Name = "mode")]
-    public string? Mode { get; set; }
     private List<SpellDto> availableSpells = new();
-    private SpellDto? selectedSpellForPreview; 
-
-    private SpellLevel SpellLevelFilter = SpellLevel.All;
-    private List<SpellDto> displayedSpells = new();
-    private string _searchText = string.Empty;
-    private ElementReference SpellListElement;
 
     protected override async Task OnInitializedAsync()
     {
@@ -371,7 +130,6 @@
             }
 
             var allSpells = await SpellService.GetAllAsync(null);
-
             if (allSpells != null && charDto.ClassDef != null && draft.SpellBudget != null)
             {
                availableSpells = allSpells
@@ -380,8 +138,6 @@
                     .OrderBy(s => s.Level)
                     .ThenBy(s => s.Name)
                     .ToList();
-
-                ApplySpellsFilter();
             }
         }
     }
@@ -392,32 +148,6 @@
         if (step == 2 && !draft!.GivesFeat) return;
         if (step == 3 && draft!.SpellsToLearnCount == 0 && Mode != "claim") return;
         currentStep = step;
-    }
-
-    private void SelectAverageHp()
-    {
-        if (draft == null) return;
-        draft.UseAverageHp = true;
-        draft.HpGain = averageHpBase + charDto!.ConModifier;
-    }
-
-    private void RollHp()
-    {
-        if (draft == null) return;
-        draft.UseAverageHp = false;
-        if (!hasRolled)
-        {
-            var random = new Random();
-            diceRollResult = random.Next(1, (charDto!.ClassDef?.HitDieValue ?? 8) + 1);
-            draft.HpGain = Math.Max(1, diceRollResult + charDto.ConModifier);
-            hasRolled = true;
-        }
-    }
-
-    private int CalculateHpGain(bool useAverage)
-    {
-        if (useAverage) return averageHpBase + charDto!.ConModifier;
-        return hasRolled ? diceRollResult + charDto!.ConModifier : 0;
     }
 
     private void NextStep()
@@ -445,78 +175,7 @@
     private async Task SubmitLevelUp()
     {
         if (draft == null) return;
-
         await LevelUpService.CommitLevelUpAsync(draft);
         Navigation.NavigateTo($"/character/{CharacterId}", forceLoad: true);
-    }
-
-    private void ToggleSpellSelection(Guid spellId)
-    {
-        if (draft?.SpellBudget == null) return;
-
-        if (draft.SpellBudget.CurrentSelectionIds.Contains(spellId))
-        {
-            draft.SpellBudget.CurrentSelectionIds.Remove(spellId);
-        }
-        else
-        {
-            draft.SpellBudget.CurrentSelectionIds.Add(spellId);
-            
-            var validation = draft.SpellBudget.Validate(availableSpells);
-            if (!validation.IsValid)
-            {
-                draft.SpellBudget.CurrentSelectionIds.Remove(spellId);
-            }
-        }
-    }
-
-    private string SearchText
-    {
-        get => _searchText;
-        set
-        {
-            if (_searchText != value)
-            {
-                _searchText = value;
-                ApplySpellsFilter(); 
-            }
-        }
-    }
-
-    private async Task FilterSpellsByLevel(SpellLevel filter)
-    {
-        if (filter == SpellLevelFilter) return;
-        SpellLevelFilter = filter;
-
-        ApplySpellsFilter();
-        StateHasChanged();
-        await Task.Delay(1);
-
-        try
-        {
-            await JS.InvokeVoidAsync("eval", "(el => { if (el) el.scrollTop = 0; })", SpellListElement);
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error de scroll controlado: {ex.Message}");
-        }
-    }
-
-    private void ApplySpellsFilter()
-    {
-        var query = availableSpells.AsEnumerable();
-
-        if (SpellLevelFilter != SpellLevel.All)
-        {
-            query = query.Where(s => s.Level == SpellLevelFilter);
-        }
-
-        if (!string.IsNullOrWhiteSpace(SearchText.Trim()))
-        {
-            query = query.Where(s => s.Name.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase) 
-                                   || s.TechnicalName.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase));
-        }
-
-        displayedSpells = query.ToList();
     }
 }

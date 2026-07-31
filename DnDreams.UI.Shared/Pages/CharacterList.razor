@@ -2,6 +2,7 @@
 @using DnDreams.Application.DTOs
 @using DnDreams.Application.Interfaces.DtosInterfaces
 @using DnDreams.Domain.Entities
+@using DnDreams.UI.Shared.Components.UI
 @inject IService<CharacterDto, Character> CharacterService
 @inject NavigationManager Navigation
 @inject IStringLocalizer<AppStrings> L
@@ -23,10 +24,11 @@
     }
     else if (!Characters.Any())
     {
-        <div class="bg-slate-900 border border-dashed border-amber-900/30 p-8 rounded-3xl text-center max-w-lg mx-auto shadow-xl">
-            <i class="fa-solid fa-scroll text-4xl text-amber-900/30 mb-3"></i>
-            <p class="text-slate-400 text-xs font-serif italic leading-relaxed">@L["Msg_EmptyTavernHelp"]</p>
-        </div>
+        <EmptyState IconClass="fa-scroll"
+                    Title="@L["Title_EmptyTavern"]"
+                    Description="@L["Msg_EmptyTavernHelp"]"
+                    ActionText="@L["Btn_CreateCharacter"]"
+                    OnAction="NavigateToCreateCharacter" />
     }
     else
     {
@@ -34,10 +36,9 @@
             @foreach (var p in Characters)
             {
                 <div class="bg-slate-900 border border-amber-900/20 rounded-3xl overflow-hidden hover:border-amber-500/40 transition-all shadow-xl relative flex flex-col justify-between">
-
                     <div class="absolute top-0 right-0 w-12 h-12 bg-amber-500/5 rotate-45 translate-x-6 -translate-y-6 pointer-events-none"></div>
 
-                    <div class="p-4 pb-1" @onclick="() => NavigateToSheet(p.Id)">
+                    <div class="p-4 pb-1 cursor-pointer" @onclick="() => NavigateToSheet(p.Id)">
                         <div class="flex justify-between items-start gap-3 mb-4">
                             <div class="min-w-0">
                                 <h3 class="text-lg font-black text-amber-500 tracking-tight truncate uppercase">@p.Name</h3>
@@ -50,29 +51,6 @@
                                 <span class="text-lg font-black text-white leading-none font-mono">@p.Level</span>
                             </div>
                         </div>
-
-                        <!--<div class="grid grid-cols-6 gap-1.5 mb-4">
-                                @DisplayStatMinimal("STR", p.StrModifier)
-                                @DisplayStatMinimal("DEX", p.DexModifier)
-                                @DisplayStatMinimal("CON", p.ConModifier)
-                                @DisplayStatMinimal("INT", p.IntModifier)
-                                @DisplayStatMinimal("WIS", p.WisModifier)
-                                @DisplayStatMinimal("CHA", p.ChaModifier)
-                            </div>
-                        </div>
-
-                        <div class="p-5 py-0 pb-4 mt-auto">
-                            <div class="flex gap-2.5">
-                                <button @onclick="() => NavigateToSheet(p.Id)"
-                                        class="flex-1 py-3 bg-black border border-amber-900/40 text-amber-500 text-xs font-black rounded-xl hover:bg-amber-900/20 transition-all flex items-center justify-center gap-2 uppercase tracking-wide shadow-sm">
-                                    <i class="fa-solid fa-eye opacity-60"></i> @L["Btn_ViewSheet"]
-                                </button>
-
-                                <button @onclick="() => NavigateToLevelUp(p.Id)"
-                                        class="px-4 py-3 bg-lime-600 text-black rounded-xl hover:bg-lime-500 transition-all shadow-md flex items-center justify-center">
-                                    <i class="fa-solid fa-arrow-up"></i>
-                                </button>
-                                </div>-->
                     </div>
                 </div>
             }
@@ -95,15 +73,5 @@
 
     private void NavigateToLevelUp(Guid id) => Navigation.NavigateTo($"/character/{id}/levelup");
     private void NavigateToSheet(Guid id) => Navigation.NavigateTo($"/character/{id}");
-
-    // 🌟 Renderizador de Stat minimalista optimizado para cartas de lista
-    private RenderFragment DisplayStatMinimal(string shortName, int modifier) => __builder =>
-    {
-        <div class="bg-black/40 border border-white/5 py-1.5 px-1 rounded-xl text-center">
-            <span class="text-[15px] font-mono font-bold text-slate-500 block uppercase">@shortName</span>
-            <span class="text-[15px] font-mono font-black @(modifier >= 0 ? "text-lime-500" : "text-red-500")">
-                @(modifier >= 0 ? "+" : "")@modifier
-            </span>
-        </div>
-    };
+    private void NavigateToCreateCharacter() => Navigation.NavigateTo("/character/create");
 }

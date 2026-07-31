@@ -1,26 +1,30 @@
-﻿using DnDreams.Application.DTOs;
+using DnDreams.Application.DTOs;
 using DnDreams.Application.Interfaces;
 using DnDreams.Application.Interfaces.DtosInterfaces;
 using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
+using DnDreams.Domain.Exceptions;
 using System;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DnDreams.Application.Services.DtosServices
 {
-    public class LevelUpService(IUnitOfWork uow, IService<CharacterDto, Character> characterDtoService, ISpellServiceSystem spellService) : ILevelUpService
+    public class LevelUpService(IUnitOfWork uow, IService<CharacterDto, Character> characterDtoService, ISpellServiceSystem spellService, ILogger<LevelUpService> logger) : ILevelUpService
     {
         public async Task<LevelUpDraft> PrepareLevelUpAsync(Guid characterId)
         {
+            logger.LogInformation("Preparando borrador de subida de nivel para el personaje con ID: {CharacterId}", characterId);
+
             var character = await uow.Characters.GetByIdAsync(characterId, config => config.Include(c => c.KnownSpells))
-                ?? throw new Exception("Héroe no encontrado en el plano material.");
+                ?? throw new NotFoundException("Personaje", characterId);
 
             var classDef = await uow.ClassDefinitions.GetByIdAsync(character.ClassDefId, config => config
                 .IncludeCollection(x => x.Progressions, p => p.Features))
-                ?? throw new Exception("La definición de clase del personaje está corrupta.");
+                ?? throw new DomainValidationException("La definición de clase del personaje está corrupta.");
 
             int nextLevel = character.Level + 1;
             var nextProgression = classDef.Progressions.FirstOrDefault(p => p.Level == nextLevel);
@@ -41,7 +45,7 @@ namespace DnDreams.Application.Services.DtosServices
                     spellsToLearn = Math.Max(0, nextMax - character.KnownSpells.Count);
                 }
             }
-
+            logger.LogDebug("Borrador creado exitosamente para el personaje {CharacterId}. Nivel objetivo: {TargetLevel}, Dote/ASI: {GivesFeat}", characterId, nextLevel, givesFeatThisLevel);
             return new LevelUpDraft
             {
                 CharacterId = characterId,
@@ -54,8 +58,10 @@ namespace DnDreams.Application.Services.DtosServices
 
         public async Task<LevelUpDraft> PrepareClaimDraftAsync(Guid characterId)
         {
+            logger.LogInformation("Preparando reclamación de recompensas pendientes para el personaje: {CharacterId}", characterId);
+
             var character = await uow.Characters.GetByIdAsync(characterId, config => config.Include(c => c.KnownSpells))
-                ?? throw new Exception("Héroe no encontrado.");
+                ?? throw new NotFoundException("Personaje", characterId);
 
             var classDef = await uow.ClassDefinitions.GetByIdAsync(character.ClassDefId, config => config
                 .IncludeCollection(x => x.Progressions, p => p.Features))!;
@@ -82,7 +88,7 @@ namespace DnDreams.Application.Services.DtosServices
             if (character.KnownSpells != null)
             {
                 budget.InitiallyKnownSpellIds = character.KnownSpells.Select(s => s.Id).ToList();
-                budget.CurrentSelectionIds = new List<Guid>(budget.InitiallyKnownSpellIds); // Clonamos estado
+                // ❌ Ya no asignamos budget.CurrentSelectionIds aquí porque el estado vive en el LevelUpDraft
             }
 
             if (progression?.Traits != null)
@@ -113,14 +119,15 @@ namespace DnDreams.Application.Services.DtosServices
 
         public async Task<CharacterDto> CommitLevelUpAsync(LevelUpDraft draft)
         {
-            // 1. CARGA UNIFICADA CON TODOS LOS INCLUDES DESDE EL INICIO
+            logger.LogInformation("Consolidando subida de nivel para el personaje ID: {CharacterId} hacia el nivel {TargetLevel}", draft.CharacterId, draft.TargetLevel);
+
             var character = await uow.Characters.GetByIdAsync(draft.CharacterId, config => config
                 .Include(c => c.AcquiredFeatures)
                 .Include(c => c.CharacterModifiers)
                 .Include(c => c.AcquiredFeats)
                 .Include(c => c.KnownSpells)
-                .Include(c => c.SpellSlots)) // 🌟 Indispensable incluir los slots desde el inicio
-                ?? throw new Exception("Héroe no encontrado al consolidar nivel.");
+                .Include(c => c.SpellSlots)) 
+                ?? throw new NotFoundException("Personaje", draft.CharacterId);
 
             var classDef = await uow.ClassDefinitions.GetByIdAsync(character.ClassDefId, config => config
                 .IncludeCollection(x => x.Progressions, p => p.Features))!;
@@ -134,7 +141,7 @@ namespace DnDreams.Application.Services.DtosServices
             }
 
             // 3. Inyectar automáticamente los Features nativos
-            var currentProgression = classDef.Progressions.FirstOrDefault(p => p.Level == character.Level);
+            var currentProgression = classDef?.Progressions.FirstOrDefault(p => p.Level == character.Level);
             if (currentProgression?.Features != null)
             {
                 foreach (var feature in currentProgression.Features)
@@ -188,7 +195,7 @@ namespace DnDreams.Application.Services.DtosServices
             }
 
             // 6. Sincronizar Grimorio de Hechizos
-            var selectedIds = draft.SpellBudget?.CurrentSelectionIds ?? draft.SelectedSpellIds ?? new List<Guid>();
+            var selectedIds = draft.SelectedSpellIds ?? draft.SelectedSpellIds ?? new List<Guid>();
             var spellsToRemove = character.KnownSpells.Where(s => !selectedIds.Contains(s.Id)).ToList();
             foreach (var spell in spellsToRemove)
             {
@@ -213,17 +220,19 @@ namespace DnDreams.Application.Services.DtosServices
             await spellService.RecalculateMaxSlotsAsync(character);
 
             await uow.SaveChangesAsync();
-
+            logger.LogInformation("Nivel consolidado con éxito para el personaje: {CharacterName} ({CharacterId})", character.Name, character.Id);
             return await characterDtoService.ArmDto(character);
         }
         public async Task<CharacterAuditDto> AuditCharacterAsync(Guid characterId)
         {
+            logger.LogDebug("Auditando estado del personaje: {CharacterId}", characterId);
             var character = await uow.Characters.GetByIdAsync(characterId, config => config
+                .Include(c => c.ClassDef)
                 .Include(c => c.AcquiredFeats)
                 .Include(c => c.KnownSpells)
                 .Include(c => c.CharacterModifiers)
                 .IncludePaths.Add("ClassDef.Progressions.Features"))
-                ?? throw new Exception("Personaje ausente.");
+                ?? throw new NotFoundException("Personaje", characterId);
 
             var progressions = character.ClassDef.Progressions.Where(x => x.Level <= character.Level).ToList();
             int allowedSpells = 0;

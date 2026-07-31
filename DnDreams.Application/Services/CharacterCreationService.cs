@@ -1,6 +1,7 @@
-﻿using DnDreams.Domain.Entities;
+using DnDreams.Domain.Entities;
 using DnDreams.Domain.Enums;
 using DnDreams.Domain.Interfaces;
+using DnDreams.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,18 +50,18 @@ namespace DnDreams.Application.Services
         {
             if (!SelectedRaceId.HasValue || !SelectedClassId.HasValue || !SelectedBackgroundId.HasValue)
             {
-                throw new InvalidOperationException("No se puede crear el personaje porque faltan selecciones obligatorias.");
+                throw new DomainValidationException("No se puede crear el personaje porque faltan selecciones obligatorias.");
             }
 
             // 1. Cargar las definiciones de raza, clase y trasfondo de la base de datos
             var race = await uow.Races.GetByIdAsync(SelectedRaceId.Value)
-                ?? throw new Exception("Raza no encontrada.");
+                ?? throw new NotFoundException("Raza", SelectedRaceId.Value);
 
             var classDef = await uow.ClassDefinitions.GetByIdAsync(SelectedClassId.Value)
-                ?? throw new Exception("Clase no encontrada.");
+                ?? throw new NotFoundException("Clase", SelectedClassId.Value);
 
             var background = await uow.Backgrounds.GetByIdAsync(SelectedBackgroundId.Value)
-                ?? throw new Exception("Trasfondo no encontrado.");
+                ?? throw new NotFoundException("Trasfondo", SelectedBackgroundId.Value);
 
             // 2. Calcular estadísticas finales (Base + Bono de Trasfondo)
             int finalCon = BaseStats[ASI.Constitution] + BonusStats[ASI.Constitution];
