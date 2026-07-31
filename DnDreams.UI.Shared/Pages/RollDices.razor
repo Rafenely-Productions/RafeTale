@@ -1,6 +1,8 @@
 ﻿@page "/dice"
+@using DnDreams.Application.Interfaces
 @inject IStringLocalizer<AppStrings> L
 @inject IJSRuntime JS
+@inject IDiceService DiceService
 
 <div class="h-full flex flex-col p-3 sm:p-4 text-slate-100 bg-slate-950 max-w-4xl mx-auto space-y-4 overflow-x-hidden">
 
@@ -97,7 +99,6 @@
     private bool IsRolling = false;
     private string LastRolledLabel = "Tira un dado";
     private string LastDetails = string.Empty;
-    private Random random = new();
 
     private class RollEntry
     {
@@ -107,7 +108,7 @@
         public DateTime Timestamp { get; set; }
     }
 
-    private List<RollEntry> History = [];
+    private List<RollEntry> History = new();
 
     private async Task RollDice(int sides)
     {
@@ -117,38 +118,30 @@
         LastDetails = string.Empty;
         StateHasChanged();
 
+        // 1. Animación visual (le pedimos al servicio tiradas temporales para el efecto visual)
         int iterations = 12;
         for (int i = 0; i < iterations; i++)
         {
-            int tempSum = 0;
-            for (int c = 0; c < selectedCount; c++)
-            {
-                tempSum += random.Next(1, sides + 1);
-            }
-            DisplayResult = tempSum;
+            var tempRoll = DiceService.Roll(selectedCount, sides);
+            DisplayResult = tempRoll.Total;
             StateHasChanged();
-
             await Task.Delay(35 + (i * 15));
         }
 
-        List<int> rolls = new();
-        int finalSum = 0;
-        for (int c = 0; c < selectedCount; c++)
-        {
-            int roll = random.Next(1, sides + 1);
-            rolls.Add(roll);
-            finalSum += roll;
-        }
+        // 2. TIRADA FINAL REAL (Usando la lógica de dominio)
+        var finalRoll = DiceService.Roll(selectedCount, sides);
 
-        DisplayResult = finalSum;
+        // 3. Mostramos resultados en la UI
+        DisplayResult = finalRoll.Total;
         LastRolledLabel = $"Resultado de {selectedCount}d{sides}";
-        LastDetails = $"Tiradas individuales: [{string.Join(", ", rolls)}]";
+        LastDetails = $"Tiradas individuales: [{string.Join(", ", finalRoll.IndividualRolls)}]";
 
+        // 4. Guardamos en el historial
         History.Insert(0, new RollEntry
         {
             DiceName = $"{selectedCount}d{sides}",
-            Result = finalSum,
-            IndividualResults = string.Join(", ", rolls),
+            Result = finalRoll.Total,
+            IndividualResults = string.Join(", ", finalRoll.IndividualRolls),
             Timestamp = DateTime.Now
         });
 

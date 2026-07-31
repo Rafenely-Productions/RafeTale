@@ -1,6 +1,7 @@
 ﻿using DnDreams.Application.DTOs;
 using DnDreams.Application.Services;
 using DnDreams.Domain.Enums;
+using Xunit; // Asegúrate de tener este using
 
 namespace DnDreams.Tests.Application.Helpers;
 
@@ -23,19 +24,21 @@ public class SpellBudgetTests
         {
             MaxCantrips = 3,
             MaxPreparedSpells = 5,
-            MaxSpellLevel = 2,
-            CurrentSelectionIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() }
+            MaxSpellLevel = 2
         };
 
+        var selectedIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
+
         var allSpells = CreateSpellList(
-            (budget.CurrentSelectionIds[0], SpellLevel.Cantrip),
-            (budget.CurrentSelectionIds[1], SpellLevel.Level1)
+            (selectedIds[0], SpellLevel.Cantrip),
+            (selectedIds[1], SpellLevel.Level1)
         );
 
-        var (isValid, error) = budget.Validate(allSpells);
+        // Pasamos selectedIds como parámetro
+        var (isValid, errorKey) = budget.Validate(selectedIds, allSpells);
 
         Assert.True(isValid);
-        Assert.Empty(error);
+        Assert.Empty(errorKey);
     }
 
     [Fact]
@@ -46,16 +49,16 @@ public class SpellBudgetTests
         {
             MaxCantrips = 3,
             MaxPreparedSpells = 10,
-            MaxSpellLevel = 9,
-            CurrentSelectionIds = ids
+            MaxSpellLevel = 9
         };
 
         var allSpells = ids.Select(id => new SpellDto { Id = id, Level = SpellLevel.Cantrip }).ToList();
 
-        var (isValid, error) = budget.Validate(allSpells);
+        var (isValid, errorKey) = budget.Validate(ids, allSpells);
 
         Assert.False(isValid);
-        Assert.Contains("trucos", error);
+        // Ahora validamos contra la llave de traducción
+        Assert.Equal("Error_MaxCantripsExceeded", errorKey);
     }
 
     [Fact]
@@ -66,16 +69,15 @@ public class SpellBudgetTests
         {
             MaxCantrips = 10,
             MaxPreparedSpells = 5,
-            MaxSpellLevel = 9,
-            CurrentSelectionIds = ids
+            MaxSpellLevel = 9
         };
 
         var allSpells = ids.Select(id => new SpellDto { Id = id, Level = SpellLevel.Level1 }).ToList();
 
-        var (isValid, error) = budget.Validate(allSpells);
+        var (isValid, errorKey) = budget.Validate(ids, allSpells);
 
         Assert.False(isValid);
-        Assert.Contains("conjuros preparados", error);
+        Assert.Equal("Error_MaxSpellsExceeded", errorKey);
     }
 
     [Fact]
@@ -86,19 +88,19 @@ public class SpellBudgetTests
         {
             MaxCantrips = 10,
             MaxPreparedSpells = 10,
-            MaxSpellLevel = 2,
-            CurrentSelectionIds = new List<Guid> { spellId }
+            MaxSpellLevel = 2
         };
 
+        var selectedIds = new List<Guid> { spellId };
         var allSpells = new List<SpellDto>
         {
             new() { Id = spellId, Level = SpellLevel.Level3 }
         };
 
-        var (isValid, error) = budget.Validate(allSpells);
+        var (isValid, errorKey) = budget.Validate(selectedIds, allSpells);
 
         Assert.False(isValid);
-        Assert.Contains("nivel superior", error);
+        Assert.Equal("Error_MaxSpellLevelExceeded", errorKey);
     }
 
     [Fact]
@@ -110,18 +112,19 @@ public class SpellBudgetTests
         {
             MaxCantrips = 3,
             MaxPreparedSpells = 5,
-            MaxSpellLevel = 3,
-            CurrentSelectionIds = cantripIds.Concat(spellIds).ToList()
+            MaxSpellLevel = 3
         };
+
+        var selectedIds = cantripIds.Concat(spellIds).ToList();
 
         var allSpells = cantripIds.Select(id => new SpellDto { Id = id, Level = SpellLevel.Cantrip })
             .Concat(spellIds.Select(id => new SpellDto { Id = id, Level = SpellLevel.Level2 }))
             .ToList();
 
-        var (isValid, error) = budget.Validate(allSpells);
+        var (isValid, errorKey) = budget.Validate(selectedIds, allSpells);
 
         Assert.True(isValid);
-        Assert.Empty(error);
+        Assert.Empty(errorKey);
     }
 
     [Fact]
@@ -129,10 +132,8 @@ public class SpellBudgetTests
     {
         var cantripId = Guid.NewGuid();
         var spellId = Guid.NewGuid();
-        var budget = new SpellBudget
-        {
-            CurrentSelectionIds = new List<Guid> { cantripId, spellId }
-        };
+        var budget = new SpellBudget();
+        var selectedIds = new List<Guid> { cantripId, spellId };
 
         var allSpells = new List<SpellDto>
         {
@@ -140,7 +141,7 @@ public class SpellBudgetTests
             new() { Id = spellId, Level = SpellLevel.Level1 }
         };
 
-        int count = budget.SelectedCantripsCount(allSpells);
+        int count = budget.SelectedCantripsCount(selectedIds, allSpells);
 
         Assert.Equal(1, count);
     }
@@ -151,10 +152,9 @@ public class SpellBudgetTests
         var cantripId = Guid.NewGuid();
         var spellId1 = Guid.NewGuid();
         var spellId2 = Guid.NewGuid();
-        var budget = new SpellBudget
-        {
-            CurrentSelectionIds = new List<Guid> { cantripId, spellId1, spellId2 }
-        };
+        var budget = new SpellBudget();
+
+        var selectedIds = new List<Guid> { cantripId, spellId1, spellId2 };
 
         var allSpells = new List<SpellDto>
         {
@@ -163,7 +163,7 @@ public class SpellBudgetTests
             new() { Id = spellId2, Level = SpellLevel.Level2 }
         };
 
-        int count = budget.SelectedSpellsCount(allSpells);
+        int count = budget.SelectedSpellsCount(selectedIds, allSpells);
 
         Assert.Equal(2, count);
     }
@@ -174,8 +174,7 @@ public class SpellBudgetTests
         var knownId = Guid.NewGuid();
         var budget = new SpellBudget
         {
-            InitiallyKnownSpellIds = new List<Guid> { knownId },
-            CurrentSelectionIds = new List<Guid> { knownId }
+            InitiallyKnownSpellIds = new List<Guid> { knownId }
         };
 
         Assert.Single(budget.InitiallyKnownSpellIds);

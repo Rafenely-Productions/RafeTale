@@ -21,7 +21,7 @@
     {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/20 p-4 rounded-2xl border border-slate-800/60">
             <div class="space-y-2">
-                <label class="text-[10px] font-black text-amber-500 uppercase tracking-widest block">@L["Label_PrimaryStat"]</label>
+                <label class="text-[10px] font-black text-amber-500 uppercase tracking-widest block">Stat Principal (+1 o +2)</label>
                 <select @bind="Draft.SelectedAsiOne" class="w-full bg-slate-950 border border-slate-800 text-white rounded-xl p-3 text-xs font-bold outline-none focus:border-amber-500">
                     <option value="">-- @L["Select_Stat"] --</option>
                     @foreach (var val in Enum.GetValues<ASI>())
@@ -31,7 +31,7 @@
                 </select>
             </div>
             <div class="space-y-2">
-                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest block">@L["Label_SecondaryStat"]</label>
+                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest block">Segundo Stat (Opcional para +1/+1)</label>
                 <select @bind="Draft.SelectedAsiTwo" class="w-full bg-slate-950 border border-slate-800 text-white rounded-xl p-3 text-xs font-bold outline-none focus:border-amber-500">
                     <option value="">-- @L["Leave_Empty_For_PlusTwo"] --</option>
                     @foreach (var val in Enum.GetValues<ASI>())

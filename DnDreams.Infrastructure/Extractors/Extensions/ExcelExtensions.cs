@@ -1,4 +1,5 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
+using DnDreams.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace DnDreams.Infrastructure.Extractors.Extensions
             if (isRequired)
             {
                 // Si la hoja es vital para que la App funcione, lanzamos un error descriptivo
-                throw new Exception($"ERROR CRÍTICO: La pestaña '{sheetName}' no existe en el archivo Excel. No se puede continuar con la importación.");
+                throw new DataImportException($"La pestaña '{sheetName}' no existe en el archivo Excel. No se puede continuar con la importación.");
             }
 
             return null!; // Si no es requerida, devolvemos null de forma segura

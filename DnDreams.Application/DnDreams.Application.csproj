@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.105.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.18" />
   </ItemGroup>
 
   <ItemGroup>

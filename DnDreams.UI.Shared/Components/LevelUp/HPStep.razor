@@ -1,81 +1,81 @@
-﻿
-<div class="space-y-6 animate-fade-in">
-    <div class="text-center">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-red-900/30 rounded-full mb-4 border border-red-500/50">
-            <i class="fa-solid fa-heart-pulse text-3xl text-red-500"></i>
-        </div>
-        <h3 class="text-2xl font-black text-white">Incremento de Vitalidad</h3>
-        <p class="text-slate-400">Tu clase (Character.ClassDef.Name) usa un dado <span class="text-red-400 font-bold">@Character.ClassDef.HitDie</span></p>
+@using DnDreams.Application.DTOs
+@inject IStringLocalizer<AppStrings> L
+
+<div class="space-y-6 animate-in fade-in duration-200">
+    <div>
+        <h2 class="text-base sm:text-lg font-black text-white uppercase tracking-wide">@L["Title_HitPointsGain"]</h2>
+        <p class="text-xs text-slate-400 mt-1">
+            @L["Desc_HitPointsGain"] (@Character.ClassDef?.Name: 1d@Character.ClassDef?.HitDie).
+        </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div @onclick="() => SelectHp(FixedValue)"
-             class="relative p-6 bg-slate-900 border-2 rounded-3xl cursor-pointer transition-all @(State.SelectedHp == FixedValue ? "border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]" : "border-slate-800 hover:border-slate-700")">
-            <div class="flex justify-between items-start mb-4">
-                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Sugerido</span>
-                @if (State.SelectedHp == FixedValue)
-                {
-                    <i class="fa-solid fa-circle-check text-red-500 text-xl"></i>
-                }
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        @* Opción: Promedio *@
+        <div @onclick="SelectAverageHp"
+             class="p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between bg-black/30 @(Draft.UseAverageHp ? "border-amber-500 bg-amber-500/[0.02]" : "border-slate-800 hover:border-amber-500/30")">
+            <div class="space-y-1">
+                <p class="text-xs sm:text-sm font-bold text-white uppercase">@L["Option_FixedAverage"]</p>
+                <p class="text-[11px] text-slate-400">@L["Desc_FixedAverage"] (+@AverageHpBase + CON mod)</p>
             </div>
-            <h4 class="text-lg font-bold text-white">Valor Promedio</h4>
-            <div class="text-4xl font-black text-red-500 my-2">+@FixedValue</div>
-            <p class="text-xs text-slate-500">Consistencia ante todo. @(Character.ClassDef.HitDieValue / 2 + 1) base + @Character.ConModifier de Con.</p>
+            <span class="text-xl sm:text-2xl font-black text-amber-500 font-mono">+@CalculateHpGain(true) HP</span>
         </div>
 
-        <div @onclick="RollDice"
-             class="relative p-6 bg-slate-900 border-2 rounded-3xl cursor-pointer transition-all @(State.SelectedHp > 0 && State.SelectedHp != FixedValue ? "border-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.2)]" : "border-slate-800 hover:border-slate-700")">
-            <div class="flex justify-between items-start mb-4">
-                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Azar</span>
-                @if (State.SelectedHp > 0 && State.SelectedHp != FixedValue)
+        @* Opción: Tirada *@
+        <div @onclick="RollHp"
+             class="p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between bg-black/30 @(!Draft.UseAverageHp ? "border-amber-500 bg-amber-500/[0.02]" : "border-slate-800 hover:border-amber-500/30")">
+            <div class="space-y-1">
+                <p class="text-xs sm:text-sm font-bold text-white uppercase">@L["Option_RollDice"]</p>
+                <p class="text-[11px] text-slate-400">@L["Desc_RollDice"] (1d@Character.ClassDef?.HitDie + CON mod)</p>
+            </div>
+            <div class="flex items-center gap-3">
+                @if (HasRolled)
                 {
-                    <i class="fa-solid fa-dice text-amber-500 text-xl"></i>
+                    <span class="text-xl sm:text-2xl font-black text-lime-500 font-mono">+@CalculateHpGain(false) HP</span>
+                }
+                else
+                {
+                    <button @onclick="RollHp" @onclick:stopPropagation
+                            class="px-3 py-1.5 rounded-xl bg-amber-500 text-black text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-md">
+                        <i class="fa-solid fa-dice-d20 text-xs"></i> @L["Btn_Roll"]
+                    </button>
                 }
             </div>
-            <h4 class="text-lg font-bold text-white">Tirar el @Character.ClassDef.HitDie</h4>
-            <div class="text-4xl font-black text-amber-500 my-2">@(IsRolling ? "..." : $"+{State.SelectedHp}")</div>
-            <p class="text-xs text-slate-500">¿Te sientes con suerte? El resultado mínimo es 1 + @Character.ConModifier de Con.</p>
         </div>
     </div>
-
-    @if (HasToughFeat)
-    {
-        <div class="p-3 bg-blue-900/20 border border-blue-500/30 rounded-xl flex items-center gap-3">
-            <i class="fa-solid fa-shield-heart text-blue-400"></i>
-            <p class="text-[11px] text-blue-200">
-                <strong>Dote Robustez detectado:</strong> Se sumarán automáticamente +2 HP extra a tu total por este nivel.
-            </p>
-        </div>
-    }
 </div>
 
 @code {
-    [Parameter] public LevelUpState State { get; set; } = null!;
-    [Parameter] public Character Character { get; set; } = null!;
+    [Parameter] public LevelUpDraft Draft { get; set; } = null!;
+    [Parameter] public CharacterDto Character { get; set; } = null!;
+    [Parameter] public int AverageHpBase { get; set; }
+    [Parameter] public EventCallback OnHpSelected { get; set; }
 
-    private bool IsRolling = false;
-    private int FixedValue => (Character.ClassDef.HitDieValue / 2) + 1 + Character.ConModifier;
+    private bool HasRolled = false;
+    private int DiceRollResult = 0;
 
-    // Verificamos si el jugador seleccionó el dote de Robustez en el paso anterior
-    private bool HasToughFeat => State.SelectedFeatId.HasValue &&
-                                 // Aquí deberías comparar contra el Guid real de tu base de datos para 'Robustez'
-                                 State.SelectedFeatId.ToString().Contains("GUID_DE_ROBUSTEZ_AQUI");
-
-    private void SelectHp(int val)
+    private void SelectAverageHp()
     {
-        State.SelectedHp = val;
+        Draft.UseAverageHp = true;
+        Draft.HpGain = AverageHpBase + Character.ConModifier;
+        OnHpSelected.InvokeAsync();
     }
 
-    private async Task RollDice()
+    private void RollHp()
     {
-        IsRolling = true;
-        State.SelectedHp = 0;
-        await Task.Delay(600); // Efecto visual de suspenso
+        Draft.UseAverageHp = false;
+        if (!HasRolled)
+        {
+            var random = new Random();
+            DiceRollResult = random.Next(1, (Character.ClassDef?.HitDieValue ?? 8) + 1);
+            Draft.HpGain = Math.Max(1, DiceRollResult + Character.ConModifier);
+            HasRolled = true;
+        }
+        OnHpSelected.InvokeAsync();
+    }
 
-        var random = new Random();
-        int roll = random.Next(1, Character.ClassDef.HitDieValue + 1);
-        State.SelectedHp = roll + Character.ConModifier;
-
-        IsRolling = false;
+    private int CalculateHpGain(bool useAverage)
+    {
+        if (useAverage) return AverageHpBase + Character.ConModifier;
+        return HasRolled ? DiceRollResult + Character.ConModifier : 0;
     }
 }
