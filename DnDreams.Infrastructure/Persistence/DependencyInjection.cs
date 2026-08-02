@@ -12,7 +12,8 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, string dbPath)
     {
         services.AddDbContext<DnDreamsDbContext>(options =>
-            options.UseSqlite($"Data Source={dbPath}Cache=Shared"));
+            options.UseSqlite($"Data Source={dbPath};Cache=Shared"));
+
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IDataExtractor, ExcelDataExtractor>();
