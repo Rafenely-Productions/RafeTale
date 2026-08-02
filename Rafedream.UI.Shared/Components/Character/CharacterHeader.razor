@@ -1,0 +1,89 @@
+@using Rafedream.Application.DTOs
+@inject IStringLocalizer<AppStrings> L
+@inject NavigationManager Navigation
+
+<div class="space-y-4">
+    <button @onclick="OnBack"
+            class="flex items-center gap-2 text-amber-700 hover:text-amber-500 font-black text-[10px] tracking-[0.2em] transition-colors group uppercase">
+        <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
+        @L["Btn_ReturnToTavern"]
+    </button>
+
+    @if (AuditStatus != null && AuditStatus.HasPendingChoices)
+    {
+        <div class="bg-amber-500/5 border border-amber-500/20 p-3.5 rounded-2xl flex flex-col gap-2.5 shadow-lg">
+            <div class="flex items-center gap-3 text-xs">
+                <div class="size-7 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-sparkles text-xs animate-pulse"></i>
+                </div>
+                <div>
+                    <p class="font-black text-amber-500 uppercase tracking-wider text-xs">@L["Title_PendingSelections"]</p>
+                    <p class="text-slate-400 mt-0.5 text-[11px]">
+                        @if (AuditStatus.PendingFeats > 0)
+                        {
+                            <span>@L["Msg_PendingFeats", AuditStatus.PendingFeats] </span>
+                        }
+                        @if (AuditStatus.PendingSpells > 0)
+                        {
+                            <span>@L["Msg_PendingSpells", AuditStatus.PendingSpells]</span>
+                        }
+                    </p>
+                </div>
+            </div>
+            <button @onclick="OnClaimRewards" class="w-full py-2 bg-amber-500 hover:bg-amber-400 text-black font-black text-[11px] rounded-xl uppercase tracking-widest shadow-md transition-all">
+                @L["Btn_ClaimSelections"]
+            </button>
+        </div>
+    }
+
+    <div class="relative bg-slate-950/80 border border-amber-900/20 p-4 rounded-2xl shadow-md space-y-3">
+        <div class="flex justify-between items-start gap-3">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-black text-amber-500 tracking-tight italic uppercase leading-none">@CharDto.Name</h1>
+            </div>
+            <span class="bg-amber-500 text-black px-2.5 py-0.5 rounded-lg text-xs font-black uppercase font-mono tracking-wider shrink-0 shadow">
+                @L["Label_LevelShort"] @CharDto.Level
+            </span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 text-xs border-t border-slate-800/60 pt-2.5">
+            <div class="inline-flex items-center rounded-full bg-black/40 border border-slate-800 p-0.5 pl-2.5 pr-1 gap-1.5">
+                <span class="text-slate-300 font-serif italic text-xs">@CharDto.Race?.Name</span>
+                <button @onclick="OnOpenRaceCompendium" class="size-5 rounded-full bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black transition-all flex items-center justify-center">
+                    <i class="fa-solid fa-book-atlas text-[9px]"></i>
+                </button>
+            </div>
+
+            <div class="inline-flex items-center rounded-full bg-black/40 border border-slate-800 p-0.5 pl-2.5 pr-1 gap-1.5">
+                <span class="text-amber-400 font-black uppercase tracking-wide text-[10px]">@CharDto.ClassDef?.Name</span>
+                <button @onclick="OnOpenClassCompendium" class="size-5 rounded-full bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black transition-all flex items-center justify-center">
+                    <i class="fa-solid fa-book-atlas text-[9px]"></i>
+                </button>
+            </div>
+
+            <button @onclick="OnLevelUp"
+                    class="ml-auto group bg-lime-950/60 hover:bg-lime-600 text-lime-400 hover:text-black px-3 py-1 rounded-full font-bold text-[10px] uppercase tracking-wider transition-all flex items-center gap-1.5 border border-lime-500/20">
+                @L["Btn_LevelUp"] <i class="fa-solid fa-arrow-up group-hover:-translate-y-0.5 transition-transform text-[8px]"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-6 gap-1.5">
+        <CharacterStatBox Label="STR" Value="CharDto.Strength" Modifier="CharDto.StrModifier" />
+        <CharacterStatBox Label="DEX" Value="CharDto.Dexterity" Modifier="CharDto.DexModifier" />
+        <CharacterStatBox Label="CON" Value="CharDto.Constitution" Modifier="CharDto.ConModifier" />
+        <CharacterStatBox Label="INT" Value="CharDto.Intelligence" Modifier="CharDto.IntModifier" />
+        <CharacterStatBox Label="WIS" Value="CharDto.Wisdom" Modifier="CharDto.WisModifier" />
+        <CharacterStatBox Label="CHA" Value="CharDto.Charisma" Modifier="CharDto.ChaModifier" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public CharacterDto CharDto { get; set; } = null!;
+    [Parameter] public CharacterAuditDto? AuditStatus { get; set; }
+    [Parameter] public EventCallback OnBack { get; set; }
+    [Parameter] public EventCallback OnLevelUp { get; set; }
+    [Parameter] public EventCallback OnClaimRewards { get; set; }
+    [Parameter] public EventCallback OnOpenRaceCompendium { get; set; }
+    [Parameter] public EventCallback OnOpenClassCompendium { get; set; }
+}

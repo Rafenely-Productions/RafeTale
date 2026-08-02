@@ -1,0 +1,31 @@
+@using Rafedream.Application.DTOs
+@using Rafedream.UI.Shared.Components.UI
+@inject IStringLocalizer<AppStrings> L
+
+<div class="bg-slate-900 border border-amber-900/20 rounded-2xl p-4 shadow-xl space-y-3">
+    <h3 class="text-amber-500 font-black text-xs flex items-center gap-2 uppercase tracking-wider border-b border-amber-900/10 pb-2.5">
+        <i class="fa-solid fa-scroll text-amber-700"></i> @L["Title_ClassAndRaceFeatures"]
+    </h3>
+    <div class="space-y-2.5 max-h-[55vh] overflow-y-auto pr-1">
+        @if (!CharDto.AcquiredFeatures.Any())
+        {
+            <EmptyState IconClass="fa-book-skull"
+            Title="@L["EmptyState_NoFeatures_Title"]"
+            Description="@L["EmptyState_NoFeatures_Desc"]" />
+        }
+        else
+        {
+            @foreach (var feature in CharDto.AcquiredFeatures)
+            {
+                <div class="bg-black/40 border border-slate-800/80 p-3 rounded-xl space-y-1">
+                    <h4 class="text-white font-bold text-xs uppercase tracking-wide">@feature.Name</h4>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">@((MarkupString)feature.Description)</p>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public CharacterDto CharDto { get; set; } = null!;
+}

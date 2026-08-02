@@ -1,0 +1,78 @@
+@using Application.DTOs
+@using Domain.Enums
+@using Rafedream.UI.Shared.Components.UI
+@inject IStringLocalizer<AppStrings> L
+@inject IStringLocalizer<LibraryStrings> LL
+@inject IJSRuntime JS
+
+<h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">@L["Feat_Catalog"]</h2>
+
+<div class="animate-in fade-in duration-300 space-y-4">
+    @if (!Feats.Any())
+    {
+        <EmptyState IconClass="fa-award"
+                    Title="@LL["Title_NoFeatsFound"]"
+                    Description="@LL["Msg_NoFeatsFound"]" />
+    }
+    else
+    {
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            @foreach (var feat in Feats)
+            {
+                <div @onclick="() => OnInspectedFeat.InvokeAsync(feat)"
+                     class="rounded-xl border border-slate-800 bg-black/40 px-4 py-4 cursor-pointer hover:border-amber-500/40 transition-all group shadow-md flex flex-col justify-between min-w-0">
+
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <p class="text-base font-black text-white group-hover:text-amber-500 uppercase transition-colors truncate">
+                                @feat.Name
+                            </p>
+
+                            @if (!string.IsNullOrWhiteSpace(feat.Category.ToString()))
+                            {
+                                <span class="shrink-0 text-[9px] font-mono bg-amber-500/10 text-amber-500 border border-amber-500/20 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                                    @L["CategoryFeat_" + feat.Category.ToString()]
+
+                                </span>
+                            }
+                        </div>
+
+                        <p class="text-xs text-slate-400 font-sans leading-relaxed line-clamp-2 mb-3">
+                            @((MarkupString)feat.Description)
+                        </p>
+                    </div>
+
+                    @if (feat.Prerequisite.Any())
+                    {
+                        <div class="flex flex-wrap gap-1.5 mt-2 border-t border-slate-800/60 pt-2.5">
+                            <span class="text-[9px] font-bold bg-slate-900 border border-slate-800 text-slate-300 px-1.5 py-0.5 rounded uppercase font-mono">
+                                @L["Feat_Prerequisite"]: @feat.Prerequisite
+                            </span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public List<FeatDto> Feats { get; set; } = new();
+    [Parameter] public EventCallback<FeatDto> OnInspectedFeat { get; set; }
+    [Parameter] public double InitialScrollPosition { get; set; } = 0;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (InitialScrollPosition > 0)
+            {
+                await JS.InvokeVoidAsync("eval", $"document.getElementById('main-scroll-view')?.scrollTo({{ top: {InitialScrollPosition}, behavior: 'instant' }});");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("eval", "document.getElementById('main-scroll-view')?.scrollTo({ top: 0, behavior: 'instant' });");
+            }
+        }
+    }
+}

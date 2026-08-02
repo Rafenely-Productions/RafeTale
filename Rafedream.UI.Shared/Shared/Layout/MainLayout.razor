@@ -1,0 +1,108 @@
+﻿@namespace Rafedream.UI.Shared.Shared
+@inherits LayoutComponentBase
+@using Rafedream.Application.Services.Importer.Initializer
+@inject IAppInitializer Initializer
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<div class="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col selection:bg-amber-500/30">
+    @if (!Initializer.IsDatabaseReady)
+    {
+        <div class="fixed inset-0 bg-black flex flex-col justify-center items-center z-50 p-6">
+            <div class="loading-wrapper text-center space-y-4">
+                <img src="images/logo.svg" class="loading-logo size-20 mx-auto" alt="Logo Rafedream" />
+                <div class="loading-text-glow font-mono text-xs tracking-widest uppercase text-amber-500 mt-2">
+                    @Initializer.CurrentStatusMessage
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <header class="sticky top-0 z-50">
+            <div class="w-full flex flex-col sm:flex-row items-center justify-center px-3 sm:px-5 py-3 sm:py-4 gap-3 sm:gap-0">
+                <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto">
+                    <div class="size-8 rounded-xl flex items-center justify-center text-amber-500 font-black text-xs font-mono shadow-inner">
+                        
+                    </div>
+                    <span class="text-sm font-black text-amber-500 uppercase tracking-widest font-mono italic">Rafedream</span>
+                </div>
+            </div>
+        </header>
+
+        <main id="main-scroll-view" style="position: relative;" class="flex-1 w-full max-w-7xl mx-auto overflow-y-auto">
+            @Body
+        </main>
+
+        <div class="text-[10px] font-mono text-slate-600 uppercase tracking-widest text-center py-2 bg-slate-950">
+            Rafedream v @AppVersionString
+        </div>
+
+        <footer>
+            <NavMenu />
+        </footer>
+    }
+</div>
+
+<style>
+    .border {
+        border: none !important;
+    }
+
+    html, body, #main-scroll-view {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scroll-transition {
+        opacity: 1;
+        transition: opacity 0.15s ease-in-out;
+    }
+
+        .scroll-transition.is-scrolling {
+            opacity: 0;
+        }
+</style>
+
+@code {
+    private string AppVersionString = "0.1.2-beta";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Polling: cada 100ms revisamos si la DB ya está lista
+        // Esto evita depender de eventos que pueden no existir o no funcionar en MAUI Blazor Hybrid
+        while (!Initializer.IsDatabaseReady)
+        {
+            await Task.Delay(100);
+            StateHasChanged();  // Fuerza re-render para actualizar el mensaje de status
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e) => await ScrollToTop();
+
+    private async Task ScrollToTop()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("eval", @"
+                const container = document.getElementById('main-scroll-view');
+                if (container) { container.scrollTo({ top: 0, behavior: 'instant' }); }
+            ");
+        }
+        catch { }
+    }
+
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
+    }
+}

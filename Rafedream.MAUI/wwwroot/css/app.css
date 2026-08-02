@@ -1,0 +1,52 @@
+﻿
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #020617; /* Slate-950 */
+    margin: 0;
+    padding: 0;
+}
+
+/* Evita que el WebView de MAUI muestre bordes blancos al hacer scroll */
+.page {
+    background-color: #020617;
+    min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+    width: 6px; /* Súper delgado */
+}
+
+::-webkit-scrollbar-track {
+    background: #121212;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2a2a2a; /* Casi invisible, solo resalta un poco */
+    border-radius: 10px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #d4af37; /* Solo brilla dorado cuando pasas el mouse */
+    }
+
+html, body {
+    background-color: #121212 !important;
+}
+
+.page {
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+main {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Matamos el padding que Bootstrap o Blazor meten por defecto al contenido */
+article.content {
+    padding: 0 !important;
+}
