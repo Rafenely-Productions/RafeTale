@@ -10,6 +10,7 @@ public partial class App : Microsoft.Maui.Controls.Application
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<App> _logger;
+    private static bool _hasInitialized = false;
 
     public App(IServiceProvider serviceProvider, ILogger<App> logger)
     {
@@ -33,12 +34,18 @@ public partial class App : Microsoft.Maui.Controls.Application
     protected override void OnStart()
     {
         base.OnStart();
-        _ = InitializeDatabaseAsync();
+        if (!_hasInitialized)
+        {
+            _hasInitialized = true;
+            _ = Task.Run(async () => await InitializeDatabaseAsync());
+        }
     }
 
     private async Task InitializeDatabaseAsync()
     {
-        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "dndreams.db3");
+        await Task.Yield();
+
+        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "rafedream.db3");
         _logger.LogInformation("DB path: {Path}", dbPath);
 
         try
@@ -47,36 +54,45 @@ public partial class App : Microsoft.Maui.Controls.Application
 
             await initializer.InitializeAsync(async () =>
             {
-                // 1. Si no existe la DB, creamos el esquema (tablas vacías)
-                if (!File.Exists(dbPath))
-                {
-                    _logger.LogInformation("DB not found. Creating schema...");
-                    using var scope = _serviceProvider.CreateScope();
-                    var context = scope.ServiceProvider.GetRequiredService<DnDreamsDbContext>();
-                    await context.Database.EnsureCreatedAsync();
-                }
+                // 1. CREAR SCHEMA SIEMPRE (independiente del Excel)
+                var scopeFactory = _serviceProvider.GetRequiredService<IServiceScopeFactory>();
+                using var scope = scopeFactory.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<DnDreamsDbContext>();
+                await context.Database.EnsureCreatedAsync();
 
-                // 2. Verificamos si la DB ya tiene datos
-                bool hasData = await CheckIfDatabaseHasDataAsync();
+                // 2. Verificar si ya tiene datos
+                bool hasData = await context.ClassDefinitions.AnyAsync();
 
                 if (!hasData)
                 {
-                    _logger.LogInformation("DB is empty. Importing from Excel...");
-                    await ImportFromExcelAsync(initializer);
+                    // 3. Intentar importar Excel (pero no romper si falla)
+                    try
+                    {
+                        var importService = scope.ServiceProvider.GetRequiredService<IExcelImportService>();
+                        initializer.UpdateStatus("Importando datos...");
+
+                        using Stream excelStream = await FileSystem.OpenAppPackageFileAsync("DnDreams_v2.xlsx");
+                        await importService.ImportDataFromExcelAsync(excelStream);
+
+                        _logger.LogInformation("Excel import completed.");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Excel import failed. DB created but empty.");
+                        initializer.UpdateStatus("Listo (sin datos). Importa un pack para comenzar.");
+                    }
                 }
                 else
                 {
-                    _logger.LogInformation("DB already has data. Skipping import.");
+                    _logger.LogInformation("DB already has data.");
                 }
 
-                initializer.UpdateStatus("¡Todo listo para la aventura!");
+                initializer.UpdateStatus("¡Todo listo!");
             });
-
-            _logger.LogInformation("Initialization completed. IsDatabaseReady = {Ready}", initializer.IsDatabaseReady);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Database initialization failed");
+            _logger.LogError(ex, "Critical initialization error");
         }
     }
 

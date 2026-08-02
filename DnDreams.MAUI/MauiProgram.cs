@@ -86,7 +86,9 @@ public static class MauiProgram
             var logger = builder.Services.BuildServiceProvider().GetService<ILogger<App>>();
             logger?.LogCritical(ex, "Unhandled exception crashed the app");
         };
-
+#if ANDROID
+        SQLitePCL.Batteries_V2.Init();
+#endif
         return builder.Build();
     }
 }
