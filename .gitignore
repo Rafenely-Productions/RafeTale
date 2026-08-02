@@ -62,4 +62,5 @@ Thumbs.db
 *.tmp
 *.db3
 *.xlsx
-*.db
+*.db*.xlsx
+*.db3
