@@ -1,151 +1,123 @@
-# 🎲 DnDreams
+# 🎲 Rafedream
 
-> **Tu compañero digital para Dungeons & Dragons 5e.**
-> Gestión de personajes, grimorio interactivo, biblioteca de reglas y tiradas de dados — todo en una app .NET MAUI con la estética de una mesa de rol.
+> **by Rafenely Studios**
+> 
+> A cross-platform tabletop RPG rules engine. Create your own systems, import community content packs, and manage characters with an immersive digital interface.
 
 <p align="center">
-  <img src="docs/screenshots/home.png" alt="DnDreams Home" width="300">
+  <img src="docs/screenshots/home.png" alt="Rafedream" width="300">
 </p>
 
 ---
 
 ## ✨ Features
 
-| Feature | Estado | Descripción |
+| Feature | Status | Description |
 |---------|--------|-------------|
-| 🧙 **Creación de personajes** | ✅ | Wizard de 5 pasos: raza, clase, trasfondo, habilidades, confirmación |
-| 📊 **Dashboard de personaje** | ✅ | Stats, hechizos, skills, features — todo en un dashboard oscuro y elegante |
-| 📖 **Biblioteca D&D** | ✅ | Clases, razas, hechizos, dotes, trasfondos y tabla de XP — con lazy loading |
-| 🎲 **Tiradas de dados** | ✅ | D4, D6, D8, D10, D12, D20, D100 con animaciones |
-| ⬆️ **Subida de nivel** | ✅ | Wizard de level up con HP, ASI/Feat y selección de hechizos |
-| 🌍 **Localización** | ✅ | Español (es-MX) base, arquitectura lista para inglés |
-| 📦 **Base de datos local** | ✅ | SQLite con EF Core, seed desde Excel (`DnDreams_v2.xlsx`) |
-| ☁️ **Sincronización** | 🚧 | Roadmap: API self-hosted en laptop Linux |
+| 🧙 **Character Creation** | ✅ | 5-step wizard: lineage, path, background, abilities, confirmation |
+| 📊 **Character Dashboard** | ✅ | Stats, spells, skills, features — all in a dark, immersive dashboard |
+| 📖 **Rules Library** | ✅ | Classes, lineages, spells, feats, backgrounds and XP table — with lazy loading |
+| 🎲 **Dice Roller** | ✅ | D4, D6, D8, D10, D12, D20, D100 with animations |
+| ⬆️ **Level Up** | ✅ | Level-up wizard with HP, ASI/Feat and spell selection |
+| 🌍 **Localization** | ✅ | Spanish (es-MX) base, architecture ready for English |
+| 📦 **Local Database** | ✅ | SQLite with EF Core, seed from Excel packs |
+| ☁️ **Sync** | 🚧 | Roadmap: self-hosted API |
 
 ---
 
-## 🏗️ Arquitectura
+## 🏗️ Architecture
 
 ```
-DnDreams/
-├── 📁 DnDreams.Domain/          # Entidades puras, enums, value objects
-│   └── Entities/
-│       ├── Character.cs
-│       ├── Spell.cs
-│       ├── ClassDefinition.cs
-│       └── ...
-│
-├── 📁 DnDreams.Application/     # Lógica de negocio, DTOs, interfaces
-│   ├── DTOs/
-│   ├── Interfaces/
-│   └── Services/
-│       ├── LevelUpService.cs
-│       ├── SpellBudget.cs
-│       └── LocalizationService.cs
-│
-├── 📁 DnDreams.Infrastructure/  # Persistencia, extractores, seeders
-│   ├── Persistence/
-│   │   ├── DnDreamsDbContext.cs
-│   │   └── DependencyInjection.cs
-│   └── Extractors/
-│       └── ExcelImportService.cs
-│
-├── 📁 DnDreams.UI.Shared/       # Componentes Blazor compartidos
-│   ├── Components/              # Componentes reutilizables
-│   │   ├── Library/
-│   │   ├── Character/
-│   │   └── UI/
-│   ├── Pages/                   # Páginas principales
-│   └── Shared/                  # Layouts, MainLayout, NavMenu
-│
-└── 📁 DnDreams.MAUI/            # Shell de la app, configuración, assets
-    ├── MauiProgram.cs
-    ├── App.xaml.cs
-    └── Platforms/               # Código específico por plataforma
+Rafedream/
+├── 📁 Rafedream.Domain/          # Pure entities, enums, value objects
+├── 📁 Rafedream.Application/     # Business logic, DTOs, interfaces
+├── 📁 Rafedream.Infrastructure/  # Persistence, extractors, seeders
+├── 📁 Rafedream.UI.Shared/       # Shared Blazor components
+└── 📁 Rafedream.MAUI/            # App shell, config, assets
 ```
 
-**Patrón:** Clean Architecture + CQRS-like (queries y commands separados en servicios)
+**Pattern:** Clean Architecture + CQRS-like (queries and commands separated in services)
 
 ---
 
-## 🚀 Cómo correr
+## 🚀 How to Run
 
-### Requisitos
+### Requirements
 - [.NET 9 SDK](https://dotnet.microsoft.com/download)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/) con workload **.NET MAUI**
-- Windows 10/11, Android, o iOS (Mac necesario para iOS)
+- [Visual Studio 2022](https://visualstudio.microsoft.com/) with **.NET MAUI** workload
+- Windows 10/11, Android, or iOS (Mac required for iOS)
 
-### Pasos
+### Steps
 
 ```bash
-# 1. Clonar
-git clone https://github.com/rafenely/DnDreams.git
-cd DnDreams
+# 1. Clone
+git clone https://github.com/rafenely-productions/rafedream.git
+cd Rafedream
 
-# 2. Restaurar paquetes
+# 2. Restore packages
 dotnet restore
 
-# 3. Correr en Windows (WinUI 3)
-dotnet build DnDreams.MAUI/DnDreams.MAUI.csproj -f net9.0-windows10.0.19041.0
-dotnet run --project DnDreams.MAUI/DnDreams.MAUI.csproj -f net9.0-windows10.0.19041.0
+# 3. Run on Windows (WinUI 3)
+dotnet build Rafedream.MAUI/Rafedream.MAUI.csproj -f net9.0-windows10.0.19041.0
+dotnet run --project Rafedream.MAUI/Rafedream.MAUI.csproj -f net9.0-windows10.0.19041.0
 
-# O en Android (necesitas emulador o dispositivo conectado)
-dotnet build DnDreams.MAUI/DnDreams.MAUI.csproj -f net9.0-android
-dotnet run --project DnDreams.MAUI/DnDreams.MAUI.csproj -f net9.0-android
+# Or on Android (needs emulator or connected device)
+dotnet build Rafedream.MAUI/Rafedream.MAUI.csproj -f net9.0-android
+dotnet run --project Rafedream.MAUI/Rafedream.MAUI.csproj -f net9.0-android
 ```
 
-### Primera vez
-La app detecta si la base de datos SQLite está vacía y automáticamente importa los datos desde `DnDreams_v2.xlsx` (incluido como asset). La segunda vez en adelante, usa la DB local directamente.
+### First Time
+The app detects if the SQLite database is empty and optionally imports data from an Excel content pack (not included). On subsequent launches, it uses the local DB directly.
 
 ---
 
 ## 🧪 Tests
 
 ```bash
-cd DnDreams.Tests
+cd Rafedream.Tests
 dotnet test
 ```
 
-| Suite | Tests | Cobertura |
-|-------|-------|-----------|
-| Domain (Character) | 9 | Modifiers, stats, proficiency, skills |
-| Application (SpellBudget) | 10 | Validación de cantrips, spells, niveles |
+| Suite | Tests | Coverage |
+|-------|-------|----------|
+| Domain (Character) | 10 | Modifiers, stats, proficiency, skills |
+| Application (SpellBudget) | 10 | Cantrip, spell, and level validation |
 
-**Stack de testing:** xUnit + FluentAssertions + NSubstitute
+**Testing stack:** xUnit + FluentAssertions + NSubstitute
 
 ---
 
 ## 🎨 Design System
 
-- **Paleta:** Parchment (`#f5f5dc`), Gold (`#d4af37`), Blood Red (`#8b0000`), Slate (`#0f172a`)
-- **Tipografía:** Open Sans (UI), serif (descripciones de D&D), monospace (stats y números)
-- **Framework CSS:** Tailwind CSS vía CDN en Blazor components
-- **Iconos:** Font Awesome 6
+- **Palette:** Parchment (`#f5f5dc`), Gold (`#d4af37`), Blood Red (`#8b0000`), Slate (`#0f172a`)
+- **Typography:** Inter (UI), Cinzel (headers), monospace (stats and numbers)
+- **CSS Framework:** Tailwind CSS via CDN in Blazor components
+- **Icons:** Font Awesome 6, Bootstrap Icons
 
 ---
 
 ## 🗺️ Roadmap
 
-- [x] MVP: Crear personaje, dashboard, biblioteca, tiradas
-- [x] Refactorización: Clean Architecture, tests unitarios
-- [x] Desacoplamiento de UI: Library, CharacterDashboard, LevelUpWizard
-- [ ] README + documentación
-- [ ] Modo oscuro/claro toggle
-- [ ] Exportar personaje a PDF
-- [ ] Sincronización en la nube (laptop Linux como servidor)
-- [ ] Generador de encuentros
-- [ ] Modo "Mesa de DM" para tablets
+- [x] MVP: Character creation, dashboard, library, dice rolling
+- [x] Refactoring: Clean Architecture, unit tests
+- [x] UI decoupling: Library, CharacterDashboard, LevelUpWizard
+- [ ] README + documentation
+- [ ] Dark/light mode toggle
+- [ ] Export character to PDF
+- [ ] Cloud sync (self-hosted server)
+- [ ] Encounter builder
+- [ ] Game Master tablet mode
 
 ---
 
-## 🛠️ Stack Técnico
+## 🛠️ Tech Stack
 
-| Capa | Tecnología |
-|------|------------|
+| Layer | Technology |
+|-------|------------|
 | **Frontend** | Blazor Hybrid (.NET MAUI) |
 | **Backend/Local** | SQLite + Entity Framework Core 9 |
-| **Importación** | ClosedXML (Excel → SQLite) |
-| **Localización** | `IStringLocalizer` + archivos `.resx` |
+| **Import** | ClosedXML (Excel → SQLite) |
+| **Localization** | `IStringLocalizer` + `.resx` files |
 | **Testing** | xUnit, FluentAssertions, NSubstitute |
 | **UI** | Tailwind CSS, Font Awesome, CSS variables |
 
@@ -153,16 +125,16 @@ dotnet test
 
 ## 📸 Screenshots
 
-> *Próximamente: GIFs de creación de personaje, dashboard, tirada de dados y biblioteca.*
+> *Coming soon: GIFs of character creation, dashboard, dice rolling and library.*
 
 ---
 
-## 📝 Licencia
+## 📝 License
 
-MIT — Úsalo, modifícalo, compártelo. Que rueden los dados. 🎲
+MIT — Use it, modify it, share it. May your rolls be ever in your favor. 🎲
 
 ---
 
 <p align="center">
-  <i>"No es solo una app. Es tu grimorio digital."</i>
+  <i>"Not just an app. Your digital grimoire."</i>
 </p>

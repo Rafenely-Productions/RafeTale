@@ -1,0 +1,25 @@
+@using Rafedream.Application.DTOs
+@inject IStringLocalizer<AppStrings> L
+
+<div @onclick="OnInspect"
+     class="bg-black/30 border border-slate-800/80 p-2.5 rounded-xl flex items-center justify-between cursor-pointer text-xs group">
+    <div class="min-w-0 pr-2">
+        <h4 class="font-bold text-slate-200 group-hover:text-amber-400 transition-colors uppercase tracking-wide truncate">@Spell.Name</h4>
+        <span class="text-[9px] font-mono text-slate-500 uppercase">@L["Label_LevelShort"] @Spell.Level</span>
+    </div>
+
+    <div class="flex items-center gap-1.5 shrink-0" @onclick:stopPropagation>
+        <button @onclick="OnCast"
+                disabled="@(!CanCast)"
+                class="px-2.5 py-1 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-20 text-black font-black font-mono rounded-xl uppercase text-[10px]">
+            @L["Btn_Cast"] @Spell.Level
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public SpellDto Spell { get; set; } = null!;
+    [Parameter] public bool CanCast { get; set; }
+    [Parameter] public EventCallback OnInspect { get; set; }
+    [Parameter] public EventCallback OnCast { get; set; }
+}

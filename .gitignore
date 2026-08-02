@@ -61,3 +61,5 @@ Thumbs.db
 ~$*.xls
 *.tmp
 *.db3
+*.xlsx
+*.db
