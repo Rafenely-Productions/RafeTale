@@ -22,6 +22,7 @@ namespace Rafedream.Application.Services
             // Validación de Upcasting: No puedes usar una ranura menor que el nivel base del hechizo
             if (slotLevelToUse < spellLevel) return false;
 
+            // Trucos (Cantrips / Nivel 0): No gastan ranuras //validar esta regla con reglas predefinidas
             if (spellLevel == 0) return true;
 
             // Buscar la ranura de energía mágica correspondiente

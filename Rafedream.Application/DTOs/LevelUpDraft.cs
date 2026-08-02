@@ -18,7 +18,6 @@ namespace Rafedream.Application.DTOs
         public bool GivesFeat { get; init; }
         public Guid? SelectedFeatId { get; set; }
 
-        // Si elige subir Atributos Puro en lugar de Dote (D&D 2024 permite +2 o +1/+1)
         public ASI? SelectedAsiOne { get; set; }
         public ASI? SelectedAsiTwo { get; set; }
 
