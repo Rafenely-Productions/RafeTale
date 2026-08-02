@@ -17,12 +17,12 @@
 
     <style>
         :root {
-            --dnd-gold: #d4af37;
-            --dnd-dark: #121212;
+            --rpg-gold: #d4af37;
+            --rpg-dark: #121212;
         }
 
         html, body {
-            background-color: var(--dnd-dark) !important;
+            background-color: var(--rpg-dark) !important;
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -36,7 +36,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-color: var(--dnd-dark);
+            background-color: var(--rpg-dark);
         }
 
         /* Contenedor principal de carga */
@@ -58,13 +58,13 @@
         /* El Dado como indicador secundario */
         .dice-icon {
             font-size: 2.5rem;
-            color: var(--dnd-gold);
+            color: var(--rpg-gold);
             animation: wobble 1s infinite ease-in-out;
             display: inline-block;
         }
 
         .loading-text-glow {
-            color: var(--dnd-gold);
+            color: var(--rpg-gold);
             font-family: 'Cinzel', serif;
             letter-spacing: 3px;
             font-size: 0.85rem;
@@ -87,8 +87,8 @@
         .progress-bar-fill {
             width: 40%;
             height: 100%;
-            background: var(--dnd-gold);
-            box-shadow: 0 0 10px var(--dnd-gold);
+            background: var(--rpg-gold);
+            box-shadow: 0 0 10px var(--rpg-gold);
             animation: slide 1.8s infinite ease-in-out;
         }
 
