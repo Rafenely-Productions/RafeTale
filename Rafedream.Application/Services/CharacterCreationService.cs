@@ -2,6 +2,7 @@ using Rafedream.Domain.Entities;
 using Rafedream.Domain.Enums;
 using Rafedream.Domain.Interfaces;
 using Rafedream.Domain.Exceptions;
+using Rafedream.Application.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Rafedream.Application.Services
 {
-    public class CharacterCreationService
+    public class CharacterCreationService : ICharacterCreationService
     {
         // Estado temporal de creación
         public Guid? SelectedRaceId { get; set; }

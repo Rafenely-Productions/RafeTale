@@ -7,7 +7,7 @@
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
 @inject IStringLocalizer<AppStrings> L
-@inject CharacterCreationService CreationService
+@inject ICharacterCreationService CreationService
 @inject IService<RaceDto,Race> RaceService
 
 <div class="min-h-screen bg-black p-6">
@@ -40,7 +40,7 @@
 
 
             <div class="lg:col-span-8">
-                <div class="bg-slate-900 border border-amber-900/30 rounded-[3rem] p-10 shadow-2xl min-h-[600px] relative overflow-hidden">
+                <div class="bg-slate-900 border border-amber-900/30 rounded-3xl lg:rounded-[3rem] p-3 sm:p-8 lg:p-10 shadow-2xl min-h-[500px] lg:min-h-[600px] flex flex-col justify-between">
 
                     @if (SelectedRace == null)
                     {

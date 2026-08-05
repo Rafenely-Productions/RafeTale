@@ -18,7 +18,7 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
-        if(builder == null)
+        if (builder == null)
         {
             throw new InvalidOperationException("Failed to create MauiApp builder.");
         }
@@ -36,7 +36,7 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "Rafedream.db3");
+        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "Rafedream_SRD_v1.db3");
         builder.Services.AddSingleton(dbPath);
         builder.Services.AddInfrastructure(dbPath);
         builder.Services.AddLocalization();
@@ -57,13 +57,13 @@ public static class MauiProgram
         builder.Services.AddScoped<IService<SpellDto, Spell>, SpellService>();
         builder.Services.AddScoped<IService<LanguageDto, Language>, LanguageService>();
         builder.Services.AddScoped<IService<BackgroundDto, Background>, BackgroundService>();
-        builder.Services.AddScoped<IService<CharacterDto, Character>, CharacterService>();
         builder.Services.AddScoped<IService<FeatDto, Feat>, FeatService>();
         builder.Services.AddScoped<ICharacterQueryService, CharacterQueryService>();
         builder.Services.AddScoped<IFeatureQueryService, FeatureQueryService>();
         builder.Services.AddScoped<ILevelingService, LevelingService>();
         builder.Services.AddScoped<ISpellServiceSystem, SpellServiceSystem>();
         builder.Services.AddScoped<ILevelUpService, LevelUpService>();
+        builder.Services.AddScoped<ICharacterCreationService, CharacterCreationService>();
 
         // --- DTO Services ---
         builder.Services.AddScoped<IService<CharacterDto, Character>, CharacterService>();
