@@ -8,7 +8,7 @@
 @using Rafedream.UI.Shared.Extensions
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
-@inject CharacterCreationService CreationService
+@inject ICharacterCreationService CreationService
 @inject IStringLocalizer<AppStrings> L
 @inject IService<ClassDefinitionDto,ClassDefinition> ClassService
 
@@ -46,7 +46,7 @@
 
             <!-- Inspector de la Clase Seleccionada (Columna Derecha / Principal) -->
             <div class="lg:col-span-9">
-                <div class="bg-slate-900 border border-amber-900/30 rounded-3xl lg:rounded-[3rem] p-5 sm:p-8 lg:p-10 shadow-2xl min-h-[500px] lg:min-h-[600px] flex flex-col justify-between">
+                <div class="bg-slate-900 border border-amber-900/30 rounded-3xl lg:rounded-[3rem] p-3 sm:p-8 lg:p-10 shadow-2xl min-h-[500px] lg:min-h-[600px] flex flex-col justify-between">
 
                     @if (SelectedClass == null)
                     {

@@ -50,9 +50,9 @@ namespace Rafedream.Infrastructure.Extractors
         {
             var skillProficiencyList = new List<Skill>();
             var sheet = workbook.GetSheet("Skills", isRequired: true);
-
-            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
-
+            var rows = sheet?.RangeUsed()?.RowsUsed().Skip(1);
+            if(rows == null) 
+                return skillProficiencyList;
             foreach (var row in rows)
             {
                 var skill = new Skill
@@ -78,7 +78,10 @@ namespace Rafedream.Infrastructure.Extractors
             var languagesList = new List<Language>();
             var sheet = workbook.GetSheet("Languages", isRequired: true);
 
-            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = sheet?.RangeUsed()?.RowsUsed().Skip(1);
+            if(rows == null) 
+                return languagesList;
+
             foreach (var row in rows)
             {
                 var language = new Language
@@ -89,8 +92,9 @@ namespace Rafedream.Infrastructure.Extractors
                 languagesList.Add(language);
 
                 SaveValidateLocalizedContent(language.Id, LocEntity.Language, LocProperty.Name, row.Cell(1).GetString(), LocLanguage.en);
-                SaveValidateLocalizedContent(language.Id, LocEntity.Language, LocProperty.Name, row.Cell(2).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(language.Id, LocEntity.Language, LocProperty.Description, row.Cell(3).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(language.Id, LocEntity.Language, LocProperty.Description, row.Cell(2).GetString(), LocLanguage.en);
+                SaveValidateLocalizedContent(language.Id, LocEntity.Language, LocProperty.Name, row.Cell(3).GetString(), _currentCulture);
+                SaveValidateLocalizedContent(language.Id, LocEntity.Language, LocProperty.Description, row.Cell(4).GetString(), _currentCulture);
             }
 
             return languagesList;
@@ -100,16 +104,18 @@ namespace Rafedream.Infrastructure.Extractors
             var raceList = new List<Race>();
 
             var raceSheet = workbook.GetSheet("Races", isRequired: true);
-            var rows = raceSheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = raceSheet?.RangeUsed()?.RowsUsed().Skip(1);
+            if(rows == null) 
+                return raceList;
             foreach (var row in rows)
             {
                 var race = new Race
                 {
                     Id = Guid.NewGuid(),
                     TechnicalName = row.Cell(1).GetString(),
-                    Speed = row.Cell(4).GetValue<string>(),
-                    Size = ParseEnum<SizeCategory>(row.Cell(3).GetString()),
                     CreatureType = ParseEnum<CreatureType>(row.Cell(2).GetString()),
+                    Size = ParseEnum<SizeCategory>(row.Cell(3).GetString()),
+                    Speed = row.Cell(4).GetValue<string>(),
                 };
 
                 SaveValidateLocalizedContent(race.Id, LocEntity.Race, LocProperty.Name, row.Cell(1).GetString(), LocLanguage.en);
@@ -194,7 +200,9 @@ namespace Rafedream.Infrastructure.Extractors
 
             var sheet = workbook.GetSheet("Special Traits", isRequired: true);
 
-            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = sheet.RangeUsed()?.RowsUsed().Skip(1);
+            if(rows == null) 
+                return specialTraits;
             foreach (var row in rows)
             {
                 var specialTrait = new SpecialTrait
@@ -222,7 +230,9 @@ namespace Rafedream.Infrastructure.Extractors
             var classDefinitionList = new List<ClassDefinition>();
             var classSheet = workbook.GetSheet("Classes", isRequired: true);
 
-            var rows = classSheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = classSheet.RangeUsed()?.RowsUsed().Skip(1);
+            if(rows == null) 
+                return classDefinitionList;
             foreach (var row in rows)
             {
                 var classDef = new ClassDefinition
@@ -230,22 +240,21 @@ namespace Rafedream.Infrastructure.Extractors
                     Id = Guid.NewGuid(),
                     TechnicalName = row.Cell(1).GetString(),
                     HitDie = row.Cell(2).GetString(),
-                    SkillsToChoose = row.Cell(8).GetValue<int>(),
-
                     PrimaryAbility = ParseEnumList<ASI>(row.Cell(3).GetString()),
                     SavingThrowProficiencies = ParseEnumList<ASI>(row.Cell(4).GetString()),
                     ArmorProficiencies = ParseEnumList<ArmorProficiency>(row.Cell(5).GetString()),
                     WeaponProficiencies = ParseEnumList<WeaponProficiency>(row.Cell(6).GetString()),
                     ToolProficiencies = ParseEnumList<ToolProficiency>(row.Cell(7).GetString()),
+                    SkillsToChoose = row.Cell(8).GetValue<int>(),
                 };
                 MapClassSkills(classDef, row.Cell(9).GetString(), skillProficiencies);
 
                 classDefinitionList.Add(classDef);
 
                 SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Name, classDef.TechnicalName, LocLanguage.en);
+                SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Equipment, row.Cell(10).GetString(), _currentCulture);
                 SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Name, row.Cell(11).GetString(), _currentCulture);
                 SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Description, row.Cell(12).GetString(), _currentCulture);
-                SaveValidateLocalizedContent(classDef.Id, LocEntity.Class, LocProperty.Equipment, row.Cell(10).GetString(), _currentCulture);
 
             }
             return classDefinitionList;
@@ -254,8 +263,10 @@ namespace Rafedream.Infrastructure.Extractors
         public List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes,List<Background> backgrounds)
         {
             var charactersList = new List<Character>();
-            var charSheet = workbook.GetSheet("Personajes", isRequired: true);
-            var rows = charSheet.RangeUsed().RowsUsed().Skip(1);
+            var charSheet = workbook.GetSheet("Personajes", isRequired: false);
+            var rows = charSheet?.RangeUsed()?.RowsUsed().Skip(1);
+            if(rows == null) 
+                return charactersList;
             foreach (var row in rows)
             {
                 var charName = row.Cell(1).GetString();
@@ -300,8 +311,9 @@ namespace Rafedream.Infrastructure.Extractors
         {
             var progressionsList = new List<ClassLevelProgression>();
             var progressSheet = workbook.GetSheet("ClassLevelProgression", isRequired: true);
-            var progressRows = progressSheet.RangeUsed().RowsUsed().Skip(1);
-
+            var progressRows = progressSheet.RangeUsed()?.RowsUsed().Skip(1);
+            if(progressRows == null) 
+                return progressionsList;
             foreach (var row in progressRows)
             {
                 var className = row.Cell(1).GetString().Trim();
@@ -361,7 +373,7 @@ namespace Rafedream.Infrastructure.Extractors
         {
             var subClassList = new List<Subclass>();
             var progressSheet = workbook.GetSheet("SubClasses", isRequired: true);
-            var progressRows = progressSheet.RangeUsed().RowsUsed().Skip(1);
+            var progressRows = progressSheet.RangeUsed()?.RowsUsed().Skip(1);
 
             foreach (var row in progressRows)
             {
@@ -398,7 +410,7 @@ namespace Rafedream.Infrastructure.Extractors
         {
             var progressionsList = new List<SubclassLevelProgression>();
             var progressSheet = workbook.GetSheet("SubClassLevelProgresion", isRequired: true);
-            var progressRows = progressSheet.RangeUsed().RowsUsed().Skip(1);
+            var progressRows = progressSheet.RangeUsed()?.RowsUsed().Skip(1);
 
             foreach (var row in progressRows)
             {
@@ -458,7 +470,7 @@ namespace Rafedream.Infrastructure.Extractors
             var spellsList = new List<Spell>();
             var spellSheet = workbook.GetSheet("Spells", isRequired: true);
 
-            var rows = spellSheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = spellSheet.RangeUsed()?.RowsUsed().Skip(1);
             foreach (var row in rows)
             {
                 var spell = new Spell
@@ -501,7 +513,9 @@ namespace Rafedream.Infrastructure.Extractors
             var xpRulesList = new List<XpRules>();
             var xpSheet = workbook.GetSheet("ReglasXP", isRequired: true);
 
-            var rows = xpSheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = xpSheet.RangeUsed()?.RowsUsed().Skip(1);
+            if(rows == null) 
+                return xpRulesList;
             foreach (var row in rows)
             {
                 xpRulesList.Add(new XpRules
@@ -519,7 +533,7 @@ namespace Rafedream.Infrastructure.Extractors
             var featsList = new List<Feat>();
             var featSheet = workbook.GetSheet("Feats", isRequired: true);
 
-            var rows = featSheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = featSheet.RangeUsed()?.RowsUsed().Skip(1);
             foreach (var row in rows)
             {
                 var featPrerequisite = row.Cell(2).GetString() == "none" ? null : row.Cell(2).GetString();
@@ -550,7 +564,7 @@ namespace Rafedream.Infrastructure.Extractors
             var itemsList = new List<ItemTemplate>();
             var itemsSheet = workbook.GetSheet("Items", isRequired: true);
 
-            var rows = itemsSheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = itemsSheet.RangeUsed()?.RowsUsed().Skip(1);
             foreach (var row in rows)
             {
                 var itemName = row.Cell(1).GetString() ?? string.Empty;
@@ -599,7 +613,7 @@ namespace Rafedream.Infrastructure.Extractors
         {
             var schoolsList = new List<SchoolOfMagic>();
             var sheet = workbook.GetSheet("SchoolsOfMagic", isRequired: true);
-            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = sheet.RangeUsed()?.RowsUsed().Skip(1);
             foreach (var row in rows)
             {
                 var school = new SchoolOfMagic
@@ -619,7 +633,7 @@ namespace Rafedream.Infrastructure.Extractors
         {
             var backgroundsList = new List<Background>();
             var sheet = workbook.GetSheet("Backgrounds", isRequired: true);
-            var rows = sheet.RangeUsed().RowsUsed().Skip(1);
+            var rows = sheet.RangeUsed()?.RowsUsed().Skip(1);
             foreach (var row in rows)
             {
                 var background = new Background

@@ -71,7 +71,7 @@ public partial class App : Microsoft.Maui.Controls.Application
                         var importService = scope.ServiceProvider.GetRequiredService<IExcelImportService>();
                         initializer.UpdateStatus("Importando datos...");
 
-                        using Stream excelStream = await FileSystem.OpenAppPackageFileAsync("Rafedream_v2.xlsx");
+                        using Stream excelStream = await FileSystem.OpenAppPackageFileAsync("Rafedream_SRD_v1.xlsx");
                         await importService.ImportDataFromExcelAsync(excelStream);
 
                         _logger.LogInformation("Excel import completed.");

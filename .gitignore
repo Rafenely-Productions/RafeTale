@@ -49,8 +49,6 @@ multiple-layers/
 ## ====== BASES DE DATOS LOCALES Y TEMPORALES ======
 *.db-shm
 *.db-wal
-# Ignoramos la base de datos de diseño para que no choque en los commits
-DnDreams.MAUI/design_time_temp.db
 
 ## ====== FILTROS SISTEMA OPERATIVO Y HERRAMIENTAS ======
 .DS_Store
@@ -64,3 +62,6 @@ Thumbs.db
 *.xlsx
 *.db*.xlsx
 *.db3
+
+# Graphify
+graphify-out/
