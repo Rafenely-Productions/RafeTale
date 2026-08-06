@@ -112,7 +112,7 @@ dotnet run --project RafeTale.MAUI/RafeTale.MAUI.csproj -f net9.0-android
 The app ships with bundled offline data:
 
 - `RafeTale.MAUI/Resources/Raw/RafeTale_SRD_v1.xlsx` — bundled SRD-style content pack.
-- `RafeTale.MAUI/Resources/Raw/dndreams.db3` — pre-seeded SQLite database.
+- `RafeTale.MAUI/Resources/Raw/RafeTale.db3` — pre-seeded SQLite database.
 
 On first launch, `AppInitializer` checks the local DB and optionally imports the default pack. Subsequent launches use the local DB directly.
 
@@ -197,8 +197,6 @@ dotnet test
 - Use `IStringLocalizer<LibraryStrings>` for rules/library labels.
 - Base culture is `es-MX`.
 
-### Naming Legacy
-The project was previously named **DnDreams**. Some legacy names remain (e.g., `DnDreamsDbContext.cs`, `dndreams.db3`, migration snapshot). Prefer `RafeTale` for new code.
 
 ---
 
