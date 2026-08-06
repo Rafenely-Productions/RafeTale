@@ -1,0 +1,158 @@
+@page "/dice"
+@using RafeTale.Application.Interfaces
+@inject IStringLocalizer<AppStrings> L
+@inject IJSRuntime JS
+@inject IDiceService DiceService
+
+<div class="h-full flex flex-col p-3 sm:p-4 text-slate-100 bg-slate-950 max-w-4xl mx-auto space-y-4 overflow-x-hidden">
+
+    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h1 class="text-base sm:text-lg font-black text-amber-500 uppercase tracking-wider italic flex items-center gap-2">
+            <i class="fa-solid fa-dice-d20 @(IsRolling ? "animate-spin text-amber-400" : "")"></i> @L["Title_DiceRoller"]
+        </h1>
+    </div>
+
+    <div class="bg-slate-900/80 border @(IsRolling ? "border-amber-400 shadow-[0_0_25px_rgba(245,158,11,0.4)] scale-[1.01]" : "border-amber-900/30 shadow-2xl") rounded-2xl p-5 text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[130px] transition-all duration-150">
+        <div class="absolute inset-0 bg-amber-500/5 pointer-events-none"></div>
+
+        <span class="text-[11px] text-slate-400 uppercase tracking-widest font-mono mb-1">@LastRolledLabel</span>
+
+        <div class="text-5xl sm:text-6xl font-black text-amber-400 font-mono tracking-tighter drop-shadow-[0_0_20px_rgba(245,158,11,0.7)] @(IsRolling ? "animate-pulse scale-110 blur-[0.5px]" : "animate-in zoom-in duration-200")">
+            @DisplayResult
+        </div>
+
+        @if (!string.IsNullOrEmpty(LastDetails))
+        {
+            <div class="text-[11px] text-slate-500 font-mono mt-2 truncate max-w-full px-2">
+                @((MarkupString)LastDetails)
+            </div>
+        }
+    </div>
+
+    <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-3 sm:p-4 space-y-3">
+
+        <div class="flex items-center justify-between bg-black/40 px-3 py-2 rounded-xl border border-slate-800">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Cantidad de Dados</span>
+            <select @bind="selectedCount" class="bg-slate-900 border border-slate-700 text-amber-400 font-mono font-bold text-xs rounded-lg px-3 py-1 outline-none focus:border-amber-500">
+                @for (int i = 1; i <= 20; i++)
+                {
+                    <option value="@i">@i dado@(i > 1 ? "s" : "")</option>
+                }
+            </select>
+        </div>
+
+        <div class="space-y-1.5">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">@L["Label_SelectDice"]</span>
+            <div class="grid grid-cols-4 sm:grid-cols-7 gap-2">
+                @foreach (var sides in new int[] { 4, 6, 8, 10, 12, 20, 100 })
+                {
+                    <button @onclick="() => RollDice(sides)"
+                            disabled="@IsRolling"
+                            class="py-3 px-1 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500 hover:bg-amber-500/10 text-center transition-all group shadow-md flex flex-col items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span class="text-xs font-bold text-amber-500 group-hover:scale-110 transition-transform">d @sides</span>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-1 flex flex-col space-y-2 overflow-hidden">
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">@L["Label_RecentRolls"]</span>
+            @if (History.Any())
+            {
+                <button @onclick="ClearHistory" class="text-[10px] text-red-400 hover:text-red-300 uppercase tracking-wider font-mono">
+                    @L["Btn_ClearHistory"]
+                </button>
+            }
+        </div>
+
+        <div class="flex-1 bg-black/40 border border-slate-800/80 rounded-2xl p-3 overflow-y-auto custom-scrollbar space-y-2 max-h-[180px]">
+            @if (!History.Any())
+            {
+                <div class="h-full flex items-center justify-center text-slate-600 text-xs italic font-serif py-4">
+                    @L["Msg_NoRollsYet"]
+                </div>
+            }
+            else
+            {
+                @foreach (var entry in History)
+                {
+                    <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-slate-900/60 border border-slate-800/50 text-xs font-mono animate-in fade-in duration-300 gap-2">
+                        <div class="flex flex-col min-w-0">
+                            <span class="text-amber-500/80 font-bold truncate">@entry.DiceName</span>
+                            <span class="text-[9px] text-slate-500 truncate">[@entry.IndividualResults]</span>
+                        </div>
+                        <span class="text-slate-400 text-[10px] shrink-0">@entry.Timestamp.ToString("HH:mm:ss")</span>
+                        <span class="text-white font-bold text-sm bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/25 shrink-0">@entry.Result</span>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private int DisplayResult = 0;
+    private int selectedCount = 1;
+    private bool IsRolling = false;
+    private string LastRolledLabel = "Tira un dado";
+    private string LastDetails = string.Empty;
+
+    private class RollEntry
+    {
+        public string DiceName { get; set; } = string.Empty;
+        public int Result { get; set; }
+        public string IndividualResults { get; set; } = string.Empty;
+        public DateTime Timestamp { get; set; }
+    }
+
+    private List<RollEntry> History = new();
+
+    private async Task RollDice(int sides)
+    {
+        if (IsRolling) return;
+        IsRolling = true;
+        LastRolledLabel = $"Tirando {selectedCount}d{sides}...";
+        LastDetails = string.Empty;
+        StateHasChanged();
+
+        // 1. Animación visual (le pedimos al servicio tiradas temporales para el efecto visual)
+        int iterations = 12;
+        for (int i = 0; i < iterations; i++)
+        {
+            var tempRoll = DiceService.Roll(selectedCount, sides);
+            DisplayResult = tempRoll.Total;
+            StateHasChanged();
+            await Task.Delay(35 + (i * 15));
+        }
+
+        // 2. TIRADA FINAL REAL (Usando la lógica de dominio)
+        var finalRoll = DiceService.Roll(selectedCount, sides);
+
+        // 3. Mostramos resultados en la UI
+        DisplayResult = finalRoll.Total;
+        LastRolledLabel = $"Resultado de {selectedCount}d{sides}";
+        LastDetails = $"Tiradas individuales: [{string.Join(", ", finalRoll.IndividualRolls)}]";
+
+        // 4. Guardamos en el historial
+        History.Insert(0, new RollEntry
+        {
+            DiceName = $"{selectedCount}d{sides}",
+            Result = finalRoll.Total,
+            IndividualResults = string.Join(", ", finalRoll.IndividualRolls),
+            Timestamp = DateTime.Now
+        });
+
+        if (History.Count > 20) History.RemoveAt(History.Count - 1);
+
+        IsRolling = false;
+        StateHasChanged();
+    }
+
+    private void ClearHistory()
+    {
+        History.Clear();
+    }
+}

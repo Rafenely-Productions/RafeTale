@@ -1,0 +1,22 @@
+@inject IStringLocalizer<AppStrings> L
+
+<div class="flex items-center justify-between py-1.5 border-b border-amber-900/5 px-2 text-xs">
+    <div class="flex items-center gap-2.5 min-w-0">
+        <div class="size-2 rounded-full shrink-0 @(IsProficient ? "bg-lime-500 shadow-[0_0_6px_rgba(132,204,22,0.8)]" : "border border-slate-700 bg-black/20")"></div>
+        <div class="truncate">
+            <span class="font-medium text-slate-300">@L[SkillKey]</span>
+            <span class="text-[8px] text-amber-700/50 font-black uppercase ml-1 font-mono">@ShortStat</span>
+        </div>
+    </div>
+    <span class="font-mono font-black text-xs px-2 py-0.5 rounded bg-black/40 border border-white/5 min-w-[28px] text-center @(Bonus >= 0 ? "text-lime-500" : "text-red-500")">
+        @(Bonus >= 0 ? "+" : "")@Bonus
+    </span>
+</div>
+
+@code {
+    [Parameter] public string SkillKey { get; set; } = "";
+    [Parameter] public string Stat { get; set; } = "";
+    [Parameter] public string ShortStat { get; set; } = "";
+    [Parameter] public int Bonus { get; set; }
+    [Parameter] public bool IsProficient { get; set; }
+}

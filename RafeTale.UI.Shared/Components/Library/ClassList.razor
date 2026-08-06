@@ -1,0 +1,27 @@
+﻿@using Application.DTOs;
+@inject IStringLocalizer<AppStrings> L
+@inject IStringLocalizer<LibraryStrings> LL
+@inject IJSRuntime JS
+
+<h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">@LL["Classes_Catalog"]</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+    @foreach (var cls in Classes)
+    {
+        <div @onclick="() => OnClassSelected.InvokeAsync(cls)"
+             class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-black/40 px-1 py-3 cursor-pointer hover:border-amber-500/40 transition-all group shadow-md">
+            <div class="min-w-0">
+                <p class="text-base font-black text-white group-hover:text-amber-500 uppercase transition-colors">@cls.Name</p>
+                <p class="truncate text-xs text-slate-400 font-serif mt-0.5">
+                    @LL["Primary_Stat"]: @string.Join(" / ", cls.PrimaryAbility.Select(a => L[a.ToString()].Value))
+                </p>
+            </div>
+            <span class="inline-flex items-center rounded-md bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 font-mono text-xs font-semibold text-amber-500 shrink-0">
+                @cls.HitDie
+            </span>
+        </div>
+    }
+</div>
+@code {
+    [Parameter] public List<ClassDefinitionDto> Classes { get; set; } = new();
+    [Parameter] public EventCallback<ClassDefinitionDto> OnClassSelected { get; set; }
+}
