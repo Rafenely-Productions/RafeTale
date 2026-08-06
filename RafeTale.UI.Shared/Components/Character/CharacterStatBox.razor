@@ -1,0 +1,15 @@
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-center flex flex-col items-center justify-center shadow-md">
+    <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider">@Label</span>
+    <div class="flex items-baseline gap-1 mt-0.5">
+        <span class="text-sm font-black text-white font-mono">@Value</span>
+        <span class="text-[9px] font-bold font-mono @(Modifier >= 0 ? "text-amber-400" : "text-red-400")">
+            @(Modifier >= 0 ? $"+{Modifier}" : Modifier.ToString())
+        </span>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public int Value { get; set; }
+    [Parameter] public int Modifier { get; set; }
+}

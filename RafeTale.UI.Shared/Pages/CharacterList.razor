@@ -1,0 +1,77 @@
+@page "/characters"
+@using RafeTale.Application.DTOs
+@using RafeTale.Application.Interfaces.DtosInterfaces
+@using RafeTale.Domain.Entities
+@using RafeTale.UI.Shared.Components.UI
+@inject IService<CharacterDto, Character> CharacterService
+@inject NavigationManager Navigation
+@inject IStringLocalizer<AppStrings> L
+
+<div class="p-4 max-w-4xl mx-auto min-h-screen bg-black pb-24 text-slate-100">
+    <div class="flex justify-between items-center mb-6 pt-2">
+        <div>
+            <h1 class="text-3xl font-black text-amber-500 tracking-tighter italic uppercase">@L["Title_MyAdventurers"]</h1>
+            <div class="h-1 w-16 bg-amber-600 mt-1 rounded-full"></div>
+        </div>
+    </div>
+
+    @if (Characters == null)
+    {
+        <div class="flex flex-col items-center justify-center py-20">
+            <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-500 mb-3"></div>
+            <p class="text-amber-500/50 font-serif italic text-xs">@L["Msg_CheckingTavernLogs"]</p>
+        </div>
+    }
+    else if (!Characters.Any())
+    {
+        <EmptyState IconClass="fa-scroll"
+                    Title="@L["Title_EmptyTavern"]"
+                    Description="@L["Msg_EmptyTavernHelp"]"
+                    ActionText="@L["Btn_CreateCharacter"]"
+                    OnAction="NavigateToCreateCharacter" />
+    }
+    else
+    {
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            @foreach (var p in Characters)
+            {
+                <div class="bg-slate-900 border border-amber-900/20 rounded-3xl overflow-hidden hover:border-amber-500/40 transition-all shadow-xl relative flex flex-col justify-between">
+                    <div class="absolute top-0 right-0 w-12 h-12 bg-amber-500/5 rotate-45 translate-x-6 -translate-y-6 pointer-events-none"></div>
+
+                    <div class="p-4 pb-1 cursor-pointer" @onclick="() => NavigateToSheet(p.Id)">
+                        <div class="flex justify-between items-start gap-3 mb-4">
+                            <div class="min-w-0">
+                                <h3 class="text-lg font-black text-amber-500 tracking-tight truncate uppercase">@p.Name</h3>
+                                <span class="text-[10px] font-mono font-black text-slate-400 tracking-wider uppercase block truncate mt-0.5">
+                                    @(p.ClassDef?.Name ?? "[No Class]")
+                                </span>
+                            </div>
+                            <div class="bg-black/50 border border-amber-500/20 px-3 py-1 rounded-xl text-center shrink-0">
+                                <span class="text-[11px] text-amber-600 font-mono font-black block leading-none mb-0.5">@L["Label_LevelShort"]</span>
+                                <span class="text-lg font-black text-white leading-none font-mono">@p.Level</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<CharacterDto>? Characters;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCharacters();
+    }
+
+    private async Task LoadCharacters()
+    {
+        Characters = await CharacterService.GetAllAsync(null, null);
+    }
+
+    private void NavigateToLevelUp(Guid id) => Navigation.NavigateTo($"/character/{id}/levelup");
+    private void NavigateToSheet(Guid id) => Navigation.NavigateTo($"/character/{id}");
+    private void NavigateToCreateCharacter() => Navigation.NavigateTo("/character/create");
+}

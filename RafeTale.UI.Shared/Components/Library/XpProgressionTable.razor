@@ -1,0 +1,41 @@
+@inject IStringLocalizer<LibraryStrings> LL
+
+<div class="w-full max-w-full overflow-hidden">
+    <h2 class="text-2xl font-black mb-4 uppercase italic text-amber-500">
+        @LL["Character_Advancement"]
+    </h2>
+    <div class="w-full overflow-x-auto custom-scrollbar pb-2">
+        <table class="w-full text-left text-sm">
+            <thead>
+                <tr class="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-400 font-black">
+                    <th class="px-3 py-3">@LL["Table_Level"]</th>
+                    <th class="px-3 py-3">@LL["Table_XpRequired"]</th>
+                    <th class="px-3 py-3 max-w-[130px] leading-tight break-words">
+                        @LL["Table_ProficiencyBonus"]
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in _XpProgressionTable)
+                {
+                    <tr class="border-b border-slate-800/40 hover:bg-white/5 transition-colors">
+                        <td class="px-3 py-3 font-mono font-bold text-amber-500">@row.Level</td>
+                        <td class="px-3 py-3 text-white">@row.Xp.ToString("N0") XP</td>
+                        <td class="px-3 py-3 font-mono text-slate-400">+@row.Proficiency</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    private static readonly List<(int Level, int Xp, int Proficiency)> _XpProgressionTable = new()
+    {
+        (1, 0, 2), (2, 300, 2), (3, 900, 2), (4, 2700, 2),
+        (5, 6500, 3), (6, 14000, 3), (7, 23000, 3), (8, 34000, 3),
+        (9, 48000, 4), (10, 64000, 4), (11, 85000, 4), (12, 100000, 4),
+        (13, 120000, 5), (14, 140000, 5), (15, 165000, 5), (16, 195000, 5),
+        (17, 225000, 6), (18, 265000, 6), (19, 305000, 6), (20, 355000, 6)
+    };
+}

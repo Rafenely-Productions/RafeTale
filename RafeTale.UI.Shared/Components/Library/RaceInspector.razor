@@ -1,0 +1,180 @@
+﻿@using Application.DTOs;
+@inject IStringLocalizer<AppStrings> L
+@inject IJSRuntime JS
+@using System.Text.RegularExpressions;
+
+<div class="animate-in fade-in duration-300 space-y-6 max-w-4xl mx-auto">
+
+    <div class="border-b border-slate-800 pb-5">
+        <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@RaceDto.Name</h1>
+        <p class="text-slate-400 font-sans text-sm leading-relaxed mt-3">
+            @((MarkupString)RaceDto.Description)
+        </p>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3">
+        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">@L["Label_CreatureType"]</p>
+            <p class="text-sm font-semibold text-white mt-1">@RaceDto.CreatureType</p>
+        </div>
+        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">@L["Label_SizeCategory"]</p>
+            <p class="text-sm font-semibold text-white mt-1">@RaceDto.Size</p>
+        </div>
+        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">@L["Label_Velocity"]</p>
+            <p class="text-sm font-semibold text-white mt-1">
+                @((MarkupString)FormatSpellDescription(RaceDto.Speed))
+            </p>
+        </div>
+    </div>
+
+    <div class="space-y-4">
+        <h3 class="text-lg font-black text-amber-500 uppercase italic tracking-wider border-b border-slate-800 pb-1">
+            @L["Title_CoreTraits"]
+        </h3>
+
+        <div class="space-y-3">
+            @if (RaceDto.Traits != null && RaceDto.Traits.Any())
+            {
+                @foreach (var trait in RaceDto.Traits)
+                {
+                    <div class="p-4 bg-black/40 rounded-xl border border-slate-800/80 hover:border-slate-700 transition-colors">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                            <p class="text-sm font-black text-white uppercase">
+                                @trait.Name
+                            </p>
+                            @if (trait.RequiredLevel > 1)
+                            {
+                                <span class="text-[9px] font-mono bg-amber-500/10 text-amber-500 px-1.5 py-0.5 rounded border border-amber-500/20">
+                                    @L["Spell_LevelText"] @trait.RequiredLevel
+                                </span>
+                            }
+                        </div>
+                        <p class="text-xs text-slate-400 font-sans leading-relaxed">
+                            @((MarkupString)FormatSpellDescription(trait.Description))
+                        </p>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-xs text-slate-500 italic">@L["Msg_NoCoreTraits"]</p>
+            }
+        </div>
+    </div>
+
+    @if (RaceDto.SubRaces != null && RaceDto.SubRaces.Any())
+    {
+        <div class="space-y-4 mt-8">
+            <h3 class="text-lg font-black text-amber-500 uppercase italic tracking-wider border-b border-slate-800 pb-1">
+                @L["Title_LineagesLegacies"]
+            </h3>
+
+            <div class="flex flex-wrap gap-2">
+                @foreach (var subrace in RaceDto.SubRaces)
+                {
+                    <button @onclick="() => SelectSubrace(subrace)"
+                            class="px-4 py-2 text-xs font-black uppercase tracking-wider rounded-lg border transition-all
+                                           @(selectedSubrace?.Id == subrace.Id
+                                                                   ? "bg-amber-500/10 border-amber-500 text-amber-500"
+                                                                   : "bg-black/30 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700")">
+                @subrace.Name
+            </button>
+                        }
+            </div>
+
+            @if (selectedSubrace != null)
+            {
+                <div class="p-5 bg-slate-900/30 rounded-xl border border-amber-500/10 animate-in slide-in-from-bottom-2 duration-200">
+                    <h4 class="text-sm font-black text-white uppercase mb-2">
+                        @L["Label_AboutItem"] @selectedSubrace.Name
+                    </h4>
+
+                    <p class="text-xs text-slate-400 font-sans leading-relaxed mb-4">
+                        @((MarkupString)selectedSubrace.Description)
+                    </p>
+
+                    <div class="space-y-3">
+                        <p class="text-[10px] font-bold text-amber-500/80 uppercase tracking-widest">@L["Title_LineageFeatures"]</p>
+
+                        @if (selectedSubrace.Traits != null && selectedSubrace.Traits.Any())
+                        {
+                            @foreach (var sTrait in selectedSubrace.Traits)
+                            {
+                                <div class="p-3.5 bg-black/40 rounded-lg border border-slate-800">
+                                    <p class="text-xs font-black text-white uppercase mb-1">
+                                        @sTrait.Name
+                                    </p>
+                                    <p class="text-xs text-slate-400 font-sans leading-relaxed">
+                                        @((MarkupString)FormatSpellDescription( sTrait.Description))
+                                    </p>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-xs text-slate-500 italic">@L["Msg_NoLineageTraits"]</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public RaceDto RaceDto { get; set; } = null!;
+
+    private SubRaceDto? selectedSubrace;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (RaceDto?.SubRaces != null && RaceDto.SubRaces.Any())
+        {
+            selectedSubrace = RaceDto.SubRaces.First();
+        }
+        else
+        {
+            selectedSubrace = null;
+        }
+
+        try
+        {
+            await JS.InvokeVoidAsync("eval", "document.getElementById('main-scroll-view')?.scrollTo({ top: 0, behavior: 'instant' });");
+        }
+        catch { }
+    }
+
+    private void SelectSubrace(SubRaceDto subrace)
+    {
+        selectedSubrace = subrace;
+    }
+
+    private string FormatSpellDescription(string rawDescription)
+    {
+        if (string.IsNullOrEmpty(rawDescription)) return string.Empty;
+
+        string processed = rawDescription;
+
+        string metersLabel = L["Label_mt"].Value;
+        string feetLabel = L["Label_ft"].Value;
+
+        processed = Regex.Replace(processed, @"{(?:dist|range):(\d+(?:\.\d+)?)_M}", match =>
+        {
+            string meters = match.Groups[1].Value;
+            return $"<span class=\"font-mono\">{meters} {metersLabel}</span>";
+        });
+
+        processed = Regex.Replace(processed, @"{(?:dist|range):(\d+(?:\.\d+)?)_FT}", match =>
+        {
+            string feet = match.Groups[1].Value;
+            return $"<span class=\"font-mono\">{feet} {feetLabel}</span>";
+        });
+
+        processed = Regex.Replace(processed, @"{[a-zA-Z0-9_.:]+}", string.Empty);
+
+        return processed;
+    }
+}

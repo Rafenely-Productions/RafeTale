@@ -1,0 +1,254 @@
+@page "/sandbox"
+@using RafeTale.Application.Interfaces
+@using RafeTale.Domain.Entities
+@inject IExcelImportService ExcelImportService
+@inject ICharacterQueryService CharacterQueryService
+@inject IFeatureQueryService FeatureQueryService
+@inject ILevelingService LevelingService
+
+<div class="container mt-4">
+    <div class="card shadow-sm p-4 mb-4" style="max-width: 550px; border-radius: 12px;">
+        <h3 class="fw-bold mb-1">⚔️ Importador Maestro de reglas</h3>
+        <p class="text-muted small mb-4">Sube tu plantilla de Excel para poblar Razas, Clases y Personajes de forma transaccional.</p>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Selecciona archivo .xlsx</label>
+            <InputFile OnChange="OnFolderFileSelected" class="form-control" accept=".xlsx" disabled="@isProcessing" />
+        </div>
+
+        @if (isProcessing)
+        {
+            <div class="alert alert-info d-flex align-items-center border-0 shadow-sm" role="alert">
+                <div class="spinner-border spinner-border-sm text-info me-3" role="status"></div>
+                <div>
+                    <span class="fw-medium">Procesando tablas...</span>
+                    <div class="text-muted small">Leyendo ClosedXML e insertando en SQLite.</div>
+                </div>
+            </div>
+        }
+
+        @if (uploadedCount.HasValue)
+        {
+            <div class="alert alert-success border-0 shadow-sm" role="alert">
+                <h5 class="alert-heading fw-bold d-flex align-items-center mb-2">¡Importación Exitosa! 🎉</h5>
+                <hr class="my-2" />
+                <p class="mb-1 small"><strong>Personajes creados:</strong> @uploadedCount.Value</p>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger border-0 shadow-sm" role="alert">
+                <h6 class="fw-bold mb-1">❌ No se pudo completar la carga</h6>
+                <p class="mb-0 small text-break">@errorMessage</p>
+            </div>
+        }
+    </div>
+
+    <div class="card shadow-sm p-4 mb-4" style="border-radius: 12px;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h4 class="fw-bold mb-0">🛡️ Personajes en la Taberna (SQLite)</h4>
+                <p class="text-muted small mb-0">Otorga experiencia en vivo para probar el sistema de Level-Up.</p>
+            </div>
+            <button class="btn btn-outline-secondary btn-sm" @onclick="RefreshCharacters">🔄 Actualizar</button>
+        </div>
+
+        @if (characters == null)
+        {
+            <p class="text-muted small">Cargando aventureros...</p>
+        }
+        else if (!characters.Any())
+        {
+            <div class="text-center p-4 text-muted bg-light rounded" style="border: 2px dashed #dee2e6;">
+                No hay personajes en la base de datos. ¡Sube un Excel arriba para poblar la taberna!
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Raza / Clase</th>
+                            <th class="text-center">Nivel</th>
+                            <th class="text-center">Experiencia</th>
+                            <th>Rasgos Aprendidos (Features)</th>
+                            <th class="text-center">Modificar XP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var character in characters)
+                        {
+                            <tr>
+                                <td class="fw-bold text-primary">@character.Name</td>
+                                <td>
+                                    <span class="text-dark">@(character.Race?.TechnicalName ?? "Desconocida")</span>
+                                    <span class="text-muted small d-block">(character.ClassDef?.Name ?? "Desconocida")</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-info text-dark fw-bold" style="font-size: 0.9rem;">
+                                        Lv. @character.Level
+                                    </span>
+                                </td>
+                                <td class="text-center text-muted fw-medium">@character.Experience XP</td>
+                                <td>
+                                    @if (character.AcquiredFeatures != null && character.AcquiredFeatures.Any())
+                                    {
+                                        @foreach (var feat in character.AcquiredFeatures)
+                                        {
+                                            <span class="badge bg-light text-dark border me-1 mb-1" title="feat.Description">
+                                                🔮 feat.Name
+                                            </span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small italic">Ninguno todavía</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button class="btn btn-success" @onclick="() => GrantXp(character.Id, 100)">+100 XP</button>
+                                        <button class="btn btn-primary" @onclick="() => GrantXp(character.Id, 500)">+500 XP</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="card shadow-sm p-4" style="border-radius: 12px;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h4 class="fw-bold mb-0">📜 Catálogo General de Features Registrados</h4>
+                <p class="text-muted small mb-0">Todos los rasgos disponibles cargados globalmente desde el Excel.</p>
+            </div>
+            <button class="btn btn-outline-secondary btn-sm" @onclick="RefreshFeatures">🔄 Actualizar</button>
+        </div>
+
+        @if (features == null)
+        {
+            <p class="text-muted small">Cargando catálogo...</p>
+        }
+        else if (!features.Any())
+        {
+            <div class="text-center p-4 text-muted bg-light rounded" style="border: 2px dashed #dee2e6;">
+                No hay features globales en el sistema.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                <table class="table table-sm table-hover align-middle mb-0">
+                    <thead class="table-secondary sticky-top">
+                        <tr>
+                            <th>Nombre del Rasgo</th>
+                            <th>Descripción Automatizada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var feature in features)
+                        {
+                            <tr>
+                                <td class="fw-semibold text-success">feature.Name</td>
+                                <td class="text-muted small">feature.Description</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private bool isProcessing = false;
+    private int? uploadedCount;
+    private string? errorMessage;
+    private IEnumerable<Character>? characters;
+    private IEnumerable<Feature>? features;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshCharacters();
+        await RefreshFeatures();
+    }
+
+    private async Task RefreshCharacters()
+    {
+        try
+        {
+            characters = await CharacterQueryService.GetDashboardCharactersAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar personajes: {ex.GetBaseException().Message}";
+        }
+    }
+
+    private async Task RefreshFeatures()
+    {
+        try
+        {
+            features = await FeatureQueryService.GetDashboardFeaturesAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar catálogo de rasgos: {ex.GetBaseException().Message}";
+        }
+    }
+
+    private async Task GrantXp(Guid characterId, int amount)
+    {
+        errorMessage = null;
+        try
+        {
+            // Ejecutamos la lógica de negocio transaccional de subida de nivel
+            bool didLevelUp = await LevelingService.AddExperienceAsync(characterId, amount);
+
+            // Refrescamos inmediatamente los datos de la pantalla para ver el impacto
+            await RefreshCharacters();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al procesar experiencia: {ex.GetBaseException().Message}";
+        }
+    }
+
+    private async Task OnFolderFileSelected(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var file = e.File;
+            if (file == null) return;
+
+            isProcessing = true;
+            errorMessage = null;
+            uploadedCount = null;
+
+            using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            var (count, _) = await ExcelImportService.ImportDataFromExcelAsync(memoryStream);
+            uploadedCount = count;
+
+            await RefreshCharacters();
+            await RefreshFeatures();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.GetBaseException().Message;
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+}

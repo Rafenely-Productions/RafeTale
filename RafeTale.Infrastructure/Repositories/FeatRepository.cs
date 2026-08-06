@@ -1,0 +1,18 @@
+using RafeTale.Domain.Entities;
+using RafeTale.Domain.Interfaces.IRepositories;
+using RafeTale.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace RafeTale.Infrastructure.Repositories;
+
+public class FeatRepository : Repository<Feat>, IFeatRepository
+{
+    public FeatRepository(RafeTaleDbContext context) : base(context) { }
+
+    public async Task<Feat> GetByNameAsync(string name)
+    {
+        return await _context.Set<Feat>().FirstOrDefaultAsync(f => f.TechnicalName == name);
+    }
+}
