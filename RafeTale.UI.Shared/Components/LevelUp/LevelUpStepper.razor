@@ -1,0 +1,31 @@
+@using RafeTale.Application.DTOs
+@inject IStringLocalizer<AppStrings> L
+
+<div class="grid grid-cols-3 gap-2 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/40 text-center text-xs font-black uppercase tracking-wider shadow-inner">
+    @if (Mode != "claim")
+    {
+        <button class="py-2.5 rounded-xl transition-all @(CurrentStep == 1 ? "bg-amber-500 text-black font-extrabold shadow-md" : "text-slate-400 hover:text-white")"
+                @onclick="() => OnStepSelected.InvokeAsync(1)">
+            1. @L["Tab_Vitals"]
+        </button>
+    }
+
+    <button disabled="@(!Draft.GivesFeat)"
+            class="py-2.5 rounded-xl transition-all @(CurrentStep == 2 ? "bg-amber-500 text-black font-extrabold shadow-md" : "") @(Draft.GivesFeat ? "text-slate-400 hover:text-white cursor-pointer" : "opacity-20 cursor-not-allowed")"
+            @onclick="() => OnStepSelected.InvokeAsync(2)">
+        @(Mode == "claim" ? "1. " : "2. ") @L["Tab_Feats_ASI"]
+    </button>
+
+    <button disabled="@(Draft.SpellsToLearnCount == 0 && Mode != "claim")"
+            class="py-2.5 rounded-xl transition-all @(CurrentStep == 3 ? "bg-amber-500 text-black font-extrabold shadow-md" : "") @(Draft.SpellsToLearnCount > 0 || Mode == "claim" ? "text-slate-400 hover:text-white cursor-pointer" : "opacity-20 cursor-not-allowed")"
+            @onclick="() => OnStepSelected.InvokeAsync(3)">
+        @(Mode == "claim" ? "2. " : "3. ") @L["Tab_Spells"]
+    </button>
+</div>
+
+@code {
+    [Parameter] public LevelUpDraft Draft { get; set; } = default!;
+    [Parameter] public int CurrentStep { get; set; }
+    [Parameter] public string? Mode { get; set; }
+    [Parameter] public EventCallback<int> OnStepSelected { get; set; }
+}

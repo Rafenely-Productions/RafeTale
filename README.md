@@ -1,11 +1,11 @@
-# 🎲 Rafedream
+# 🎲 RafeTale
 
 > **by Rafenely Studios**
 > 
 > A cross-platform tabletop RPG rules engine. Create your own systems, import community content packs, and manage characters with an immersive digital interface.
 
 <p align="center">
-  <img src="docs/screenshots/home.png" alt="Rafedream" width="300">
+  <img src="docs/screenshots/home.png" alt="RafeTale" width="300">
 </p>
 
 ---
@@ -28,12 +28,12 @@
 ## 🏗️ Architecture
 
 ```
-Rafedream/
-├── 📁 Rafedream.Domain/          # Pure entities, enums, value objects
-├── 📁 Rafedream.Application/     # Business logic, DTOs, interfaces
-├── 📁 Rafedream.Infrastructure/  # Persistence, extractors, seeders
-├── 📁 Rafedream.UI.Shared/       # Shared Blazor components
-└── 📁 Rafedream.MAUI/            # App shell, config, assets
+RafeTale/
+├── 📁 RafeTale.Domain/          # Pure entities, enums, value objects
+├── 📁 RafeTale.Application/     # Business logic, DTOs, interfaces
+├── 📁 RafeTale.Infrastructure/  # Persistence, extractors, seeders
+├── 📁 RafeTale.UI.Shared/       # Shared Blazor components
+└── 📁 RafeTale.MAUI/            # App shell, config, assets
 ```
 
 **Pattern:** Clean Architecture + CQRS-like (queries and commands separated in services)
@@ -57,9 +57,9 @@ Implemented for: `Character`, `ClassDefinition`, `Race`, `Subclass`, `Spell`, `L
 
 ### Dependency Injection
 
-Configured in `Rafedream.MAUI/MauiProgram.cs`:
+Configured in `RafeTale.MAUI/MauiProgram.cs`:
 
-- `RafedreamDbContext` scoped to a local SQLite path.
+- `RafeTaleDbContext` scoped to a local SQLite path.
 - `IAppInitializer` singleton for startup seeding.
 - Read services (`ICharacterQueryService`, `ILibraryDataService`, etc.) and write services (`ILevelUpService`, `ILevelingService`, etc.).
 - Default culture forced to `es-MX`.
@@ -93,26 +93,26 @@ Configured in `Rafedream.MAUI/MauiProgram.cs`:
 
 ```bash
 # 1. Clone
-git clone https://github.com/rafenely-productions/rafedream.git
-cd Rafedream
+git clone https://github.com/rafenely-productions/rafetale.git
+cd RafeTale
 
 # 2. Restore packages
 dotnet restore
 
 # 3. Run on Windows (WinUI 3)
-dotnet build Rafedream.MAUI/Rafedream.MAUI.csproj -f net9.0-windows10.0.19041.0
-dotnet run --project Rafedream.MAUI/Rafedream.MAUI.csproj -f net9.0-windows10.0.19041.0
+dotnet build RafeTale.MAUI/RafeTale.MAUI.csproj -f net9.0-windows10.0.19041.0
+dotnet run --project RafeTale.MAUI/RafeTale.MAUI.csproj -f net9.0-windows10.0.19041.0
 
 # Or on Android (needs emulator or connected device)
-dotnet build Rafedream.MAUI/Rafedream.MAUI.csproj -f net9.0-android
-dotnet run --project Rafedream.MAUI/Rafedream.MAUI.csproj -f net9.0-android
+dotnet build RafeTale.MAUI/RafeTale.MAUI.csproj -f net9.0-android
+dotnet run --project RafeTale.MAUI/RafeTale.MAUI.csproj -f net9.0-android
 ```
 
 ### First Time
 The app ships with bundled offline data:
 
-- `Rafedream.MAUI/Resources/Raw/Rafedream_SRD_v1.xlsx` — bundled SRD-style content pack.
-- `Rafedream.MAUI/Resources/Raw/dndreams.db3` — pre-seeded SQLite database.
+- `RafeTale.MAUI/Resources/Raw/RafeTale_SRD_v1.xlsx` — bundled SRD-style content pack.
+- `RafeTale.MAUI/Resources/Raw/dndreams.db3` — pre-seeded SQLite database.
 
 On first launch, `AppInitializer` checks the local DB and optionally imports the default pack. Subsequent launches use the local DB directly.
 
@@ -169,7 +169,7 @@ The `SandboxPage.razor` screen can import custom packs at runtime.
 ## 🧪 Tests
 
 ```bash
-cd Rafedream.Tests
+cd RafeTale.Tests
 dotnet test
 ```
 
@@ -198,7 +198,7 @@ dotnet test
 - Base culture is `es-MX`.
 
 ### Naming Legacy
-The project was previously named **DnDreams**. Some legacy names remain (e.g., `DnDreamsDbContext.cs`, `dndreams.db3`, migration snapshot). Prefer `Rafedream` for new code.
+The project was previously named **DnDreams**. Some legacy names remain (e.g., `DnDreamsDbContext.cs`, `dndreams.db3`, migration snapshot). Prefer `RafeTale` for new code.
 
 ---
 

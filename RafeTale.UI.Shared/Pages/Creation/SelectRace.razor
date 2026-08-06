@@ -1,0 +1,98 @@
+@page "/character/create/race"
+@using RafeTale.Application.DTOs
+@using RafeTale.Application.Interfaces.DtosInterfaces
+@using RafeTale.Domain.Entities
+@using RafeTale.Domain.Interfaces
+@using RafeTale.UI.Shared.Components.Library
+@inject IUnitOfWork UnitOfWork
+@inject NavigationManager Navigation
+@inject IStringLocalizer<AppStrings> L
+@inject ICharacterCreationService CreationService
+@inject IService<RaceDto,Race> RaceService
+
+<div class="min-h-screen bg-black p-6">
+    <div class="max-w-6xl mx-auto">
+
+        <div class="mb-8">
+            <button @onclick='Back' class="text-amber-700 hover:text-amber-500 text-[10px] font-black tracking-[0.3em] mb-4 uppercase flex items-center gap-2 transition-all">
+                <i class="fa-solid fa-arrow-left"></i> @L["Btn_Back"]
+            </button>
+            <h1 class="text-5xl font-black text-amber-500 italic uppercase tracking-tighter">@L["Title_SelectRace"]</h1>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-3 space-y-2">
+                <div class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 custom-scrollbar">
+                    @foreach (var dtoRace in DtoRaces)
+                    {
+                        <div @onclick="() => SelectingRace(dtoRace)"
+                             class="group cursor-pointer px-3.5 py-2.5 lg:p-4 rounded-xl border transition-all duration-300 shrink-0 lg:shrink w-auto lg:w-auto @(SelectedRace?.Id == dtoRace.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
+                            <div class="flex justify-between items-center gap-3">
+                                <span class="text-xs lg:text-sm font-black uppercase tracking-tight truncate @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-white group-hover:text-amber-500")">
+                                    @dtoRace.Name
+                                </span>
+                                <i class="fa-solid fa-fire-bolt text-xs shrink-0 @(SelectedRace?.Id == dtoRace.Id ? "text-black" : "text-amber-900/40")"></i>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+            <div class="lg:col-span-8">
+                <div class="bg-slate-900 border border-amber-900/30 rounded-3xl lg:rounded-[3rem] p-3 sm:p-8 lg:p-10 shadow-2xl min-h-[500px] lg:min-h-[600px] flex flex-col justify-between">
+
+                    @if (SelectedRace == null)
+                    {
+                        <div class="flex flex-col items-center justify-center h-full py-20 text-center">
+                            <i class="fa-solid fa-scroll text-amber-900/10 text-[10rem] mb-6"></i>
+                            <p class="text-amber-700 font-serif italic text-xl">@L["Msg_SelectRacePrompt"]</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <RaceInspector RaceDto="SelectedRace" />
+                        <div class="mt-12 pt-8 border-t border-amber-500/10 flex justify-end">
+                            <button @onclick="Confirm"
+                                    class="group w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-black rounded-2xl transition-all duration-300 shadow-xl shadow-amber-600/20 flex items-center justify-center gap-3">
+                                <span class="uppercase tracking-widest text-xs">@L["Btn_ConfirmRace"]</span>
+                                <i class="fa-solid fa-arrow-right text-sm transition-transform duration-300 group-hover:translate-x-1"></i>
+                            </button>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<RaceDto> DtoRaces = new();
+    private RaceDto? SelectedRace;
+
+    protected override async Task OnInitializedAsync()
+    {
+        DtoRaces = await RaceService.GetAllAsync(null, includes: query => query.Include(x => x.Languages).IncludeCollection(x => x.SubRaces, z => z.Traits).Include(x => x.Traits));
+
+        if (CreationService.SelectedRaceId != null)
+        {
+            SelectedRace = DtoRaces.FirstOrDefault(x => x.Id == CreationService.SelectedRaceId);
+        }
+    }
+
+    private void Back() => Navigation.NavigateTo("/character/create");
+    private void SelectingRace(RaceDto race)
+    {
+        SelectedRace = race;
+    }
+    private void Confirm()
+    {
+        if (SelectedRace != null)
+        {
+            CreationService.SelectedRaceId = SelectedRace.Id;
+            Navigation.NavigateTo("/character/create");
+        }
+    }
+}
