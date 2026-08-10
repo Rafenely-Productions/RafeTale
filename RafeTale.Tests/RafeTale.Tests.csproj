@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RafeTale.Domain\RafeTale.Domain.csproj" />
     <ProjectReference Include="..\RafeTale.Application\RafeTale.Application.csproj" />
+    <ProjectReference Include="..\RafeTale.Infrastructure\RafeTale.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
