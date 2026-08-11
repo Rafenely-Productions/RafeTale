@@ -1,0 +1,20 @@
+using RafeTale.Domain.Interfaces;
+using RafeTale.Domain.Rules;
+
+namespace RafeTale.Infrastructure.Rules;
+
+public class ConfigurableGameRules : IGameRules
+{
+    private readonly IReadOnlyDictionary<int, DiceCritRule> _rules;
+
+    public ConfigurableGameRules(IEnumerable<DiceCritRule> rules)
+    {
+        _rules = rules.ToDictionary(r => r.DiceSides);
+    }
+
+    public bool IsDiceCriticalSuccess(int diceSides, int rollValue) =>
+        _rules.TryGetValue(diceSides, out var r) && r.CriticalSuccessValue == rollValue;
+
+    public bool IsDiceCriticalFailure(int diceSides, int rollValue) =>
+        _rules.TryGetValue(diceSides, out var r) && r.CriticalFailureValue == rollValue;
+}
