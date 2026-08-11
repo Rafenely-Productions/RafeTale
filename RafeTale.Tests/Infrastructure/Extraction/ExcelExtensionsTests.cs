@@ -1,8 +1,8 @@
 using ClosedXML.Excel;
 using RafeTale.Domain.Exceptions;
-using RafeTale.Infrastructure.Extractors.Extensions;
+using RafeTale.Infrastructure.Extraction.Extensions;
 
-namespace RafeTale.Tests.Infrastructure.Extractors;
+namespace RafeTale.Tests.Infrastructure.Extraction;
 
 public class ExcelExtensionsTests
 {
@@ -14,7 +14,7 @@ public class ExcelExtensionsTests
         workbook.AddWorksheet("Spells");
 
         // Act
-        var result = workbook.GetSheet("Spells");
+        var result = workbook.GetSheetSafe("Spells");
 
         // Assert
         result.Should().NotBeNull();
@@ -28,7 +28,7 @@ public class ExcelExtensionsTests
         using var workbook = new XLWorkbook();
 
         // Act
-        var act = () => workbook.GetSheet("Missing");
+        var act = () => workbook.GetDataRows("Missing", isRequired: true);
 
         // Assert
         act.Should().Throw<DataImportException>()
@@ -42,7 +42,7 @@ public class ExcelExtensionsTests
         using var workbook = new XLWorkbook();
 
         // Act
-        var result = workbook.GetSheet("Optional", isRequired: false);
+        var result = workbook.GetSheetSafe("Optional");
 
         // Assert
         result.Should().BeNull();
