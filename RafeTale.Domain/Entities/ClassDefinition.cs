@@ -21,10 +21,20 @@ public class ClassDefinition : IEntity
 
     private int CalculateValue()
     {
-        string die = HitDie.Split('d')[1]; // Quitar la "d"
+        if (string.IsNullOrWhiteSpace(HitDie))
+            return 0;
 
-        return int.Parse(die);
+        string[] parts = HitDie.Split('d', 'D');
+
+        // Validar que haya al menos dos partes y que la segunda sea un entero válido
+        if (parts.Length >= 2 && int.TryParse(parts[1], out int value))
+        {
+            return value;
+        }
+
+        return 0; // O lanzar una ArgumentException según las reglas de tu negocio
     }
+
     public ICollection<ClassLevelProgression> Progressions { get; set; } = new List<ClassLevelProgression>();
     public ICollection<Subclass> Subclasses { get; set; } = new List<Subclass>();
 }

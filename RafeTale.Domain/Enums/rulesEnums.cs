@@ -336,8 +336,8 @@ public enum RestType
 }
 public enum SpellConcentration
 {
-    Yes,
-    No
+    No,
+    Yes
 }
 public enum FeatPrerequisiteType
 {

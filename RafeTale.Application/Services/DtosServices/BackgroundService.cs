@@ -79,6 +79,8 @@ namespace RafeTale.Application.Services.DtosServices
             var backgroundDtos = new List<BackgroundDto>();
             foreach (var bg in backgrounds)
             {
+                if(bg == null) continue;
+
                 var baseDto = ArmDto(bg!, localizedWords);
 
                 FeatDto? associatedFeat = null;
