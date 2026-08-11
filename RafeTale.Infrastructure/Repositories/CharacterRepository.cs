@@ -8,10 +8,8 @@ using RafeTale.Domain.Interfaces.IRepositories;
 
 namespace RafeTale.Infrastructure.Repositories;
 
-public class CharacterRepository : Repository<Character>, ICharacterRepository
+public class CharacterRepository(RafeTaleDbContext context) : Repository<Character>(context), ICharacterRepository
 {
-    public CharacterRepository(RafeTaleDbContext context) : base(context) { }
-
     public async Task<IEnumerable<Character>> GetAllWithDetailsAsync()
     {
         return await _context.Characters

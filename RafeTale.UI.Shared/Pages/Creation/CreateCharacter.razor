@@ -224,7 +224,7 @@
 
     private void Back() => Navigation.NavigateTo("/characters");
 
-    private async Task HandleCreate()
+    private void HandleCreate()
     {
         if (!IsFormReady()) return;
         Navigation.NavigateTo("/character/create/abilities");

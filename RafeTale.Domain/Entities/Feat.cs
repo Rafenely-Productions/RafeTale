@@ -11,9 +11,8 @@ public class Feat : IEntity
     public Guid Id { get; set; }
     public string TechnicalName { get; set; } = string.Empty;
     public CategoryFeat Category { get; set; }
-    bool SpecialData = false;
-    public List<FeatPrerequisiteModifierData> Prerequisite { get; set; } = new();
-    public List<ModifierData> Modifiers { get; set; } = new();
+    public List<FeatPrerequisiteModifierData> Prerequisite { get; set; } = [];
+    public List<ModifierData> Modifiers { get; set; } = [];
 
 }
 
