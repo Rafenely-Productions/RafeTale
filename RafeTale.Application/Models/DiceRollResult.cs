@@ -1,3 +1,4 @@
+using RafeTale.Domain.Interfaces;
 namespace RafeTale.Application.Models;
 
 public class DiceRollResult
@@ -5,12 +6,20 @@ public class DiceRollResult
     public int NumberOfDice { get; set; }
     public int DiceSides { get; set; }
     public int Modifier { get; set; }
-    public List<int> IndividualRolls { get; set; } = new();
+    public List<int> IndividualRolls { get; set; } = [];
 
     // Calcula el total sumando los dados más el modificador
     public int Total => IndividualRolls.Sum() + Modifier;
 
-    // Identifica si fue un 1 natural o un 20 natural (útil para d20)
-    public bool IsCriticalHit => DiceSides == 20 && IndividualRolls.Count == 1 && IndividualRolls.First() == 20;
-    public bool IsCriticalMiss => DiceSides == 20 && IndividualRolls.Count == 1 && IndividualRolls.First() == 1;
+    public IGameRules? GameRules { get; set; }
+
+
+    public bool IsCriticalHit =>
+            IndividualRolls.Count == 1 &&
+            (GameRules?.IsDiceCriticalSuccess(DiceSides, IndividualRolls.First())
+             ?? (DiceSides == 20 && IndividualRolls.First() == 20));
+    public bool IsCriticalMiss =>
+            IndividualRolls.Count == 1 &&
+            (GameRules?.IsDiceCriticalFailure(DiceSides, IndividualRolls.First())
+             ?? (DiceSides == 20 && IndividualRolls.First() == 1));
 }
