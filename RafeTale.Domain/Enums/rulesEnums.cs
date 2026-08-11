@@ -504,7 +504,29 @@ public enum LocProperty//LocalizationProperty
 public enum LocLanguage
 {
     en,
-    es
+    es,
+    fr,
+    de,
+    it,
+    pt,
+    ru,
+    ja,
+    zh,
+    ko,
+    ar,
+    hi,
+    tr,
+    pl,
+    nl,
+    sv,
+    no,
+    da,
+    fi,
+    cs,
+    ro,
+    hu,
+    el,
+
 }
 
 public enum CharacterTab 

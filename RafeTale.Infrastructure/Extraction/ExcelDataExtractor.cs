@@ -4,22 +4,42 @@ using RafeTale.Application.Services.Importer;
 using RafeTale.Domain.Entities;
 using RafeTale.Domain.Enums;
 using RafeTale.Domain.Modifiers;
-using RafeTale.Infrastructure.Extractors.Extensions;
+using RafeTale.Infrastructure.Extraction.Extensions;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using RafeTale.Infrastructure.Extraction.Sheets;
+using RafeTale.Infrastructure.Extraction.Interfaces;
 
-namespace RafeTale.Infrastructure.Extractors
+namespace RafeTale.Infrastructure.Extraction
 {
     public class ExcelDataExtractor : IDataExtractor
     {
+        private IReadOnlyList<ISheetExtractor> _extractors = [];
+        public ExcelDataExtractor(IEnumerable<ISheetExtractor> extractors)
+        {
+            _extractors = extractors.ToList();
+        }
+        private readonly LocLanguage _currentCulture;
+
         private Dictionary<string, LocalizedContent> _localizedContentCache = new();
-        private List<string> _LanguagesCache = new List<string>();
-        private readonly LocLanguage _currentCulture = LocLanguage.es;
 
         public ImportDataPackage ExtractAllAsync(Stream excelStream)
+        {
+            using var workbook = new XLWorkbook(excelStream);
+            var context = new ExtractionContext(LocLanguage.es);
+            
+            foreach (var extractor in _extractors)
+            {
+                extractor.Extract(workbook, context);
+            }
+
+            context.Package.LocalizedContents.AddRange(context.Localization.GetAll());
+            return context.Package;
+        }
+        public ImportDataPackage ExtractAllAsyncs(Stream excelStream)
         {
             var package = new ImportDataPackage();
             using var workbook = new XLWorkbook(excelStream);
@@ -28,20 +48,20 @@ namespace RafeTale.Infrastructure.Extractors
             package.Languages = ExtractLanguages(workbook);
             package.Races = ExtractRaces(workbook, package.Languages);
             package.SubRaces = ExtractSubRaces(workbook, package.Races);
-            package.Traits = ExtractTraits(workbook, package.Races,package.SubRaces);
+            package.Traits = ExtractTraits(workbook, package.Races, package.SubRaces);
             package.SpecialTraits = ExtractSpecialTraits(workbook, package.Traits);
             package.SkillProficiencies = ExtractSkillProficiencies(workbook);
             package.ClassDefinitions = ExtractClasses(workbook, package.SkillProficiencies);
             package.Subclasses = ExtractSubclasses(workbook, package.ClassDefinitions);
-            package.Spells = ExtractSpells(workbook, package.ClassDefinitions.Select(x=> x.TechnicalName).ToList());
+            package.Spells = ExtractSpells(workbook, package.ClassDefinitions.Select(x => x.TechnicalName).ToList());
             package.ClassLevelProgressions = ExtractClassLevelProgressions(workbook, package.ClassDefinitions);
             package.SubclassLevelProgressions = ExtractSubclassLevelProgressions(workbook, package.Subclasses);
             package.XpRules = ExtractXpRules(workbook);
-            package.Items = ExtractItems(workbook, package.Characters);
             package.Feats = ExtractFeats(workbook);
             package.Backgrounds = ExtractBackgrounds(workbook, package.Feats);
 
             package.Characters = ExtractCharacters(workbook, package.Races, package.ClassDefinitions, package.Backgrounds);
+            package.Items = ExtractItems(workbook, package.Characters);
             package.LocalizedContents.AddRange(_localizedContentCache.Values);
             return package;
         }
@@ -49,9 +69,9 @@ namespace RafeTale.Infrastructure.Extractors
         public List<Skill> ExtractSkillProficiencies(IXLWorkbook workbook)
         {
             var skillProficiencyList = new List<Skill>();
-            var sheet = workbook.GetSheet("Skills", isRequired: true);
+            var sheet = workbook.GetSheetSafe("Skills");
             var rows = sheet?.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return skillProficiencyList;
             foreach (var row in rows)
             {
@@ -76,10 +96,10 @@ namespace RafeTale.Infrastructure.Extractors
         public List<Language> ExtractLanguages(IXLWorkbook workbook)
         {
             var languagesList = new List<Language>();
-            var sheet = workbook.GetSheet("Languages", isRequired: true);
+            var sheet = workbook.GetSheetSafe("Languages");
 
             var rows = sheet?.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return languagesList;
 
             foreach (var row in rows)
@@ -103,9 +123,9 @@ namespace RafeTale.Infrastructure.Extractors
         {
             var raceList = new List<Race>();
 
-            var raceSheet = workbook.GetSheet("Races", isRequired: true);
+            var raceSheet = workbook.GetSheetSafe("Races");
             var rows = raceSheet?.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return raceList;
             foreach (var row in rows)
             {
@@ -140,7 +160,7 @@ namespace RafeTale.Infrastructure.Extractors
         public List<SubRace> ExtractSubRaces(IXLWorkbook workbook, List<Race> races)
         {
             var subRaces = new List<SubRace>();
-            var sheet = workbook.GetSheet("Sub Races", isRequired: true);
+            var sheet = workbook.GetSheetSafe("Sub Races");
 
             var rows = sheet.RangeUsed()!.RowsUsed().Skip(1);
             foreach (var row in rows)
@@ -165,9 +185,9 @@ namespace RafeTale.Infrastructure.Extractors
             }
             return subRaces;
         }
-        public List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races,List<SubRace> subRace)
+        public List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races, List<SubRace> subRace)
         {
-            var sheet = workbook.GetSheet("Traits", isRequired: true);
+            var sheet = workbook.GetSheetSafe("Traits");
 
             var traits = new List<Trait>();
             var rows = sheet.RangeUsed()!.RowsUsed().Skip(1);
@@ -179,7 +199,7 @@ namespace RafeTale.Infrastructure.Extractors
                     TechnicalName = row.Cell(1).GetString(),
                     RequiredLevel = row.Cell(2).TryGetValue<int>(out var res) ? res : 0,
                 };
-                if(row.Cell(3).GetString().Length > 0)
+                if (row.Cell(3).GetString().Length > 0)
                     trait.Race = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(3).GetString(), StringComparison.OrdinalIgnoreCase))!;
                 else
                     trait.Subrace = subRace.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(4).GetString(), StringComparison.OrdinalIgnoreCase))!;
@@ -198,10 +218,10 @@ namespace RafeTale.Infrastructure.Extractors
         {
             var specialTraits = new List<SpecialTrait>();
 
-            var sheet = workbook.GetSheet("Special Traits", isRequired: true);
+            var sheet = workbook.GetSheetSafe("Special Traits");
 
             var rows = sheet.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return specialTraits;
             foreach (var row in rows)
             {
@@ -228,10 +248,10 @@ namespace RafeTale.Infrastructure.Extractors
         public List<ClassDefinition> ExtractClasses(IXLWorkbook workbook, List<Skill> skillProficiencies)
         {
             var classDefinitionList = new List<ClassDefinition>();
-            var classSheet = workbook.GetSheet("Classes", isRequired: true);
+            var classSheet = workbook.GetSheetSafe("Classes");
 
             var rows = classSheet.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return classDefinitionList;
             foreach (var row in rows)
             {
@@ -260,12 +280,12 @@ namespace RafeTale.Infrastructure.Extractors
             return classDefinitionList;
         }
 
-        public List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes,List<Background> backgrounds)
+        public List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes, List<Background> backgrounds)
         {
             var charactersList = new List<Character>();
-            var charSheet = workbook.GetSheet("Personajes", isRequired: false);
+            var charSheet = workbook.GetSheetSafe("Personajes");
             var rows = charSheet?.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return charactersList;
             foreach (var row in rows)
             {
@@ -290,7 +310,7 @@ namespace RafeTale.Infrastructure.Extractors
                     ActiveModifiers = new List<ActiveModifiers>(),
                     BackgroundId = backgrounds[0].Id,
                     Background = backgrounds[0],
-                    
+
                 };
 
                 for (int col = 6; col <= charSheet.LastColumnUsed().ColumnNumber(); col++)
@@ -310,9 +330,9 @@ namespace RafeTale.Infrastructure.Extractors
         public List<ClassLevelProgression> ExtractClassLevelProgressions(IXLWorkbook workbook, List<ClassDefinition> classes)
         {
             var progressionsList = new List<ClassLevelProgression>();
-            var progressSheet = workbook.GetSheet("ClassLevelProgression", isRequired: true);
+            var progressSheet = workbook.GetSheetSafe("ClassLevelProgression");
             var progressRows = progressSheet.RangeUsed()?.RowsUsed().Skip(1);
-            if(progressRows == null) 
+            if (progressRows == null)
                 return progressionsList;
             foreach (var row in progressRows)
             {
@@ -329,7 +349,7 @@ namespace RafeTale.Infrastructure.Extractors
 
                 if (targetClass == null) continue;
 
-                
+
                 var feature = new Feature
                 {
                     Id = Guid.NewGuid(),
@@ -343,7 +363,7 @@ namespace RafeTale.Infrastructure.Extractors
                 SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Name, row.Cell(7).GetString(), _currentCulture);
                 SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Description, row.Cell(8).GetString(), _currentCulture);
                 var classTraits = GetClassTraits(progresionClassTraitDataRaw);
-                if(!classTraits.Any())
+                if (!classTraits.Any())
                 {
 
                 }
@@ -351,7 +371,7 @@ namespace RafeTale.Infrastructure.Extractors
                 if (existingProgression != null)
                 {
                     existingProgression.Features.Add(feature);
-                    existingProgression.Traits.AddRange();
+                    existingProgression.Traits.AddRange(classTraits);
                 }
                 else
                 {
@@ -372,7 +392,7 @@ namespace RafeTale.Infrastructure.Extractors
         public List<Subclass> ExtractSubclasses(IXLWorkbook workbook, List<ClassDefinition> classDefinitions)
         {
             var subClassList = new List<Subclass>();
-            var progressSheet = workbook.GetSheet("SubClasses", isRequired: true);
+            var progressSheet = workbook.GetSheetSafe("SubClasses");
             var progressRows = progressSheet.RangeUsed()?.RowsUsed().Skip(1);
 
             foreach (var row in progressRows)
@@ -401,7 +421,7 @@ namespace RafeTale.Infrastructure.Extractors
                 SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Description, row.Cell(3).GetString(), LocLanguage.en);
                 SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Name, row.Cell(4).GetString(), _currentCulture);
                 SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Description, row.Cell(5).GetString(), _currentCulture);
-                
+
             }
             return subClassList;
         }
@@ -409,7 +429,7 @@ namespace RafeTale.Infrastructure.Extractors
         public List<SubclassLevelProgression> ExtractSubclassLevelProgressions(IXLWorkbook workbook, List<Subclass> subclasses)
         {
             var progressionsList = new List<SubclassLevelProgression>();
-            var progressSheet = workbook.GetSheet("SubClassLevelProgresion", isRequired: true);
+            var progressSheet = workbook.GetSheetSafe("SubClassLevelProgresion");
             var progressRows = progressSheet.RangeUsed()?.RowsUsed().Skip(1);
 
             foreach (var row in progressRows)
@@ -422,7 +442,7 @@ namespace RafeTale.Infrastructure.Extractors
 
                 var targetSubclass = subclasses.FirstOrDefault(c => c.TechnicalName.Equals(subclassName, StringComparison.OrdinalIgnoreCase));
 
-                if (targetSubclass == null) 
+                if (targetSubclass == null)
                     continue;
 
                 var feature = new Feature
@@ -468,7 +488,7 @@ namespace RafeTale.Infrastructure.Extractors
         public List<Spell> ExtractSpells(IXLWorkbook workbook, List<string> classDefinitions)
         {
             var spellsList = new List<Spell>();
-            var spellSheet = workbook.GetSheet("Spells", isRequired: true);
+            var spellSheet = workbook.GetSheetSafe("Spells");
 
             var rows = spellSheet.RangeUsed()?.RowsUsed().Skip(1);
             foreach (var row in rows)
@@ -488,7 +508,7 @@ namespace RafeTale.Infrastructure.Extractors
                     Ritual = row.Cell(11).GetString().Equals("Si", StringComparison.OrdinalIgnoreCase),
 
                 };
-                if(spell.Level == SpellLevel.Cantrip)
+                if (spell.Level == SpellLevel.Cantrip)
                 {
 
                 }
@@ -511,10 +531,10 @@ namespace RafeTale.Infrastructure.Extractors
         public List<XpRules> ExtractXpRules(IXLWorkbook workbook)
         {
             var xpRulesList = new List<XpRules>();
-            var xpSheet = workbook.GetSheet("ReglasXP", isRequired: true);
+            var xpSheet = workbook.GetSheetSafe("ReglasXP");
 
             var rows = xpSheet.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return xpRulesList;
             foreach (var row in rows)
             {
@@ -531,7 +551,7 @@ namespace RafeTale.Infrastructure.Extractors
         public List<Feat> ExtractFeats(IXLWorkbook workbook)
         {
             var featsList = new List<Feat>();
-            var featSheet = workbook.GetSheet("Feats", isRequired: true);
+            var featSheet = workbook.GetSheetSafe("Feats");
 
             var rows = featSheet.RangeUsed()?.RowsUsed().Skip(1);
             foreach (var row in rows)
@@ -562,7 +582,7 @@ namespace RafeTale.Infrastructure.Extractors
         public List<ItemTemplate> ExtractItems(IXLWorkbook workbook, List<Character> characters)
         {
             var itemsList = new List<ItemTemplate>();
-            var itemsSheet = workbook.GetSheet("Items", isRequired: true);
+            var itemsSheet = workbook.GetSheetSafe("Items");
 
             var rows = itemsSheet.RangeUsed()?.RowsUsed().Skip(1);
             foreach (var row in rows)
@@ -612,7 +632,7 @@ namespace RafeTale.Infrastructure.Extractors
         public List<SchoolOfMagic> ExtractSchoolsOfMagic(IXLWorkbook workbook)
         {
             var schoolsList = new List<SchoolOfMagic>();
-            var sheet = workbook.GetSheet("SchoolsOfMagic", isRequired: true);
+            var sheet = workbook.GetSheetSafe("SchoolsOfMagic");
             var rows = sheet.RangeUsed()?.RowsUsed().Skip(1);
             foreach (var row in rows)
             {
@@ -632,7 +652,7 @@ namespace RafeTale.Infrastructure.Extractors
         public List<Background> ExtractBackgrounds(IXLWorkbook workbook, List<Feat> feats)
         {
             var backgroundsList = new List<Background>();
-            var sheet = workbook.GetSheet("Backgrounds", isRequired: true);
+            var sheet = workbook.GetSheetSafe("Backgrounds");
             var rows = sheet.RangeUsed()?.RowsUsed().Skip(1);
             foreach (var row in rows)
             {
