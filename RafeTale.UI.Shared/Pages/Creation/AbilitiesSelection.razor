@@ -33,7 +33,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-900 border border-amber-950 rounded-2xl p-4 sm:p-5 shadow-xl">
 
                 <div class="flex flex-col justify-center space-y-2 pl-1 md:pl-2">
-                    <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest">@L["Background_Bonus"] (@backgroundDto.Name)</span>
+                    <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest">@L["Background_Bonus"] (@backgroundDto.TechnicalName)</span>
                     <div class="flex flex-wrap gap-1.5">
                         @foreach (var allowedAsi in backgroundDto.ASIs)
                         {
@@ -72,7 +72,7 @@
                 {
                     var finalScore = CalculateFinalScore(ability);
                     var modifier = CalculateModifier(finalScore);
-                    var isAllowedByBg = backgroundDto.ASIs.Contains(ability);
+                    var isAllowedByBg = backgroundDto.ASIs.Contains(ability.ToString());
 
                     <div class="px-3 py-2 bg-black/50 rounded-xl border border-slate-800/80 flex items-center justify-between gap-2">
 

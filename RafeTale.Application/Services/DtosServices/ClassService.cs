@@ -1,11 +1,12 @@
+using DocumentFormat.OpenXml.Vml.Office;
 using RafeTale.Application.DTOs;
-using RafeTale.Domain.Helpers;
 using RafeTale.Application.Interfaces;
 using RafeTale.Application.Interfaces.DtosInterfaces;
 using RafeTale.Domain.Entities;
 using RafeTale.Domain.Enums;
+using RafeTale.Domain.Helpers;
 using RafeTale.Domain.Interfaces;
-using DocumentFormat.OpenXml.Vml.Office;
+using RafeTale.Domain.Modifiers;
 using System.Linq.Expressions;
 
 namespace RafeTale.Application.Services.DtosServices
@@ -20,19 +21,19 @@ namespace RafeTale.Application.Services.DtosServices
             var dto = new ClassDefinitionDto
             {
                 Id = entity.Id,
+                TechnicalName = entity.TechnicalName,
                 Name = await loc.GetStringAsync(entity.Id, LocProperty.Name),
                 Description = await loc.GetStringAsync(entity.Id, LocProperty.Description),
                 HitDie = entity.HitDie,
                 HitDieValue = entity.HitDieValue,
-                Progressions = entity.Progressions,
-                PrimaryAbility = entity.PrimaryAbility,
-                SavingThrowProficiencies = entity.SavingThrowProficiencies,
-                ArmorProficiencies = entity.ArmorProficiencies,
-                WeaponProficiencies = entity.WeaponProficiencies,
-                ToolProficiencies = entity.ToolProficiencies,
-                SkillProficiencies = entity.SkillProficiencies,
+                Progressions = ArmProgressionsDto(entity.Progressions),
+                PrimaryAbility = entity.PrimaryAbility.Select(l => l.ToString()).ToList(),
+                SavingThrowProficiencies = entity.SavingThrowProficiencies.Select(l => l.ToString()).ToList(),
+                ArmorProficiencies = entity.ArmorProficiencies.Select(l => l.ToString()).ToList(),
+                WeaponProficiencies = entity.WeaponProficiencies.Select(l => l.ToString()).ToList(),
+                ToolProficiencies = entity.ToolProficiencies.Select(l => l.ToString()).ToList(),
+                SkillProficiencies = entity.SkillProficiencies.Select(l => l.ToString()).ToList(),
                 SkillToChoose = entity.SkillsToChoose,
-                TechnicalName = entity.TechnicalName
 
             };
 
@@ -51,18 +52,18 @@ namespace RafeTale.Application.Services.DtosServices
             {
                 Id = entity.Id,
                 Name = name,
+                TechnicalName = entity.TechnicalName,
                 Description = description,
                 HitDie = entity.HitDie,
                 HitDieValue = entity.HitDieValue,
-                Progressions = entity.Progressions,
-                PrimaryAbility = entity.PrimaryAbility,
-                SavingThrowProficiencies = entity.SavingThrowProficiencies,
-                ArmorProficiencies = entity.ArmorProficiencies,
-                WeaponProficiencies = entity.WeaponProficiencies,
-                ToolProficiencies = entity.ToolProficiencies,
-                SkillProficiencies = entity.SkillProficiencies,
+                Progressions = ArmProgressionsDto(entity.Progressions),
+                PrimaryAbility = entity.PrimaryAbility.Select(l => l.ToString()).ToList(),
+                SavingThrowProficiencies = entity.SavingThrowProficiencies.Select(l => l.ToString()).ToList(),
+                ArmorProficiencies = entity.ArmorProficiencies.Select(l => l.ToString()).ToList(),
+                WeaponProficiencies = entity.WeaponProficiencies.Select(l => l.ToString()).ToList(),
+                ToolProficiencies = entity.ToolProficiencies.Select(l => l.ToString()).ToList(),
+                SkillProficiencies = entity.SkillProficiencies.Select(l => l.ToString()).ToList(),
                 SkillToChoose = entity.SkillsToChoose,
-                TechnicalName = entity.TechnicalName,
 
                 // UNIÓN EN BULK: Reutilizamos el diccionario de palabras localizadas de la Clase 
                 // ya que tu enum 'LocEntity.Class' engloba también a las Subclases+
@@ -89,7 +90,7 @@ namespace RafeTale.Application.Services.DtosServices
                 dtos.Add(classDto);
             }
 
-            return [.. dtos.OrderBy(x => x.Name)];
+            return [.. dtos.OrderBy(x => x.TechnicalName)];
         }
         private void ArmSubclasesDtos(ClassDefinition classD, ClassDefinitionDto classDto, List<LocalizedContent> subclasesNames, List<LocalizedContent> featureNames)
         {
@@ -102,7 +103,7 @@ namespace RafeTale.Application.Services.DtosServices
                     Id = sub.Id,
                     Name = subclasesNames.FirstOrDefault(t => t.EntityId == sub.Id && t.Property == LocProperty.Name)?.Text ?? "Sin nombre",
                     Description = subclasesNames.FirstOrDefault(t => t.EntityId == sub.Id && t.Property == LocProperty.Description)?.Text ?? "Sin descripcion",
-                    Progressions = sub.Progressions
+                    Progressions = ArmSubClassProgressionsDto(sub.Progressions)
                 };
                 ArmSubclassFeatureDtos(subDto, featureNames);
                 classDto.Subclasses.Add(subDto);
@@ -161,6 +162,50 @@ namespace RafeTale.Application.Services.DtosServices
             ArmFeatureDtos(classDto, featuresNames);
             ArmSubclasesDtos(classDef!, classDto, subclasesNames, featuresNames);
             return classDto;
+        }
+
+        private ICollection<ClassLevelProgressionDto> ArmProgressionsDto(ICollection<ClassLevelProgression> progressions)
+        {
+            return progressions.Select(p => new ClassLevelProgressionDto
+            {
+                Id = p.Id,
+                Level = p.Level,
+                Features = p.Features.Select(f => new FeatureDto
+                {
+                    Id = f.Id,
+                    Name = f.TechnicalName,
+                    Modifiers = ArmModifier(f.Modifiers)
+                }).ToList()
+            }).ToList();
+        }
+        private ICollection<SubclassLevelProgressionDto> ArmSubClassProgressionsDto(ICollection<SubclassLevelProgression> progressions)
+        {
+            return progressions.Select(p => new SubclassLevelProgressionDto
+            {
+                Id = p.Id,
+                Level = p.Level,
+                Features = p.Features.Select(f => new FeatureDto
+                {
+                    Id = f.Id,
+                    Name = f.TechnicalName,
+                    Modifiers = ArmModifier(f.Modifiers)
+                }).ToList()
+            }).ToList();
+        }
+
+        private List<ModifierDataDto> ArmModifier(List<ModifierData> modifier)
+        {
+            List<ModifierDataDto> modifiers = new List<ModifierDataDto>();
+            foreach (var mod in modifier)
+            {
+                modifiers.Add(new ModifierDataDto
+                {
+                    Type = (ModifierTypeDto)mod.Type,
+                    Target = mod.Target.ToString(),
+                    Value = mod.Value
+                });
+            }
+            return modifiers;
         }
     }
 }

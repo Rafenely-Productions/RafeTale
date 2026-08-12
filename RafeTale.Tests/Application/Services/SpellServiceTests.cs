@@ -40,7 +40,7 @@ public class SpellServiceTests
         // Assert
         result.Should().HaveCount(1);
         result[0].Id.Should().Be(spell.Id);
-        result[0].Name.Should().Be("Fireball");
+        result[0].TechnicalName.Should().Be("Fireball");
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class SpellServiceTests
         // Assert
         result.Should().NotBeNull();
         result.Id.Should().Be(spell.Id);
-        result.Name.Should().Be("Fireball");
+        result.TechnicalName.Should().Be("Fireball");
     }
 
     [Fact]

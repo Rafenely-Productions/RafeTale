@@ -36,7 +36,7 @@
                     <option value="">-- @L["Leave_Empty_For_PlusTwo"] --</option>
                     @foreach (var val in Enum.GetValues<ASI>())
                     {
-                        @if (Draft.SelectedAsiOne != val)
+                        @if (Draft.SelectedAsiOne != val.ToString())
                         {
                             <option value="@val">@L[val.ToString()]</option>
                         }

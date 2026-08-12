@@ -26,8 +26,8 @@ namespace RafeTale.Application.Services.DtosServices
                 Name = await loc.GetStringAsync(spell.Id, LocProperty.Name),
                 Description = await loc.GetStringAsync(spell.Id, LocProperty.Description),
                 MaterialComponentDescription = await loc.GetStringAsync(spell.Id, LocProperty.MaterialComponentDescription),
-                School = spell.School,
-                Level = spell.Level,
+                School = spell.School.ToString(),
+                Level = (int)spell.Level,
 
             };
 
@@ -46,10 +46,10 @@ namespace RafeTale.Application.Services.DtosServices
                 Name = Name,
                 Description = Description,
                 MaterialComponentDescription = Material,
-                Level = spell.Level,
+                Level = (int)spell.Level,
                 ClassesTechnicalNames = spell.ClassesTechnicalNames,
                 Range = spell.Range.ToString(),
-                School = spell.School,
+                School = spell.School.ToString(),
                 CastingTime = spell.CastingTime.ToString(),
                 Duration = spell.Duration.Select(x=> x.ToString()).ToList(),
             };
@@ -66,7 +66,7 @@ namespace RafeTale.Application.Services.DtosServices
             {
                 spellDtos.Add(ArmDto(spell!, descriptions));
             }
-            return [.. spellDtos.OrderBy(x => x.Level).ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase)];
+            return [.. spellDtos.OrderBy(x => x.Level).ThenBy(x => x.TechnicalName, StringComparer.OrdinalIgnoreCase)];
         }
 
         public Task<List<SpellDto>> GetAllAsync()

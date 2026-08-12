@@ -26,9 +26,9 @@ public class SpellBudgetTests
         var budget = new SpellBudget();
         var spells = new List<SpellDto>
         {
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Cantrip },
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Cantrip },
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Level1 }
+            new() { Id = Guid.NewGuid(), Level = (int)SpellLevel.Cantrip },
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Cantrip },
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Level1 }
         };
         var selectedIds = new List<Guid> { spells[0].Id, spells[1].Id, spells[2].Id };
 
@@ -46,9 +46,9 @@ public class SpellBudgetTests
         var budget = new SpellBudget();
         var spells = new List<SpellDto>
         {
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Cantrip },
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Level1 },
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Level2 }
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Cantrip },
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Level1 },
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Level2 }
         };
         var selectedIds = new List<Guid> { spells[0].Id, spells[1].Id, spells[2].Id };
 
@@ -71,8 +71,8 @@ public class SpellBudgetTests
         };
         var spells = new List<SpellDto>
         {
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Cantrip },
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Level1 }
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Cantrip },
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Level1 }
         };
         var selectedIds = new List<Guid> { spells[0].Id, spells[1].Id };
 
@@ -96,8 +96,8 @@ public class SpellBudgetTests
         };
         var spells = new List<SpellDto>
         {
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Cantrip },
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Cantrip }
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Cantrip },
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Cantrip }
         };
         var selectedIds = new List<Guid> { spells[0].Id, spells[1].Id };
 
@@ -121,8 +121,8 @@ public class SpellBudgetTests
         };
         var spells = new List<SpellDto>
         {
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Level1 },
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Level2 }
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Level1 },
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Level2 }
         };
         var selectedIds = new List<Guid> { spells[0].Id, spells[1].Id };
 
@@ -146,7 +146,7 @@ public class SpellBudgetTests
         };
         var spells = new List<SpellDto>
         {
-            new() { Id = Guid.NewGuid(), Level = SpellLevel.Level2 }
+            new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Level2 }
         };
         var selectedIds = new List<Guid> { spells[0].Id };
 

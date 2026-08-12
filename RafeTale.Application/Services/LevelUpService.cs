@@ -157,27 +157,27 @@ namespace RafeTale.Application.Services.DtosServices
             // 4. Procesar Incremento de Atributos (ASI)
             if (draft.GivesFeat && !draft.SelectedFeatId.HasValue)
             {
-                if (draft.SelectedAsiOne.HasValue)
+                if (draft.SelectedAsiOne != string.Empty)
                 {
                     var m = new CharacterModifier
                     {
                         Id = Guid.NewGuid(),
                         CharacterId = character.Id,
                         Type = ModifierType.AttributeBonus,
-                        Target = draft.SelectedAsiOne.Value.ToString(),
-                        Value = draft.SelectedAsiTwo.HasValue ? 1 : 2
+                        Target = draft.SelectedAsiOne!.ToString(),
+                        Value = draft.SelectedAsiTwo != string.Empty ? 1 : 2
                     };
                     character.CharacterModifiers.Add(m);
                 }
 
-                if (draft.SelectedAsiTwo.HasValue && draft.SelectedAsiTwo != draft.SelectedAsiOne)
+                if (draft.SelectedAsiTwo != string.Empty && draft.SelectedAsiTwo != draft.SelectedAsiOne)
                 {
                     var m = new CharacterModifier
                     {
                         Id = Guid.NewGuid(),
                         CharacterId = character.Id,
                         Type = ModifierType.AttributeBonus,
-                        Target = draft.SelectedAsiTwo.Value.ToString(),
+                        Target = draft.SelectedAsiTwo!.ToString(),
                         Value = 1
                     };
                     character.CharacterModifiers.Add(m);
