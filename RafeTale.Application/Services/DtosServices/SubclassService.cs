@@ -1,11 +1,12 @@
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using RafeTale.Application.DTOs;
-using RafeTale.Domain.Helpers;
 using RafeTale.Application.Interfaces;
 using RafeTale.Application.Interfaces.DtosInterfaces;
 using RafeTale.Domain.Entities;
 using RafeTale.Domain.Enums;
+using RafeTale.Domain.Helpers;
 using RafeTale.Domain.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
+using RafeTale.Domain.Modifiers;
 using System.Linq.Expressions;
 
 namespace RafeTale.Application.Services.DtosServices
@@ -27,7 +28,7 @@ namespace RafeTale.Application.Services.DtosServices
                 Id = entity.Id,
                 Name = await _loc.GetStringAsync(entity.Id, LocProperty.Name),
                 Description = await _loc.GetStringAsync(entity.Id, LocProperty.Description),
-                Progressions = entity.Progressions,
+                Progressions = ArmSubClassProgressionsDto(entity.Progressions),
             };
         }
 
@@ -41,7 +42,7 @@ namespace RafeTale.Application.Services.DtosServices
                 Id = entity.Id,
                 Name = Name,
                 Description = Description,
-                Progressions = entity.Progressions,
+                Progressions = ArmSubClassProgressionsDto(entity.Progressions),
             };
         }
 
@@ -94,6 +95,35 @@ namespace RafeTale.Application.Services.DtosServices
         public Task<List<SubclassDto>> GetAllAsync()
         {
             throw new NotImplementedException();
+        }
+
+        private ICollection<SubclassLevelProgressionDto> ArmSubClassProgressionsDto(ICollection<SubclassLevelProgression> progressions)
+        {
+            return progressions.Select(p => new SubclassLevelProgressionDto
+            {
+                Id = p.Id,
+                Level = p.Level,
+                Features = p.Features.Select(f => new FeatureDto
+                {
+                    Id = f.Id,
+                    Name = f.TechnicalName,
+                    Modifiers = ArmModifier(f.Modifiers)
+                }).ToList()
+            }).ToList();
+        }
+        private List<ModifierDataDto> ArmModifier(List<ModifierData> modifier)
+        {
+            List<ModifierDataDto> modifiers = new List<ModifierDataDto>();
+            foreach (var mod in modifier)
+            {
+                modifiers.Add(new ModifierDataDto
+                {
+                    Type = (ModifierTypeDto)mod.Type,
+                    Target = mod.Target.ToString(),
+                    Value = mod.Value
+                });
+            }
+            return modifiers;
         }
     }
 }

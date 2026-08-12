@@ -234,6 +234,6 @@ public class SpellServiceGenericDtoTests : GenericDtoServiceTests<SpellDto, Spel
     protected override void AssertMappedDto(SpellDto dto, Spell entity)
     {
         dto.Id.Should().Be(entity.Id);
-        dto.Name.Should().Be("Fireball");
+        dto.TechnicalName.Should().Be("Fireball");
     }
 }

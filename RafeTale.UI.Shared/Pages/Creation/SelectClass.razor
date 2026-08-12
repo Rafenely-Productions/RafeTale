@@ -4,6 +4,7 @@
 @using RafeTale.Application.Interfaces.DtosInterfaces
 @using RafeTale.Domain.Interfaces
 @using RafeTale.Domain.Enums
+@using RafeTale.Domain.Modifiers
 @using RafeTale.UI.Shared.Components.Library
 @using RafeTale.UI.Shared.Extensions
 @inject IUnitOfWork UnitOfWork
@@ -35,7 +36,7 @@
                              class="group cursor-pointer px-3.5 py-2.5 lg:p-4 rounded-xl border transition-all duration-300 shrink-0 lg:shrink w-auto lg:w-auto @(SelectedClass?.Id == cls.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
                             <div class="flex justify-between items-center gap-3">
                                 <span class="text-xs lg:text-sm font-black uppercase tracking-tight truncate @(SelectedClass?.Id == cls.Id ? "text-black" : "text-white group-hover:text-amber-500")">
-                                    @cls.Name
+                                    @cls.TechnicalName
                                 </span>
                                 <i class="fa-solid fa-fire-bolt text-xs shrink-0 @(SelectedClass?.Id == cls.Id ? "text-black" : "text-amber-900/40")"></i>
                             </div>
@@ -115,9 +116,9 @@
                                     </div>
                                 </div>
 
-                                @if (modifier.Type == ModifierType.GrantSpell ||
-                                     modifier.Type == ModifierType.AlwaysPreparedSpell ||
-                                     modifier.Type == ModifierType.GrantAlwaysPreparedSpell)
+                                @if (modifier.Type == ModifierTypeDto.GrantSpell ||
+                                     modifier.Type == ModifierTypeDto.AlwaysPreparedSpell ||
+                                     modifier.Type == ModifierTypeDto.GrantAlwaysPreparedSpell)
                                 {
                                     @if (IsLoadingSpell)
                                     {
@@ -181,9 +182,9 @@
         if (feature == null) return;
 
         var grantSpellModifiers = feature.Modifiers
-        .Where(x => x.Type == ModifierType.GrantSpell ||
-                    x.Type == ModifierType.AlwaysPreparedSpell ||
-                    x.Type == ModifierType.GrantAlwaysPreparedSpell)
+        .Where(x => x.Type == ModifierTypeDto.GrantSpell ||
+                    x.Type == ModifierTypeDto.AlwaysPreparedSpell ||
+                    x.Type == ModifierTypeDto.GrantAlwaysPreparedSpell)
         .ToList();
 
         if (grantSpellModifiers.Any())

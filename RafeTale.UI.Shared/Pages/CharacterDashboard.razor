@@ -101,9 +101,7 @@
 
         if (CharDto?.ClassDef?.SkillProficiencies != null)
         {
-            trainedSkills = CharDto.ClassDef.SkillProficiencies
-                .Select(s => s.TechnicalName)
-                .ToList();
+            trainedSkills = CharDto.ClassDef.SkillProficiencies;
         }
     }
 

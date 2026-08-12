@@ -1,7 +1,4 @@
 using RafeTale.Application.Services;
-using RafeTale.Domain.Enums;
-using System;
-using System.Collections.Generic;
 
 namespace RafeTale.Application.DTOs
 {
@@ -18,8 +15,8 @@ namespace RafeTale.Application.DTOs
         public bool GivesFeat { get; init; }
         public Guid? SelectedFeatId { get; set; }
 
-        public ASI? SelectedAsiOne { get; set; }
-        public ASI? SelectedAsiTwo { get; set; }
+        public string? SelectedAsiOne { get; set; }
+        public string? SelectedAsiTwo { get; set; }
 
         // Hechizos / Spells
         public int SpellsToLearnCount { get; init; }

@@ -136,7 +136,7 @@
                     .Where(s => s.ClassesTechnicalNames.Contains(charDto.ClassDef.TechnicalName, StringComparer.OrdinalIgnoreCase) &&
                         ((int)s.Level == 0 || (int)s.Level <= draft.SpellBudget.MaxSpellLevel))
                     .OrderBy(s => s.Level)
-                    .ThenBy(s => s.Name)
+                    .ThenBy(s => s.TechnicalName)
                     .ToList();
             }
         }
