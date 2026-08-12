@@ -68,7 +68,7 @@
             </div>
 
             <div class="bg-slate-900 border border-amber-900/20 rounded-2xl p-3 sm:p-4 shadow-2xl space-y-2">
-                @foreach (var ability in Enum.GetValues<ASI>())
+                @foreach (var ability in Enum.GetValues<AttributeImprovementChoice>())
                 {
                     var finalScore = CalculateFinalScore(ability);
                     var modifier = CalculateModifier(finalScore);
@@ -147,18 +147,18 @@
     private BackgroundDto? backgroundDto;
     private readonly List<int> availableScores = new() { 15, 14, 13, 12, 10, 8 };
 
-    private Dictionary<ASI, int> baseScores = new()
+    private Dictionary<AttributeImprovementChoice, int> baseScores = new()
     {
-        { ASI.Strength, 0 },
-        { ASI.Dexterity, 0 },
-        { ASI.Constitution, 0 },
-        { ASI.Intelligence, 0 },
-        { ASI.Wisdom, 0 },
-        { ASI.Charisma, 0 }
+        { AttributeImprovementChoice.Strength, 0 },
+        { AttributeImprovementChoice.Dexterity, 0 },
+        { AttributeImprovementChoice.Constitution, 0 },
+        { AttributeImprovementChoice.Intelligence, 0 },
+        { AttributeImprovementChoice.Wisdom, 0 },
+        { AttributeImprovementChoice.Charisma, 0 }
     };
 
-    private ASI? asiPlusTwo;
-    private List<ASI> asiPlusOnes = new();
+    private AttributeImprovementChoice? asiPlusTwo;
+    private List<AttributeImprovementChoice> asiPlusOnes = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -168,7 +168,7 @@
         }
     }
 
-    private void AssignBaseScore(ASI ability, ChangeEventArgs e)
+    private void AssignBaseScore(AttributeImprovementChoice ability, ChangeEventArgs e)
     {
         if (int.TryParse(e.Value?.ToString(), out var score))
         {
@@ -176,7 +176,7 @@
         }
     }
 
-    private void ToggleBonus(ASI ability, int value)
+    private void ToggleBonus(AttributeImprovementChoice ability, int value)
     {
         if (value == 2)
         {
@@ -265,7 +265,7 @@
         return "fa-solid fa-triangle-exclamation text-amber-400 animate-pulse";
     }
 
-    private int CalculateFinalScore(ASI ability)
+    private int CalculateFinalScore(AttributeImprovementChoice ability)
     {
         var baseScore = baseScores[ability];
         var bonus = 0;
@@ -300,14 +300,14 @@
     {
         if (!IsSelectionComplete()) return;
 
-        CreationService.BaseStats[ASI.Strength] = baseScores[ASI.Strength];
-        CreationService.BaseStats[ASI.Dexterity] = baseScores[ASI.Dexterity];
-        CreationService.BaseStats[ASI.Constitution] = baseScores[ASI.Constitution];
-        CreationService.BaseStats[ASI.Intelligence] = baseScores[ASI.Intelligence];
-        CreationService.BaseStats[ASI.Wisdom] = baseScores[ASI.Wisdom];
-        CreationService.BaseStats[ASI.Charisma] = baseScores[ASI.Charisma];
+        CreationService.BaseStats[AttributeImprovementChoice.Strength] = baseScores[AttributeImprovementChoice.Strength];
+        CreationService.BaseStats[AttributeImprovementChoice.Dexterity] = baseScores[AttributeImprovementChoice.Dexterity];
+        CreationService.BaseStats[AttributeImprovementChoice.Constitution] = baseScores[AttributeImprovementChoice.Constitution];
+        CreationService.BaseStats[AttributeImprovementChoice.Intelligence] = baseScores[AttributeImprovementChoice.Intelligence];
+        CreationService.BaseStats[AttributeImprovementChoice.Wisdom] = baseScores[AttributeImprovementChoice.Wisdom];
+        CreationService.BaseStats[AttributeImprovementChoice.Charisma] = baseScores[AttributeImprovementChoice.Charisma];
 
-        foreach (var stat in Enum.GetValues<ASI>())
+        foreach (var stat in Enum.GetValues<AttributeImprovementChoice>())
         {
             var bonus = 0;
             if (asiPlusTwo == stat) bonus = 2;

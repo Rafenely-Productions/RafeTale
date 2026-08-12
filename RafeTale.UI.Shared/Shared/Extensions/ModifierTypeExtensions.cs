@@ -47,7 +47,7 @@ public static class ModifierTypeDtoExtensions
                 ("fa-bolt-lightning", "bg-violet-950/40 border-violet-500/30 text-violet-400", "Efecto de Reacción"),
 
             // Grupo Magia y Conjuros (Púrpura)
-            ModifierTypeDto.GrantSpell or ModifierTypeDto.GrantAlwaysPreparedSpell or ModifierTypeDto.AlwaysPreparedSpell or ModifierTypeDto.AlwaysPreparedSpells or ModifierTypeDto.EnableSpellcasting or ModifierTypeDto.EnablePactMagic =>
+            ModifierTypeDto.GrantSpell or ModifierTypeDto.GrantAlwaysPreparedSpell or ModifierTypeDto.AlwaysPreparedSpell or ModifierTypeDto.AlwaysPreparedSpells or ModifierTypeDto.EnableSpellcasting or ModifierTypeDto.EnableBondedMagic =>
                 ("fa-wand-sparkles", "bg-purple-950/40 border-purple-500/30 text-purple-400", "Mecánica Mágica"),
 
             // Grupo Competencias, Idiomas y Utilidad (Teal / Rosa)

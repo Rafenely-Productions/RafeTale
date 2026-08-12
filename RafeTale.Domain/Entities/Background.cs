@@ -12,7 +12,7 @@ namespace RafeTale.Domain.Entities
     {
         public Guid Id { get; set; }
         public string TechnicalName { get; set; } = string.Empty;
-        public ICollection<ASI> ASIs { get; set; } = [];
+        public ICollection<AttributeImprovementChoice> ASIs { get; set; } = [];
         public ICollection<SkillType> SkillProficiencies { get; set; } = [];
 
         public Feat Feat { get; set; } = null!;

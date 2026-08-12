@@ -22,7 +22,7 @@ public class SkillExtractorTests
 
         var skill = context.Package.SkillProficiencies.Should().ContainSingle().Subject;
         skill.TechnicalName.Should().Be("Perception");
-        skill.Ability.Should().Be(ASI.Wisdom);
+        skill.Ability.Should().Be(AttributeImprovementChoice.Wisdom);
     }
 
     [Fact]
@@ -35,6 +35,6 @@ public class SkillExtractorTests
 
         _sut.Extract(wb, context);
 
-        context.Package.SkillProficiencies.Single().Ability.Should().Be(default(ASI));
+        context.Package.SkillProficiencies.Single().Ability.Should().Be(default(AttributeImprovementChoice));
     }
 }

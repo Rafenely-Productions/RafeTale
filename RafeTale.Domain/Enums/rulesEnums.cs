@@ -1,6 +1,6 @@
 namespace RafeTale.Domain.Enums;
 
-[Flags] // Nos permite combinar estados en una sola columna binaria (ej: Envenenado Y Derribado)
+[Flags]
 public enum ConditionType
 {
     None = 0,
@@ -21,7 +21,6 @@ public enum ConditionType
     Exhaustion = 1 << 14
 }
 
-// Propiedades exactas del personaje que pueden verse alteradas por buffs/debuffs
 public enum TargetPropertyType
 {
     Strength,
@@ -44,22 +43,22 @@ public enum TargetPropertyType
     SpellAttackBonus
 }
 
-// Duración estricta basada en las reglas para saber cuándo limpiar un modificador
 public enum ModifierDurationType
 {
-    Instantaneous,   // Daño, curación inmediata
-    UntilEndOfTurn,  // Dura el turno actual
-    Rounds,          // Tiene un contador de asaltos (combate)
-    UntilShortRest,  // Se limpia en descanso corto
-    UntilLongRest,   // Se limpia al dormir (la mayoría)
-    Permanent        // Objetos mágicos o dotes (mientras estén activos/equipados)
+    Instantaneous,
+    UntilEndOfTurn,
+    Rounds,
+    UntilShortRest,
+    UntilLongRest,
+    Permanent
 }
+
 public enum ModifierType
 {
-    AttributeBonus, // Ej: +1 a Carisma, +2 a Fuerza
-    GrantSpell,     // Ej: Te da el hechizo "Escudo"
-    GrantFeature,   // Ej: Te da la habilidad "Visión en la Oscuridad"
-    HpBonus,        // Ej: El dote Robustez da +2 HP por nivel
+    AttributeBonus,
+    GrantSpell,
+    GrantFeature,
+    HpBonus,
     Special,
     GrantResource,
     ActiveAbility,
@@ -91,7 +90,7 @@ public enum ModifierType
     AddDamageBonus,
     EnableDeathPrevention,
     ScaleResource,
-    ExpandBrutalStrikeEffects,
+    ExpandMightyBlowEffects,
     TriggerOnInitiative,
     SetMinimumRollValue,
     ModifyAbilityScoreMaximum,
@@ -103,12 +102,12 @@ public enum ModifierType
     ExpandSpellLists,
     UpdatePreparedSpellsCount,
     InitiativeTrigger,
-    AlwaysPreparedSpells,
-    GrantInvocations,
-    EnablePactMagic,
+    PermanentSpellMemory,
+    GrantArcaneSecrets,
+    EnableBondedCasting,
     ShortRitualTrigger,
-    ScalePactSlots,
-    GrantMysticArcanum,
+    ScaleBondedSlots,
+    GrantArcanumSecret,
     EnhanceFeature,
     SelectChoice,
     SelectFeat,
@@ -116,12 +115,11 @@ public enum ModifierType
     GrantLanguage,
     SelectOption,
     UpgradeFeature,
-    AlwaysPreparedSpell,
+    PermanentSpellMemorySingle,
     GrantLanguages,
     ModifyAttacksPerAction,
     GrantSense,
     UnlockWeaponMasterySlots,
-    GrantAlwaysPreparedSpell,
     GrantFeatCategory,
     ModifyAction,
     EmanationAura,
@@ -131,14 +129,13 @@ public enum ModifierType
     BonusActionOptions,
     BonusAction,
     Reaction,
-    UnlockSneakAttackOptions,
+    UnlockAmbushOptions,
     PassiveEffect,
     GrantSaveProficiency,
     FeatureCooldown,
-
 }
 
-public enum ASI
+public enum AttributeImprovementChoice
 {
     Strength,
     Dexterity,
@@ -147,6 +144,7 @@ public enum ASI
     Wisdom,
     Charisma
 }
+
 public enum DamageType
 {
     Bludgeoning,
@@ -163,14 +161,16 @@ public enum DamageType
     Radiant,
     Force
 }
+
 public enum ActionType
 {
     Attack,
     BonusAction,
     Reaction,
-    LegendaryAction,
-    LairAction
+    MythicAction,
+    DomainAction
 }
+
 public enum SizeCategory
 {
     Tiny,
@@ -181,6 +181,7 @@ public enum SizeCategory
     Huge,
     Gargantuan
 }
+
 public enum Alignment
 {
     LawfulGood,
@@ -215,6 +216,7 @@ public enum SkillType
     Stealth,
     Survival
 }
+
 public enum LanguageType
 {
     Common,
@@ -234,6 +236,7 @@ public enum LanguageType
     Sylvan,
     Undercommon
 }
+
 public enum CreatureType
 {
     Humanoid,
@@ -257,6 +260,7 @@ public enum SchoolOfMagicEnum
     Necromancy,
     Transmutation
 }
+
 public enum ItemCategory
 {
     Weapon,
@@ -266,18 +270,21 @@ public enum ItemCategory
     AdventuringGear,
     Trinket
 }
+
 public enum SpellComponent
 {
-    V, //Verbal
-    S,//Somatic
-    M//Material
+    V,
+    S,
+    M
 }
+
 public enum SpellRange
 {
     Self,
     Touch,
     Ranged
 }
+
 public enum SpellDuration
 {
     Instantaneous,
@@ -329,25 +336,29 @@ public enum CastingTime
     Hour,
     Special
 }
+
 public enum RestType
 {
     ShortRest,
     LongRest
 }
+
 public enum SpellConcentration
 {
     No,
     Yes
 }
+
 public enum FeatPrerequisiteType
 {
-    AttributeMinimum, // Ej: Fuerza 13
-    Proficiency,      // Ej: Competencia con armas marciales
-    Spellcasting,     // Ej: Capacidad de lanzar hechizos de nivel 1 o superior
+    AttributeMinimum,
+    Proficiency,
+    Spellcasting,
     RequiredLevel,
     FeatureRequired,
     GrantedProfiency
 }
+
 public enum ArmorProficiency
 {
     Light,
@@ -356,6 +367,7 @@ public enum ArmorProficiency
     Shield,
     None
 }
+
 public enum WeaponProficiency
 {
     Simple,
@@ -364,6 +376,7 @@ public enum WeaponProficiency
     MartialFinesse,
     Exotic
 }
+
 public enum CategoryFeat
 {
     General,
@@ -371,6 +384,7 @@ public enum CategoryFeat
     CombatStyle,
     EpicFeat
 }
+
 public enum RangeDistanceType
 {
     Feet,
@@ -414,38 +428,39 @@ public enum SkillProficiency
     Stealth,
     Survival
 }
+
 public enum ResourceType
 {
     RagesCount,
     RageDamage,
-    WeaponMasteryCount,
+    WeaponFocusCount,
 
-    BardicDie,
+    InspirationDie,
     CantripsKnown,
     PreparedSpellsCount,
 
-    InvocationsKnown,
-    PactSlots,
+    SecretsKnown,
+    BondedSlots,
     SlotLevel,
 
-    ChannelDivinityUses,
+    DivineChannelUses,
     SpellSlots,
 
-    WildShapeCount,
+    BeastFormUses,
 
-    FavoredEnemyUses,
+    ChosenFoeUses,
 
-    SecondWindUses,
+    ResurgenceUses,
 
-    SorceryPoints,
+    SpellPoints,
 
-    MartialArtsDie,
+    UnarmedDie,
     FocusPoints,
-    UnarmoredMovement,
+    UnrestrictedMovement,
 
-    ChannelDivinityCount,
+    DivineChannelCount,
 
-    SneakAttackDie
+    PrecisionDie
 }
 
 public enum CodexKey
@@ -484,7 +499,7 @@ public enum LocEntity
     Skill
 }
 
-public enum LocProperty//LocalizationProperty
+public enum LocProperty
 {
     Name,
     Description,
@@ -526,12 +541,11 @@ public enum LocLanguage
     ro,
     hu,
     el,
-
 }
 
-public enum CharacterTab 
-{ 
-    Spells, 
-    Skills, 
-    Features 
+public enum CharacterTab
+{
+    Spells,
+    Skills,
+    Features
 }
