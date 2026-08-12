@@ -672,17 +672,17 @@
   <data name="Starting_Equipment" xml:space="preserve">
     <value>Starting Equipment</value>
   </data>
-  <data name="TraitType_RagesCount" xml:space="preserve">
-    <value>Rages</value>
+  <data name="TraitType_FrenzyCount" xml:space="preserve">
+    <value>Frenzy Uses</value>
   </data>
-  <data name="TraitType_RageDamage" xml:space="preserve">
-    <value>Rage Damage</value>
+  <data name="TraitType_FrenzyDamage" xml:space="preserve">
+    <value>Frenzy Damage</value>
   </data>
-  <data name="TraitType_WeaponMasteryCount" xml:space="preserve">
-    <value>Weapon Masteries</value>
+  <data name="TraitType_WeaponExpertiseCount" xml:space="preserve">
+    <value>Weapon Expertise</value>
   </data>
-  <data name="TraitType_BardicDie" xml:space="preserve">
-    <value>Bardic Inspiration Die</value>
+  <data name="TraitType_InspirationDie" xml:space="preserve">
+    <value>Inspiration Die</value>
   </data>
   <data name="TraitType_CantripsKnown" xml:space="preserve">
     <value>Cantrips Known</value>
@@ -694,31 +694,31 @@
     <value>Spell Slots</value>
   </data>
   <data name="TraitType_InvocationsKnown" xml:space="preserve">
-    <value>Eldritch Invocations</value>
+    <value>Arcane Invocations</value>
   </data>
-  <data name="TraitType_PactSlots" xml:space="preserve">
-    <value>Pact Magic Slots</value>
+  <data name="TraitType_BondedMagicSlots" xml:space="preserve">
+    <value>Bonded Magic Slots</value>
   </data>
   <data name="TraitType_SlotLevel" xml:space="preserve">
     <value>Slot Level</value>
   </data>
-  <data name="TraitType_ChannelDivinityUses" xml:space="preserve">
-    <value>Channel Divinity</value>
+  <data name="TraitType_SacredPowerUses" xml:space="preserve">
+    <value>Sacred Power (uses)</value>
   </data>
-  <data name="TraitType_WildShapeCount" xml:space="preserve">
-    <value>Wild Shape</value>
+  <data name="TraitType_BeastFormCount" xml:space="preserve">
+    <value>Beast Form (usos)</value>
   </data>
-  <data name="TraitType_FavoredEnemyUses" xml:space="preserve">
-    <value>Favored Enemy</value>
+  <data name="TraitType_ChosenEnemyUses" xml:space="preserve">
+    <value>Chosen Enemy (uses)</value>
   </data>
-  <data name="TraitType_SecondWindUses" xml:space="preserve">
-    <value>Second Wind</value>
+  <data name="TraitType_SecondBreathUses" xml:space="preserve">
+    <value>Second Breath (uses)</value>
   </data>
-  <data name="TraitType_SorceryPoints" xml:space="preserve">
-    <value>Sorcery Points</value>
+  <data name="TraitType_ArcanePoints" xml:space="preserve">
+    <value>Arcane Points</value>
   </data>
-  <data name="TraitType_MartialArtsDie" xml:space="preserve">
-    <value>Martial Arts Die</value>
+  <data name="TraitType_UnarmedStrikeDie" xml:space="preserve">
+    <value>Unarmed Strike Die</value>
   </data>
   <data name="TraitType_FocusPoints" xml:space="preserve">
     <value>Focus Points</value>
@@ -726,11 +726,11 @@
   <data name="TraitType_UnarmoredMovement" xml:space="preserve">
     <value>Unarmored Movement</value>
   </data>
-  <data name="TraitType_ChannelDivinityCount" xml:space="preserve">
-    <value>Channel Divinity</value>
+  <data name="TraitType_SacredPowerCount" xml:space="preserve">
+    <value>Sacred Power</value>
   </data>
-  <data name="TraitType_SneakAttackDie" xml:space="preserve">
-    <value>Sneak Attack Die</value>
+  <data name="TraitType_PrecisionAttackDie" xml:space="preserve">
+    <value>Precision Attack Die</value>
   </data>
   <data name="Label_Velocity" xml:space="preserve">
     <value>Velocity</value>
