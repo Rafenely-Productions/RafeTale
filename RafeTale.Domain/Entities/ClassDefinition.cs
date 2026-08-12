@@ -10,8 +10,8 @@ public class ClassDefinition : IEntity
     public string TechnicalName { get; set; } = string.Empty; // Ej: Guerrero, Mago
     public string HitDie { get; set; } = "d8";      // Dado de golpe
     public int HitDieValue => CalculateValue();
-    public ICollection<ASI> PrimaryAbility { get; set; } = new List<ASI>(); // Ej: Fuerza, Inteligencia
-    public ICollection<ASI> SavingThrowProficiencies { get; set; } = new List<ASI>();// Ej: "Fuerza, Constituci�n"
+    public ICollection<AttributeImprovementChoice> PrimaryAbility { get; set; } =[]; // Ej: Fuerza, Inteligencia
+    public ICollection<AttributeImprovementChoice> SavingThrowProficiencies { get; set; } = [];// Ej: "Fuerza, Constituci�n"
     public ICollection<ArmorProficiency> ArmorProficiencies { get; set; } = new List<ArmorProficiency>();// Ej: "Armadura ligera, Armadura media"
     public ICollection<WeaponProficiency> WeaponProficiencies { get; set; } = new List<WeaponProficiency>();// Ej: "Armas simples, Armas marciales"
     public ICollection<ToolProficiency> ToolProficiencies { get; set; } = new List<ToolProficiency>(); // Ej: "Herramientas de ladr�n, Instrumentos musicales"

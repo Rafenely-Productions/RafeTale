@@ -26,7 +26,7 @@ namespace RafeTale.Application.DTOs
 
         SetBaseArmorClass,
         ModifyDamage,
-        UnlockWeaponMastery,
+        UnlockWeaponExpertise,        // Antes: UnlockWeaponMastery
         EnableOption,
         GrantAdvantage,
         GrantSubclass,
@@ -51,11 +51,11 @@ namespace RafeTale.Application.DTOs
         UpdatePreparedSpellsCount,
         InitiativeTrigger,
         AlwaysPreparedSpells,
-        GrantInvocations,
-        EnablePactMagic,
+        GrantArcaneInvocations,       // Antes: GrantInvocations
+        EnableBondedMagic,            // Antes: EnablePactMagic
         ShortRitualTrigger,
-        ScalePactSlots,
-        GrantMysticArcanum,
+        ScaleBondedSlots,             // Antes: ScalePactSlots
+        GrantMysticSecrets,           // Antes: GrantMysticArcanum
         EnhanceFeature,
         SelectChoice,
         SelectFeat,
@@ -67,7 +67,7 @@ namespace RafeTale.Application.DTOs
         GrantLanguages,
         ModifyAttacksPerAction,
         GrantSense,
-        UnlockWeaponMasterySlots,
+        UnlockWeaponExpertiseSlots,   // Antes: UnlockWeaponMasterySlots
         GrantAlwaysPreparedSpell,
         GrantFeatCategory,
         ModifyAction,
@@ -78,7 +78,7 @@ namespace RafeTale.Application.DTOs
         BonusActionOptions,
         BonusAction,
         Reaction,
-        UnlockSneakAttackOptions,
+        UnlockPrecisionStrikeOptions, // Antes: UnlockSneakAttackOptions
         PassiveEffect,
         GrantSaveProficiency,
         FeatureCooldown,

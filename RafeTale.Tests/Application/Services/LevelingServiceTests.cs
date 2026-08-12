@@ -69,7 +69,7 @@ public class LevelingServiceTests
             TechnicalName = "Rage",
             Modifiers = new List<ModifierData>
             {
-                new ModifierData { Type = ModifierType.AttributeBonus, Target = ASI.Strength.ToString(), Value = 2 }
+                new ModifierData { Type = ModifierType.AttributeBonus, Target = AttributeImprovementChoice.Strength.ToString(), Value = 2 }
             }
         };
         var progression = new ClassLevelProgression
@@ -93,7 +93,7 @@ public class LevelingServiceTests
         character.Level.Should().Be(2);
         character.Experience.Should().Be(300);
         character.AcquiredFeatures.Should().Contain(f => f.Id == featureId);
-        character.CharacterModifiers.Should().Contain(m => m.Type == ModifierType.AttributeBonus && m.Target == ASI.Strength.ToString() && m.Value == 2 && m.CharacterId == characterId);
+        character.CharacterModifiers.Should().Contain(m => m.Type == ModifierType.AttributeBonus && m.Target == AttributeImprovementChoice.Strength.ToString() && m.Value == 2 && m.CharacterId == characterId);
         await _uow.Received().SaveChangesAsync();
         await _uow.Received().CommitAsync();
     }
@@ -208,7 +208,7 @@ public class LevelingServiceTests
         var character = CreateCharacter(characterId, classDefId, level: 2, xp: 300);
         var modifiers = new List<CharacterModifier>
         {
-            new CharacterModifier { Id = Guid.NewGuid(), Type = ModifierType.AttributeBonus, Target = ASI.Constitution.ToString(), Value = 1, CharacterId = characterId }
+            new CharacterModifier { Id = Guid.NewGuid(), Type = ModifierType.AttributeBonus, Target = AttributeImprovementChoice.Constitution.ToString(), Value = 1, CharacterId = characterId }
         };
 
         _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));

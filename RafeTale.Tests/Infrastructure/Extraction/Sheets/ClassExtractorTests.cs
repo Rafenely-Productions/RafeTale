@@ -32,8 +32,8 @@ public class ClassExtractorTests
 
         var wiz = ctx.Package.ClassDefinitions.Should().ContainSingle().Subject;
         wiz.HitDie.Should().Be("d6");
-        wiz.PrimaryAbility.Should().Contain(ASI.Intelligence);
-        wiz.SavingThrowProficiencies.Should().Contain(ASI.Wisdom);
+        wiz.PrimaryAbility.Should().Contain(AttributeImprovementChoice.Intelligence);
+        wiz.SavingThrowProficiencies.Should().Contain(AttributeImprovementChoice.Wisdom);
         wiz.ArmorProficiencies.Should().Contain(ArmorProficiency.Light);
         wiz.WeaponProficiencies.Should().Contain(WeaponProficiency.Simple);
         wiz.ToolProficiencies.Should().Contain(ToolProficiency.ThievesTools);

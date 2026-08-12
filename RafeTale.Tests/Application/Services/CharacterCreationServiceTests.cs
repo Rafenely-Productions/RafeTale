@@ -26,8 +26,8 @@ public class CharacterCreationServiceTests
         _sut.SelectedBackgroundId = Guid.NewGuid();
         _sut.Name = "Test";
         _sut.History = "History";
-        _sut.BaseStats[ASI.Strength] = 16;
-        _sut.BonusStats[ASI.Dexterity] = 2;
+        _sut.BaseStats[AttributeImprovementChoice.Strength] = 16;
+        _sut.BonusStats[AttributeImprovementChoice.Dexterity] = 2;
 
         // Act
         _sut.Reset();
@@ -59,8 +59,8 @@ public class CharacterCreationServiceTests
         _sut.SelectedBackgroundId = backgroundId;
         _sut.Name = "Aragorn";
         _sut.History = "A hero";
-        _sut.BaseStats[ASI.Constitution] = baseCon;
-        _sut.BonusStats[ASI.Constitution] = bonusCon;
+        _sut.BaseStats[AttributeImprovementChoice.Constitution] = baseCon;
+        _sut.BonusStats[AttributeImprovementChoice.Constitution] = bonusCon;
 
         _uow.Races.GetByIdAsync(raceId).Returns(Task.FromResult<Race?>(new Race { Id = raceId }));
         _uow.ClassDefinitions.GetByIdAsync(classId).Returns(Task.FromResult<ClassDefinition?>(new ClassDefinition { Id = classId, HitDie = "d8" }));
@@ -95,8 +95,8 @@ public class CharacterCreationServiceTests
         _sut.SelectedRaceId = raceId;
         _sut.SelectedClassId = classId;
         _sut.SelectedBackgroundId = backgroundId;
-        _sut.BonusStats[ASI.Strength] = 2;
-        _sut.BonusStats[ASI.Charisma] = 1;
+        _sut.BonusStats[AttributeImprovementChoice.Strength] = 2;
+        _sut.BonusStats[AttributeImprovementChoice.Charisma] = 1;
 
         _uow.Races.GetByIdAsync(raceId).Returns(Task.FromResult<Race?>(new Race { Id = raceId }));
         _uow.ClassDefinitions.GetByIdAsync(classId).Returns(Task.FromResult<ClassDefinition?>(new ClassDefinition { Id = classId, HitDie = "d10" }));
@@ -107,8 +107,8 @@ public class CharacterCreationServiceTests
 
         // Assert
         result.CharacterModifiers.Should().HaveCount(2);
-        result.CharacterModifiers.Should().Contain(m => m.Type == ModifierType.AttributeBonus && m.Target == ASI.Strength.ToString() && m.Value == 2);
-        result.CharacterModifiers.Should().Contain(m => m.Type == ModifierType.AttributeBonus && m.Target == ASI.Charisma.ToString() && m.Value == 1);
+        result.CharacterModifiers.Should().Contain(m => m.Type == ModifierType.AttributeBonus && m.Target == AttributeImprovementChoice.Strength.ToString() && m.Value == 2);
+        result.CharacterModifiers.Should().Contain(m => m.Type == ModifierType.AttributeBonus && m.Target == AttributeImprovementChoice.Charisma.ToString() && m.Value == 1);
         result.CharacterModifiers.Should().OnlyContain(m => m.CharacterId == result.Id);
     }
 

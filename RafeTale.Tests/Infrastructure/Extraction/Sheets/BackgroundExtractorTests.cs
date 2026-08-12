@@ -26,7 +26,7 @@ public class BackgroundExtractorTests
         var bg = ctx.Package.Backgrounds.Should().ContainSingle().Subject;
         bg.FeatId.Should().Be(feat.Id);
         bg.Feat.Should().Be(feat);
-        bg.ASIs.Should().BeEquivalentTo(new[] { ASI.Strength, ASI.Constitution });
+        bg.ASIs.Should().BeEquivalentTo(new[] { AttributeImprovementChoice.Strength, AttributeImprovementChoice.Constitution });
         bg.SkillProficiencies.Should().BeEquivalentTo(new[] { SkillType.Athletics, SkillType.Intimidation });
     }
 

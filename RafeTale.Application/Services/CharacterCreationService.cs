@@ -19,16 +19,16 @@ namespace RafeTale.Application.Services
         public string Name { get; set; } = string.Empty;
         public string History { get; set; } = string.Empty;
 
-        public Dictionary<ASI, int> BaseStats { get; set; } = new()
+        public Dictionary<AttributeImprovementChoice, int> BaseStats { get; set; } = new()
         {
-            { ASI.Strength, 10 }, { ASI.Dexterity, 10 }, { ASI.Constitution, 10 },
-            { ASI.Intelligence, 10 }, { ASI.Wisdom, 10 }, { ASI.Charisma, 10 }
+            { AttributeImprovementChoice.Strength, 10 }, { AttributeImprovementChoice.Dexterity, 10 }, { AttributeImprovementChoice.Constitution, 10 },
+            { AttributeImprovementChoice.Intelligence, 10 }, { AttributeImprovementChoice.Wisdom, 10 }, { AttributeImprovementChoice.Charisma, 10 }
         };
 
-        public Dictionary<ASI, int> BonusStats { get; set; } = new()
+        public Dictionary<AttributeImprovementChoice, int> BonusStats { get; set; } = new()
         {
-            { ASI.Strength, 0 }, { ASI.Dexterity, 0 }, { ASI.Constitution, 0 },
-            { ASI.Intelligence, 0 }, { ASI.Wisdom, 0 }, { ASI.Charisma, 0 }
+            { AttributeImprovementChoice.Strength, 0 }, { AttributeImprovementChoice.Dexterity, 0 }, { AttributeImprovementChoice.Constitution, 0 },
+            { AttributeImprovementChoice.Intelligence, 0 }, { AttributeImprovementChoice.Wisdom, 0 }, { AttributeImprovementChoice.Charisma, 0 }
         };
 
         public void Reset()
@@ -39,7 +39,7 @@ namespace RafeTale.Application.Services
             Name = string.Empty;
             History = string.Empty;
 
-            foreach (var stat in Enum.GetValues<ASI>())
+            foreach (var stat in Enum.GetValues<AttributeImprovementChoice>())
             {
                 BaseStats[stat] = 10;
                 BonusStats[stat] = 0;
@@ -65,7 +65,7 @@ namespace RafeTale.Application.Services
                 ?? throw new NotFoundException("Trasfondo", SelectedBackgroundId.Value);
 
             // 2. Calcular estadísticas finales (Base + Bono de Trasfondo)
-            int finalCon = BaseStats[ASI.Constitution] + BonusStats[ASI.Constitution];
+            int finalCon = BaseStats[AttributeImprovementChoice.Constitution] + BonusStats[AttributeImprovementChoice.Constitution];
             int conModifier = (int)Math.Floor((finalCon - 10) / 2.0);
 
             // 3. HP Inicial según reglas 2024: Dado de vida máximo al nivel 1 + modificador de Constitución
@@ -88,15 +88,15 @@ namespace RafeTale.Application.Services
 
                 Stats = new Dictionary<string, int>
                 {
-                    { TargetPropertyType.Strength.ToString(), BaseStats[ASI.Strength] },
-                    { TargetPropertyType.Dexterity.ToString(), BaseStats[ASI.Dexterity] },
-                    { TargetPropertyType.Constitution.ToString(), BaseStats[ASI.Constitution] },
-                    { TargetPropertyType.Intelligence.ToString(), BaseStats[ASI.Intelligence] },
-                    { TargetPropertyType.Wisdom.ToString(), BaseStats[ASI.Wisdom] },
-                    { TargetPropertyType.Charisma.ToString(), BaseStats[ASI.Charisma] }
+                    { TargetPropertyType.Strength.ToString(), BaseStats[AttributeImprovementChoice.Strength] },
+                    { TargetPropertyType.Dexterity.ToString(), BaseStats[AttributeImprovementChoice.Dexterity] },
+                    { TargetPropertyType.Constitution.ToString(), BaseStats[AttributeImprovementChoice.Constitution] },
+                    { TargetPropertyType.Intelligence.ToString(), BaseStats[AttributeImprovementChoice.Intelligence] },
+                    { TargetPropertyType.Wisdom.ToString(), BaseStats[AttributeImprovementChoice.Wisdom] },
+                    { TargetPropertyType.Charisma.ToString(), BaseStats[AttributeImprovementChoice.Charisma] }
                 }
             };
-            foreach (var stat in Enum.GetValues<ASI>())
+            foreach (var stat in Enum.GetValues<AttributeImprovementChoice>())
             {
                 if (BonusStats[stat] > 0)
                 {

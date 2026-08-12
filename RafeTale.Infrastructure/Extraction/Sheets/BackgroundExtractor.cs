@@ -32,7 +32,7 @@ public class BackgroundExtractor : ISheetExtractor
             {
                 Id = Guid.NewGuid(),
                 TechnicalName = row.Cell(Col.TechnicalName).GetString(),
-                ASIs = row.Cell(Col.ASIs).GetEnumList<ASI>(),
+                ASIs = row.Cell(Col.ASIs).GetEnumList<AttributeImprovementChoice>(),
                 SkillProficiencies = row.Cell(Col.SkillProficiencies).GetEnumList<SkillType>()
             };
 

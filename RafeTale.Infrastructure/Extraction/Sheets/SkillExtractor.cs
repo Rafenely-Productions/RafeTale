@@ -27,7 +27,7 @@ public class SkillExtractor : ISheetExtractor
             {
                 Id = Guid.NewGuid(),
                 TechnicalName = row.Cell(Col.TechnicalName).GetString(),
-                Ability = row.Cell(Col.Ability).GetEnum<ASI>()
+                Ability = row.Cell(Col.Ability).GetEnum<AttributeImprovementChoice>()
             };
             context.Package.SkillProficiencies.Add(skill);
 
