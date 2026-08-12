@@ -246,6 +246,19 @@ dotnet test
 
 MIT — Use it, modify it, share it. May your rolls be ever in your favor. 🎲
 
+## Legal Notice
+
+RafeTale is an independent, unofficial tool for tabletop RPG players.  
+It is **not affiliated with, endorsed by, or sponsored by Wizards of the Coast**.
+
+All proprietary terminology from third-party games has been replaced with original,
+system-agnostic names. Game mechanics referenced are generic tabletop RPG systems.
+
+- Source code: [MIT License](./LICENSE)
+- Trademark & attribution details: [NOTICE](./NOTICE)
+
+"Dungeons & Dragons" and "D&D" are registered trademarks of Wizards of the Coast LLC.
+
 ---
 
 <p align="center">
