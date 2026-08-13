@@ -577,28 +577,22 @@
     <value>backgrounds</value>
   </data>
   <data name="Library_LoadingCounts" xml:space="preserve">
-    <value>Consultando el grimorio...</value>
-    <comment>EN: Consulting the grimoire...</comment>
+    <value>Consulting the grimoire...</value>
   </data>
   <data name="ClassCodex_Loading" xml:space="preserve">
-    <value>Cargando clases...</value>
-    <comment>EN: Loading classes...</comment>
+    <value>Loading classes...</value>
   </data>
   <data name="ClassCodex_BackToList" xml:space="preserve">
-    <value>Volver a clases</value>
-    <comment>EN: Back to classes</comment>
+    <value>Back to classes</value>
   </data>
   <data name="RaceCodex_Loading" xml:space="preserve">
-    <value>Cargando razas...</value>
-    <comment>EN: Loading races...</comment>
+    <value>Loading races...</value>
   </data>
   <data name="RaceCodex_BackToList" xml:space="preserve">
-    <value>Volver a razas</value>
-    <comment>EN: Back to races</comment>
+    <value>Back to races</value>
   </data>
   <data name="SpellCodex_Loading" xml:space="preserve">
-    <value>Cargando hechizos...</value>
-    <comment>EN: Loading spells...</comment>
+    <value>Loading spells...</value>
   </data>
   <data name="BackgroundCodex_Loading" xml:space="preserve">
     <value>Loading backgrounds...</value>
@@ -607,11 +601,33 @@
     <value>Back to backgrounds</value>
   </data>
   <data name="FeatCodex_Loading" xml:space="preserve">
-    <value>Cargando dotes...</value>
-    <comment>EN: Loading feats...</comment>
+    <value>Loading feats...</value>
   </data>
   <data name="FeatCodex_BackToList" xml:space="preserve">
-    <value>Volver a dotes</value>
-    <comment>EN: Back to feats</comment>
+    <value>Back to feats</value>
+  </data>
+  <data name="Title_NoClassesFound" xml:space="preserve">
+    <value>No classes found</value>
+  </data>
+  <data name="Msg_NoClassesFound" xml:space="preserve">
+    <value>The codex holds no class manuscripts yet. Import a content pack to reveal them.</value>
+  </data>
+  <data name="Title_NoRacesFound" xml:space="preserve">
+    <value>No races found</value>
+  </data>
+  <data name="Msg_NoRacesFound" xml:space="preserve">
+    <value>The codex holds no lineage records yet. Import a content pack to reveal them.</value>
+  </data>
+  <data name="Title_NoBackgroundsFound" xml:space="preserve">
+    <value>No backgrounds found</value>
+  </data>
+  <data name="Msg_NoBackgroundsFound" xml:space="preserve">
+    <value>The codex holds no origin stories yet. Import a content pack to reveal them.</value>
+  </data>
+  <data name="Title_NoFeatsFound" xml:space="preserve">
+    <value>No feats found</value>
+  </data>
+  <data name="Msg_NoFeatsFound" xml:space="preserve">
+    <value>There are no feats available to choose. Import a content pack to reveal them.</value>
   </data>
 </root>

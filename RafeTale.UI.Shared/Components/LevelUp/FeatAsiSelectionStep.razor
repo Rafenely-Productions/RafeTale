@@ -1,6 +1,8 @@
 @using RafeTale.Application.DTOs
 @using RafeTale.Domain.Enums
+@using RafeTale.UI.Shared.Components.UI
 @inject IStringLocalizer<AppStrings> L
+@inject IStringLocalizer<LibraryStrings> LL
 
 <div class="space-y-6 animate-in fade-in duration-200">
     <div>
@@ -47,16 +49,25 @@
     }
     else
     {
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[280px] overflow-y-auto pr-1 custom-scrollbar">
-            @foreach (var feat in AvailableFeats)
-            {
-                bool isSelected = Draft.SelectedFeatId == feat.Id;
-                <div @onclick="() => Draft.SelectedFeatId = feat.Id" class="p-3.5 rounded-2xl border cursor-pointer transition-all bg-black/40 @(isSelected ? "border-amber-500 bg-amber-500/[0.02]" : "border-slate-800 hover:border-amber-500/20")">
-                    <h4 class="text-xs font-black uppercase text-white">@feat.Name</h4>
-                    <p class="text-[11px] text-slate-400 line-clamp-2 mt-1">@((MarkupString)feat.Description)</p>
-                </div>
-            }
-        </div>
+        @if (!AvailableFeats.Any())
+        {
+            <EmptyState IconClass="fa-award"
+                        Title="@LL["Title_NoFeatsFound"]"
+                        Description="@LL["Msg_NoFeatsFound"]" />
+        }
+        else
+        {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[280px] overflow-y-auto pr-1 custom-scrollbar">
+                @foreach (var feat in AvailableFeats)
+                {
+                    bool isSelected = Draft.SelectedFeatId == feat.Id;
+                    <div @onclick="() => Draft.SelectedFeatId = feat.Id" class="p-3.5 rounded-2xl border cursor-pointer transition-all bg-black/40 @(isSelected ? "border-amber-500 bg-amber-500/[0.02]" : "border-slate-800 hover:border-amber-500/20")">
+                        <h4 class="text-xs font-black uppercase text-white">@feat.Name</h4>
+                        <p class="text-[11px] text-slate-400 line-clamp-2 mt-1">@((MarkupString)feat.Description)</p>
+                    </div>
+                }
+            </div>
+        }
     }
 </div>
 

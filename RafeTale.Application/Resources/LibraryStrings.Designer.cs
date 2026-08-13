@@ -349,7 +349,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Volver a clases.
+        ///   Looks up a localized string similar to Back to classes.
         /// </summary>
         public static string ClassCodex_BackToList {
             get {
@@ -358,7 +358,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cargando clases....
+        ///   Looks up a localized string similar to Loading classes....
         /// </summary>
         public static string ClassCodex_Loading {
             get {
@@ -466,7 +466,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Volver a dotes.
+        ///   Looks up a localized string similar to Back to feats.
         /// </summary>
         public static string FeatCodex_BackToList {
             get {
@@ -475,7 +475,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cargando dotes....
+        ///   Looks up a localized string similar to Loading feats....
         /// </summary>
         public static string FeatCodex_Loading {
             get {
@@ -745,7 +745,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Consultando el grimorio....
+        ///   Looks up a localized string similar to Consulting the grimoire....
         /// </summary>
         public static string Library_LoadingCounts {
             get {
@@ -813,6 +813,42 @@ namespace RafeTale.Application.Resources {
         public static string Msg_LoadingProgression {
             get {
                 return ResourceManager.GetString("Msg_LoadingProgression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The codex holds no origin stories yet. Import a content pack to reveal them..
+        /// </summary>
+        public static string Msg_NoBackgroundsFound {
+            get {
+                return ResourceManager.GetString("Msg_NoBackgroundsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The codex holds no class manuscripts yet. Import a content pack to reveal them..
+        /// </summary>
+        public static string Msg_NoClassesFound {
+            get {
+                return ResourceManager.GetString("Msg_NoClassesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no feats available to choose. Import a content pack to reveal them..
+        /// </summary>
+        public static string Msg_NoFeatsFound {
+            get {
+                return ResourceManager.GetString("Msg_NoFeatsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The codex holds no lineage records yet. Import a content pack to reveal them..
+        /// </summary>
+        public static string Msg_NoRacesFound {
+            get {
+                return ResourceManager.GetString("Msg_NoRacesFound", resourceCulture);
             }
         }
         
@@ -943,7 +979,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Volver a razas.
+        ///   Looks up a localized string similar to Back to races.
         /// </summary>
         public static string RaceCodex_BackToList {
             get {
@@ -952,7 +988,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cargando razas....
+        ///   Looks up a localized string similar to Loading races....
         /// </summary>
         public static string RaceCodex_Loading {
             get {
@@ -1024,7 +1060,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cargando hechizos....
+        ///   Looks up a localized string similar to Loading spells....
         /// </summary>
         public static string SpellCodex_Loading {
             get {
@@ -1254,6 +1290,42 @@ namespace RafeTale.Application.Resources {
         public static string Title_Name {
             get {
                 return ResourceManager.GetString("Title_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No backgrounds found.
+        /// </summary>
+        public static string Title_NoBackgroundsFound {
+            get {
+                return ResourceManager.GetString("Title_NoBackgroundsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No classes found.
+        /// </summary>
+        public static string Title_NoClassesFound {
+            get {
+                return ResourceManager.GetString("Title_NoClassesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No feats found.
+        /// </summary>
+        public static string Title_NoFeatsFound {
+            get {
+                return ResourceManager.GetString("Title_NoFeatsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No races found.
+        /// </summary>
+        public static string Title_NoRacesFound {
+            get {
+                return ResourceManager.GetString("Title_NoRacesFound", resourceCulture);
             }
         }
         
