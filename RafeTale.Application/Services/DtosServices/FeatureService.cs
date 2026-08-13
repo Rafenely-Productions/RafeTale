@@ -5,13 +5,7 @@ using RafeTale.Application.Interfaces.DtosInterfaces;
 using RafeTale.Domain.Entities;
 using RafeTale.Domain.Enums;
 using RafeTale.Domain.Interfaces;
-using DocumentFormat.OpenXml.Spreadsheet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RafeTale.Application.Services.DtosServices
 {
