@@ -7,10 +7,12 @@
 @using RafeTale.Domain.Modifiers
 @using RafeTale.UI.Shared.Components.Library
 @using RafeTale.UI.Shared.Extensions
+@using RafeTale.UI.Shared.Components.UI
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
 @inject ICharacterCreationService CreationService
 @inject IStringLocalizer<AppStrings> L
+@inject IStringLocalizer<LibraryStrings> LL
 @inject IService<ClassDefinitionDto,ClassDefinition> ClassService
 
 <div class="min-h-screen bg-black p-4 md:p-6 text-white">
@@ -29,20 +31,29 @@
 
             <!-- Selector de Clases (Columna Izquierda / Superior en móvil) -->
             <div class="lg:col-span-3 space-y-2">
-                <div class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 custom-scrollbar">
-                    @foreach (var cls in Classes)
-                    {
-                        <div @onclick="() => SelectedClass = cls"
-                             class="group cursor-pointer px-3.5 py-2.5 lg:p-4 rounded-xl border transition-all duration-300 shrink-0 lg:shrink w-auto lg:w-auto @(SelectedClass?.Id == cls.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
-                            <div class="flex justify-between items-center gap-3">
-                                <span class="text-xs lg:text-sm font-black uppercase tracking-tight truncate @(SelectedClass?.Id == cls.Id ? "text-black" : "text-white group-hover:text-amber-500")">
-                                    @cls.TechnicalName
-                                </span>
-                                <i class="fa-solid fa-fire-bolt text-xs shrink-0 @(SelectedClass?.Id == cls.Id ? "text-black" : "text-amber-900/40")"></i>
+                @if (!Classes.Any())
+                {
+                    <EmptyState IconClass="fa-hat-wizard"
+                                Title="@LL["Title_NoClassesFound"]"
+                                Description="@LL["Msg_NoClassesFound"]" />
+                }
+                else
+                {
+                    <div class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 custom-scrollbar">
+                        @foreach (var cls in Classes)
+                        {
+                            <div @onclick="() => SelectedClass = cls"
+                                 class="group cursor-pointer px-3.5 py-2.5 lg:p-4 rounded-xl border transition-all duration-300 shrink-0 lg:shrink w-auto lg:w-auto @(SelectedClass?.Id == cls.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
+                                <div class="flex justify-between items-center gap-3">
+                                    <span class="text-xs lg:text-sm font-black uppercase tracking-tight truncate @(SelectedClass?.Id == cls.Id ? "text-black" : "text-white group-hover:text-amber-500")">
+                                        @cls.TechnicalName
+                                    </span>
+                                    <i class="fa-solid fa-fire-bolt text-xs shrink-0 @(SelectedClass?.Id == cls.Id ? "text-black" : "text-amber-900/40")"></i>
+                                </div>
                             </div>
-                        </div>
-                    }
-                </div>
+                        }
+                    </div>
+                }
             </div>
 
             <!-- Inspector de la Clase Seleccionada (Columna Derecha / Principal) -->

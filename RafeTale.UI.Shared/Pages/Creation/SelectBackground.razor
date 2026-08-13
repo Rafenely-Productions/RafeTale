@@ -5,9 +5,11 @@
 @using RafeTale.Domain.Interfaces
 @using RafeTale.Domain.Enums
 @using RafeTale.UI.Shared.Components.Library
+@using RafeTale.UI.Shared.Components.UI
 @inject NavigationManager Navigation
 @inject ICharacterCreationService CreationService
 @inject IStringLocalizer<AppStrings> L
+@inject IStringLocalizer<LibraryStrings> LL
 @inject IService<BackgroundDto,Background> BackgroundService
 
 <div class="min-h-screen bg-black p-6">
@@ -23,20 +25,29 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
             <div class="lg:col-span-3 space-y-2">
-                <div class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 custom-scrollbar">
-                    @foreach (var cls in backgrounds)
-                    {
-                        <div @onclick="() => selectedBackground = cls"
-                             class="group cursor-pointer px-3.5 py-2.5 lg:p-4 rounded-xl border transition-all duration-300 shrink-0 lg:shrink w-auto lg:w-auto @(selectedBackground?.Id == cls.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
-                            <div class="flex justify-between items-center gap-3">
-                                <span class="text-xs lg:text-sm font-black uppercase tracking-tight truncate @(selectedBackground?.Id == cls.Id ? "text-black" : "text-white group-hover:text-amber-500")">
-                                    @cls.TechnicalName
-                                </span>
-                                <i class="fa-solid fa-fire-bolt text-xs shrink-0 @(selectedBackground?.Id == cls.Id ? "text-black" : "text-amber-900/40")"></i>
+                @if (!backgrounds.Any())
+                {
+                    <EmptyState IconClass="fa-scroll"
+                                Title="@LL["Title_NoBackgroundsFound"]"
+                                Description="@LL["Msg_NoBackgroundsFound"]" />
+                }
+                else
+                {
+                    <div class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 custom-scrollbar">
+                        @foreach (var cls in backgrounds)
+                        {
+                            <div @onclick="() => selectedBackground = cls"
+                                 class="group cursor-pointer px-3.5 py-2.5 lg:p-4 rounded-xl border transition-all duration-300 shrink-0 lg:shrink w-auto lg:w-auto @(selectedBackground?.Id == cls.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
+                                <div class="flex justify-between items-center gap-3">
+                                    <span class="text-xs lg:text-sm font-black uppercase tracking-tight truncate @(selectedBackground?.Id == cls.Id ? "text-black" : "text-white group-hover:text-amber-500")">
+                                        @cls.TechnicalName
+                                    </span>
+                                    <i class="fa-solid fa-fire-bolt text-xs shrink-0 @(selectedBackground?.Id == cls.Id ? "text-black" : "text-amber-900/40")"></i>
+                                </div>
                             </div>
-                        </div>
-                    }
-                </div>
+                        }
+                    </div>
+                }
             </div>
 
             <div class="lg:col-span-8">
