@@ -54,13 +54,6 @@ public static class MauiProgram
         builder.Services.AddScoped<ILocalizationService, LocalizationService>();
 
         // --- Domain Services (interfaces específicas) ---
-        builder.Services.AddScoped<IService<ClassDefinitionDto, ClassDefinition>, ClassService>();
-        builder.Services.AddScoped<IService<RaceDto, Race>, RaceService>();
-        builder.Services.AddScoped<IService<SubclassDto, Subclass>, SubclassService>();
-        builder.Services.AddScoped<IService<SpellDto, Spell>, SpellService>();
-        builder.Services.AddScoped<IService<LanguageDto, Language>, LanguageService>();
-        builder.Services.AddScoped<IService<BackgroundDto, Background>, BackgroundService>();
-        builder.Services.AddScoped<IService<FeatDto, Feat>, FeatService>();
         builder.Services.AddScoped<ICharacterQueryService, CharacterQueryService>();
         builder.Services.AddScoped<IFeatureQueryService, FeatureQueryService>();
         builder.Services.AddScoped<ILevelingService, LevelingService>();
@@ -76,7 +69,6 @@ public static class MauiProgram
         builder.Services.AddScoped<IService<SubclassDto, Subclass>, SubclassService>();
         builder.Services.AddScoped<IService<BackgroundDto, Background>, BackgroundService>();
         builder.Services.AddScoped<IService<FeatDto, Feat>, FeatService>();
-        builder.Services.AddScoped<IService<LanguageDto, Language>, LanguageService>();
         builder.Services.AddScoped<ILibraryDataService, LibraryDataService>();
         builder.Services.AddScoped<ILibraryCountsService, LibraryCountsService>();
 
