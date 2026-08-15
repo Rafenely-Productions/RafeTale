@@ -24,7 +24,7 @@
                 <label class="text-[10px] font-black text-amber-500 uppercase tracking-widest block">@L["Label_PrimaryStat"]</label>
                 <select @bind="Draft.SelectedAsiOne" class="w-full bg-slate-950 border border-slate-800 text-white rounded-xl p-3 text-xs font-bold outline-none focus:border-amber-500">
                     <option value="">-- @L["Select_Stat"] --</option>
-                    @foreach (var val in Enum.GetValues<ASI>())
+                    @foreach (var val in Enum.GetValues<AttributeImprovementChoice>())
                     {
                         <option value="@val">@L[val.ToString()]</option>
                     }
@@ -34,9 +34,9 @@
                 <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest block">@L["Label_SecondaryStat"]</label>
                 <select @bind="Draft.SelectedAsiTwo" class="w-full bg-slate-950 border border-slate-800 text-white rounded-xl p-3 text-xs font-bold outline-none focus:border-amber-500">
                     <option value="">-- @L["Leave_Empty_For_PlusTwo"] --</option>
-                    @foreach (var val in Enum.GetValues<ASI>())
+                    @foreach (var val in Enum.GetValues<AttributeImprovementChoice>())
                     {
-                        @if (Draft.SelectedAsiOne != val)
+                        @if (Draft.SelectedAsiOne != val.ToString())
                         {
                             <option value="@val">@L[val.ToString()]</option>
                         }

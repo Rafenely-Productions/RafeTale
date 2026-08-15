@@ -182,7 +182,7 @@
         var query = AvailableSpells.AsEnumerable();
         if (spellLevelFilter != SpellLevel.All)
         {
-            query = query.Where(s => s.Level == spellLevelFilter);
+            query = query.Where(s => s.Level == (int)spellLevelFilter);
         }
         if (!string.IsNullOrWhiteSpace(SearchText.Trim()))
         {
