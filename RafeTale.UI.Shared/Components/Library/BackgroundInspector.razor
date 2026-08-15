@@ -1,5 +1,4 @@
 ﻿@using Application.DTOs
-@using Application.Resources
 @using Domain.Enums
 @inject IStringLocalizer<AppStrings> L
 @inject IJSRuntime JS
@@ -7,7 +6,7 @@
 <div class="animate-in fade-in duration-300 space-y-6 max-w-4xl mx-auto">
 
     <div class="border-b border-slate-800 pb-5">
-        <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@BackgroundDto.Name</h1>
+        <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@BackgroundDto.TechnicalName</h1>
         <p class="text-slate-400 font-sans text-sm leading-relaxed mt-3">
             @((MarkupString)BackgroundDto.Description)
         </p>

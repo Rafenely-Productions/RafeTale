@@ -58,7 +58,7 @@
                             <i class="fa-solid fa-xmark text-sm"></i>
                         </button>
                         <div class="overflow-y-auto pr-1 flex-1">
-                            <RaceInspector RaceDto="CharDto.Race" />
+                            <@RaceInspector RaceDto="CharDto.Race" />
                         </div>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                             <i class="fa-solid fa-xmark text-sm"></i>
                         </button>
                         <div class="overflow-y-auto pr-1 flex-1">
-                            <ClassInspector InspectedClass="CharDto.ClassDef" />
+                            <@ClassInspector InspectedClass="CharDto.ClassDef" />
                         </div>
                     </div>
                 </div>
@@ -101,9 +101,7 @@
 
         if (CharDto?.ClassDef?.SkillProficiencies != null)
         {
-            trainedSkills = CharDto.ClassDef.SkillProficiencies
-                .Select(s => s.TechnicalName)
-                .ToList();
+            trainedSkills = CharDto.ClassDef.SkillProficiencies;
         }
     }
 

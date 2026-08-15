@@ -15,7 +15,7 @@
                     <span class="text-[9px] font-mono font-black text-amber-500 uppercase tracking-widest">
                         @(Spell.Level == 0 ? L["Label_Cantrip"] : $"{L["Spell_LevelText"]} {Spell.Level}") � @Spell.School
                     </span>
-                    <h3 class="text-lg font-black text-white uppercase italic tracking-tight mt-0.5">@Spell.Name</h3>
+                    <h3 class="text-lg font-black text-white uppercase italic tracking-tight mt-0.5">@Spell.TechnicalName</h3>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 text-[11px] font-mono bg-black/40 p-2.5 rounded-xl border border-slate-800/80">

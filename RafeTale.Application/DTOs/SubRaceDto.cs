@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 
 namespace RafeTale.Application.DTOs
 {

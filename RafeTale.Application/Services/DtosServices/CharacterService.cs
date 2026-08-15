@@ -74,7 +74,7 @@ namespace RafeTale.Application.Services.DtosServices
                 ClassDef = classDto,
                 Background = bgDto,
                 AcquiredFeatures = mappedFeatures,
-                SpellSlots = character.SpellSlots,
+                SpellSlots = ArmSpellSlotsDto(character.SpellSlots),
                 KnownSpells = spellDtos
             };
         }
@@ -108,6 +108,17 @@ namespace RafeTale.Application.Services.DtosServices
             });
             if (character == null) return null!;
             return await ArmDto(character);
+        }
+        private List<CharacterSpellSlotsDto> ArmSpellSlotsDto(List<CharacterSpellSlots> spellSlots)
+        {
+            return spellSlots.Select(slot => new CharacterSpellSlotsDto
+            {
+                Id = slot.Id,
+                CharacterId = slot.CharacterId,
+                Level = slot.Level,
+                MaxSlots = slot.MaxSlots,
+                UsedSlots = slot.UsedSlots
+            }).ToList();
         }
     }
 }

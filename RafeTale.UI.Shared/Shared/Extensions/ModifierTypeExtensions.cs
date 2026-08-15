@@ -1,63 +1,63 @@
-// Archivo: D:\Users\ricar\repos\RafeTale\RafeTale.UI.Shared\Extensions\ModifierTypeExtensions.cs
-using RafeTale.Domain.Enums;
+// Archivo: D:\Users\ricar\repos\RafeTale\RafeTale.UI.Shared\Extensions\ModifierTypeDtoExtensions.cs
+using RafeTale.Application.DTOs;
 
 namespace RafeTale.UI.Shared.Extensions;
 
-public static class ModifierTypeExtensions
+public static class ModifierTypeDtoExtensions
 {
     // Asegúrate de que la firma devuelva "string CssClasses"
-    public static (string Icon, string CssClasses, string Label) GetVisualMetadata(this ModifierType type)
+    public static (string Icon, string CssClasses, string Label) GetVisualMetadata(this ModifierTypeDto type)
     {
         return type switch
         {
             // Grupo Atributos y Estadísticas (Azul / Cyan)
-            ModifierType.AttributeBonus or ModifierType.ModifyAbilityScoreMaximum =>
+            ModifierTypeDto.AttributeBonus or ModifierTypeDto.ModifyAbilityScoreMaximum =>
                 ("fa-up-long", "bg-blue-950/40 border-blue-500/30 text-blue-400", "Mejora de Atributo"),
 
-            ModifierType.SetBaseArmorClass or ModifierType.SetBaseArmorClass =>
+            ModifierTypeDto.SetBaseArmorClass or ModifierTypeDto.SetBaseArmorClass =>
                 ("fa-shield-halved", "bg-slate-950/40 border-slate-500/30 text-slate-400", "Fórmula de Armadura"),
 
-            ModifierType.ModifySpeed =>
+            ModifierTypeDto.ModifySpeed =>
                 ("fa-person-running", "bg-emerald-950/40 border-emerald-500/30 text-emerald-400", "Modificador de Velocidad"),
 
             // Grupo Recursos y Progresión (Ámbar / Amarillo)
-            ModifierType.GrantResource or ModifierType.ScaleResource or ModifierType.ModifyResourceReset =>
+            ModifierTypeDto.GrantResource or ModifierTypeDto.ScaleResource or ModifierTypeDto.ModifyResourceReset =>
                 ("fa-battery-full", "bg-amber-950/40 border-amber-500/30 text-amber-500", "Recurso de Clase"),
 
-            ModifierType.GrantSubclass or ModifierType.GrantSubclassFeature =>
+            ModifierTypeDto.GrantSubclass or ModifierTypeDto.GrantSubclassFeature =>
                 ("fa-crown", "bg-yellow-950/40 border-yellow-500/30 text-yellow-400", "Rasgo de Subclase"),
 
-            ModifierType.GrantFeat or ModifierType.SelectFeat or ModifierType.GrantFeatCategory =>
+            ModifierTypeDto.GrantFeat or ModifierTypeDto.SelectFeat or ModifierTypeDto.GrantFeatCategory =>
                 ("fa-award", "bg-indigo-950/40 border-indigo-500/30 text-indigo-400", "Dote Otorgada"),
 
             // Grupo Combate y Acciones (Rojo / Naranja)
-            ModifierType.AddDamageBonus or ModifierType.OnHitModifier =>
+            ModifierTypeDto.AddDamageBonus or ModifierTypeDto.OnHitModifier =>
                 ("fa-burst", "bg-red-950/40 border-red-500/30 text-red-400", "Bono de Daño"),
 
-            ModifierType.ModifyAttacksPerAction or ModifierType.ModifyAttacksPerAttackAction =>
+            ModifierTypeDto.ModifyAttacksPerAction or ModifierTypeDto.ModifyAttacksPerAttackAction =>
                 ("fa-hand-fist", "bg-orange-950/40 border-orange-500/30 text-orange-400", "Ataques Múltiples"),
 
-            ModifierType.GrantAdvantage =>
+            ModifierTypeDto.GrantAdvantage =>
                 ("fa-dice-d20", "bg-lime-950/40 border-lime-500/30 text-lime-400", "Ventaja Mecánica"),
 
-            ModifierType.EnableOption or ModifierType.PassiveEffect =>
+            ModifierTypeDto.EnableOption or ModifierTypeDto.PassiveEffect =>
                 ("fa-toggle-on", "bg-sky-950/40 border-sky-500/30 text-sky-400", "Efecto Pasivo"),
 
-            ModifierType.ReactionEffect or ModifierType.Reaction =>
+            ModifierTypeDto.ReactionEffect or ModifierTypeDto.Reaction =>
                 ("fa-bolt-lightning", "bg-violet-950/40 border-violet-500/30 text-violet-400", "Efecto de Reacción"),
 
             // Grupo Magia y Conjuros (Púrpura)
-            ModifierType.GrantSpell or ModifierType.GrantAlwaysPreparedSpell or ModifierType.AlwaysPreparedSpell or ModifierType.AlwaysPreparedSpells or ModifierType.EnableSpellcasting or ModifierType.EnablePactMagic =>
+            ModifierTypeDto.GrantSpell or ModifierTypeDto.GrantAlwaysPreparedSpell or ModifierTypeDto.AlwaysPreparedSpell or ModifierTypeDto.AlwaysPreparedSpells or ModifierTypeDto.EnableSpellcasting or ModifierTypeDto.EnableBondedMagic =>
                 ("fa-wand-sparkles", "bg-purple-950/40 border-purple-500/30 text-purple-400", "Mecánica Mágica"),
 
             // Grupo Competencias, Idiomas y Utilidad (Teal / Rosa)
-            ModifierType.GrantProficiency or ModifierType.GrantSaveProficiency or ModifierType.GrantExpertise =>
+            ModifierTypeDto.GrantProficiency or ModifierTypeDto.GrantSaveProficiency or ModifierTypeDto.GrantExpertise =>
                 ("fa-graduation-cap", "bg-teal-950/40 border-teal-500/30 text-teal-400", "Competencia / Pericia"),
 
-            ModifierType.GrantLanguage or ModifierType.GrantLanguages =>
+            ModifierTypeDto.GrantLanguage or ModifierTypeDto.GrantLanguages =>
                 ("fa-language", "bg-rose-950/40 border-rose-500/30 text-rose-400", "Idioma Aprendido"),
 
-            ModifierType.GrantSense =>
+            ModifierTypeDto.GrantSense =>
                 ("fa-eye", "bg-pink-950/40 border-pink-500/30 text-pink-400", "Sentido Especial"),
 
             // Fallback por defecto

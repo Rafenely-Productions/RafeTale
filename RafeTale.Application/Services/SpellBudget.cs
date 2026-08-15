@@ -13,10 +13,10 @@ public class SpellBudget
 
     // Lógica dinámica reutilizable, ahora recibe la selección actual como parámetro
     public int SelectedCantripsCount(IEnumerable<Guid> selectedIds, List<SpellDto> allSpells) =>
-        allSpells.Count(s => selectedIds.Contains(s.Id) && (int)s.Level == 0);
+        allSpells.Count(s => selectedIds.Contains(s.Id) && s.Level == 0);
 
     public int SelectedSpellsCount(IEnumerable<Guid> selectedIds, List<SpellDto> allSpells) =>
-        allSpells.Count(s => selectedIds.Contains(s.Id) && (int)s.Level > 0);
+        allSpells.Count(s => selectedIds.Contains(s.Id) && s.Level > 0);
 
     // Validación pura: No guarda estado, solo calcula. Devuelve llaves de error para i18n.
     public (bool IsValid, string ErrorKey) Validate(IEnumerable<Guid> selectedIds, List<SpellDto> allSpells)

@@ -5,6 +5,7 @@ using RafeTale.Domain.Entities;
 using RafeTale.Domain.Enums;
 using RafeTale.Domain.Helpers;
 using RafeTale.Domain.Interfaces;
+using RafeTale.Domain.Modifiers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,9 @@ namespace RafeTale.Application.Services.DtosServices
                 Id = feat.Id,
                 Name = await loc.GetStringAsync(feat.Id, LocProperty.Name),
                 Description = await loc.GetStringAsync(feat.Id, LocProperty.Description),
-                Category = feat.Category,
-                Prerequisite = feat.Prerequisite,
-                Modifiers = feat.Modifiers ?? new()
+                Category = feat.Category.ToString(),
+                Prerequisite = ArmPrerequisite(feat.Prerequisite),
+                Modifiers = ArmModifier(feat.Modifiers)
             };
         }
 
@@ -37,9 +38,9 @@ namespace RafeTale.Application.Services.DtosServices
                 Id = feat.Id,
                 Name = localizedWords != null && localizedWords.TryGetValue(LocProperty.Name, out var nameDict) && nameDict.TryGetValue(feat.Id, out var n) ? n : feat.TechnicalName,
                 Description = localizedWords != null && localizedWords.TryGetValue(LocProperty.Description, out var descDict) && descDict.TryGetValue(feat.Id, out var d) ? d : "No description available",
-                Modifiers = feat.Modifiers ?? new(),
-                Category = feat.Category,
-                Prerequisite = feat.Prerequisite,
+                Modifiers = ArmModifier(feat.Modifiers),
+                Category = feat.Category.ToString(),
+                Prerequisite = ArmPrerequisite(feat.Prerequisite),
             };
         }
 
@@ -68,6 +69,36 @@ namespace RafeTale.Application.Services.DtosServices
             if (feat == null) return null!;
 
             return await ArmDto(feat);
+        }
+
+        private List<ModifierDataDto> ArmModifier(List<ModifierData> modifier)
+        {
+            List<ModifierDataDto> modifiers = new List<ModifierDataDto>();
+            foreach (var mod in modifier)
+            {
+                modifiers.Add(new ModifierDataDto
+                {
+                    Type = (ModifierTypeDto)mod.Type,
+                    Target = mod.Target.ToString(),
+                    Value = mod.Value
+                });
+            }
+            return modifiers;
+        }
+
+        private List<FeatPrerequisiteModifierDataDto> ArmPrerequisite(List<FeatPrerequisiteModifierData> prerequisite)
+        {
+            List<FeatPrerequisiteModifierDataDto> prerequisites = new List<FeatPrerequisiteModifierDataDto>();
+            foreach (var prereq in prerequisite)
+            {
+                prerequisites.Add(new FeatPrerequisiteModifierDataDto
+                {
+                    Type = prereq.Type.ToString(),
+                    Target = prereq.Target.ToString(),
+                    Value = prereq.Value
+                });
+            }
+            return prerequisites;
         }
     }
 }

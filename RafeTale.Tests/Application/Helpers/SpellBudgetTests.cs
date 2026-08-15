@@ -12,8 +12,8 @@ public class SpellBudgetTests
         return spells.Select(s => new SpellDto
         {
             Id = s.Id,
-            Level = s.Level,
-            Name = $"Spell-{s.Id}"
+            Level = (int)s.Level,
+            TechnicalName = $"Spell-{s.Id}"
         }).ToList();
     }
 
@@ -52,7 +52,7 @@ public class SpellBudgetTests
             MaxSpellLevel = 9
         };
 
-        var allSpells = ids.Select(id => new SpellDto { Id = id, Level = SpellLevel.Cantrip }).ToList();
+        var allSpells = ids.Select(id => new SpellDto { Id = id, Level = (int)SpellLevel.Cantrip }).ToList();
 
         var (isValid, errorKey) = budget.Validate(ids, allSpells);
 
@@ -72,7 +72,7 @@ public class SpellBudgetTests
             MaxSpellLevel = 9
         };
 
-        var allSpells = ids.Select(id => new SpellDto { Id = id, Level = SpellLevel.Level1 }).ToList();
+        var allSpells = ids.Select(id => new SpellDto { Id = id, Level = (int)SpellLevel.Level1 }).ToList();
 
         var (isValid, errorKey) = budget.Validate(ids, allSpells);
 
@@ -94,7 +94,7 @@ public class SpellBudgetTests
         var selectedIds = new List<Guid> { spellId };
         var allSpells = new List<SpellDto>
         {
-            new() { Id = spellId, Level = SpellLevel.Level3 }
+            new() { Id = spellId, Level = (int) SpellLevel.Level3 }
         };
 
         var (isValid, errorKey) = budget.Validate(selectedIds, allSpells);
@@ -117,8 +117,8 @@ public class SpellBudgetTests
 
         var selectedIds = cantripIds.Concat(spellIds).ToList();
 
-        var allSpells = cantripIds.Select(id => new SpellDto { Id = id, Level = SpellLevel.Cantrip })
-            .Concat(spellIds.Select(id => new SpellDto { Id = id, Level = SpellLevel.Level2 }))
+        var allSpells = cantripIds.Select(id => new SpellDto { Id = id, Level = (int)SpellLevel.Cantrip })
+            .Concat(spellIds.Select(id => new SpellDto { Id = id, Level = (int)SpellLevel.Level2 }))
             .ToList();
 
         var (isValid, errorKey) = budget.Validate(selectedIds, allSpells);
@@ -137,8 +137,8 @@ public class SpellBudgetTests
 
         var allSpells = new List<SpellDto>
         {
-            new() { Id = cantripId, Level = SpellLevel.Cantrip },
-            new() { Id = spellId, Level = SpellLevel.Level1 }
+            new() { Id = cantripId, Level = (int) SpellLevel.Cantrip },
+            new() { Id = spellId, Level = (int)SpellLevel.Level1 }
         };
 
         int count = budget.SelectedCantripsCount(selectedIds, allSpells);
@@ -158,9 +158,9 @@ public class SpellBudgetTests
 
         var allSpells = new List<SpellDto>
         {
-            new() { Id = cantripId, Level = SpellLevel.Cantrip },
-            new() { Id = spellId1, Level = SpellLevel.Level1 },
-            new() { Id = spellId2, Level = SpellLevel.Level2 }
+            new() { Id = cantripId, Level = (int) SpellLevel.Cantrip },
+            new() { Id = spellId1, Level = (int) SpellLevel.Level1 },
+            new() { Id = spellId2, Level = (int) SpellLevel.Level2 }
         };
 
         int count = budget.SelectedSpellsCount(selectedIds, allSpells);

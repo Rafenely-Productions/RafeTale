@@ -1,14 +1,13 @@
-using RafeTale.Domain.Entities;
-using RafeTale.Domain.Enums;
-using System;
-using System.Collections.Generic;
+
+using RafeTale.Application.Interfaces.DtosInterfaces;
 
 namespace RafeTale.Application.DTOs
 {
-    public class CharacterDto
+    public class CharacterDto : IDto
     {
-        public Guid Id { get; init; }
-        public string Name { get; init; } = string.Empty;
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public string History { get; init; } = string.Empty;
 
         // Atributos Calculados (Ya procesados con modificadores)
@@ -38,7 +37,7 @@ namespace RafeTale.Application.DTOs
         public RaceDto? Race { get; init; }
         public ClassDefinitionDto? ClassDef { get; init; }
         public BackgroundDto? Background { get; init; }
-        public List<CharacterSpellSlots> SpellSlots { get; init; } = [];
+        public List<CharacterSpellSlotsDto> SpellSlots { get; init; } = [];
         // Colecciones de rasgos e idiomas ya traducidos
         public List<FeatureDto> AcquiredFeatures { get; init; } = [];
         public List<FeatDto> AcquiredFeats { get; init; } = [];

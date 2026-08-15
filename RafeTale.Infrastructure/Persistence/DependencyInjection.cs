@@ -1,6 +1,6 @@
 using RafeTale.Application.Interfaces;
 using RafeTale.Domain.Interfaces;
-using RafeTale.Infrastructure.Extractors;
+using RafeTale.Infrastructure.Extraction;
 using RafeTale.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

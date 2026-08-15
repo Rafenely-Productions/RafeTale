@@ -11,8 +11,8 @@ public interface ICharacterCreationService
     Guid? SelectedBackgroundId { get; set; }
     string Name { get; set; }
     string History { get; set; }
-    Dictionary<ASI, int> BaseStats { get; set; }
-    Dictionary<ASI, int> BonusStats { get; set; }
+    Dictionary<AttributeImprovementChoice, int> BaseStats { get; set; }
+    Dictionary<AttributeImprovementChoice, int> BonusStats { get; set; }
 
     void Reset();
     Task<Character> CreateAndSaveCharacterAsync(IUnitOfWork uow);
