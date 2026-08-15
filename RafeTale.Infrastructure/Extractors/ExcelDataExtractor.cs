@@ -59,7 +59,7 @@ namespace RafeTale.Infrastructure.Extractors
                 {
                     Id = Guid.NewGuid(),
                     TechnicalName = row.Cell(1).GetString(),
-                    Ability = ParseEnum<ASI>(row.Cell(3).GetString())
+                    Ability = ParseEnum<AttributeImprovementChoice>(row.Cell(3).GetString())
                 };
                 skillProficiencyList.Add(skill);
                 SaveValidateLocalizedContent(skill.Id, LocEntity.Skill, LocProperty.Name, row.Cell(1).GetString(), LocLanguage.en);
@@ -240,8 +240,8 @@ namespace RafeTale.Infrastructure.Extractors
                     Id = Guid.NewGuid(),
                     TechnicalName = row.Cell(1).GetString(),
                     HitDie = row.Cell(2).GetString(),
-                    PrimaryAbility = ParseEnumList<ASI>(row.Cell(3).GetString()),
-                    SavingThrowProficiencies = ParseEnumList<ASI>(row.Cell(4).GetString()),
+                    PrimaryAbility = ParseEnumList<AttributeImprovementChoice>(row.Cell(3).GetString()),
+                    SavingThrowProficiencies = ParseEnumList<AttributeImprovementChoice>(row.Cell(4).GetString()),
                     ArmorProficiencies = ParseEnumList<ArmorProficiency>(row.Cell(5).GetString()),
                     WeaponProficiencies = ParseEnumList<WeaponProficiency>(row.Cell(6).GetString()),
                     ToolProficiencies = ParseEnumList<ToolProficiency>(row.Cell(7).GetString()),
@@ -640,7 +640,7 @@ namespace RafeTale.Infrastructure.Extractors
                 {
                     Id = Guid.NewGuid(),
                     TechnicalName = row.Cell(1).GetString(),
-                    ASIs = ParseEnumList<ASI>(row.Cell(2).GetString()),
+                    ASIs = ParseEnumList<AttributeImprovementChoice>(row.Cell(2).GetString()),
                     SkillProficiencies = ParseEnumList<SkillType>(row.Cell(4).GetString())
                 };
 
