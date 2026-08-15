@@ -672,17 +672,17 @@
   <data name="Starting_Equipment" xml:space="preserve">
     <value>Equipo inicial</value>
   </data>
-  <data name="TraitType_RagesCount" xml:space="preserve">
+  <data name="TraitType_FrenzyCount" xml:space="preserve">
     <value>Furia (Usos)</value>
   </data>
-  <data name="TraitType_RageDamage" xml:space="preserve">
+  <data name="TraitType_FrenzyDamage" xml:space="preserve">
     <value>Daño de Furia</value>
   </data>
-  <data name="TraitType_WeaponMasteryCount" xml:space="preserve">
+  <data name="TraitType_WeaponExpertiseCount" xml:space="preserve">
     <value>Maestría con Armas</value>
   </data>
-  <data name="TraitType_BardicDie" xml:space="preserve">
-    <value>Dado de Inspiración Bardo</value>
+  <data name="TraitType_InspirationDie" xml:space="preserve">
+    <value>Dado de Inspiración</value>
   </data>
   <data name="TraitType_CantripsKnown" xml:space="preserve">
     <value>Trucos Conocidos</value>
@@ -694,31 +694,31 @@
     <value>Espacios de Conjuros</value>
   </data>
   <data name="TraitType_InvocationsKnown" xml:space="preserve">
-    <value>Invocaciones Conocidas</value>
+    <value>Invocaciones Arcanas</value>
   </data>
-  <data name="TraitType_PactSlots" xml:space="preserve">
-    <value>Espacios de Magia de Pacto</value>
+  <data name="TraitType_BondedMagicSlots" xml:space="preserve">
+    <value>Espacios de Magia Pactada</value>
   </data>
   <data name="TraitType_SlotLevel" xml:space="preserve">
     <value>Nivel de Espacio</value>
   </data>
-  <data name="TraitType_ChannelDivinityUses" xml:space="preserve">
-    <value>Canalizar Divinidad (Usos)</value>
+  <data name="TraitType_SacredPowerUses" xml:space="preserve">
+    <value>Poder Sagrado (Usos)</value>
   </data>
-  <data name="TraitType_WildShapeCount" xml:space="preserve">
+  <data name="TraitType_BeastFormCount" xml:space="preserve">
     <value>Forma Salvaje (Usos)</value>
   </data>
-  <data name="TraitType_FavoredEnemyUses" xml:space="preserve">
-    <value>Enemigo Favorecido (Usos)</value>
+  <data name="TraitType_ChosenEnemyUses" xml:space="preserve">
+    <value>Enemigo Escogido (Usos)</value>
   </data>
-  <data name="TraitType_SecondWindUses" xml:space="preserve">
+  <data name="TraitType_SecondBreathUses" xml:space="preserve">
     <value>Segundo Aliento (Usos)</value>
   </data>
-  <data name="TraitType_SorceryPoints" xml:space="preserve">
-    <value>Puntos de Hechicería</value>
+  <data name="TraitType_ArcanePoints" xml:space="preserve">
+    <value>Puntos arcanos</value>
   </data>
-  <data name="TraitType_MartialArtsDie" xml:space="preserve">
-    <value>Dado de Artes Marciales</value>
+  <data name="TraitType_UnarmedStrikeDie" xml:space="preserve">
+    <value>Dado de Artes Sin Armas</value>
   </data>
   <data name="TraitType_FocusPoints" xml:space="preserve">
     <value>Puntos de Enfoque (Ki)</value>
@@ -726,11 +726,11 @@
   <data name="TraitType_UnarmoredMovement" xml:space="preserve">
     <value>Movimiento sin Armadura</value>
   </data>
-  <data name="TraitType_ChannelDivinityCount" xml:space="preserve">
-    <value>Canalizar Divinidad</value>
+  <data name="TraitType_SacredPowerCount" xml:space="preserve">
+    <value>Poder Sagrado</value>
   </data>
-  <data name="TraitType_SneakAttackDie" xml:space="preserve">
-    <value>Dado de Ataque Furtivo</value>
+  <data name="TraitType_PrecisionAttackDie" xml:space="preserve">
+    <value>Dado de Ataque Preciso</value>
   </data>
   <data name="Label_Velocity" xml:space="preserve">
     <value>Velocidad</value>

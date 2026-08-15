@@ -1,19 +1,13 @@
-using RafeTale.Domain.Entities;
-using RafeTale.Domain.Modifiers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RafeTale.Application.Interfaces.DtosInterfaces;
 
 namespace RafeTale.Application.DTOs
 {
-    public class FeatureDto
+    public class FeatureDto : IDto
     {
-        public Guid Id { get; init; }
-        public string Name { get; init; } = string.Empty;
-        public string Description { get; init; } = "";
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = "";
         public string Special { get; init; } = "";
-        public List<ModifierData> Modifiers { get; set; } = new();
+        public List<ModifierDataDto> Modifiers { get; set; } = [];
     }
 }

@@ -16,7 +16,7 @@
     {
         <div class="flex flex-col lg:flex-row items-start gap-6 border-b border-white/5 pb-6 w-full">
             <div class="flex-1 min-w-0 w-full">
-                <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@_fullClass.Name</h1>
+                <h1 class="text-4xl font-black text-white uppercase italic tracking-tight">@_fullClass.TechnicalName</h1>
             </div>
 
             <div class="flex flex-col justify-start w-full lg:w-80 shrink-0 mt-4 lg:mt-0">
@@ -56,7 +56,7 @@
                                     @L["Skill_Proficiencies"]
                                 </td>
                                 <td class="px-1 py-2.5 font-sans font-medium text-slate-300 text-right text-xs">
-                                    @string.Join(", ", _fullClass.SkillProficiencies.Select(a => L[a.TechnicalName.ToString()].Value))
+                                    @string.Join(", ", _fullClass.SkillProficiencies.Select(a => L[a].Value))
                                 </td>
                             </tr>
                             @if (_fullClass.ToolProficiencies.Any())
@@ -212,7 +212,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full min-w-0">
                             @foreach (var feature in prog.Features)
                             {
-                                if (SelectedSubclass != null && feature.TechnicalName == "Subclass Feature")
+                                if (SelectedSubclass != null && feature.Name == "Subclass Feature")
                                     continue;
 
                                 var matchedFeature = _fullClass.FeatureDtos.FirstOrDefault(f => f.Id == feature.Id);

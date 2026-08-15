@@ -1,52 +1,110 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="resheader">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -69,7 +127,7 @@
     <value>Primary Stat focus archetype</value>
   </data>
   <data name="Title_Description" xml:space="preserve">
-    <value>Browse the complete D&amp;D 2024 catalog. Tap any index card to expand its</value>
+    <value>Browse the complete game catalog. Tap any index card to expand its.</value>
   </data>
   <data name="Title_Name" xml:space="preserve">
     <value>The Game Codex</value>
@@ -428,17 +486,17 @@
   <data name="Tip_AvailableSlot" xml:space="preserve">
     <value>Available Magic Energy</value>
   </data>
-  <data name="TraitType_RagesCount" xml:space="preserve">
-    <value>Rages</value>
+  <data name="TraitType_FrenzyCount" xml:space="preserve">
+    <value>Frenzy</value>
   </data>
-  <data name="TraitType_RageDamage" xml:space="preserve">
-    <value>Rage Damage</value>
+  <data name="TraitType_FrenzyDamage" xml:space="preserve">
+    <value>Frenzy Damage</value>
   </data>
-  <data name="TraitType_WeaponMasteryCount" xml:space="preserve">
-    <value>Weapon Masteries</value>
+  <data name="TraitType_WeaponExpertiseCount" xml:space="preserve">
+    <value>Weapon Expertise</value>
   </data>
-  <data name="TraitType_BardicDie" xml:space="preserve">
-    <value>Bardic Inspiration Die</value>
+  <data name="TraitType_InspirationDie" xml:space="preserve">
+    <value>Inspiration Die</value>
   </data>
   <data name="TraitType_CantripsKnown" xml:space="preserve">
     <value>Cantrips Known</value>
@@ -450,31 +508,31 @@
     <value>Spell Slots</value>
   </data>
   <data name="TraitType_InvocationsKnown" xml:space="preserve">
-    <value>Eldritch Invocations</value>
+    <value>Arcane Invocations</value>
   </data>
-  <data name="TraitType_PactSlots" xml:space="preserve">
-    <value>Pact Magic Slots</value>
+  <data name="TraitType_BondedSlots" xml:space="preserve">
+    <value>Bonded Magic Slots</value>
   </data>
   <data name="TraitType_SlotLevel" xml:space="preserve">
     <value>Slot Level</value>
   </data>
-  <data name="TraitType_ChannelDivinityUses" xml:space="preserve">
-    <value>Channel Divinity</value>
+  <data name="TraitType_Sacred PowerUses" xml:space="preserve">
+    <value>Sacred Power</value>
   </data>
-  <data name="TraitType_WildShapeCount" xml:space="preserve">
-    <value>Wild Shape</value>
+  <data name="TraitType_BeastFormCount" xml:space="preserve">
+    <value>Beast Form</value>
   </data>
-  <data name="TraitType_FavoredEnemyUses" xml:space="preserve">
-    <value>Favored Enemy</value>
+  <data name="TraitType_ChosenEnemyUses" xml:space="preserve">
+    <value>Chosen Enemy</value>
   </data>
-  <data name="TraitType_SecondWindUses" xml:space="preserve">
-    <value>Second Wind</value>
+  <data name="TraitType_SecondBreathUses" xml:space="preserve">
+    <value>Second Breath</value>
   </data>
-  <data name="TraitType_SorceryPoints" xml:space="preserve">
-    <value>Sorcery Points</value>
+  <data name="TraitType_ArcanePoints" xml:space="preserve">
+    <value>Arcane Points</value>
   </data>
-  <data name="TraitType_MartialArtsDie" xml:space="preserve">
-    <value>Martial Arts Die</value>
+  <data name="TraitType_UnarmedStrikeDie" xml:space="preserve">
+    <value>Unarmed Strike Die</value>
   </data>
   <data name="TraitType_FocusPoints" xml:space="preserve">
     <value>Focus Points</value>
@@ -482,11 +540,11 @@
   <data name="TraitType_UnarmoredMovement" xml:space="preserve">
     <value>Unarmored Movement</value>
   </data>
-  <data name="TraitType_ChannelDivinityCount" xml:space="preserve">
-    <value>Channel Divinity</value>
+  <data name="TraitType_SacredPowerCount" xml:space="preserve">
+    <value>Sacred Power</value>
   </data>
-  <data name="TraitType_SneakAttackDie" xml:space="preserve">
-    <value>Sneak Attack Die</value>
+  <data name="TraitType_PrecisionAttackDie" xml:space="preserve">
+    <value>Precision Attack Die</value>
   </data>
   <data name="Character_Advancement" xml:space="preserve">
     <value>Character Advancement</value>
@@ -518,4 +576,58 @@
   <data name="Backgrounds_Label" xml:space="preserve">
     <value>backgrounds</value>
   </data>
-<data name="Library_LoadingCounts" xml:space="preserve"><value>Consultando el grimorio...</value><comment>EN: Consulting the grimoire...</comment></data><data name="ClassCodex_Loading" xml:space="preserve"><value>Cargando clases...</value><comment>EN: Loading classes...</comment></data><data name="ClassCodex_BackToList" xml:space="preserve"><value>Volver a clases</value><comment>EN: Back to classes</comment></data><data name="RaceCodex_Loading" xml:space="preserve"><value>Cargando razas...</value><comment>EN: Loading races...</comment></data><data name="RaceCodex_BackToList" xml:space="preserve"><value>Volver a razas</value><comment>EN: Back to races</comment></data><data name="SpellCodex_Loading" xml:space="preserve"><value>Cargando hechizos...</value><comment>EN: Loading spells...</comment></data><data name="BackgroundCodex_Loading" xml:space="preserve"><value>Cargando trasfondos...</value><comment>EN: Loading backgrounds...</comment></data><data name="BackgroundCodex_BackToList" xml:space="preserve"><value>Volver a trasfondos</value><comment>EN: Back to backgrounds</comment></data><data name="FeatCodex_Loading" xml:space="preserve"><value>Cargando dotes...</value><comment>EN: Loading feats...</comment></data><data name="FeatCodex_BackToList" xml:space="preserve"><value>Volver a dotes</value><comment>EN: Back to feats</comment></data></root>
+  <data name="Library_LoadingCounts" xml:space="preserve">
+    <value>Consulting the grimoire...</value>
+  </data>
+  <data name="ClassCodex_Loading" xml:space="preserve">
+    <value>Loading classes...</value>
+  </data>
+  <data name="ClassCodex_BackToList" xml:space="preserve">
+    <value>Back to classes</value>
+  </data>
+  <data name="RaceCodex_Loading" xml:space="preserve">
+    <value>Loading races...</value>
+  </data>
+  <data name="RaceCodex_BackToList" xml:space="preserve">
+    <value>Back to races</value>
+  </data>
+  <data name="SpellCodex_Loading" xml:space="preserve">
+    <value>Loading spells...</value>
+  </data>
+  <data name="BackgroundCodex_Loading" xml:space="preserve">
+    <value>Loading backgrounds...</value>
+  </data>
+  <data name="BackgroundCodex_BackToList" xml:space="preserve">
+    <value>Back to backgrounds</value>
+  </data>
+  <data name="FeatCodex_Loading" xml:space="preserve">
+    <value>Loading feats...</value>
+  </data>
+  <data name="FeatCodex_BackToList" xml:space="preserve">
+    <value>Back to feats</value>
+  </data>
+  <data name="Title_NoClassesFound" xml:space="preserve">
+    <value>No classes found</value>
+  </data>
+  <data name="Msg_NoClassesFound" xml:space="preserve">
+    <value>The codex holds no class manuscripts yet. Import a content pack to reveal them.</value>
+  </data>
+  <data name="Title_NoRacesFound" xml:space="preserve">
+    <value>No races found</value>
+  </data>
+  <data name="Msg_NoRacesFound" xml:space="preserve">
+    <value>The codex holds no lineage records yet. Import a content pack to reveal them.</value>
+  </data>
+  <data name="Title_NoBackgroundsFound" xml:space="preserve">
+    <value>No backgrounds found</value>
+  </data>
+  <data name="Msg_NoBackgroundsFound" xml:space="preserve">
+    <value>The codex holds no origin stories yet. Import a content pack to reveal them.</value>
+  </data>
+  <data name="Title_NoFeatsFound" xml:space="preserve">
+    <value>No feats found</value>
+  </data>
+  <data name="Msg_NoFeatsFound" xml:space="preserve">
+    <value>There are no feats available to choose. Import a content pack to reveal them.</value>
+  </data>
+</root>

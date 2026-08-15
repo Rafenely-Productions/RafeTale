@@ -1,23 +1,20 @@
-using RafeTale.Domain.Entities;
-using RafeTale.Domain.Enums;
-using System;
-using System.Collections.Generic;
+using RafeTale.Application.Interfaces.DtosInterfaces;
 
 namespace RafeTale.Application.DTOs
 {
-    public class RaceDto
+    public class RaceDto : IDto
     {
-        public Guid Id { get; init; }
-        public string Name { get; init; } = string.Empty; // Nombre traducido
-        public string Description { get; init; } = string.Empty; // Lore traducido en HTML
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty; // Nombre traducido
+        public string Description { get; set; } = string.Empty; // Lore traducido en HTML
         public string Resistances { get; init; } = string.Empty;
         public string Darkvision { get; init; } = "60 ft.";
-        public SizeCategory Size { get; init; }
-        public CreatureType CreatureType { get; init; }
+        public string Size { get; init; } = string.Empty;
+        public string CreatureType { get; init; } = string.Empty;
         public string Speed { get; init; } = string.Empty;
 
-        public List<Language> Languages { get; init; } = new();
-        public List<SubRaceDto> SubRaces { get; init; } = new(); // Desacoplado con DTO
-        public List<TraitDto> Traits { get; init; } = new(); // Desacoplado con DTO
+        public List<LanguageDto> Languages { get; init; } = [];
+        public List<SubRaceDto> SubRaces { get; init; } = [];
+        public List<TraitDto> Traits { get; init; } = [];
     }
 }

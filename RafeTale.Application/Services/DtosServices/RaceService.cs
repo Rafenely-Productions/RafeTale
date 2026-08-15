@@ -5,6 +5,7 @@ using RafeTale.Domain.Entities;
 using RafeTale.Domain.Enums;
 using RafeTale.Domain.Helpers;
 using RafeTale.Domain.Interfaces;
+using RafeTale.Domain.Modifiers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,10 +27,10 @@ namespace RafeTale.Application.Services.DtosServices
                 Name = await loc.GetStringAsync(race.Id, LocProperty.Name),
                 Description = await loc.GetStringAsync(race.Id, LocProperty.Description),
                 Resistances = await loc.GetStringAsync(race.Id, LocProperty.Resistances),
-                Size = race.Size,
-                CreatureType = race.CreatureType,
+                Size = race.Size.ToString(),
+                CreatureType = race.CreatureType.ToString(),
                 Speed = race.Speed,
-                Languages = race.Languages,
+                Languages = ArmLanguagesDto(race.Languages),
                 Traits = ArmTraitDtos(race.Traits, localizedTraits),
                 SubRaces = ArmSubraceDtos(race.SubRaces, localizedSubraces, localizedTraits)
             };
@@ -43,10 +44,10 @@ namespace RafeTale.Application.Services.DtosServices
                 Name = localizedWords != null && localizedWords.TryGetValue(LocProperty.Name, out var nameDict) && nameDict.TryGetValue(race.Id, out var n) ? n : "[No Name]",
                 Description = localizedWords != null && localizedWords.TryGetValue(LocProperty.Description, out var descDict) && descDict.TryGetValue(race.Id, out var d) ? d : "[No Description]",
                 Resistances = localizedWords != null && localizedWords.TryGetValue(LocProperty.Resistances, out var resDict) && resDict.TryGetValue(race.Id, out var r) ? r : "[No Resistances]",
-                Size = race.Size,
-                CreatureType = race.CreatureType,
+                Size = race.Size.ToString(),
+                CreatureType = race.CreatureType.ToString(),
                 Speed = race.Speed,
-                Languages = race.Languages,
+                Languages = ArmLanguagesDto(race.Languages),
                 Traits = new(), // Se llenan en GetAllAsync usando el inicializador si hiciera falta
                 SubRaces = new()
             };
@@ -121,10 +122,34 @@ namespace RafeTale.Application.Services.DtosServices
                 Name = localizedTraits.TryGetValue(LocProperty.Name, out var nameDict) && nameDict.TryGetValue(t.Id, out var n) ? n : t.TechnicalName,
                 Description = localizedTraits.TryGetValue(LocProperty.Description, out var descDict) && descDict.TryGetValue(t.Id, out var d) ? d : "No description available",
                 RequiredLevel = t.RequiredLevel,
-                Modifiers = t.Modifiers,
+                Modifiers = ArmModifier(t.Modifiers),
                 RaceId = t.RaceId,
                 SubraceId = t.SubraceId
             }).ToList();
+        }
+
+
+        private List<LanguageDto> ArmLanguagesDto(List<Language> languages)
+        {
+            return languages.Select(l => new LanguageDto
+            {
+                Id = l.Id,
+                TechnicalName = l.TechnicalName,
+            }).ToList();
+        }
+        private List<ModifierDataDto> ArmModifier(List<ModifierData> modifier)
+        {
+            List<ModifierDataDto> modifiers = new List<ModifierDataDto>();
+            foreach (var mod in modifier)
+            {
+                modifiers.Add(new ModifierDataDto
+                {
+                    Type = (ModifierTypeDto)mod.Type,
+                    Target = mod.Target.ToString(),
+                    Value = mod.Value
+                });
+            }
+            return modifiers;
         }
     }
 }

@@ -12,6 +12,6 @@ namespace RafeTale.Domain.Entities
     {
         public Guid Id { get; set; }
         public string TechnicalName { get; set; } = string.Empty;
-        public ASI Ability { get; set; }
+        public AttributeImprovementChoice Ability { get; set; }
     }
 }

@@ -10,6 +10,9 @@ using RafeTale.Domain.Interfaces;
 using RafeTale.Infrastructure;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using RafeTale.Infrastructure.Extraction;
+using RafeTale.Infrastructure.Extraction.Interfaces;
+using RafeTale.Infrastructure.Extraction.Sheets;
 
 namespace RafeTale.MAUI;
 
@@ -51,13 +54,6 @@ public static class MauiProgram
         builder.Services.AddScoped<ILocalizationService, LocalizationService>();
 
         // --- Domain Services (interfaces específicas) ---
-        builder.Services.AddScoped<IService<ClassDefinitionDto, ClassDefinition>, ClassService>();
-        builder.Services.AddScoped<IService<RaceDto, Race>, RaceService>();
-        builder.Services.AddScoped<IService<SubclassDto, Subclass>, SubclassService>();
-        builder.Services.AddScoped<IService<SpellDto, Spell>, SpellService>();
-        builder.Services.AddScoped<IService<LanguageDto, Language>, LanguageService>();
-        builder.Services.AddScoped<IService<BackgroundDto, Background>, BackgroundService>();
-        builder.Services.AddScoped<IService<FeatDto, Feat>, FeatService>();
         builder.Services.AddScoped<ICharacterQueryService, CharacterQueryService>();
         builder.Services.AddScoped<IFeatureQueryService, FeatureQueryService>();
         builder.Services.AddScoped<ILevelingService, LevelingService>();
@@ -73,12 +69,30 @@ public static class MauiProgram
         builder.Services.AddScoped<IService<SubclassDto, Subclass>, SubclassService>();
         builder.Services.AddScoped<IService<BackgroundDto, Background>, BackgroundService>();
         builder.Services.AddScoped<IService<FeatDto, Feat>, FeatService>();
-        builder.Services.AddScoped<IService<LanguageDto, Language>, LanguageService>();
         builder.Services.AddScoped<ILibraryDataService, LibraryDataService>();
         builder.Services.AddScoped<ILibraryCountsService, LibraryCountsService>();
 
         //Excel
+
+        builder.Services.AddTransient<ISheetExtractor, LanguageExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, SkillExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, RaceExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, SubRaceExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, TraitExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, SpecialTraitExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, ClassExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, SubclassExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, SpellExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, FeatExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, BackgroundExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, CharacterExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, ItemExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, ClassLevelProgressionExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, SubclassLevelProgressionExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, XpRuleExtractor>();
+
         builder.Services.AddScoped<IExcelImportService, ImportManager>();
+        builder.Services.AddTransient<IDataExtractor, ExcelDataExtractor>();
 
         AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
         {

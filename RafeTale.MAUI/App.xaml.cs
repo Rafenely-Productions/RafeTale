@@ -95,44 +95,4 @@ public partial class App : Microsoft.Maui.Controls.Application
             _logger.LogError(ex, "Critical initialization error");
         }
     }
-
-    private async Task<bool> CheckIfDatabaseHasDataAsync()
-    {
-        try
-        {
-            using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<RafeTaleDbContext>();
-
-            // Si hay al menos una clase, asumimos que la DB está poblada
-            return await context.ClassDefinitions.AnyAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Could not check DB data. Assuming empty.");
-            return false;
-        }
-    }
-
-    private async Task ImportFromExcelAsync(IAppInitializer initializer)
-    {
-        try
-        {
-            using var scope = _serviceProvider.CreateScope();
-            var importService = scope.ServiceProvider.GetRequiredService<IExcelImportService>();
-
-            initializer.UpdateStatus("Desempacando grimorio (Primera vez)...");
-
-            using Stream excelStream = await FileSystem.OpenAppPackageFileAsync("RafeTale_v2.xlsx");
-
-            initializer.UpdateStatus("Importando datos...");
-            await importService.ImportDataFromExcelAsync(excelStream);
-
-            _logger.LogInformation("Excel import completed successfully.");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Excel import failed. Is RafeTale_v2.xlsx in Resources/Raw/?");
-            throw; // Relanzamos para que el initializer marque el error si quieres
-        }
-    }
 }
