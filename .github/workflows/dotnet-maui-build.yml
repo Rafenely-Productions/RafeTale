@@ -23,11 +23,11 @@ jobs:
       - name: Install MAUI workload
         run: dotnet workload install maui
 
-      - name: Restore dependencies (Windows)
-        run: dotnet restore -r win-x64
+      - name: Restore dependencies
+        run: dotnet restore
 
-      - name: Build solution
-        run: dotnet build --no-restore --configuration Release -f net10.0-windows10.0.19041.0 -r win-x64
+      - name: Build Windows
+        run: dotnet build src/RafeTale.MAUI/RafeTale.MAUI.csproj --configuration Release -f net10.0-windows10.0.19041.0
 
       - name: Run tests
         run: dotnet test --no-build --verbosity normal
