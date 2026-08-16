@@ -26,11 +26,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      - name: Run tests
+        run: dotnet test --configuration Release --verbosity normal
+
       - name: Build Windows
         run: dotnet build src/RafeTale.MAUI/RafeTale.MAUI.csproj --configuration Release -f net10.0-windows10.0.19041.0
-
-      - name: Run tests
-        run: dotnet test --no-build --configuration Release --verbosity normal
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
