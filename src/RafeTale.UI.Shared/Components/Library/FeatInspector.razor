@@ -1,5 +1,4 @@
 @using Application.DTOs
-@using Domain.Enums
 @inject IStringLocalizer<AppStrings> L
 @inject IJSRuntime JS
 
@@ -11,16 +10,19 @@
             @if (FeatDto?.Category != null)
             {
                 <span class="text-[10px] font-mono bg-amber-500/10 text-amber-500 px-2.5 py-1 rounded-lg border border-amber-500/20 uppercase tracking-wider">
-                    @L["CategoryFeat_"+FeatDto.Category]
+                    @L["CategoryFeat_" + FeatDto.Category]
                 </span>
             }
         </div>
-        <p class="text-slate-400 font-sans text-sm leading-relaxed mt-3">
-            @((MarkupString)FeatDto.Description)
-        </p>
+        @if (FeatDto != null && FeatDto.Description != null)
+        {
+            <p class="text-slate-400 font-sans text-sm leading-relaxed mt-3">
+                @((MarkupString)FeatDto.Description)
+            </p>
+        }
     </div>
 
-    @if (FeatDto.Prerequisite != null && FeatDto.Prerequisite.Any())
+    @if (FeatDto != null && FeatDto.Prerequisite != null && FeatDto.Prerequisite.Any())
     {
         <div class="p-4 bg-slate-900/40 rounded-xl border border-slate-800">
             <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-2">@L["Feat_Prerequisite"]</p>

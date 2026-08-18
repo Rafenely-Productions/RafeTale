@@ -101,7 +101,7 @@
 
         if (CharDto?.ClassDef?.SkillProficiencies != null)
         {
-            trainedSkills = CharDto.ClassDef.SkillProficiencies;
+            trainedSkills = [.. CharDto.ClassDef.SkillProficiencies.OfType<string>()];
         }
     }
 

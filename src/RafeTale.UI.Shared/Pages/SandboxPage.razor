@@ -195,7 +195,8 @@
     {
         try
         {
-            features = await FeatureQueryService.GetDashboardFeaturesAsync();
+            IEnumerable<Feature?> enumerable = await FeatureQueryService.GetDashboardFeaturesAsync();
+            features = enumerable.OfType<Feature>();
         }
         catch (Exception ex)
         {

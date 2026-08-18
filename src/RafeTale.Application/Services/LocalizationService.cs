@@ -43,8 +43,9 @@ namespace RafeTale.Application.Services
             var translations = await unitOfWork.LocalizedContents.GetManyAsync(x =>
                 x.EntityType == entityType &&
                 x.LanguageCode == _currentCulture);
-
-            return [.. translations];
+            return translations == null
+                ? throw new Exception($"No translations found for entity type {entityType} and language {_currentCulture}")
+                : [.. translations.OfType<LocalizedContent>()];
         }
 
         public async Task<Dictionary<LocProperty,Dictionary<Guid, string>>> GetAllAsync(LocEntity entityType, LocProperty[] propertyType)

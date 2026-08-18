@@ -24,12 +24,14 @@ public class CharacterRepository(RafeTaleDbContext context) : Repository<Charact
 
     public async Task<Character> GetByNameAsync(string name)
     {
-        return await _context.Characters.FirstOrDefaultAsync(c => c.Name == name);
+        return await _context.Characters.FirstOrDefaultAsync(c => c.Name == name)
+        ?? throw new KeyNotFoundException($"Character with name '{name}' not found.");
     }
 
     public async Task<Character> GetByIdAsync(Guid id)
     {
-        return await _context.Characters.FirstOrDefaultAsync(c => c.Id == id);
+        return await _context.Characters.FirstOrDefaultAsync(c => c.Id == id)
+        ?? throw new KeyNotFoundException($"Character with id '{id}' not found.");
     }
 
     public async Task RemoveAsync(Character existingChar)

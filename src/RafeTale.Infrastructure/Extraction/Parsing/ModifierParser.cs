@@ -25,13 +25,13 @@ namespace RafeTale.Infrastructure.Extraction.Parsing
             try
             {
                 return string.IsNullOrWhiteSpace(json)
-                    ? new List<ModifierData>()
-                    : JsonSerializer.Deserialize<List<ModifierData>>(json, _jsonOptions) ?? new List<ModifierData>();
+                    ? []
+                    : JsonSerializer.Deserialize<List<ModifierData>>(json, _jsonOptions) ?? [];
             }
             catch (JsonException)
             {
                 Debug.WriteLine($"Error de JSON en modificadores: {json}");
-                return new List<ModifierData>();
+                return [];
             }
         }
 
@@ -40,13 +40,13 @@ namespace RafeTale.Infrastructure.Extraction.Parsing
             try
             {
                 return string.IsNullOrWhiteSpace(json)
-                    ? new List<FeatPrerequisiteModifierData>()
-                    : JsonSerializer.Deserialize<List<FeatPrerequisiteModifierData>>(json, _jsonOptions) ?? new List<FeatPrerequisiteModifierData>();
+                    ? []
+                    : JsonSerializer.Deserialize<List<FeatPrerequisiteModifierData>>(json, _jsonOptions) ?? [];
             }
             catch (JsonException)
             {
                 Debug.WriteLine($"Error de JSON en prerequisitos: {json}");
-                return new List<FeatPrerequisiteModifierData>();
+                return [];
             }
         }
 
@@ -72,12 +72,12 @@ namespace RafeTale.Infrastructure.Extraction.Parsing
                 if (keyStr.Equals("SpellSlots", StringComparison.OrdinalIgnoreCase))
                 {
                     trait.SpellSlots = JsonSerializer.Deserialize<int[]>(valueStr) ?? new int[9];
-                    trait.Value = null;
+                    trait.Value = string.Empty;
                 }
                 else
                 {
                     trait.Value = valueStr;
-                    trait.SpellSlots = null;
+                    trait.SpellSlots = new int[9];
                 }
 
                 traits.Add(trait);

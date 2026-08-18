@@ -424,16 +424,16 @@
     <value>Dexterity</value>
   </data>
   <data name="Constitution" xml:space="preserve">
-    <value>Constitution </value>
+    <value>Constitution</value>
   </data>
   <data name="Intelligence" xml:space="preserve">
-    <value>Intelligence </value>
+    <value>Intelligence</value>
   </data>
   <data name="Wisdom" xml:space="preserve">
-    <value>Wisdom </value>
+    <value>Wisdom</value>
   </data>
   <data name="Charisma" xml:space="preserve">
-    <value>Charisma </value>
+    <value>Charisma</value>
   </data>
   <data name="SpellRange_Self" xml:space="preserve">
     <value>Self</value>
@@ -481,40 +481,40 @@
     <value>Rogue</value>
   </data>
   <data name="SpellCastTime_ Action" xml:space="preserve">
-    <value> Action</value>
+    <value>Action</value>
   </data>
   <data name=" SpellCastTime_BonusAction" xml:space="preserve">
-    <value> BonusAction</value>
+    <value>BonusAction</value>
   </data>
   <data name=" SpellCastTime_Reaction" xml:space="preserve">
-    <value> Reaction</value>
+    <value>Reaction</value>
   </data>
   <data name=" SpellCastTime_Minute" xml:space="preserve">
-    <value> Minute</value>
+    <value>Minute</value>
   </data>
   <data name=" SpellCastTime_Hour" xml:space="preserve">
-    <value> Hour</value>
+    <value>Hour</value>
   </data>
   <data name=" SpellCastTime_Special" xml:space="preserve">
-    <value> Special</value>
+    <value>Special</value>
   </data>
   <data name="SpellCastTime_Action" xml:space="preserve">
-    <value> Action</value>
+    <value>Action</value>
   </data>
   <data name="SpellCastTime_BonusAction" xml:space="preserve">
-    <value> BonusAction</value>
+    <value>BonusAction</value>
   </data>
   <data name="SpellCastTime_Reaction" xml:space="preserve">
-    <value> Reaction</value>
+    <value>Reaction</value>
   </data>
   <data name="SpellCastTime_Minute" xml:space="preserve">
-    <value> Minute</value>
+    <value>Minute</value>
   </data>
   <data name="SpellCastTime_Hour" xml:space="preserve">
-    <value> Hour</value>
+    <value>Hour</value>
   </data>
   <data name="SpellCastTime_Special" xml:space="preserve">
-    <value> Special</value>
+    <value>Special</value>
   </data>
   <data name="Spell_Time" xml:space="preserve">
     <value>Time</value>

@@ -18,7 +18,7 @@ public class ExcelExtensionsTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Name.Should().Be("Spells");
+        result?.Name.Should().Be("Spells");
     }
 
     [Fact]

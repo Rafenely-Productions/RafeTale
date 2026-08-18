@@ -3,7 +3,7 @@ namespace RafeTale.Application.DTOs
 {
     public class ClassTraitDto
     {
-        public string ResourceType { get; set; }
+        public string ResourceType { get; set; } = string.Empty;
 
         public string Value { get; set; } = string.Empty;
 
