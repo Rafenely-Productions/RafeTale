@@ -431,6 +431,7 @@ public enum SkillProficiency
 
 public enum ResourceType
 {
+    Unknown = 0,
     RagesCount,
     RageDamage,
     WeaponFocusCount,

@@ -630,4 +630,37 @@
   <data name="Msg_NoFeatsFound" xml:space="preserve">
     <value>No hay dotes disponibles para seleccionar. Importa un paquete de contenido para revelarlos.</value>
   </data>
+  <data name="Title_MyCharacters" xml:space="preserve">
+    <value>Mis Personajes</value>
+  </data>
+  <data name="Btn_CreateCharacter" xml:space="preserve">
+    <value>Crear Personaje</value>
+  </data>
+  <data name="Btn_CreateFirstCharacter" xml:space="preserve">
+    <value>Crear tu primer héroe</value>
+  </data>
+  <data name="EmptyState_NoCharacters_Title" xml:space="preserve">
+    <value>El tablero está vacío</value>
+  </data>
+  <data name="EmptyState_NoCharacters_Desc" xml:space="preserve">
+    <value>Aún no has forjado ningún personaje. ¿Qué tal un guerrero valiente o un mago erudito?</value>
+  </data>
+  <data name="EmptyState_NoSpells_Title" xml:space="preserve">
+    <value>Grimorio vacío</value>
+  </data>
+  <data name="EmptyState_NoSpells_Desc" xml:space="preserve">
+    <value>Este personaje no conoce ningún hechizo todavía.</value>
+  </data>
+  <data name="EmptyState_NoFeatures_Title" xml:space="preserve">
+    <value>Diario de aventuras en blanco</value>
+  </data>
+  <data name="EmptyState_NoFeatures_Desc" xml:space="preserve">
+    <value>Aún no has desbloqueado ninguna característica. Sube de nivel para obtener nuevas habilidades.</value>
+  </data>
+  <data name="Title_NoSpellsFound" xml:space="preserve">
+    <value>Sin Conjuros</value>
+  </data>
+  <data name="Msg_NoSpellsFound" xml:space="preserve">
+    <value>No hay conjuros que coincidan con el término buscado.</value>
+  </data>
 </root>
