@@ -48,8 +48,8 @@ namespace RafeTale.Application.Services.DtosServices
                 CreatureType = race.CreatureType.ToString(),
                 Speed = race.Speed,
                 Languages = ArmLanguagesDto(race.Languages),
-                Traits = new(), // Se llenan en GetAllAsync usando el inicializador si hiciera falta
-                SubRaces = new()
+                Traits = [], // Se llenan en GetAllAsync usando el inicializador si hiciera falta
+                SubRaces = []
             };
         }
 
@@ -64,6 +64,7 @@ namespace RafeTale.Application.Services.DtosServices
             var raceDtos = new List<RaceDto>();
             foreach (var race in races)
             {
+                if(race == null) continue; 
                 // Mapeamos el DTO base usando el inicializador 'with' o reconstruyendo
                 var baseDto = ArmDto(race!, localizedWords);
 
@@ -96,11 +97,11 @@ namespace RafeTale.Application.Services.DtosServices
         }
 
 
-        private List<SubRaceDto> ArmSubraceDtos(List<SubRace>? subraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedSubraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedTraits)
+        private static List<SubRaceDto> ArmSubraceDtos(List<SubRace>? subraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedSubraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedTraits)
         {
-            if (subraces == null) return new();
+            if (subraces == null) return [];
 
-            return subraces.Select(sr => new SubRaceDto
+            return [.. subraces.Select(sr => new SubRaceDto
             {
                 Id = sr.Id,
                 TechnicalName = sr.TechnicalName,
@@ -108,14 +109,14 @@ namespace RafeTale.Application.Services.DtosServices
                 Description = localizedSubraces.TryGetValue(LocProperty.Description, out var descDict) && descDict.TryGetValue(sr.Id, out var d) ? d : "No description",
                 RaceId = sr.RaceId,
                 Traits = ArmTraitDtos(sr.Traits, localizedTraits) // Retorna List<TraitDto> limpio
-            }).ToList();
+            })];
         }
 
-        private List<TraitDto> ArmTraitDtos(List<Trait>? traits, Dictionary<LocProperty, Dictionary<Guid, string>> localizedTraits)
+        private static List<TraitDto> ArmTraitDtos(List<Trait>? traits, Dictionary<LocProperty, Dictionary<Guid, string>> localizedTraits)
         {
-            if (traits == null) return new();
+            if (traits == null) return [];
 
-            return traits.Select(t => new TraitDto
+            return [.. traits.Select(t => new TraitDto
             {
                 Id = t.Id,
                 TechnicalName = t.TechnicalName,
@@ -125,21 +126,21 @@ namespace RafeTale.Application.Services.DtosServices
                 Modifiers = ArmModifier(t.Modifiers),
                 RaceId = t.RaceId,
                 SubraceId = t.SubraceId
-            }).ToList();
+            })];
         }
 
 
-        private List<LanguageDto> ArmLanguagesDto(List<Language> languages)
+        private static List<LanguageDto> ArmLanguagesDto(List<Language> languages)
         {
-            return languages.Select(l => new LanguageDto
+            return [.. languages.Select(l => new LanguageDto
             {
                 Id = l.Id,
                 TechnicalName = l.TechnicalName,
-            }).ToList();
+            })];
         }
-        private List<ModifierDataDto> ArmModifier(List<ModifierData> modifier)
+        private static List<ModifierDataDto> ArmModifier(List<ModifierData> modifier)
         {
-            List<ModifierDataDto> modifiers = new List<ModifierDataDto>();
+            List<ModifierDataDto> modifiers = [];
             foreach (var mod in modifier)
             {
                 modifiers.Add(new ModifierDataDto

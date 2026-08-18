@@ -127,7 +127,7 @@
     <value>Habilidad Primaria</value>
   </data>
   <data name="Title_Description" xml:space="preserve">
-    <value>Navega el catalogo completo del juego</value>
+    <value>Navega el catalogo completo del juego.</value>
   </data>
   <data name="Title_Name" xml:space="preserve">
     <value>El Códice</value>
@@ -208,7 +208,7 @@
     <value>Idiomas</value>
   </data>
   <data name="Unit_Feet" xml:space="preserve">
-    <value>pies</value>
+    <value>pies.</value>
   </data>
   <data name="Title_SelectClass" xml:space="preserve">
     <value>Elige tu Senda</value>

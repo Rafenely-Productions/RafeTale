@@ -22,12 +22,12 @@ namespace RafeTale.Infrastructure.Persistence.Configurations
             builder.Property(f => f.Modifiers)
              .HasConversion(
                  // Al guardar
-                 v => v == null ? "[]" : JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                 v => v == null ? "[]" : JsonSerializer.Serialize(v, (JsonSerializerOptions)null!),
 
                  // Al leer (Protección contra strings vacíos o "no-JSON")
                  v => string.IsNullOrWhiteSpace(v)
                      ? new List<ModifierData>()
-                     : JsonSerializer.Deserialize<List<ModifierData>>(v, (JsonSerializerOptions)null) ?? new List<ModifierData>()
+                     : JsonSerializer.Deserialize<List<ModifierData>>(v, (JsonSerializerOptions)null!) ?? new List<ModifierData>()
              );
             builder.HasMany(e => e.Prerequisite);
 

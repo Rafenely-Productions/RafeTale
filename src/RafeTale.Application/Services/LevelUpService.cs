@@ -11,13 +11,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RafeTale.Application.Services.DtosServices
+namespace RafeTale.Application.Services
 {
     public class LevelUpService(IUnitOfWork uow, IService<CharacterDto, Character> characterDtoService, ISpellServiceSystem spellService, ILogger<LevelUpService> logger) : ILevelUpService
     {
         public async Task<LevelUpDraft> PrepareLevelUpAsync(Guid characterId)
         {
-            logger.LogInformation("Preparando borrador de subida de nivel para el personaje con ID: {CharacterId}", characterId);
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Preparando borrador de subida de nivel para el personaje con ID: {CharacterId}", characterId);
+            }
 
             var character = await uow.Characters.GetByIdAsync(characterId, config => config.Include(c => c.KnownSpells))
                 ?? throw new NotFoundException("Personaje", characterId);
@@ -45,7 +48,10 @@ namespace RafeTale.Application.Services.DtosServices
                     spellsToLearn = Math.Max(0, nextMax - character.KnownSpells.Count);
                 }
             }
-            logger.LogDebug("Borrador creado exitosamente para el personaje {CharacterId}. Nivel objetivo: {TargetLevel}, Dote/ASI: {GivesFeat}", characterId, nextLevel, givesFeatThisLevel);
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("Borrador creado exitosamente para el personaje {CharacterId}. Nivel objetivo: {TargetLevel}, Dote/ASI: {GivesFeat}", characterId, nextLevel, givesFeatThisLevel);
+            }
             return new LevelUpDraft
             {
                 CharacterId = characterId,
@@ -58,7 +64,10 @@ namespace RafeTale.Application.Services.DtosServices
 
         public async Task<LevelUpDraft> PrepareClaimDraftAsync(Guid characterId)
         {
-            logger.LogInformation("Preparando reclamación de recompensas pendientes para el personaje: {CharacterId}", characterId);
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Preparando reclamación de recompensas pendientes para el personaje: {CharacterId}", characterId);
+            }
 
             var character = await uow.Characters.GetByIdAsync(characterId, config => config.Include(c => c.KnownSpells))
                 ?? throw new NotFoundException("Personaje", characterId);
@@ -66,7 +75,7 @@ namespace RafeTale.Application.Services.DtosServices
             var classDef = await uow.ClassDefinitions.GetByIdAsync(character.ClassDefId, config => config
                 .IncludeCollection(x => x.Progressions, p => p.Features))!;
 
-            var currentProgression = classDef.Progressions.FirstOrDefault(p => p.Level == character.Level);
+            var currentProgression = classDef?.Progressions.FirstOrDefault(p => p.Level == character.Level);
             var audit = await AuditCharacterAsync(characterId);
             var budget = BuildSpellBudget(character, currentProgression);
 
@@ -82,12 +91,12 @@ namespace RafeTale.Application.Services.DtosServices
         }
 
         // 🚨 HELPER ARQUITECTÓNICO CENTRALIZADO: Mapea cualquier renglón de Excel a un presupuesto tipado
-        private SpellBudget BuildSpellBudget(Character character, ClassLevelProgression? progression)
+        private static SpellBudget BuildSpellBudget(Character character, ClassLevelProgression? progression)
         {
             var budget = new SpellBudget();
             if (character.KnownSpells != null)
             {
-                budget.InitiallyKnownSpellIds = character.KnownSpells.Select(s => s.Id).ToList();
+                budget.InitiallyKnownSpellIds = [.. character.KnownSpells.Select(s => s.Id)];
                 // ❌ Ya no asignamos budget.CurrentSelectionIds aquí porque el estado vive en el LevelUpDraft
             }
 
@@ -119,14 +128,17 @@ namespace RafeTale.Application.Services.DtosServices
 
         public async Task<CharacterDto> CommitLevelUpAsync(LevelUpDraft draft)
         {
-            logger.LogInformation("Consolidando subida de nivel para el personaje ID: {CharacterId} hacia el nivel {TargetLevel}", draft.CharacterId, draft.TargetLevel);
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Consolidando subida de nivel para el personaje ID: {CharacterId} hacia el nivel {TargetLevel}", draft.CharacterId, draft.TargetLevel);
+            }
 
             var character = await uow.Characters.GetByIdAsync(draft.CharacterId, config => config
                 .Include(c => c.AcquiredFeatures)
                 .Include(c => c.CharacterModifiers)
                 .Include(c => c.AcquiredFeats)
                 .Include(c => c.KnownSpells)
-                .Include(c => c.SpellSlots)) 
+                .Include(c => c.SpellSlots))
                 ?? throw new NotFoundException("Personaje", draft.CharacterId);
 
             var classDef = await uow.ClassDefinitions.GetByIdAsync(character.ClassDefId, config => config
@@ -195,7 +207,7 @@ namespace RafeTale.Application.Services.DtosServices
             }
 
             // 6. Sincronizar Grimorio de Hechizos
-            var selectedIds = draft.SelectedSpellIds ?? draft.SelectedSpellIds ?? new List<Guid>();
+            var selectedIds = draft.SelectedSpellIds ?? draft.SelectedSpellIds ?? [];
             var spellsToRemove = character.KnownSpells.Where(s => !selectedIds.Contains(s.Id)).ToList();
             foreach (var spell in spellsToRemove)
             {
@@ -220,19 +232,25 @@ namespace RafeTale.Application.Services.DtosServices
             await spellService.RecalculateMaxSlotsAsync(character);
 
             await uow.SaveChangesAsync();
-            logger.LogInformation("Nivel consolidado con éxito para el personaje: {CharacterName} ({CharacterId})", character.Name, character.Id);
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Nivel consolidado con éxito para el personaje: {CharacterName} ({CharacterId})", character.Name, character.Id);
+            }
             return await characterDtoService.ArmDto(character);
         }
         public async Task<CharacterAuditDto> AuditCharacterAsync(Guid characterId)
         {
-            logger.LogDebug("Auditando estado del personaje: {CharacterId}", characterId);
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("Auditando estado del personaje: {CharacterId}", characterId);
+            }
             var character = await uow.Characters.GetByIdAsync(characterId, config => config
-                .Include(c => c.ClassDef)
-                .Include(c => c.AcquiredFeats)
-                .Include(c => c.KnownSpells)
-                .Include(c => c.CharacterModifiers)
-                .IncludePaths.Add("ClassDef.Progressions.Features"))
-                ?? throw new NotFoundException("Personaje", characterId);
+            .Include(c => c.ClassDef)
+            .Include(c => c.AcquiredFeats)
+            .Include(c => c.KnownSpells)
+            .Include(c => c.CharacterModifiers)
+            .IncludePaths.Add("ClassDef.Progressions.Features"))
+            ?? throw new NotFoundException("Personaje", characterId);
 
             var progressions = character.ClassDef.Progressions.Where(x => x.Level <= character.Level).ToList();
             int allowedSpells = 0;

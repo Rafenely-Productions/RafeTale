@@ -11,16 +11,11 @@ using System.Linq.Expressions;
 
 namespace RafeTale.Application.Services.DtosServices
 {
-    public class SubclassService : IService<SubclassDto, Subclass>
+    public class SubclassService(IUnitOfWork uow, ILocalizationService loc) : IService<SubclassDto, Subclass>
     {
-        private readonly IUnitOfWork _uow;
-        private readonly ILocalizationService _loc;
+        private readonly IUnitOfWork _uow = uow;
+        private readonly ILocalizationService _loc = loc;
 
-        public SubclassService(IUnitOfWork uow, ILocalizationService loc)
-        {
-            _uow = uow;
-            _loc = loc;
-        }
         public async Task<SubclassDto> ArmDto(Subclass entity)
         {
             return new SubclassDto
@@ -32,7 +27,7 @@ namespace RafeTale.Application.Services.DtosServices
             };
         }
 
-        public SubclassDto ArmDto(Subclass entity, Dictionary<LocProperty, Dictionary<Guid, string>> localizedWords)
+        public SubclassDto ArmDto(Subclass entity, Dictionary<LocProperty, Dictionary<Guid, string>>? localizedWords)
         {
             var Name = localizedWords?.TryGetValue(LocProperty.Name, out var nameL) == true && nameL?.TryGetValue(entity.Id, out var entityName) == true ? entityName : "Uknown entity...";
             var Description = localizedWords?.TryGetValue(LocProperty.Description, out var descriptionL) == true && descriptionL?.TryGetValue(entity.Id, out var description) == true ? description : "Uknown entity...";
@@ -62,16 +57,16 @@ namespace RafeTale.Application.Services.DtosServices
                 dtos.Add(classDto);
             }
 
-            return dtos.OrderBy(x => x.Name).ToList();
+            return [.. dtos.OrderBy(x => x.Name)];
         }
 
-        private void ArmFeatureDtos(SubclassDto classDto, List<LocalizedContent> featuresNames)
+        private static void ArmFeatureDtos(SubclassDto classDto, List<LocalizedContent> featuresNames)
         {
             foreach (var pro in classDto.Progressions)
             {
                 foreach (var feature in pro.Features)
                 {
-                    FeatureDto featureDto = new FeatureDto
+                    FeatureDto featureDto = new()
                     {
                         Id = feature.Id,
                         Name = featuresNames.FirstOrDefault(t => t.EntityId == feature.Id && t.Property == LocProperty.Name)?.Text ?? "Sin nombre",
@@ -97,23 +92,23 @@ namespace RafeTale.Application.Services.DtosServices
             throw new NotImplementedException();
         }
 
-        private ICollection<SubclassLevelProgressionDto> ArmSubClassProgressionsDto(ICollection<SubclassLevelProgression> progressions)
+        private static ICollection<SubclassLevelProgressionDto> ArmSubClassProgressionsDto(ICollection<SubclassLevelProgression> progressions)
         {
-            return progressions.Select(p => new SubclassLevelProgressionDto
+            return [.. progressions.Select(p => new SubclassLevelProgressionDto
             {
                 Id = p.Id,
                 Level = p.Level,
-                Features = p.Features.Select(f => new FeatureDto
+                Features = [.. p.Features.Select(f => new FeatureDto
                 {
                     Id = f.Id,
                     Name = f.TechnicalName,
                     Modifiers = ArmModifier(f.Modifiers)
-                }).ToList()
-            }).ToList();
+                })]
+            })];
         }
-        private List<ModifierDataDto> ArmModifier(List<ModifierData> modifier)
+        private static List<ModifierDataDto> ArmModifier(List<ModifierData> modifier)
         {
-            List<ModifierDataDto> modifiers = new List<ModifierDataDto>();
+            List<ModifierDataDto> modifiers = [];
             foreach (var mod in modifier)
             {
                 modifiers.Add(new ModifierDataDto
