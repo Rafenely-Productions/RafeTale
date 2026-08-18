@@ -62,9 +62,9 @@ public class SubclassLevelProgressionExtractor : ISheetExtractor
                     Level = level,
                     SubclassId = targetSubclass.Id,
                     Subclass = targetSubclass,
-                    Features = new List<Feature> { feature }
+                    Features = [feature]
                 };
-                targetSubclass.Progressions ??= new List<SubclassLevelProgression>();
+                targetSubclass.Progressions ??= [];
                 targetSubclass.Progressions.Add(progression);
                 context.Package.SubclassLevelProgressions.Add(progression);
             }

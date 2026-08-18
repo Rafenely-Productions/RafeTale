@@ -20,7 +20,7 @@ public class CharacterTests
         var character = new Character();
 
         // Act
-        int modifier = character.StrModifier; // Usamos la propiedad que llama CalculateModifier internamente
+        _ = character.StrModifier; // Usamos la propiedad que llama CalculateModifier internamente
         // Pero para testear directamente, accedemos via Reflection o seteamos el stat
         character.Strength = score;
 
@@ -50,15 +50,15 @@ public class CharacterTests
         var character = new Character
         {
             Strength = 14,
-            CharacterModifiers = new List<CharacterModifier>
-            {
+            CharacterModifiers =
+            [
                 new()
                 {
                     Type = ModifierType.AttributeBonus,
                     Target = TargetPropertyType.Strength.ToString(),
                     Value = 2
                 }
-            }
+            ]
         };
 
         // Act & Assert
@@ -93,7 +93,7 @@ public class CharacterTests
         var character = new Character
         {
             Wisdom = 14, // +2 modifier
-            AcquiredFeatures = new List<Feature>()
+            AcquiredFeatures = []
         };
 
         // Act
@@ -111,10 +111,10 @@ public class CharacterTests
         {
             Wisdom = 14, // +2 modifier
             Level = 5,   // +3 proficiency
-            AcquiredFeatures = new List<Feature>
-            {
+            AcquiredFeatures =
+            [
                 new() { TechnicalName = "SkillPerception" }
-            }
+            ]
         };
 
         // Act

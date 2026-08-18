@@ -25,7 +25,7 @@ public class ItemExtractor : ISheetExtractor
 
         var lastCol = sheet.LastColumnUsed()?.ColumnNumber() ?? 0;
 
-        foreach (var row in sheet.RangeUsed()?.RowsUsed().Skip(1) ?? Enumerable.Empty<IXLRangeRow>())
+        foreach (var row in sheet.RangeUsed()?.RowsUsed().Skip(1) ?? [])
         {
             var itemName = row.Cell(Col.TechnicalName).GetString();
             if (string.IsNullOrWhiteSpace(itemName)) continue;

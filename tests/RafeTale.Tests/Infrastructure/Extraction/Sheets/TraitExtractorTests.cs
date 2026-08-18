@@ -14,9 +14,9 @@ public class TraitExtractorTests
     public void Extract_LinksToRaceOrSubrace()
     {
         var wb = CreateWorkbook("Traits",
-            new[] { "TechnicalName", "RequiredLevel", "Race", "Subrace", "NameES", "DescriptionES", "DescriptionEN" },
-            new[] { "HumanTrait", "1", "Human", "", "Rasgo", "Desc", "Desc" },
-            new[] { "SubTrait", "1", "", "HighElf", "Rasgo", "Desc", "Desc" });
+            ["TechnicalName", "RequiredLevel", "Race", "Subrace", "NameES", "DescriptionES", "DescriptionEN" ],
+            ["HumanTrait", "1", "Human", "", "Rasgo", "Desc", "Desc" ],
+            ["SubTrait", "1", "", "HighElf", "Rasgo", "Desc", "Desc" ]);
         var ctx = CreateContext();
         ctx.Package.Races.Add(new Race { Id = Guid.NewGuid(), TechnicalName = "Human" });
         ctx.Package.SubRaces.Add(new SubRace { Id = Guid.NewGuid(), TechnicalName = "HighElf" });
@@ -32,8 +32,8 @@ public class TraitExtractorTests
     public void Extract_ParsesRequiredLevel()
     {
         var wb = CreateWorkbook("Traits",
-            new[] { "TechnicalName", "RequiredLevel", "Race", "Subrace", "NameES", "DescriptionES", "DescriptionEN" },
-            new[] { "T", "5", "", "", "N", "D", "D" });
+            ["TechnicalName", "RequiredLevel", "Race", "Subrace", "NameES", "DescriptionES", "DescriptionEN" ],
+            ["T", "5", "", "", "N", "D", "D" ]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);

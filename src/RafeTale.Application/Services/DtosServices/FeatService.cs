@@ -59,7 +59,7 @@ namespace RafeTale.Application.Services.DtosServices
                 featDtos.Add(ArmDto(feat, localizedWords));
             }
 
-            return featDtos.OrderBy(x => x.Category).ThenBy(x => x.Name).ToList();
+            return [.. featDtos.OrderBy(x => x.Category).ThenBy(x => x.Name)];
         }
 
         // 4. Consulta Unitaria por ID
@@ -71,9 +71,9 @@ namespace RafeTale.Application.Services.DtosServices
             return await ArmDto(feat);
         }
 
-        private List<ModifierDataDto> ArmModifier(List<ModifierData> modifier)
+        private static List<ModifierDataDto> ArmModifier(List<ModifierData> modifier)
         {
-            List<ModifierDataDto> modifiers = new List<ModifierDataDto>();
+            List<ModifierDataDto> modifiers = [];
             foreach (var mod in modifier)
             {
                 modifiers.Add(new ModifierDataDto
@@ -86,9 +86,9 @@ namespace RafeTale.Application.Services.DtosServices
             return modifiers;
         }
 
-        private List<FeatPrerequisiteModifierDataDto> ArmPrerequisite(List<FeatPrerequisiteModifierData> prerequisite)
+        private static List<FeatPrerequisiteModifierDataDto> ArmPrerequisite(List<FeatPrerequisiteModifierData> prerequisite)
         {
-            List<FeatPrerequisiteModifierDataDto> prerequisites = new List<FeatPrerequisiteModifierDataDto>();
+            List<FeatPrerequisiteModifierDataDto> prerequisites = [];
             foreach (var prereq in prerequisite)
             {
                 prerequisites.Add(new FeatPrerequisiteModifierDataDto

@@ -10,10 +10,8 @@ using System.Threading.Tasks;
 
 namespace RafeTale.Infrastructure.Repositories
 {
-    public class ClassLevelProgressionRepository : Repository<ClassLevelProgression>, IClassLevelProgressionRepository
+    public class ClassLevelProgressionRepository(RafeTaleDbContext context) : Repository<ClassLevelProgression>(context), IClassLevelProgressionRepository
     {
-        public ClassLevelProgressionRepository(RafeTaleDbContext context):base(context) { }
-
         public async Task AddProgressionsRangeAsync(List<ClassLevelProgression> progressions)
         {
             await _context.ClassLevelProgressions.AddRangeAsync(progressions);

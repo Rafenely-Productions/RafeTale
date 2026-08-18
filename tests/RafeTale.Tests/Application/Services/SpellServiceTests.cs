@@ -137,11 +137,11 @@ public class SpellServiceTests
             CastingTime = CastingTime.Action,
             Range = SpellRange.Ranged,
             RangeDistance = "150 feet",
-            Components = new List<SpellComponent> { SpellComponent.V, SpellComponent.S, SpellComponent.M },
-            Duration = new List<SpellDuration> { SpellDuration.Instantaneous },
+            Components = [SpellComponent.V, SpellComponent.S, SpellComponent.M],
+            Duration = [SpellDuration.Instantaneous],
             Concentration = SpellConcentration.No,
             Ritual = false,
-            ClassesTechnicalNames = new List<string> { "Wizard", "Sorcerer" }
+            ClassesTechnicalNames = ["Wizard", "Sorcerer"]
         };
     }
 

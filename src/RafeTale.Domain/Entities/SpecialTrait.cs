@@ -12,7 +12,7 @@ namespace RafeTale.Domain.Entities
     {
         public Guid Id { get; set; }
         public string TechnicalName { get; set; } = string.Empty;
-        public List<ModifierData> Modifiers { get; set; } = new();
+        public List<ModifierData> Modifiers { get; set; } = [];
 
 
         // Relación con la SubRaza

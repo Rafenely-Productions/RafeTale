@@ -29,7 +29,7 @@ public class CharacterExtractor : ISheetExtractor
         // Safe default background instead of backgrounds[0]
         var defaultBackground = context.Package.Backgrounds.FirstOrDefault();
 
-        foreach (var row in sheet.RangeUsed()?.RowsUsed().Skip(1) ?? Enumerable.Empty<IXLRangeRow>())
+        foreach (var row in sheet.RangeUsed()?.RowsUsed().Skip(1) ?? [])
         {
             var charName = row.Cell(1).GetString();
             var raceName = row.Cell(2).GetString();
@@ -50,10 +50,10 @@ public class CharacterExtractor : ISheetExtractor
                 ClassDefId = classDef?.Id ?? Guid.Empty,
                 BackgroundId = defaultBackground?.Id ?? Guid.Empty,
                 Background = defaultBackground!,
-                AcquiredFeats = new List<Feat>(),
-                Stats = new Dictionary<string, int>(),
-                AcquiredFeatures = new List<Feature>(),
-                ActiveModifiers = new List<ActiveModifiers>(),
+                AcquiredFeats = [],
+                Stats = [],
+                AcquiredFeatures = [],
+                ActiveModifiers = [],
             };
 
             foreach (var (col, statName) in statColumns)

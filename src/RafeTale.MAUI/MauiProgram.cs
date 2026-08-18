@@ -7,12 +7,12 @@ using RafeTale.Application.Services.Importer;
 using RafeTale.Application.Services.Importer.Initializer;
 using RafeTale.Domain.Entities;
 using RafeTale.Domain.Interfaces;
-using RafeTale.Infrastructure;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using RafeTale.Infrastructure.Extraction;
 using RafeTale.Infrastructure.Extraction.Interfaces;
 using RafeTale.Infrastructure.Extraction.Sheets;
+using RafeTale.Infrastructure.Persistence;
 
 namespace RafeTale.MAUI;
 
@@ -20,11 +20,7 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-        var builder = MauiApp.CreateBuilder();
-        if (builder == null)
-        {
-            throw new InvalidOperationException("Failed to create MauiApp builder.");
-        }
+        var builder = MauiApp.CreateBuilder() ?? throw new InvalidOperationException("Failed to create MauiApp builder.");
         builder
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>

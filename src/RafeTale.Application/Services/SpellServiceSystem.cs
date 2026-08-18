@@ -66,7 +66,7 @@ namespace RafeTale.Application.Services
             var currentProg = progressions.FirstOrDefault();
 
             // Si no hay datos de progresión o tu lista de rasgos de clase viene vacía, salimos de forma segura
-            if (currentProg == null || currentProg.Traits == null || !currentProg.Traits.Any())
+            if (currentProg == null || currentProg.Traits == null || currentProg.Traits.Count == 0)
             {
                 return;
             }

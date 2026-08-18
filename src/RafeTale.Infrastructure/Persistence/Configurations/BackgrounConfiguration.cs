@@ -10,7 +10,7 @@ namespace RafeTale.Infrastructure.Persistence.Configurations
 {
     public class BackgrounConfiguration
     {
-        public void Configure(EntityTypeBuilder<Background> builder)
+        public static void Configure(EntityTypeBuilder<Background> builder)
         {
             builder.HasKey(e => e.Id);
             builder.Property(e => e.TechnicalName).IsRequired().HasMaxLength(100);

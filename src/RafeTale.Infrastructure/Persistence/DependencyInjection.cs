@@ -1,11 +1,10 @@
 using RafeTale.Application.Interfaces;
 using RafeTale.Domain.Interfaces;
 using RafeTale.Infrastructure.Extraction;
-using RafeTale.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RafeTale.Infrastructure;
+namespace RafeTale.Infrastructure.Persistence;
 
 public static class DependencyInjection
 {

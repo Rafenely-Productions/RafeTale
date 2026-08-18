@@ -20,7 +20,7 @@ namespace RafeTale.Application.DTOs
 
         // Hechizos / Spells
         public int SpellsToLearnCount { get; init; }
-        public List<Guid> SelectedSpellIds { get; set; } = new();
+        public List<Guid> SelectedSpellIds { get; set; } = [];
 
         public SpellBudget SpellBudget { get; set; } = new();
 

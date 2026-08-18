@@ -14,8 +14,8 @@ public class SubRaceExtractorTests
     public void Extract_LinksToParentRace()
     {
         var wb = CreateWorkbook("Sub Races",
-            new[] { "Race", "TechnicalName", "NameES", "Unused", "DescriptionES", "DescriptionEN" },
-            new[] { "Elf", "HighElf", "Alto elfo", "", "Desc", "High elf" });
+            ["Race", "TechnicalName", "NameES", "Unused", "DescriptionES", "DescriptionEN" ],
+            ["Elf", "HighElf", "Alto elfo", "", "Desc", "High elf" ]);
         var ctx = CreateContext();
         var elf = new Race { Id = Guid.NewGuid(), TechnicalName = "Elf" };
         ctx.Package.Races.Add(elf);
@@ -31,8 +31,8 @@ public class SubRaceExtractorTests
     public void Extract_UnknownParentRace_LeavesRaceIdEmpty()
     {
         var wb = CreateWorkbook("Sub Races",
-            new[] { "Race", "TechnicalName", "NameES", "Unused", "DescriptionES", "DescriptionEN" },
-            new[] { "Dragonborn", "Draco", "Draco", "", "Desc", "Desc" });
+            ["Race", "TechnicalName", "NameES", "Unused", "DescriptionES", "DescriptionEN" ],
+            ["Dragonborn", "Draco", "Draco", "", "Desc", "Desc" ]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);

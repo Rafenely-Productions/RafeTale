@@ -82,7 +82,7 @@ public class Character : IEntity
     public int WisModifier => CalculateModifier(Wisdom);
     public int ChaModifier => CalculateModifier(Charisma);
 
-    private int CalculateModifier(int score)
+    private static int CalculateModifier(int score)
     {
         return (int)Math.Floor((score - 10) / 2.0);
     }
@@ -92,7 +92,7 @@ public class Character : IEntity
     public int CurrentHp { get; set; } = 10;
     public int Level { get; set; } = 1;
     public int Experience { get; set; } = 0;
-    public Dictionary<string, int> Stats { get; set; } = new();
+    public Dictionary<string, int> Stats { get; set; } = [];
 
     // --- Relaciones de Origen y Reglas 2024 ---
     public Guid RaceId { get; set; }
@@ -105,16 +105,16 @@ public class Character : IEntity
     public Background Background { get; set; } = null!;
 
     // --- Colecciones y Grafos Relacionales ---
-    public List<Feature> AcquiredFeatures { get; set; } = new();
-    public List<ClassLevelProgression> ClassLevels { get; set; } = new();
-    public virtual ICollection<Feat> AcquiredFeats { get; set; } = new List<Feat>();
-    public virtual ICollection<Spell> KnownSpells { get; set; } = new List<Spell>();
-    public virtual ICollection<CharacterModifier> CharacterModifiers { get; set; } = new List<CharacterModifier>();
-    public List<CharacterInventory> Inventory { get; set; } = new();
+    public List<Feature> AcquiredFeatures { get; set; } = [];
+    public List<ClassLevelProgression> ClassLevels { get; set; } = [];
+    public virtual ICollection<Feat> AcquiredFeats { get; set; } = [];
+    public virtual ICollection<Spell> KnownSpells { get; set; } = [];
+    public virtual ICollection<CharacterModifier> CharacterModifiers { get; set; } = [];
+    public List<CharacterInventory> Inventory { get; set; } = [];
     public CharacterStatus Status { get; set; } = null!;
-    public List<CharacterSpellSlots> SpellSlots { get; set; } = new();
-    public List<ActiveModifiers> ActiveModifiers { get; set; } = new();
-    public List<CampaignCharacter> CampaignCharacters { get; set; } = new();
+    public List<CharacterSpellSlots> SpellSlots { get; set; } = [];
+    public List<ActiveModifiers> ActiveModifiers { get; set; } = [];
+    public List<CampaignCharacter> CampaignCharacters { get; set; } = [];
 
     // --- Mecánicas de Juego ---
     public int ProficiencyBonus => 2 + ((Level - 1) / 4);

@@ -155,7 +155,7 @@ public class LevelUpServiceTests
         };
 
         // Act
-        var result = await _sut.CommitLevelUpAsync(draft);
+        _ = await _sut.CommitLevelUpAsync(draft);
 
         // Assert
         character.Level.Should().Be(2);
@@ -243,11 +243,11 @@ public class LevelUpServiceTests
                 { TargetPropertyType.Wisdom.ToString(), 10 },
                 { TargetPropertyType.Charisma.ToString(), 10 }
             },
-            KnownSpells = new List<Spell>(),
-            AcquiredFeatures = new List<Feature>(),
-            AcquiredFeats = new List<Feat>(),
-            CharacterModifiers = new List<CharacterModifier>(),
-            SpellSlots = new List<CharacterSpellSlots>()
+            KnownSpells = [],
+            AcquiredFeatures = [],
+            AcquiredFeats = [],
+            CharacterModifiers = [],
+            SpellSlots = []
         };
     }
 
@@ -258,7 +258,7 @@ public class LevelUpServiceTests
             Id = id,
             TechnicalName = "TestClass",
             HitDie = hitDie,
-            Progressions = new List<ClassLevelProgression>()
+            Progressions = []
         };
     }
 }

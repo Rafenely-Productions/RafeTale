@@ -19,9 +19,9 @@ namespace RafeTale.Infrastructure.Extraction.Extensions
             if (sheet == null)
             {
                 if (isRequired) throw new DataImportException($"La pestaña '{sheetName}' no existe en el archivo Excel.");
-                return Enumerable.Empty<IXLRangeRow>();
+                return [];
             }
-            return sheet.RangeUsed()?.RowsUsed().Skip(1) ?? Enumerable.Empty<IXLRangeRow>();
+            return sheet.RangeUsed()?.RowsUsed().Skip(1) ?? [];
         }
     }
 }

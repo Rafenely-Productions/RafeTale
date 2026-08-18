@@ -16,6 +16,6 @@ namespace RafeTale.Domain.Entities
         public string TechnicalName { get; set; } = string.Empty;
         public bool RequiresChoice { get; set; } = false;
 
-        public List<ModifierData> Modifiers { get; set; } = new();
+        public List<ModifierData> Modifiers { get; set; } = [];
     }
 }

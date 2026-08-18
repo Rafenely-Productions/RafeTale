@@ -1,7 +1,7 @@
 // Archivo: D:\Users\ricar\repos\RafeTale\RafeTale.UI.Shared\Extensions\ModifierTypeDtoExtensions.cs
 using RafeTale.Application.DTOs;
 
-namespace RafeTale.UI.Shared.Extensions;
+namespace RafeTale.UI.Shared.Shared.Extensions;
 
 public static class ModifierTypeDtoExtensions
 {

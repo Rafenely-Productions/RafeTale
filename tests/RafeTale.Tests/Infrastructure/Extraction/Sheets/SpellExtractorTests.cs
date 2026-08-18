@@ -12,14 +12,14 @@ public class SpellExtractorTests
     private readonly SpellExtractor _sut = new();
 
     private static readonly string[] Headers =
-        { "TechnicalName", "Level", "School", "CastingTime", "Range", "RangeDistance", "Components",
-          "MaterialEN", "Duration", "Concentration", "Ritual", "Classes", "NameES", "DescriptionES", "MaterialES" };
+        [ "TechnicalName", "Level", "School", "CastingTime", "Range", "RangeDistance", "Components",
+          "MaterialEN", "Duration", "Concentration", "Ritual", "Classes", "NameES", "DescriptionES", "MaterialES" ];
 
     [Fact]
     public void Extract_ParsesAllFieldsAndClassMappings()
     {
         var wb = CreateWorkbook("Spells", Headers,
-            new[] { "Fireball", "Level3", "Evocation", "Action", "Ranged", "150", "V,S,M", "Guano", "Instantaneous", "No", "No", "Wizard", "Bola de fuego", "Desc", "Guano" });
+            [ "Fireball", "Level3", "Evocation", "Action", "Ranged", "150", "V,S,M", "Guano", "Instantaneous", "No", "No", "Wizard", "Bola de fuego", "Desc", "Guano" ]);
         var ctx = CreateContext();
         ctx.Package.ClassDefinitions.Add(new ClassDefinition { TechnicalName = "Wizard" });
         ctx.Package.ClassDefinitions.Add(new ClassDefinition { TechnicalName = "Cleric" });
@@ -41,21 +41,21 @@ public class SpellExtractorTests
     public void Extract_AnyClass_AddsAllClasses()
     {
         var wb = CreateWorkbook("Spells", Headers,
-            new[] { "Light", "Cantrip", "Evocation", "Action", "Touch", "", "V", "", "Instantaneous", "No", "No", "Any", "Luz", "Desc", "" });
+            [ "Light", "Cantrip", "Evocation", "Action", "Touch", "", "V", "", "Instantaneous", "No", "No", "Any", "Luz", "Desc", "" ]);
         var ctx = CreateContext();
         ctx.Package.ClassDefinitions.Add(new ClassDefinition { TechnicalName = "Wizard" });
         ctx.Package.ClassDefinitions.Add(new ClassDefinition { TechnicalName = "Cleric" });
 
         _sut.Extract(wb, ctx);
 
-        ctx.Package.Spells.Single().ClassesTechnicalNames.Should().BeEquivalentTo(new[] { "Wizard", "Cleric" });
+        ctx.Package.Spells.Single().ClassesTechnicalNames.Should().BeEquivalentTo(["Wizard", "Cleric"]);
     }
 
     [Fact]
     public void Extract_RitualSi_ParsesAsTrue()
     {
         var wb = CreateWorkbook("Spells", Headers,
-            new[] { "Detect", "Level1", "Divination", "Action", "Self", "", "V,S", "", "_10Minutes", "Yes", "Si", "Wizard", "Detectar", "Desc", "" });
+            [ "Detect", "Level1", "Divination", "Action", "Self", "", "V,S", "", "_10Minutes", "Yes", "Si", "Wizard", "Detectar", "Desc", "" ]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);

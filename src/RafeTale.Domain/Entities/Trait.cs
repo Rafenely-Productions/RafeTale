@@ -13,7 +13,7 @@ namespace RafeTale.Domain.Entities
         public Guid Id { get; set; }
         public string TechnicalName { get; set; } = string.Empty;
         public int RequiredLevel { get; set; } = 1;
-        public List<ModifierData> Modifiers { get; set; } = new();
+        public List<ModifierData> Modifiers { get; set; } = [];
 
         public Guid? RaceId { get; set; }
         public Race? Race { get; set; }

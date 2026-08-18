@@ -8,7 +8,7 @@ namespace RafeTale.Infrastructure.Persistence.Configurations
 {
     public class CharacterConfiguration : IEntityTypeConfiguration<Character>
     {
-        JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = false };
+        readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = false };
 
         public void Configure(EntityTypeBuilder<Character> builder)
         {

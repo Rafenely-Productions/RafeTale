@@ -15,14 +15,14 @@
         <div class="flex gap-2.5">
             <div class="bg-black/40 px-3 py-1 rounded-xl border border-slate-800 text-center shadow">
                 <span class="text-[8px] text-slate-500 block uppercase font-black">@L["Label_Cantrips"]</span>
-                <span class="text-xs font-mono font-black @(Draft.SpellBudget.SelectedCantripsCount(Draft.SelectedSpellIds, AvailableSpells) == Draft.SpellBudget.MaxCantrips ? "text-lime-500" : "text-amber-500")">
-                    @Draft.SpellBudget.SelectedCantripsCount(Draft.SelectedSpellIds, AvailableSpells) / @Draft.SpellBudget.MaxCantrips
+                <span class="text-xs font-mono font-black @(SpellBudget.SelectedCantripsCount(Draft.SelectedSpellIds, AvailableSpells) == Draft.SpellBudget.MaxCantrips ? "text-lime-500" : "text-amber-500")">
+                    @SpellBudget.SelectedCantripsCount(Draft.SelectedSpellIds, AvailableSpells) / @Draft.SpellBudget.MaxCantrips
                 </span>
             </div>
             <div class="bg-black/40 px-3 py-1 rounded-xl border border-slate-800 text-center shadow">
                 <span class="text-[8px] text-slate-500 block uppercase font-black">@L["Label_Prepared"]</span>
-                <span class="text-xs font-mono font-black @(Draft.SpellBudget.SelectedSpellsCount(Draft.SelectedSpellIds, AvailableSpells) == Draft.SpellBudget.MaxPreparedSpells ? "text-lime-500" : "text-amber-500")">
-                    @Draft.SpellBudget.SelectedSpellsCount(Draft.SelectedSpellIds, AvailableSpells) / @Draft.SpellBudget.MaxPreparedSpells
+                <span class="text-xs font-mono font-black @(SpellBudget.SelectedSpellsCount(Draft.SelectedSpellIds, AvailableSpells) == Draft.SpellBudget.MaxPreparedSpells ? "text-lime-500" : "text-amber-500")">
+                    @SpellBudget.SelectedSpellsCount(Draft.SelectedSpellIds, AvailableSpells) / @Draft.SpellBudget.MaxPreparedSpells
                 </span>
             </div>
         </div>
@@ -66,8 +66,8 @@
                 @foreach (var spell in displayedSpells)
                 {
                     bool isChecked = Draft.SelectedSpellIds.Contains(spell.Id);
-                    int currentCantrips = Draft.SpellBudget.SelectedCantripsCount(Draft.SelectedSpellIds, AvailableSpells);
-                    int currentSpells = Draft.SpellBudget.SelectedSpellsCount(Draft.SelectedSpellIds, AvailableSpells);
+                    int currentCantrips = SpellBudget.SelectedCantripsCount(Draft.SelectedSpellIds, AvailableSpells);
+                    int currentSpells = SpellBudget.SelectedSpellsCount(Draft.SelectedSpellIds, AvailableSpells);
                     bool isDisabled = !isChecked && (
                     ((int)spell.Level == 0 && currentCantrips >= Draft.SpellBudget.MaxCantrips) ||
                     ((int)spell.Level > 0 && currentSpells >= Draft.SpellBudget.MaxPreparedSpells)

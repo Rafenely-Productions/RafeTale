@@ -5,11 +5,7 @@ using RafeTale.Domain.Entities;
 using RafeTale.Domain.Enums;
 using RafeTale.Domain.Helpers;
 using RafeTale.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace RafeTale.Application.Services.DtosServices
 {
@@ -109,16 +105,16 @@ namespace RafeTale.Application.Services.DtosServices
             if (character == null) return null!;
             return await ArmDto(character);
         }
-        private List<CharacterSpellSlotsDto> ArmSpellSlotsDto(List<CharacterSpellSlots> spellSlots)
+        private static List<CharacterSpellSlotsDto> ArmSpellSlotsDto(List<CharacterSpellSlots> spellSlots)
         {
-            return spellSlots.Select(slot => new CharacterSpellSlotsDto
+            return [.. spellSlots.Select(slot => new CharacterSpellSlotsDto
             {
                 Id = slot.Id,
                 CharacterId = slot.CharacterId,
                 Level = slot.Level,
                 MaxSlots = slot.MaxSlots,
                 UsedSlots = slot.UsedSlots
-            }).ToList();
+            })];
         }
     }
 }

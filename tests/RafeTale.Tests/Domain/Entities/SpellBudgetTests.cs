@@ -23,7 +23,7 @@ public class SpellBudgetTests
     public void SelectedCantripsCount_OnlyCantrips_ReturnsCorrectCount()
     {
         // Arrange
-        var budget = new SpellBudget();
+        _ = new SpellBudget();
         var spells = new List<SpellDto>
         {
             new() { Id = Guid.NewGuid(), Level = (int)SpellLevel.Cantrip },
@@ -33,7 +33,7 @@ public class SpellBudgetTests
         var selectedIds = new List<Guid> { spells[0].Id, spells[1].Id, spells[2].Id };
 
         // Act
-        int count = budget.SelectedCantripsCount(selectedIds, spells);
+        int count = SpellBudget.SelectedCantripsCount(selectedIds, spells);
 
         // Assert
         count.Should().Be(2);
@@ -43,7 +43,7 @@ public class SpellBudgetTests
     public void SelectedSpellsCount_OnlyLeveledSpells_ReturnsCorrectCount()
     {
         // Arrange
-        var budget = new SpellBudget();
+        _ = new SpellBudget();
         var spells = new List<SpellDto>
         {
             new() { Id = Guid.NewGuid(), Level = (int) SpellLevel.Cantrip },
@@ -53,7 +53,7 @@ public class SpellBudgetTests
         var selectedIds = new List<Guid> { spells[0].Id, spells[1].Id, spells[2].Id };
 
         // Act
-        int count = budget.SelectedSpellsCount(selectedIds, spells);
+        int count = SpellBudget.SelectedSpellsCount(selectedIds, spells);
 
         // Assert
         count.Should().Be(2);
