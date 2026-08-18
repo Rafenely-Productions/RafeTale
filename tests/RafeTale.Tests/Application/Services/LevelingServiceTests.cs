@@ -22,7 +22,7 @@ public class LevelingServiceTests
     {
         // Arrange
         var characterId = Guid.NewGuid();
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character>()));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([]));
         _uow.XpRules.GetXpThresholdsAsync().Returns(Task.FromResult(new Dictionary<int, int>()));
 
         // Act
@@ -41,7 +41,7 @@ public class LevelingServiceTests
         var character = CreateCharacter(characterId, classDefId, level: 1, xp: 0);
         var thresholds = new Dictionary<int, int> { { 2, 300 } };
 
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([ character ]));
         _uow.XpRules.GetXpThresholdsAsync().Returns(Task.FromResult(thresholds));
 
         // Act
@@ -67,21 +67,18 @@ public class LevelingServiceTests
         {
             Id = featureId,
             TechnicalName = "Rage",
-            Modifiers = new List<ModifierData>
-            {
-                new ModifierData { Type = ModifierType.AttributeBonus, Target = AttributeImprovementChoice.Strength.ToString(), Value = 2 }
-            }
+            Modifiers = [new ModifierData { Type = ModifierType.AttributeBonus, Target = AttributeImprovementChoice.Strength.ToString(), Value = 2 }]
         };
         var progression = new ClassLevelProgression
         {
             Id = Guid.NewGuid(),
             ClassDefId = classDefId,
             Level = 2,
-            Features = new List<Feature> { feature }
+            Features = [feature]
         };
         var thresholds = new Dictionary<int, int> { { 2, 300 } };
 
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([ character ]));
         _uow.XpRules.GetXpThresholdsAsync().Returns(Task.FromResult(thresholds));
         _uow.ClassLevelProgressions.GetProgressionsByClassAndLevelAsync(classDefId, 2).Returns(Task.FromResult<ClassLevelProgression?>(progression));
 
@@ -106,10 +103,10 @@ public class LevelingServiceTests
         var classDefId = Guid.NewGuid();
         var character = CreateCharacter(characterId, classDefId, level: 1, xp: 0);
         var thresholds = new Dictionary<int, int> { { 2, 300 }, { 3, 900 } };
-        var progression2 = new ClassLevelProgression { Id = Guid.NewGuid(), ClassDefId = classDefId, Level = 2, Features = new List<Feature>() };
-        var progression3 = new ClassLevelProgression { Id = Guid.NewGuid(), ClassDefId = classDefId, Level = 3, Features = new List<Feature>() };
+        var progression2 = new ClassLevelProgression { Id = Guid.NewGuid(), ClassDefId = classDefId, Level = 2, Features = [] };
+        var progression3 = new ClassLevelProgression { Id = Guid.NewGuid(), ClassDefId = classDefId, Level = 3, Features = [] };
 
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([ character ]));
         _uow.XpRules.GetXpThresholdsAsync().Returns(Task.FromResult(thresholds));
         _uow.ClassLevelProgressions.GetProgressionsByClassAndLevelAsync(classDefId, 2).Returns(Task.FromResult<ClassLevelProgression?>(progression2));
         _uow.ClassLevelProgressions.GetProgressionsByClassAndLevelAsync(classDefId, 3).Returns(Task.FromResult<ClassLevelProgression?>(progression3));
@@ -136,7 +133,7 @@ public class LevelingServiceTests
         {
             Id = featureId,
             TechnicalName = "ExtraAttack",
-            Modifiers = new List<ModifierData>()
+            Modifiers = []
         };
         var character = CreateCharacter(characterId, classDefId, level: 4, xp: 2500);
         character.AcquiredFeatures.Add(feature);
@@ -145,11 +142,11 @@ public class LevelingServiceTests
             Id = Guid.NewGuid(),
             ClassDefId = classDefId,
             Level = 5,
-            Features = new List<Feature> { feature }
+            Features = [feature]
         };
         var thresholds = new Dictionary<int, int> { { 5, 3000 } };
 
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([character]));
         _uow.XpRules.GetXpThresholdsAsync().Returns(Task.FromResult(thresholds));
         _uow.ClassLevelProgressions.GetProgressionsByClassAndLevelAsync(classDefId, 5).Returns(Task.FromResult<ClassLevelProgression?>(progression));
 
@@ -172,7 +169,7 @@ public class LevelingServiceTests
         var character = CreateCharacter(characterId, classDefId, level: 1, xp: 0);
         var thresholds = new Dictionary<int, int> { { 2, 300 } };
 
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([character]));
         _uow.XpRules.GetXpThresholdsAsync().Returns(Task.FromResult(thresholds));
         _uow.ClassLevelProgressions.GetProgressionsByClassAndLevelAsync(classDefId, 2).Returns(Task.FromResult<ClassLevelProgression?>(null));
         _uow.When(x => x.SaveChangesAsync()).Do(_ => throw new InvalidOperationException("DB failure"));
@@ -190,10 +187,10 @@ public class LevelingServiceTests
     {
         // Arrange
         var characterId = Guid.NewGuid();
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character>()));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([]));
 
         // Act
-        var result = await _sut.CommitLevelUpAsync(characterId, 5, new List<CharacterModifier>(), new List<Guid>(), new List<Guid>());
+        var result = await _sut.CommitLevelUpAsync(characterId, 5, [], [], []);
 
         // Assert
         result.Should().BeFalse();
@@ -208,13 +205,13 @@ public class LevelingServiceTests
         var character = CreateCharacter(characterId, classDefId, level: 2, xp: 300);
         var modifiers = new List<CharacterModifier>
         {
-            new CharacterModifier { Id = Guid.NewGuid(), Type = ModifierType.AttributeBonus, Target = AttributeImprovementChoice.Constitution.ToString(), Value = 1, CharacterId = characterId }
+            new() { Id = Guid.NewGuid(), Type = ModifierType.AttributeBonus, Target = AttributeImprovementChoice.Constitution.ToString(), Value = 1, CharacterId = characterId }
         };
 
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([character]));
 
         // Act
-        var result = await _sut.CommitLevelUpAsync(characterId, 5, modifiers, new List<Guid>(), new List<Guid>());
+        var result = await _sut.CommitLevelUpAsync(characterId, 5, modifiers, [], []);
 
         // Assert
         result.Should().BeTrue();
@@ -235,17 +232,17 @@ public class LevelingServiceTests
         {
             Id = featId,
             TechnicalName = "Tough",
-            Modifiers = new List<ModifierData>
-            {
+            Modifiers =
+            [
                 new ModifierData { Type = ModifierType.HpBonus, Target = TargetPropertyType.MaxHp.ToString(), Value = 2 }
-            }
+            ]
         };
 
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));
-        _uow.Feats.GetAllAsync().Returns(Task.FromResult<IEnumerable<Feat?>>(new List<Feat?> { feat }));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([character]));
+        _uow.Feats.GetAllAsync().Returns(Task.FromResult<IEnumerable<Feat?>>([feat]));
 
         // Act
-        var result = await _sut.CommitLevelUpAsync(characterId, 0, new List<CharacterModifier>(), new List<Guid> { featId }, new List<Guid>());
+        var result = await _sut.CommitLevelUpAsync(characterId, 0, [], [featId], []);
 
         // Assert
         result.Should().BeTrue();
@@ -263,11 +260,11 @@ public class LevelingServiceTests
         var character = CreateCharacter(characterId, classDefId, level: 2, xp: 300);
         var spell = new Spell { Id = spellId, TechnicalName = "Fireball" };
 
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));
-        _uow.Spells.GetAllAsync().Returns(Task.FromResult<IEnumerable<Spell?>>(new List<Spell?> { spell }));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([character]));
+        _uow.Spells.GetAllAsync().Returns(Task.FromResult<IEnumerable<Spell?>>([spell]));
 
         // Act
-        var result = await _sut.CommitLevelUpAsync(characterId, 0, new List<CharacterModifier>(), new List<Guid>(), new List<Guid> { spellId });
+        var result = await _sut.CommitLevelUpAsync(characterId, 0, [], [], [spellId]);
 
         // Assert
         result.Should().BeTrue();
@@ -281,15 +278,15 @@ public class LevelingServiceTests
         var characterId = Guid.NewGuid();
         var classDefId = Guid.NewGuid();
         var featId = Guid.NewGuid();
-        var feat = new Feat { Id = featId, TechnicalName = "Tough", Modifiers = new List<ModifierData>() };
+        var feat = new Feat { Id = featId, TechnicalName = "Tough", Modifiers = [] };
         var character = CreateCharacter(characterId, classDefId, level: 4, xp: 2700);
         character.AcquiredFeats.Add(feat);
 
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));
-        _uow.Feats.GetAllAsync().Returns(Task.FromResult<IEnumerable<Feat?>>(new List<Feat?> { feat }));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([character]));
+        _uow.Feats.GetAllAsync().Returns(Task.FromResult<IEnumerable<Feat?>>([feat]));
 
         // Act
-        var result = await _sut.CommitLevelUpAsync(characterId, 0, new List<CharacterModifier>(), new List<Guid> { featId }, new List<Guid>());
+        var result = await _sut.CommitLevelUpAsync(characterId, 0, [], [featId], []);
 
         // Assert
         result.Should().BeTrue();
@@ -308,11 +305,11 @@ public class LevelingServiceTests
         var character = CreateCharacter(characterId, classDefId, level: 2, xp: 300);
         character.KnownSpells.Add(spell);
 
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));
-        _uow.Spells.GetAllAsync().Returns(Task.FromResult<IEnumerable<Spell?>>(new List<Spell?> { spell }));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([character]));
+        _uow.Spells.GetAllAsync().Returns(Task.FromResult<IEnumerable<Spell?>>([spell]));
 
         // Act
-        var result = await _sut.CommitLevelUpAsync(characterId, 0, new List<CharacterModifier>(), new List<Guid>(), new List<Guid> { spellId });
+        var result = await _sut.CommitLevelUpAsync(characterId, 0, [], [], [spellId]);
 
         // Assert
         result.Should().BeTrue();
@@ -327,11 +324,11 @@ public class LevelingServiceTests
         var classDefId = Guid.NewGuid();
         var character = CreateCharacter(characterId, classDefId, level: 2, xp: 300);
 
-        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>(new List<Character> { character }));
+        _uow.Characters.GetAllWithDetailsAsync().Returns(Task.FromResult<IEnumerable<Character>>([character]));
         _uow.When(x => x.SaveChangesAsync()).Do(_ => throw new InvalidOperationException("DB failure"));
 
         // Act
-        var act = async () => await _sut.CommitLevelUpAsync(characterId, 5, new List<CharacterModifier>(), new List<Guid>(), new List<Guid>());
+        var act = async () => await _sut.CommitLevelUpAsync(characterId, 5, [], [], []);
 
         // Assert
         await act.Should().ThrowAsync<InvalidOperationException>();
@@ -358,10 +355,10 @@ public class LevelingServiceTests
                 { TargetPropertyType.Wisdom.ToString(), 10 },
                 { TargetPropertyType.Charisma.ToString(), 10 }
             },
-            AcquiredFeatures = new List<Feature>(),
-            AcquiredFeats = new List<Feat>(),
-            KnownSpells = new List<Spell>(),
-            CharacterModifiers = new List<CharacterModifier>()
+            AcquiredFeatures = [],
+            AcquiredFeats = [],
+            KnownSpells = [],
+            CharacterModifiers = []
         };
     }
 }

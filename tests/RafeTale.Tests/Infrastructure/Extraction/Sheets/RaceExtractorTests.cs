@@ -15,8 +15,8 @@ public class RaceExtractorTests
     private static (ClosedXML.Excel.XLWorkbook wb, ExtractionContext ctx) SetupWithLanguages()
     {
         var wb = CreateWorkbook("Races",
-            new[] { "TechnicalName", "CreatureType", "Size", "Speed", "NameES", "DescriptionES", "DescriptionEN", "Languages" },
-            new[] { "Elf", "Humanoid", "Medium", "30", "Elfo", "Desc", "Elf desc", "Common,Elvish" });
+            [ "TechnicalName", "CreatureType", "Size", "Speed", "NameES", "DescriptionES", "DescriptionEN", "Languages" ],
+            [ "Elf", "Humanoid", "Medium", "30", "Elfo", "Desc", "Elf desc", "Common,Elvish" ]);
         var ctx = CreateContext();
         ctx.Package.Languages.Add(new Language { Id = Guid.NewGuid(), TechnicalName = "Common" });
         ctx.Package.Languages.Add(new Language { Id = Guid.NewGuid(), TechnicalName = "Elvish" });
@@ -41,8 +41,8 @@ public class RaceExtractorTests
     public void Extract_UnknownLanguage_IsSkipped()
     {
         var wb = CreateWorkbook("Races",
-            new[] { "TechnicalName", "CreatureType", "Size", "Speed", "NameES", "DescriptionES", "DescriptionEN", "Languages" },
-            new[] { "Orc", "Humanoid", "Medium", "30", "Orco", "Desc", "Desc", "Klingon" });
+            [ "TechnicalName", "CreatureType", "Size", "Speed", "NameES", "DescriptionES", "DescriptionEN", "Languages" ],
+            [ "Orc", "Humanoid", "Medium", "30", "Orco", "Desc", "Desc", "Klingon" ]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);
@@ -54,14 +54,14 @@ public class RaceExtractorTests
     public void Extract_InvalidEnums_FallBackToDefaults()
     {
         var wb = CreateWorkbook("Races",
-            new[] { "TechnicalName", "CreatureType", "Size", "Speed", "NameES", "DescriptionES", "DescriptionEN", "Languages" },
-            new[] { "X", "NotACreature", "NotASize", "30", "N", "D", "D", "" });
+            [ "TechnicalName", "CreatureType", "Size", "Speed", "NameES", "DescriptionES", "DescriptionEN", "Languages" ],
+            [ "X", "NotACreature", "NotASize", "30", "N", "D", "D", "" ]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);
 
         var race = ctx.Package.Races.Single();
-        race.CreatureType.Should().Be(default(CreatureType));
-        race.Size.Should().Be(default(SizeCategory));
+        race.CreatureType.Should().Be(default);
+        race.Size.Should().Be(default);
     }
 }

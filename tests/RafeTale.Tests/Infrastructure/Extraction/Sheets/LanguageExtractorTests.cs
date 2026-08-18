@@ -13,8 +13,8 @@ public class LanguageExtractorTests
     public void Extract_CreatesLanguagesAndLocalization()
     {
         var wb = CreateWorkbook("Languages",
-            new[] { "TechnicalName", "DescriptionEN", "NameES", "DescriptionES" },
-            new[] { "Common", "Common language", "Común", "Idioma común" });
+            [ "TechnicalName", "DescriptionEN", "NameES", "DescriptionES" ],
+            [ "Common", "Common language", "Común", "Idioma común" ]);
         var context = CreateContext();
 
         _sut.Extract(wb, context);

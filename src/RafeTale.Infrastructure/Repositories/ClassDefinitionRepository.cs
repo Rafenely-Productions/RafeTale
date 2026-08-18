@@ -10,10 +10,8 @@ using RafeTale.Domain.Modifiers;
 
 namespace RafeTale.Infrastructure.Repositories;
 
-public class ClassDefinitionRepository : Repository<ClassDefinition>, IClassDefinitionRepository
+public class ClassDefinitionRepository(RafeTaleDbContext context) : Repository<ClassDefinition>(context), IClassDefinitionRepository
 {
-    public ClassDefinitionRepository(RafeTaleDbContext context) : base(context) { }
-
     public async Task<List<ClassDefinition>> GetClassesWithFeatures(Expression<Func<ClassDefinition, bool>>? filter,params Expression<Func<ClassDefinition, object>>[] includes)
     {
         return await _context.ClassDefinitions

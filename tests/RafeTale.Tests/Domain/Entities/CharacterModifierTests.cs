@@ -50,10 +50,11 @@ public class CharacterModifierTests
     public void SetType_Type_ReturnsAssignedValue()
     {
         // Arrange
-        var modifier = new CharacterModifier();
-
-        // Act
-        modifier.Type = ModifierType.AttributeBonus;
+        var modifier = new CharacterModifier
+        {
+            // Act
+            Type = ModifierType.AttributeBonus
+        };
 
         // Assert
         modifier.Type.Should().Be(ModifierType.AttributeBonus);
@@ -63,10 +64,11 @@ public class CharacterModifierTests
     public void SetTarget_Target_ReturnsAssignedValue()
     {
         // Arrange
-        var modifier = new CharacterModifier();
-
-        // Act
-        modifier.Target = "Strength";
+        var modifier = new CharacterModifier
+        {
+            // Act
+            Target = "Strength"
+        };
 
         // Assert
         modifier.Target.Should().Be("Strength");
@@ -79,10 +81,11 @@ public class CharacterModifierTests
     public void SetValue_Value_ReturnsAssignedValue(int value)
     {
         // Arrange
-        var modifier = new CharacterModifier();
-
-        // Act
-        modifier.Value = value;
+        var modifier = new CharacterModifier
+        {
+            // Act
+            Value = value
+        };
 
         // Assert
         modifier.Value.Should().Be(value);

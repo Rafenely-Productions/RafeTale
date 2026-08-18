@@ -13,9 +13,8 @@ using System.Threading.Tasks;
 
 namespace RafeTale.Infrastructure.Repositories
 {
-    public class LocalizedContentRepository : Repository<LocalizedContent>, ILocalizedContentRepository
+    public class LocalizedContentRepository(RafeTaleDbContext context) : Repository<LocalizedContent>(context), ILocalizedContentRepository
     {
-        public LocalizedContentRepository(RafeTaleDbContext context) : base(context) { }
         public async Task<LocalizedContent?> GetTranslationAsync(Guid entityId, LocProperty property, LocLanguage languageCode)
         {
             return await _context.Set<LocalizedContent>()

@@ -14,8 +14,6 @@ namespace RafeTale.Infrastructure.Persistence.Configurations
 {
     public class RaceConfiguration : IEntityTypeConfiguration<Race>
     {
-        JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = false };
-
         public void Configure(EntityTypeBuilder<Race> builder)
         {
             builder.ToTable("Races");

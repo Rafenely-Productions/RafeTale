@@ -9,12 +9,12 @@ public class SpellBudgetTests
 {
     private static List<SpellDto> CreateSpellList(params (Guid Id, SpellLevel Level)[] spells)
     {
-        return spells.Select(s => new SpellDto
+        return [..spells.Select(s => new SpellDto
         {
             Id = s.Id,
             Level = (int)s.Level,
             TechnicalName = $"Spell-{s.Id}"
-        }).ToList();
+        })];
     }
 
     [Fact]
@@ -132,7 +132,7 @@ public class SpellBudgetTests
     {
         var cantripId = Guid.NewGuid();
         var spellId = Guid.NewGuid();
-        var budget = new SpellBudget();
+        _ = new SpellBudget();
         var selectedIds = new List<Guid> { cantripId, spellId };
 
         var allSpells = new List<SpellDto>
@@ -141,7 +141,7 @@ public class SpellBudgetTests
             new() { Id = spellId, Level = (int)SpellLevel.Level1 }
         };
 
-        int count = budget.SelectedCantripsCount(selectedIds, allSpells);
+        int count = SpellBudget.SelectedCantripsCount(selectedIds, allSpells);
 
         Assert.Equal(1, count);
     }
@@ -152,7 +152,7 @@ public class SpellBudgetTests
         var cantripId = Guid.NewGuid();
         var spellId1 = Guid.NewGuid();
         var spellId2 = Guid.NewGuid();
-        var budget = new SpellBudget();
+        _ = new SpellBudget();
 
         var selectedIds = new List<Guid> { cantripId, spellId1, spellId2 };
 
@@ -163,7 +163,7 @@ public class SpellBudgetTests
             new() { Id = spellId2, Level = (int) SpellLevel.Level2 }
         };
 
-        int count = budget.SelectedSpellsCount(selectedIds, allSpells);
+        int count = SpellBudget.SelectedSpellsCount(selectedIds, allSpells);
 
         Assert.Equal(2, count);
     }
@@ -174,7 +174,7 @@ public class SpellBudgetTests
         var knownId = Guid.NewGuid();
         var budget = new SpellBudget
         {
-            InitiallyKnownSpellIds = new List<Guid> { knownId }
+            InitiallyKnownSpellIds = [knownId]
         };
 
         Assert.Single(budget.InitiallyKnownSpellIds);

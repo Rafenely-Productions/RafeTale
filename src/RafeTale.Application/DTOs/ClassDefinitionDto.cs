@@ -7,7 +7,7 @@ namespace RafeTale.Application.DTOs
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string TechnicalName { get; set; } = string.Empty;
-        public string Description { get; set; } = "";
+        public string Description { get; set; } = string.Empty;
         public string HitDie { get; set; } = "d8";
         public int HitDieValue = 0;
         public ICollection<string> PrimaryAbility { get; set; } = [];

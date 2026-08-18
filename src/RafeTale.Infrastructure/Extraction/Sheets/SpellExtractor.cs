@@ -69,7 +69,7 @@ public class SpellExtractor : ISheetExtractor
         }
     }
 
-    private void MapSpellClass(Spell spell, string rawClass, List<string> allClasses)
+    private static void MapSpellClass(Spell spell, string rawClass, List<string> allClasses)
     {
         var classNames = rawClass.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim());
         if (classNames.Contains("Any", StringComparer.OrdinalIgnoreCase))

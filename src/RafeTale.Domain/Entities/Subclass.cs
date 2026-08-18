@@ -10,6 +10,6 @@ public class Subclass : IEntity
     public int LevelRequirement { get; set; } = 3; 
     public Guid ClassDefinitionId { get; set; }
     public ClassDefinition ClassDefinition { get; set; } = null!;
-    public virtual ICollection<SubclassLevelProgression> Progressions { get; set; } = new List<SubclassLevelProgression>();
+    public virtual ICollection<SubclassLevelProgression> Progressions { get; set; } = [];
 
 }

@@ -14,8 +14,8 @@ public class SubclassExtractorTests
     public void Extract_LinksToClassDefinition()
     {
         var wb = CreateWorkbook("SubClasses",
-            new[] { "Class", "TechnicalName", "DescriptionEN", "NameES", "DescriptionES" },
-            new[] { "Wizard", "Evocation", "Desc", "Evocación", "Desc" });
+            ["Class", "TechnicalName", "DescriptionEN", "NameES", "DescriptionES"],
+            ["Wizard", "Evocation", "Desc", "Evocación", "Desc"]);
         var ctx = CreateContext();
         var wizard = new ClassDefinition { Id = Guid.NewGuid(), TechnicalName = "Wizard" };
         ctx.Package.ClassDefinitions.Add(wizard);

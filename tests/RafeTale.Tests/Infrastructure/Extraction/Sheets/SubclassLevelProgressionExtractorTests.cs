@@ -14,8 +14,8 @@ public class SubclassLevelProgressionExtractorTests
     public void Extract_CreatesProgressionAndUpdatesSubclass()
     {
         var wb = CreateWorkbook("SubClassLevelProgresion",
-            new[] { "Class", "Subclass", "Feature", "Level", "Modifiers", "NameES", "DescriptionES" },
-            new[] { "Wizard", "Evocation", "SculptSpells", "3", "[]", "Esculpir", "Desc" });
+            ["Class", "Subclass", "Feature", "Level", "Modifiers", "NameES", "DescriptionES"],
+            ["Wizard", "Evocation", "SculptSpells", "3", "[]", "Esculpir", "Desc"]);
         var ctx = CreateContext();
         var evocation = new Subclass { Id = Guid.NewGuid(), TechnicalName = "Evocation" };
         ctx.Package.Subclasses.Add(evocation);
@@ -32,8 +32,8 @@ public class SubclassLevelProgressionExtractorTests
     public void Extract_UnknownSubclass_SkipsRow()
     {
         var wb = CreateWorkbook("SubClassLevelProgresion",
-            new[] { "Class", "Subclass", "Feature", "Level", "Modifiers", "NameES", "DescriptionES" },
-            new[] { "Wizard", "Necromancy", "GrimHarvest", "2", "[]", "Cosecha", "Desc" });
+            ["Class", "Subclass", "Feature", "Level", "Modifiers", "NameES", "DescriptionES"],
+            ["Wizard", "Necromancy", "GrimHarvest", "2", "[]", "Cosecha", "Desc"]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);
@@ -50,9 +50,9 @@ public class XpRuleExtractorTests
     public void Extract_ParsesLevelXpAndBonus()
     {
         var wb = CreateWorkbook("ReglasXP",
-            new[] { "Level", "RequiredXp", "Bonus" },
-            new[] { "1", "0", "0" },
-            new[] { "2", "300", "5" });
+            ["Level", "RequiredXp", "Bonus"],
+            ["1", "0", "0"],
+            ["2", "300", "5"]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);

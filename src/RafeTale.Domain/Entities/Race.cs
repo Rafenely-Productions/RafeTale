@@ -16,9 +16,9 @@ namespace RafeTale.Domain.Entities
         public CreatureType CreatureType { get; set; }
 
         public string Speed { get; set; } = string.Empty;
-        public List<Language> Languages { get; set; } = new();
-        public List<SubRace> SubRaces { get; set; } = new();
+        public List<Language> Languages { get; set; } = [];
+        public List<SubRace> SubRaces { get; set; } = [];
 
-        public List<Trait> Traits { get; set; } = new();
+        public List<Trait> Traits { get; set; } = [];
     }
 }

@@ -13,5 +13,5 @@ public class Campaign : IEntity
     public string Notes { get; set; } = string.Empty; // Sinopsis o descripción de la mesa
 
     // Relación Muchos a Muchos con los Personajes a través de la tabla intermedia
-    public List<CampaignCharacter> CampaignCharacters { get; set; } = new();
+    public List<CampaignCharacter> CampaignCharacters { get; set; } = [];
 }

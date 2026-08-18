@@ -37,7 +37,7 @@ public class DiceService : IDiceService
             NumberOfDice = 1,
             DiceSides = 20,
             Modifier = modifier,
-            IndividualRolls = new List<int> { finalRoll }
+            IndividualRolls = [finalRoll]
         };
     }
 }

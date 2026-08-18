@@ -4,23 +4,23 @@ namespace RafeTale.Application.Services.Importer
 {
     public class ImportDataPackage
     {
-        public List<Race> Races { get; set; } = new();
-        public List<SubRace> SubRaces { get; set; } = new();
-        public List<ClassDefinition> ClassDefinitions { get; set; } = new();
-        public List<Spell> Spells { get; set; } = new();
+        public List<Race> Races { get; set; } = [];
+        public List<SubRace> SubRaces { get; set; } = [];
+        public List<ClassDefinition> ClassDefinitions { get; set; } = [];
+        public List<Spell> Spells { get; set; } = [];
 
-        public List<Character> Characters { get; set; } = new();
-        public List<ClassLevelProgression> ClassLevelProgressions { get; set; } = new();
-        public List<XpRules> XpRules { get; set; } = new();
-        public List<Feat> Feats { get; set; } = new();
-        public List<ItemTemplate> Items { get; set; } = new();
-        public List<LocalizedContent> LocalizedContents { get; set; } = new();
-        public List<Language> Languages { get; set; } = new();
-        public List<Trait> Traits { get; set; } = new();
-        public List<SpecialTrait> SpecialTraits { get; set; } = new();
-        public List<Skill> SkillProficiencies { get; set; } = new();
-        public List<Background> Backgrounds { get; set; } = new();
-        public List<Subclass> Subclasses { get; set; } = new();
-        public List<SubclassLevelProgression> SubclassLevelProgressions { get; set; } = new();
+        public List<Character> Characters { get; set; } = [];
+        public List<ClassLevelProgression> ClassLevelProgressions { get; set; } = [];
+        public List<XpRules> XpRules { get; set; } = [];
+        public List<Feat> Feats { get; set; } = [];
+        public List<ItemTemplate> Items { get; set; } = [];
+        public List<LocalizedContent> LocalizedContents { get; set; } = [];
+        public List<Language> Languages { get; set; } = [];
+        public List<Trait> Traits { get; set; } = [];
+        public List<SpecialTrait> SpecialTraits { get; set; } = [];
+        public List<Skill> SkillProficiencies { get; set; } = [];
+        public List<Background> Backgrounds { get; set; } = [];
+        public List<Subclass> Subclasses { get; set; } = [];
+        public List<SubclassLevelProgression> SubclassLevelProgressions { get; set; } = [];
     }
 }

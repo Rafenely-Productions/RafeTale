@@ -1,7 +1,7 @@
 ﻿using RafeTale.Domain.Entities;
 using RafeTale.Domain.Enums;
 
-namespace RafeTale.Infrastructure.Extraction.Localization;
+namespace RafeTale.Infrastructure.Extraction.Interfaces;
 
 public interface ILocalizationCollector
 {
