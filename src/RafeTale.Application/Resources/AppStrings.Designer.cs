@@ -349,6 +349,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Character.
+        /// </summary>
+        public static string Btn_CreateCharacter {
+            get {
+                return ResourceManager.GetString("Btn_CreateCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Forge Character.
         /// </summary>
         public static string Btn_CreateHero {
@@ -480,6 +489,15 @@ namespace RafeTale.Application.Resources {
         public static string Charisma {
             get {
                 return ResourceManager.GetString("Charisma", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chose a Background.
+        /// </summary>
+        public static string Choose_Background {
+            get {
+                return ResourceManager.GetString("Choose_Background", resourceCulture);
             }
         }
         
@@ -700,6 +718,33 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have exceeded the limit of allowed cantrips..
+        /// </summary>
+        public static string Error_MaxCantripsExceeded {
+            get {
+                return ResourceManager.GetString("Error_MaxCantripsExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You selected a spell of a higher level than allowed..
+        /// </summary>
+        public static string Error_MaxSpellLevelExceeded {
+            get {
+                return ResourceManager.GetString("Error_MaxSpellLevelExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have exceeded the limit of prepared spells..
+        /// </summary>
+        public static string Error_MaxSpellsExceeded {
+            get {
+                return ResourceManager.GetString("Error_MaxSpellsExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exotic.
         /// </summary>
         public static string Exotic {
@@ -813,6 +858,15 @@ namespace RafeTale.Application.Resources {
         public static string Label_AuditingLevel {
             get {
                 return ResourceManager.GetString("Label_AuditingLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background.
+        /// </summary>
+        public static string Label_Background {
+            get {
+                return ResourceManager.GetString("Label_Background", resourceCulture);
             }
         }
         
@@ -1263,6 +1317,15 @@ namespace RafeTale.Application.Resources {
         public static string Msg_NoRollsYet {
             get {
                 return ResourceManager.GetString("Msg_NoRollsYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No spells found matching the search or selected filter..
+        /// </summary>
+        public static string Msg_NoSpellsFound {
+            get {
+                return ResourceManager.GetString("Msg_NoSpellsFound", resourceCulture);
             }
         }
         
@@ -2059,6 +2122,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Empty Tavern.
+        /// </summary>
+        public static string Title_EmptyTavern {
+            get {
+                return ResourceManager.GetString("Title_EmptyTavern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feat or Ability Score Improvement.
         /// </summary>
         public static string Title_FeatOrAsiSelection {
@@ -2118,6 +2190,15 @@ namespace RafeTale.Application.Resources {
         public static string Title_NewHero {
             get {
                 return ResourceManager.GetString("Title_NewHero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Spells Available.
+        /// </summary>
+        public static string Title_NoSpellsFound {
+            get {
+                return ResourceManager.GetString("Title_NoSpellsFound", resourceCulture);
             }
         }
         

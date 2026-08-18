@@ -8,7 +8,7 @@ namespace RafeTale.Domain.Modifiers;
 public class ClassTrait
 {
     // 🚨 AHORA SÍ SON PROPIEDADES REALES CON GET Y SET:
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(SafeResourceTypeConverter))]
     public ResourceType Type { get; set; }
 
     public string Value { get; set; } = string.Empty;

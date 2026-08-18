@@ -2,6 +2,7 @@
 @using RafeTale.Application.Interfaces.DtosInterfaces
 @using RafeTale.UI.Shared.Components.UI
 @inject IStringLocalizer<AppStrings> L
+@inject IStringLocalizer<LibraryStrings> LL
 @inject ISpellServiceSystem SpellService
 @inject IService<CharacterDto, Character> CharacterService
 
@@ -47,8 +48,8 @@
             @if (CharDto.KnownSpells == null || !CharDto.KnownSpells.Any())
             {
                 <EmptyState IconClass="fa-book-skull"
-                            Title="@L["EmptyState_NoSpells_Title"]"
-                            Description="@L["EmptyState_NoSpells_Desc"]" />
+                            Title="@LL["EmptyState_NoSpells_Title"]"
+                            Description="@LL["EmptyState_NoSpells_Desc"]" />
             }
             else
             {

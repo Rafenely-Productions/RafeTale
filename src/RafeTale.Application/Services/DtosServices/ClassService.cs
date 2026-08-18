@@ -32,7 +32,7 @@ namespace RafeTale.Application.Services.DtosServices
                 ArmorProficiencies = entity.ArmorProficiencies.Select(l => l.ToString()).ToList(),
                 WeaponProficiencies = entity.WeaponProficiencies.Select(l => l.ToString()).ToList(),
                 ToolProficiencies = entity.ToolProficiencies.Select(l => l.ToString()).ToList(),
-                SkillProficiencies = entity.SkillProficiencies.Select(l => l.ToString()).ToList(),
+                SkillProficiencies = entity.SkillProficiencies.Select(l => l.TechnicalName.ToString()).ToList(),
                 SkillToChoose = entity.SkillsToChoose,
 
             };

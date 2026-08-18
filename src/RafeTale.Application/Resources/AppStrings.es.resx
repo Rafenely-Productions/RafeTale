@@ -900,4 +900,31 @@
   <data name="Feat_Prerequisite" xml:space="preserve">
     <value>Prerrequisito</value>
   </data>
+  <data name="Title_EmptyTavern" xml:space="preserve">
+    <value>Taberna Vacía</value>
+  </data>
+  <data name="Btn_CreateCharacter" xml:space="preserve">
+    <value>Crear Personaje</value>
+  </data>
+  <data name="Title_NoSpellsFound" xml:space="preserve">
+    <value>Sin Conjuros Disponibles</value>
+  </data>
+  <data name="Msg_NoSpellsFound" xml:space="preserve">
+    <value>No se encontraron conjuros que coincidan con la búsqueda o filtro seleccionado.</value>
+  </data>
+  <data name="Error_MaxCantripsExceeded" xml:space="preserve">
+    <value>Has superado el límite de trucos (Cantrips) permitidos.</value>
+  </data>
+  <data name="Error_MaxSpellsExceeded" xml:space="preserve">
+    <value>Has superado el límite de conjuros preparados permitidos.</value>
+  </data>
+  <data name="Error_MaxSpellLevelExceeded" xml:space="preserve">
+    <value>Seleccionaste un hechizo de nivel superior al permitido.</value>
+  </data>
+  <data name="Label_Background" xml:space="preserve">
+    <value>Trasfondos</value>
+  </data>
+  <data name="Choose_Background" xml:space="preserve">
+    <value>Elige un trasfondo</value>
+  </data>
 </root>

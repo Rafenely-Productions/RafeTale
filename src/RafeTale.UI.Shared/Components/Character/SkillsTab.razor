@@ -13,11 +13,11 @@
     <div class="space-y-1 max-h-[55vh] overflow-y-auto pr-1">
         @foreach (var skill in SkillMap.OrderBy(s => L[s.Key].Value))
         {
-            <SkillRow SkillKey="skill.Key"
-                      Stat="skill.Value"
+            <SkillRow SkillKey="@skill.Key"
+                      Stat="@skill.Value"
                       Bonus="CharDto.GetSkillBonus(skill.Key, skill.Value, TrainedSkills)"
                       IsProficient="TrainedSkills.Contains(skill.Key)"
-                      ShortStat="ShortStatMap[skill.Value]" />
+                      ShortStat="@ShortStatMap[skill.Value]" />
         }
     </div>
 </div>
