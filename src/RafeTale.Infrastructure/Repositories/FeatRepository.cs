@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace RafeTale.Infrastructure.Repositories;
 
-public class FeatRepository : Repository<Feat>, IFeatRepository
+public class FeatRepository(RafeTaleDbContext context) : Repository<Feat>(context), IFeatRepository
 {
-    public FeatRepository(RafeTaleDbContext context) : base(context) { }
-
     public async Task<Feat> GetByNameAsync(string name)
     {
-        return await _context.Set<Feat>().FirstOrDefaultAsync(f => f.TechnicalName == name);
+        return await _context.Set<Feat>().FirstOrDefaultAsync(f => f.TechnicalName == name)
+        ?? throw new KeyNotFoundException($"Feat with name '{name}' not found.");
     }
 }

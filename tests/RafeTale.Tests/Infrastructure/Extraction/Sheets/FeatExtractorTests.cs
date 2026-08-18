@@ -14,9 +14,9 @@ public class FeatExtractorTests
     public void Extract_ParsesPrerequisiteModifiersAndCategory()
     {
         var wb = CreateWorkbook("Feats",
-            new[] { "TechnicalName", "Prerequisite", "Modifiers", "Category", "DescriptionEN", "NameES", "DescriptionES" },
-            new[] { "Tough", "[{\"Type\":\"AttributeMinimum\",\"Target\":\"Constitution\",\"Value\":13}]",
-                    "[{\"Type\":\"AttributeBonus\",\"Target\":\"Constitution\",\"Value\":2}]", "General", "Desc", "Robusto", "Desc" });
+            ["TechnicalName", "Prerequisite", "Modifiers", "Category", "DescriptionEN", "NameES", "DescriptionES"],
+            [ "Tough", "[{\"Type\":\"AttributeMinimum\",\"Target\":\"Constitution\",\"Value\":13}]",
+                    "[{\"Type\":\"AttributeBonus\",\"Target\":\"Constitution\",\"Value\":2}]", "General", "Desc", "Robusto", "Desc" ]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);
@@ -31,14 +31,14 @@ public class FeatExtractorTests
     public void Extract_NoneValues_ParseAsNull()
     {
         var wb = CreateWorkbook("Feats",
-            new[] { "TechnicalName", "Prerequisite", "Modifiers", "Category", "DescriptionEN", "NameES", "DescriptionES" },
-            new[] { "Lucky", "none", "none", "General", "Desc", "Suerte", "Desc" });
+            ["TechnicalName", "Prerequisite", "Modifiers", "Category", "DescriptionEN", "NameES", "DescriptionES"],
+            ["Lucky", "none", "none", "General", "Desc", "Suerte", "Desc"]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);
 
         var feat = ctx.Package.Feats.Single();
-        feat.Prerequisite.Should().BeNull();
-        feat.Modifiers.Should().BeNull();
+        feat.Prerequisite.Should().BeEmpty();
+        feat.Modifiers.Should().BeEmpty();
     }
 }

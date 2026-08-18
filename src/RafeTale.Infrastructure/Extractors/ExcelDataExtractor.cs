@@ -15,8 +15,7 @@ namespace RafeTale.Infrastructure.Extractors
 {
     public class ExcelDataExtractor : IDataExtractor
     {
-        private Dictionary<string, LocalizedContent> _localizedContentCache = new();
-        private List<string> _LanguagesCache = new List<string>();
+        private readonly Dictionary<string, LocalizedContent> _localizedContentCache = [];
         private readonly LocLanguage _currentCulture = LocLanguage.es;
 
         public ImportDataPackage ExtractAllAsync(Stream excelStream)
@@ -28,12 +27,12 @@ namespace RafeTale.Infrastructure.Extractors
             package.Languages = ExtractLanguages(workbook);
             package.Races = ExtractRaces(workbook, package.Languages);
             package.SubRaces = ExtractSubRaces(workbook, package.Races);
-            package.Traits = ExtractTraits(workbook, package.Races,package.SubRaces);
+            package.Traits = ExtractTraits(workbook, package.Races, package.SubRaces);
             package.SpecialTraits = ExtractSpecialTraits(workbook, package.Traits);
             package.SkillProficiencies = ExtractSkillProficiencies(workbook);
             package.ClassDefinitions = ExtractClasses(workbook, package.SkillProficiencies);
             package.Subclasses = ExtractSubclasses(workbook, package.ClassDefinitions);
-            package.Spells = ExtractSpells(workbook, package.ClassDefinitions.Select(x=> x.TechnicalName).ToList());
+            package.Spells = ExtractSpells(workbook, [.. package.ClassDefinitions.Select(x => x.TechnicalName)]);
             package.ClassLevelProgressions = ExtractClassLevelProgressions(workbook, package.ClassDefinitions);
             package.SubclassLevelProgressions = ExtractSubclassLevelProgressions(workbook, package.Subclasses);
             package.XpRules = ExtractXpRules(workbook);
@@ -51,7 +50,7 @@ namespace RafeTale.Infrastructure.Extractors
             var skillProficiencyList = new List<Skill>();
             var sheet = workbook.GetSheet("Skills", isRequired: true);
             var rows = sheet?.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return skillProficiencyList;
             foreach (var row in rows)
             {
@@ -79,7 +78,7 @@ namespace RafeTale.Infrastructure.Extractors
             var sheet = workbook.GetSheet("Languages", isRequired: true);
 
             var rows = sheet?.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return languagesList;
 
             foreach (var row in rows)
@@ -105,7 +104,7 @@ namespace RafeTale.Infrastructure.Extractors
 
             var raceSheet = workbook.GetSheet("Races", isRequired: true);
             var rows = raceSheet?.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return raceList;
             foreach (var row in rows)
             {
@@ -165,7 +164,7 @@ namespace RafeTale.Infrastructure.Extractors
             }
             return subRaces;
         }
-        public List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races,List<SubRace> subRace)
+        public List<Trait> ExtractTraits(IXLWorkbook workbook, List<Race> races, List<SubRace> subRace)
         {
             var sheet = workbook.GetSheet("Traits", isRequired: true);
 
@@ -179,7 +178,7 @@ namespace RafeTale.Infrastructure.Extractors
                     TechnicalName = row.Cell(1).GetString(),
                     RequiredLevel = row.Cell(2).TryGetValue<int>(out var res) ? res : 0,
                 };
-                if(row.Cell(3).GetString().Length > 0)
+                if (row.Cell(3).GetString().Length > 0)
                     trait.Race = races.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(3).GetString(), StringComparison.OrdinalIgnoreCase))!;
                 else
                     trait.Subrace = subRace.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(4).GetString(), StringComparison.OrdinalIgnoreCase))!;
@@ -201,16 +200,16 @@ namespace RafeTale.Infrastructure.Extractors
             var sheet = workbook.GetSheet("Special Traits", isRequired: true);
 
             var rows = sheet.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return specialTraits;
             foreach (var row in rows)
             {
                 var specialTrait = new SpecialTrait
                 {
                     Id = Guid.NewGuid(),
-                    TechnicalName = row.Cell(2).GetString()
+                    TechnicalName = row.Cell(2).GetString(),
+                    TraitId = traits.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty
                 };
-                specialTrait.TraitId = traits.FirstOrDefault(r => r.TechnicalName.Equals(row.Cell(1).GetString(), StringComparison.OrdinalIgnoreCase))?.Id ?? Guid.Empty;
 
                 SaveValidateLocalizedContent(specialTrait.Id, LocEntity.SpecialTrait, LocProperty.Name, specialTrait.TechnicalName, LocLanguage.en);
                 SaveValidateLocalizedContent(specialTrait.Id, LocEntity.SpecialTrait, LocProperty.Description, row.Cell(3).GetString(), LocLanguage.en);
@@ -231,7 +230,7 @@ namespace RafeTale.Infrastructure.Extractors
             var classSheet = workbook.GetSheet("Classes", isRequired: true);
 
             var rows = classSheet.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return classDefinitionList;
             foreach (var row in rows)
             {
@@ -260,12 +259,12 @@ namespace RafeTale.Infrastructure.Extractors
             return classDefinitionList;
         }
 
-        public List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes,List<Background> backgrounds)
+        public static List<Character> ExtractCharacters(IXLWorkbook workbook, List<Race> races, List<ClassDefinition> classes, List<Background> backgrounds)
         {
             var charactersList = new List<Character>();
             var charSheet = workbook.GetSheet("Personajes", isRequired: false);
             var rows = charSheet?.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return charactersList;
             foreach (var row in rows)
             {
@@ -284,16 +283,15 @@ namespace RafeTale.Infrastructure.Extractors
                     Experience = row.Cell(5).GetValue<int>(),
                     RaceId = matchedRace?.Id ?? Guid.Empty,
                     ClassDefId = matchedClass?.Id ?? Guid.Empty,
-                    AcquiredFeats = new List<Feat>(),
-                    Stats = new Dictionary<string, int>(),
-                    AcquiredFeatures = new List<Feature>(),
-                    ActiveModifiers = new List<ActiveModifiers>(),
+                    AcquiredFeats = [],
+                    Stats = [],
+                    AcquiredFeatures = [],
+                    ActiveModifiers = [],
                     BackgroundId = backgrounds[0].Id,
                     Background = backgrounds[0],
-                    
-                };
 
-                for (int col = 6; col <= charSheet.LastColumnUsed().ColumnNumber(); col++)
+                };
+                for (int col = 6; col <= charSheet?.LastColumnUsed()?.ColumnNumber(); col++)
                 {
                     var statName = charSheet.Cell(1, col).GetString();
                     var statValue = row.Cell(col).GetValue<int>();
@@ -312,7 +310,7 @@ namespace RafeTale.Infrastructure.Extractors
             var progressionsList = new List<ClassLevelProgression>();
             var progressSheet = workbook.GetSheet("ClassLevelProgression", isRequired: true);
             var progressRows = progressSheet.RangeUsed()?.RowsUsed().Skip(1);
-            if(progressRows == null) 
+            if (progressRows == null)
                 return progressionsList;
             foreach (var row in progressRows)
             {
@@ -329,7 +327,7 @@ namespace RafeTale.Infrastructure.Extractors
 
                 if (targetClass == null) continue;
 
-                
+
                 var feature = new Feature
                 {
                     Id = Guid.NewGuid(),
@@ -343,7 +341,7 @@ namespace RafeTale.Infrastructure.Extractors
                 SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Name, row.Cell(7).GetString(), _currentCulture);
                 SaveValidateLocalizedContent(feature.Id, LocEntity.Feature, LocProperty.Description, row.Cell(8).GetString(), _currentCulture);
                 var classTraits = GetClassTraits(progresionClassTraitDataRaw);
-                if(!classTraits.Any())
+                if (classTraits.Count == 0)
                 {
 
                 }
@@ -360,7 +358,7 @@ namespace RafeTale.Infrastructure.Extractors
                         Id = Guid.NewGuid(),
                         Level = level,
                         ClassDefId = targetClass.Id,
-                        Features = new List<Feature> { feature },
+                        Features = [feature],
                         Traits = classTraits
                     };
 
@@ -375,6 +373,8 @@ namespace RafeTale.Infrastructure.Extractors
             var progressSheet = workbook.GetSheet("SubClasses", isRequired: true);
             var progressRows = progressSheet.RangeUsed()?.RowsUsed().Skip(1);
 
+            if (progressRows == null)
+                return subClassList;
             foreach (var row in progressRows)
             {
                 var classDefintionTechnicalName = row.Cell(1).GetString().Trim();
@@ -401,7 +401,7 @@ namespace RafeTale.Infrastructure.Extractors
                 SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Description, row.Cell(3).GetString(), LocLanguage.en);
                 SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Name, row.Cell(4).GetString(), _currentCulture);
                 SaveValidateLocalizedContent(subClass.Id, LocEntity.Subclass, LocProperty.Description, row.Cell(5).GetString(), _currentCulture);
-                
+
             }
             return subClassList;
         }
@@ -411,6 +411,9 @@ namespace RafeTale.Infrastructure.Extractors
             var progressionsList = new List<SubclassLevelProgression>();
             var progressSheet = workbook.GetSheet("SubClassLevelProgresion", isRequired: true);
             var progressRows = progressSheet.RangeUsed()?.RowsUsed().Skip(1);
+
+            if (progressRows == null)
+                return progressionsList;
 
             foreach (var row in progressRows)
             {
@@ -422,7 +425,7 @@ namespace RafeTale.Infrastructure.Extractors
 
                 var targetSubclass = subclasses.FirstOrDefault(c => c.TechnicalName.Equals(subclassName, StringComparison.OrdinalIgnoreCase));
 
-                if (targetSubclass == null) 
+                if (targetSubclass == null)
                     continue;
 
                 var feature = new Feature
@@ -454,10 +457,10 @@ namespace RafeTale.Infrastructure.Extractors
                         Level = level,
                         SubclassId = targetSubclass.Id,
                         Subclass = targetSubclass,
-                        Features = new List<Feature> { feature } // <-- Metemos el Feature real con sus datos
+                        Features = [feature] // <-- Metemos el Feature real con sus datos
 
                     };
-                    targetSubclass.Progressions ??= new List<SubclassLevelProgression>();
+                    targetSubclass.Progressions ??= [];
                     targetSubclass.Progressions.Add(newProgression);
 
                     progressionsList.Add(newProgression);
@@ -471,6 +474,10 @@ namespace RafeTale.Infrastructure.Extractors
             var spellSheet = workbook.GetSheet("Spells", isRequired: true);
 
             var rows = spellSheet.RangeUsed()?.RowsUsed().Skip(1);
+
+            if (rows == null)
+                return spellsList;
+
             foreach (var row in rows)
             {
                 var spell = new Spell
@@ -488,7 +495,7 @@ namespace RafeTale.Infrastructure.Extractors
                     Ritual = row.Cell(11).GetString().Equals("Si", StringComparison.OrdinalIgnoreCase),
 
                 };
-                if(spell.Level == SpellLevel.Cantrip)
+                if (spell.Level == SpellLevel.Cantrip)
                 {
 
                 }
@@ -508,13 +515,13 @@ namespace RafeTale.Infrastructure.Extractors
             return spellsList;
         }
 
-        public List<XpRules> ExtractXpRules(IXLWorkbook workbook)
+        public static List<XpRules> ExtractXpRules(IXLWorkbook workbook)
         {
             var xpRulesList = new List<XpRules>();
             var xpSheet = workbook.GetSheet("ReglasXP", isRequired: true);
 
             var rows = xpSheet.RangeUsed()?.RowsUsed().Skip(1);
-            if(rows == null) 
+            if (rows == null)
                 return xpRulesList;
             foreach (var row in rows)
             {
@@ -522,7 +529,7 @@ namespace RafeTale.Infrastructure.Extractors
                 {
                     Level = row.Cell(1).GetValue<int>(),
                     RequiredXp = row.Cell(2).GetValue<int>(),
-                    Bonus = xpSheet.LastColumnUsed().ColumnNumber() >= 3 ? row.Cell(3).GetValue<int>() : 0
+                    Bonus = xpSheet.LastColumnUsed()?.ColumnNumber() >= 3 ? row.Cell(3).GetValue<int>() : 0
                 });
             }
             return xpRulesList;
@@ -534,6 +541,9 @@ namespace RafeTale.Infrastructure.Extractors
             var featSheet = workbook.GetSheet("Feats", isRequired: true);
 
             var rows = featSheet.RangeUsed()?.RowsUsed().Skip(1);
+            if (rows == null)
+                return featsList;
+
             foreach (var row in rows)
             {
                 var featPrerequisite = row.Cell(2).GetString() == "none" ? null : row.Cell(2).GetString();
@@ -543,10 +553,19 @@ namespace RafeTale.Infrastructure.Extractors
                 {
                     Id = Guid.NewGuid(),
                     TechnicalName = row.Cell(1).GetString() ?? string.Empty,
-                    Prerequisite = GetPrerequisiteModifierData(featPrerequisite),
-                    Modifiers = GetModifierData(featModifiersRaw),
                     Category = ParseEnum<CategoryFeat>(row.Cell(4).GetString())
                 };
+                if (featPrerequisite != null)
+                {
+                    feat.Prerequisite = GetPrerequisiteModifierData(featPrerequisite);
+
+                }
+                if (featModifiersRaw != null)
+                {
+                    feat.Modifiers = GetModifierData(featModifiersRaw);
+                }
+
+
                 featsList.Add(feat);
 
                 SaveValidateLocalizedContent(feat.Id, LocEntity.Feat, LocProperty.Name, feat.TechnicalName, LocLanguage.en);
@@ -565,6 +584,8 @@ namespace RafeTale.Infrastructure.Extractors
             var itemsSheet = workbook.GetSheet("Items", isRequired: true);
 
             var rows = itemsSheet.RangeUsed()?.RowsUsed().Skip(1);
+            if(rows == null)
+                return itemsList;
             foreach (var row in rows)
             {
                 var itemName = row.Cell(1).GetString() ?? string.Empty;
@@ -574,8 +595,8 @@ namespace RafeTale.Infrastructure.Extractors
                 {
                     Id = Guid.NewGuid(),
                     TechnicalName = itemName,
-                    Category = itemsSheet.LastColumnUsed().ColumnNumber() >= 3
-                        ? (ItemCategory)Enum.Parse(typeof(ItemCategory), row.Cell(3).GetString(), true)
+                    Category = itemsSheet.LastColumnUsed()?.ColumnNumber() >= 3
+                        ? Enum.Parse<ItemCategory>(row.Cell(3).GetString(), true)
                         : ItemCategory.AdventuringGear
                 };
                 SaveValidateLocalizedContent(template.Id, LocEntity.ItemTemplate, LocProperty.Name, itemName, _currentCulture);
@@ -585,15 +606,15 @@ namespace RafeTale.Infrastructure.Extractors
 
                 itemsList.Add(template);
 
-                if (itemsSheet.LastColumnUsed().ColumnNumber() >= 4)
+                if (itemsSheet.LastColumnUsed()?.ColumnNumber() >= 4)
                 {
                     var ownerName = row.Cell(4).GetString();
                     var matchedChar = characters.FirstOrDefault(c => c.Name.Equals(ownerName, StringComparison.OrdinalIgnoreCase));
 
                     if (matchedChar != null)
                     {
-                        var quantity = itemsSheet.LastColumnUsed().ColumnNumber() >= 5 ? row.Cell(5).GetValue<int>() : 1;
-                        var isEquipped = itemsSheet.LastColumnUsed().ColumnNumber() >= 6 && row.Cell(6).GetValue<bool>();
+                        var quantity = itemsSheet.LastColumnUsed()?.ColumnNumber() >= 5 ? row.Cell(5).GetValue<int>() : 1;
+                        var isEquipped = itemsSheet.LastColumnUsed()?.ColumnNumber() >= 6 && row.Cell(6).GetValue<bool>();
 
                         matchedChar.Inventory.Add(new CharacterInventory
                         {
@@ -614,6 +635,8 @@ namespace RafeTale.Infrastructure.Extractors
             var schoolsList = new List<SchoolOfMagic>();
             var sheet = workbook.GetSheet("SchoolsOfMagic", isRequired: true);
             var rows = sheet.RangeUsed()?.RowsUsed().Skip(1);
+            if(rows == null)
+                return schoolsList;
             foreach (var row in rows)
             {
                 var school = new SchoolOfMagic
@@ -634,6 +657,8 @@ namespace RafeTale.Infrastructure.Extractors
             var backgroundsList = new List<Background>();
             var sheet = workbook.GetSheet("Backgrounds", isRequired: true);
             var rows = sheet.RangeUsed()?.RowsUsed().Skip(1);
+            if(rows == null)
+                return backgroundsList;
             foreach (var row in rows)
             {
                 var background = new Background
@@ -690,26 +715,25 @@ namespace RafeTale.Infrastructure.Extractors
                 _localizedContentCache.Add(key, extractedContent);
             }
         }
-        private LocalizedContent ExtractLocalizedContent(Guid entityId, LocEntity entityType, LocProperty property, string text, LocLanguage LanguageCode)
+        private static LocalizedContent ExtractLocalizedContent(Guid entityId, LocEntity entityType, LocProperty property, string text, LocLanguage LanguageCode)
         {
             return new LocalizedContent { Id = Guid.NewGuid(), EntityId = entityId, EntityType = entityType, Property = property, Text = text, LanguageCode = LanguageCode };
         }
-        private List<T> ParseEnumList<T>(string input) where T : struct, Enum
+        private static List<T> ParseEnumList<T>(string input) where T : struct, Enum
         {
-            if (string.IsNullOrWhiteSpace(input)) return new List<T>();
+            if (string.IsNullOrWhiteSpace(input)) return [];
 
-            return input.Split(',')
+            return [..input.Split(',')
                         .Select(s => s.Trim())
                         .Where(s => Enum.TryParse<T>(s, true, out _))
                         .Select(s => Enum.Parse<T>(s, true))
-                        .Cast<T>()
-                        .ToList();
+                        .Cast<T>()];
         }
-        private T ParseEnum<T>(string input) where T : struct, Enum
+        private static T ParseEnum<T>(string input) where T : struct, Enum
         {
             return Enum.TryParse<T>(input.Trim(), true, out var result) ? result : default;
         }
-        private void MapClassSkills(ClassDefinition classDef, string rawSkills, List<Skill> allSkills)
+        private static void MapClassSkills(ClassDefinition classDef, string rawSkills, List<Skill> allSkills)
         {
             var skillNames = rawSkills.Split(',').Select(s => s.Trim());
             if (skillNames.Contains("Any"))
@@ -723,7 +747,7 @@ namespace RafeTale.Infrastructure.Extractors
                 if (matched != null) classDef.SkillProficiencies.Add(matched);
             }
         }
-        private void MapSpellClass(Spell spell, string rawClass, List<string> allClasses)
+        private static void MapSpellClass(Spell spell, string rawClass, List<string> allClasses)
         {
             var classNames = rawClass.Split(',').Select(s => s.Trim());
             if (classNames.Contains("Any"))
@@ -737,7 +761,7 @@ namespace RafeTale.Infrastructure.Extractors
                 if (matched != null) spell.ClassesTechnicalNames.Add(matched);
             }
         }
-        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        private readonly JsonSerializerOptions _jsonOptions = new()
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter() }
@@ -748,14 +772,14 @@ namespace RafeTale.Infrastructure.Extractors
             try
             {
                 return string.IsNullOrWhiteSpace(modifiers)
-                            ? new List<ModifierData>()
+                            ? []
                             : JsonSerializer.Deserialize<List<ModifierData>>(modifiers, _jsonOptions)
-                              ?? new List<ModifierData>();
+                              ?? [];
             }
             catch (JsonException)
             {
                 Console.WriteLine($"Error de JSON: {modifiers}. Revisa el formato en el Excel.");
-                return new List<ModifierData>();
+                return [];
             }
         }
 
@@ -764,20 +788,20 @@ namespace RafeTale.Infrastructure.Extractors
             try
             {
                 return string.IsNullOrWhiteSpace(featPrerequisite)
-                            ? new List<FeatPrerequisiteModifierData>()
+                            ? []
                             : JsonSerializer.Deserialize<List<FeatPrerequisiteModifierData>>(featPrerequisite, _jsonOptions)
-                              ?? new List<FeatPrerequisiteModifierData>();
+                              ?? [];
             }
             catch (JsonException)
             {
                 Console.WriteLine($"Error de JSON: {featPrerequisite}. Revisa el formato en el Excel.");
-                return new List<FeatPrerequisiteModifierData>();
+                return [];
             }
         }
 
-        private List<ClassTrait> GetClassTraits(string classTraitDataRaw)
+        private static List<ClassTrait> GetClassTraits(string classTraitDataRaw)
         {
-            List<ClassTrait> traits = new List<ClassTrait>();
+            List<ClassTrait> traits = [];
 
             var pairs = classTraitDataRaw.Split('|', StringSplitOptions.RemoveEmptyEntries);
             foreach (var pair in pairs)
@@ -788,19 +812,21 @@ namespace RafeTale.Infrastructure.Extractors
                 string keyStr = keyValue[0].Trim();
                 string valueStr = keyValue[1].Trim();
 
-                var trait = new ClassTrait();
-                trait.Type = ParseEnum<ResourceType>(keyStr);
+                var trait = new ClassTrait
+                {
+                    Type = ParseEnum<ResourceType>(keyStr)
+                };
                 // 1. Tratamiento especial para la matriz de hechizos
                 if (keyStr.Equals("SpellSlots", StringComparison.OrdinalIgnoreCase))
                 {
                     var slots = JsonSerializer.Deserialize<int[]>(valueStr);
                     trait.SpellSlots = slots ?? new int[9];
-                    trait.Value = null; // Opcional, asegurar limpieza
+                    trait.Value = string.Empty; // Opcional, asegurar limpieza
                 }
                 else
                 {
                     trait.Value = valueStr;
-                    trait.SpellSlots = null;
+                    trait.SpellSlots = new int[9];
                 }
 
                 traits.Add(trait);
