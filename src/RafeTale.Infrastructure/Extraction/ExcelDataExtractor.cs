@@ -15,16 +15,9 @@ using RafeTale.Infrastructure.Extraction.Interfaces;
 
 namespace RafeTale.Infrastructure.Extraction
 {
-    public class ExcelDataExtractor : IDataExtractor
+    public class ExcelDataExtractor(IEnumerable<ISheetExtractor> extractors) : IDataExtractor
     {
-        private IReadOnlyList<ISheetExtractor> _extractors = [];
-        public ExcelDataExtractor(IEnumerable<ISheetExtractor> extractors)
-        {
-            _extractors = extractors.ToList();
-        }
-        private readonly LocLanguage _currentCulture;
-
-        private Dictionary<string, LocalizedContent> _localizedContentCache = new();
+        private readonly IReadOnlyList<ISheetExtractor> _extractors = [.. extractors];
 
         public ImportDataPackage ExtractAllAsync(Stream excelStream)
         {

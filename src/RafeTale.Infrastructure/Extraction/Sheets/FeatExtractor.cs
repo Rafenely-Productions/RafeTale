@@ -31,10 +31,16 @@ public class FeatExtractor : ISheetExtractor
             {
                 Id = Guid.NewGuid(),
                 TechnicalName = row.Cell(Col.TechnicalName).GetString() ?? string.Empty,
-                Prerequisite = prereqRaw == "none" ? null : ExcelParsers.ParsePrerequisites(prereqRaw),
-                Modifiers = modsRaw == "none" ? null : ExcelParsers.ParseModifiers(modsRaw),
                 Category = row.Cell(Col.Category).GetEnum<CategoryFeat>()
             };
+            if(prereqRaw != "none")
+            {
+                feat.Prerequisite =ExcelParsers.ParsePrerequisites(prereqRaw);
+            }
+            if (modsRaw != "none")
+            {
+                feat.Modifiers = ExcelParsers.ParseModifiers(modsRaw);
+            }
 
             context.Package.Feats.Add(feat);
 

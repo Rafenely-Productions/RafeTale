@@ -56,7 +56,7 @@
                                     @L["Skill_Proficiencies"]
                                 </td>
                                 <td class="px-1 py-2.5 font-sans font-medium text-slate-300 text-right text-xs">
-                                    @string.Join(", ", _fullClass.SkillProficiencies.Select(a => L[a].Value))
+                                    @string.Join(", ", _fullClass.SkillProficiencies.Select(a => L[a!].Value))
                                 </td>
                             </tr>
                             @if (_fullClass.ToolProficiencies.Any())

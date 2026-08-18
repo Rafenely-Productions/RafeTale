@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace RafeTale.Application.Services.Importer;
 
-public class ImportManager(IUnitOfWork unitOfWork, IDataExtractor dataExtractor, ILocalizationService localizationService, IAppInitializer appInitializer) : IExcelImportService
+public class ImportManager(IUnitOfWork unitOfWork, IDataExtractor dataExtractor, IAppInitializer appInitializer) : IExcelImportService
 {
     public async Task<(int Count, string Version)> ImportDataFromExcelAsync(Stream excelStream)
     {

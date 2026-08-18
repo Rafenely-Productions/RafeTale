@@ -39,7 +39,6 @@ else
     [Parameter] public List<RaceDto> Races { get; set; } = new();
     [Parameter] public EventCallback<RaceDto> OnInspectedRace { get; set; }
     [Parameter] public double InitialScrollPosition { get; set; } = 0;
-    private ElementReference ListContainerRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

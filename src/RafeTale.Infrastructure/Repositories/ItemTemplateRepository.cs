@@ -10,12 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RafeTale.Infrastructure.Repositories
 {
-    internal class ItemTemplateRepository : Repository<ItemTemplate>, IItemTemplateRepository
+    internal class ItemTemplateRepository(RafeTaleDbContext context) : Repository<ItemTemplate>(context), IItemTemplateRepository
     {
-        public ItemTemplateRepository(RafeTaleDbContext context) : base(context) { }
         public async Task<ItemTemplate> GetByNameAsync(string name)
         {
-            return await _context.ItemTemplates.FirstOrDefaultAsync(t => t.TechnicalName == name);
+            return await _context.ItemTemplates.FirstOrDefaultAsync(t => t.TechnicalName == name)
+            ?? throw new KeyNotFoundException($"ItemTemplate with name '{name}' not found.");
         }
     }
 }
