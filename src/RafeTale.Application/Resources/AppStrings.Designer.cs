@@ -19,7 +19,7 @@ namespace RafeTale.Application.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
@@ -61,7 +61,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  BonusAction.
+        ///   Looks up a localized string similar to BonusAction.
         /// </summary>
         public static string _SpellCastTime_BonusAction {
             get {
@@ -70,7 +70,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Hour.
+        ///   Looks up a localized string similar to Hour.
         /// </summary>
         public static string _SpellCastTime_Hour {
             get {
@@ -79,7 +79,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Minute.
+        ///   Looks up a localized string similar to Minute.
         /// </summary>
         public static string _SpellCastTime_Minute {
             get {
@@ -88,7 +88,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Reaction.
+        ///   Looks up a localized string similar to Reaction.
         /// </summary>
         public static string _SpellCastTime_Reaction {
             get {
@@ -97,7 +97,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Special.
+        ///   Looks up a localized string similar to Special.
         /// </summary>
         public static string _SpellCastTime_Special {
             get {
@@ -475,7 +475,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Charisma .
+        ///   Looks up a localized string similar to Charisma.
         /// </summary>
         public static string Charisma {
             get {
@@ -637,7 +637,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Constitution .
+        ///   Looks up a localized string similar to Constitution.
         /// </summary>
         public static string Constitution {
             get {
@@ -772,7 +772,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Intelligence .
+        ///   Looks up a localized string similar to Intelligence.
         /// </summary>
         public static string Intelligence {
             get {
@@ -1573,7 +1573,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Action.
+        ///   Looks up a localized string similar to Action.
         /// </summary>
         public static string SpellCastTime__Action {
             get {
@@ -1582,7 +1582,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Action.
+        ///   Looks up a localized string similar to Action.
         /// </summary>
         public static string SpellCastTime_Action {
             get {
@@ -1591,7 +1591,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  BonusAction.
+        ///   Looks up a localized string similar to BonusAction.
         /// </summary>
         public static string SpellCastTime_BonusAction {
             get {
@@ -1600,7 +1600,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Hour.
+        ///   Looks up a localized string similar to Hour.
         /// </summary>
         public static string SpellCastTime_Hour {
             get {
@@ -1609,7 +1609,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Minute.
+        ///   Looks up a localized string similar to Minute.
         /// </summary>
         public static string SpellCastTime_Minute {
             get {
@@ -1618,7 +1618,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Reaction.
+        ///   Looks up a localized string similar to Reaction.
         /// </summary>
         public static string SpellCastTime_Reaction {
             get {
@@ -1627,7 +1627,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Special.
+        ///   Looks up a localized string similar to Special.
         /// </summary>
         public static string SpellCastTime_Special {
             get {
@@ -2401,7 +2401,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wisdom .
+        ///   Looks up a localized string similar to Wisdom.
         /// </summary>
         public static string Wisdom {
             get {
