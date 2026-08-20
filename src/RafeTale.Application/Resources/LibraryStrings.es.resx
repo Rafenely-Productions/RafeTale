@@ -663,4 +663,19 @@
   <data name="Msg_NoSpellsFound" xml:space="preserve">
     <value>No hay conjuros que coincidan con el término buscado.</value>
   </data>
+  <data name="Classes_Count" xml:space="preserve">
+    <value>classes</value>
+  </data>
+  <data name="Spells_Count" xml:space="preserve">
+    <value>Hechizos</value>
+  </data>
+  <data name="SystemCoreRules_Description" xml:space="preserve">
+    <value>Tablas de progresión de experiencia y bonificador de competencia.</value>
+  </data>
+  <data name="SystemCoreRules_Title" xml:space="preserve">
+    <value>Reglas Core del Juego</value>
+  </data>
+  <data name="XPTable" xml:space="preserve">
+    <value>Tabla de Experiencia</value>
+  </data>
 </root>

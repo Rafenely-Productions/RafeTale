@@ -403,6 +403,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to classes.
+        /// </summary>
+        public static string Classes_Count {
+            get {
+                return ResourceManager.GetString("Classes_Count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Classes &amp; Subclasses.
         /// </summary>
         public static string Classes_Subclasses {
@@ -1150,6 +1159,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spells.
+        /// </summary>
+        public static string Spells_Count {
+            get {
+                return ResourceManager.GetString("Spells_Count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spells &amp; Magic.
         /// </summary>
         public static string Spells_Magic {
@@ -1236,6 +1254,24 @@ namespace RafeTale.Application.Resources {
         public static string Survival {
             get {
                 return ResourceManager.GetString("Survival", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Experience progression and proficiency bonus charts..
+        /// </summary>
+        public static string SystemCoreRules_Description {
+            get {
+                return ResourceManager.GetString("SystemCoreRules_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Core Rules.
+        /// </summary>
+        public static string SystemCoreRules_Title {
+            get {
+                return ResourceManager.GetString("SystemCoreRules_Title", resourceCulture);
             }
         }
         
@@ -1695,6 +1731,15 @@ namespace RafeTale.Application.Resources {
         public static string Wisdom {
             get {
                 return ResourceManager.GetString("Wisdom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XP Table.
+        /// </summary>
+        public static string XPTable {
+            get {
+                return ResourceManager.GetString("XPTable", resourceCulture);
             }
         }
     }
