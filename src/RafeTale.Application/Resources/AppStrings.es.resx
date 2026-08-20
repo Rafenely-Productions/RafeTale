@@ -271,7 +271,7 @@
     <value>Espacios de conjuro</value>
   </data>
   <data name="Title_Spellbook" xml:space="preserve">
-    <value>Sección del grimorio</value>
+    <value>Hechizos Seleccionados</value>
   </data>
   <data name="Label_SlotLevel" xml:space="preserve">
     <value>Círculo / Nivel</value>
@@ -633,14 +633,14 @@
   <data name="Survival" xml:space="preserve">
     <value>Supervivencia</value>
   </data>
-  <data name="Animal Handling" xml:space="preserve">
+  <data name="AnimalHandling" xml:space="preserve">
     <value>Trato con animales</value>
   </data>
   <data name="Light" xml:space="preserve">
     <value>Ligera</value>
   </data>
   <data name="Medium" xml:space="preserve">
-    <value>Media</value>
+    <value>Medio</value>
   </data>
   <data name="Heavy" xml:space="preserve">
     <value>Pesada</value>
@@ -859,28 +859,28 @@
     <value>Trasfondos</value>
   </data>
   <data name="Background_AbilityScores" xml:space="preserve">
-    <value>Ability Scores (ASI)</value>
+    <value>Atributos (ASI)</value>
   </data>
   <data name="Background_ASINote" xml:space="preserve">
-    <value>* You can increase one ability score by 2 and another by 1, or increase three ability scores by 1.</value>
+    <value>* Puedes aplicar un aumento de +2 a uno de estos atributos y +1 a otro, o un +1 a los tres.</value>
   </data>
   <data name="Background_SkillProficiencies" xml:space="preserve">
-    <value>Skill Proficiencies</value>
+    <value>Competencias en Habilidades</value>
   </data>
   <data name="Background_ToolProficiencies" xml:space="preserve">
-    <value>Tool Proficiencies</value>
+    <value>Competencias en Herramientas</value>
   </data>
   <data name="Common_None" xml:space="preserve">
-    <value>None</value>
+    <value>Ninguna</value>
   </data>
   <data name="Background_StartingEquipment" xml:space="preserve">
-    <value>Starting Equipment</value>
+    <value>Equipo Inicial</value>
   </data>
   <data name="Background_OriginFeat" xml:space="preserve">
-    <value>Origin Feat (Lvl 1)</value>
+    <value>Dote de Origen (Nivel 1)</value>
   </data>
   <data name="Background_OriginFeatBadge" xml:space="preserve">
-    <value>Origin Feat</value>
+    <value>Dote de Origen</value>
   </data>
   <data name="CategoryFeat_General" xml:space="preserve">
     <value>General</value>
@@ -926,5 +926,29 @@
   </data>
   <data name="Choose_Background" xml:space="preserve">
     <value>Elige un trasfondo</value>
+  </data>
+  <data name="Abjuration" xml:space="preserve">
+    <value>Abjuración</value>
+  </data>
+  <data name="Conjuration" xml:space="preserve">
+    <value>Conjuración</value>
+  </data>
+  <data name="Divination" xml:space="preserve">
+    <value>Adivinación</value>
+  </data>
+  <data name="Enchantment" xml:space="preserve">
+    <value>Encantamiento</value>
+  </data>
+  <data name="Evocation" xml:space="preserve">
+    <value>Evocación</value>
+  </data>
+  <data name="Illusion" xml:space="preserve">
+    <value>Ilusión</value>
+  </data>
+  <data name="Necromancy" xml:space="preserve">
+    <value>Nigromancia</value>
+  </data>
+  <data name="Transmutation" xml:space="preserve">
+    <value>Transmutación</value>
   </data>
 </root>

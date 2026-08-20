@@ -663,4 +663,19 @@
   <data name="Msg_NoSpellsFound" xml:space="preserve">
     <value>No spells match the search term.</value>
   </data>
+  <data name="Classes_Count" xml:space="preserve">
+    <value>classes</value>
+  </data>
+  <data name="Spells_Count" xml:space="preserve">
+    <value>Spells</value>
+  </data>
+  <data name="SystemCoreRules_Description" xml:space="preserve">
+    <value>Experience progression and proficiency bonus charts.</value>
+  </data>
+  <data name="SystemCoreRules_Title" xml:space="preserve">
+    <value>System Core Rules</value>
+  </data>
+  <data name="XPTable" xml:space="preserve">
+    <value>XP Table</value>
+  </data>
 </root>

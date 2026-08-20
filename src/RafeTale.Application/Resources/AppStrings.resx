@@ -633,7 +633,7 @@
   <data name="Survival" xml:space="preserve">
     <value>Survival</value>
   </data>
-  <data name="Animal Handling" xml:space="preserve">
+  <data name="AnimalHandling" xml:space="preserve">
     <value>Animal Handling</value>
   </data>
   <data name="Light" xml:space="preserve">
@@ -859,28 +859,28 @@
     <value>Backgrounds</value>
   </data>
   <data name="Background_AbilityScores" xml:space="preserve">
-    <value>Atributos (ASI)</value>
+    <value>Ability Scores (ASI)</value>
   </data>
   <data name="Background_ASINote" xml:space="preserve">
-    <value>* Puedes aplicar un aumento de +2 a uno de estos atributos y +1 a otro, o un +1 a los tres.</value>
+    <value>* You can increase one ability score by 2 and another by 1, or increase three ability scores by 1.</value>
   </data>
   <data name="Background_SkillProficiencies" xml:space="preserve">
-    <value>Competencias en Habilidades</value>
+    <value>Skill Proficiencies</value>
   </data>
   <data name="Background_ToolProficiencies" xml:space="preserve">
-    <value>Competencias en Herramientas</value>
+    <value>Tool Proficiencies</value>
   </data>
   <data name="Common_None" xml:space="preserve">
-    <value>Ninguna</value>
+    <value>None</value>
   </data>
   <data name="Background_StartingEquipment" xml:space="preserve">
-    <value>Equipo Inicial</value>
+    <value>Starting Equipment</value>
   </data>
   <data name="Background_OriginFeat" xml:space="preserve">
-    <value>Dote de Origen (Nivel 1)</value>
+    <value>Origin Feat (Lvl 1)</value>
   </data>
   <data name="Background_OriginFeatBadge" xml:space="preserve">
-    <value>Dote de Origen</value>
+    <value>Origin Feat</value>
   </data>
   <data name="CategoryFeat_General" xml:space="preserve">
     <value>General</value>
@@ -926,5 +926,29 @@
   </data>
   <data name="Choose_Background" xml:space="preserve">
     <value>Chose a Background</value>
+  </data>
+  <data name="Abjuration" xml:space="preserve">
+    <value>Abjuration</value>
+  </data>
+  <data name="Conjuration" xml:space="preserve">
+    <value>Conjuration</value>
+  </data>
+  <data name="Divination" xml:space="preserve">
+    <value>Divination</value>
+  </data>
+  <data name="Enchantment" xml:space="preserve">
+    <value>Enchantment</value>
+  </data>
+  <data name="Evocation" xml:space="preserve">
+    <value>Evocation</value>
+  </data>
+  <data name="Illusion" xml:space="preserve">
+    <value>Illusion</value>
+  </data>
+  <data name="Necromancy" xml:space="preserve">
+    <value>Necromancy</value>
+  </data>
+  <data name="Transmutation" xml:space="preserve">
+    <value>Transmutation</value>
   </data>
 </root>
