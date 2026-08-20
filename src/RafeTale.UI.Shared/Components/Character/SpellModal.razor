@@ -1,5 +1,4 @@
 @using RafeTale.Application.DTOs
-@using System.Text.RegularExpressions
 @inject IStringLocalizer<AppStrings> L
 
 @if (Spell != null)
@@ -13,19 +12,19 @@
             <div class="overflow-y-auto pr-1 space-y-3">
                 <div>
                     <span class="text-[9px] font-mono font-black text-amber-500 uppercase tracking-widest">
-                        @(Spell.Level == 0 ? L["Label_Cantrip"] : $"{L["Spell_LevelText"]} {Spell.Level}") � @Spell.School
+                        @(Spell.Level == 0 ? L["Label_Cantrip"] : $"{L["Spell_LevelText"]} {Spell.Level}") � @L[Spell.School]
                     </span>
-                    <h3 class="text-lg font-black text-white uppercase italic tracking-tight mt-0.5">@Spell.TechnicalName</h3>
+                    <h3 class="text-lg font-black text-white uppercase italic tracking-tight mt-0.5">@Spell.Name</h3>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 text-[11px] font-mono bg-black/40 p-2.5 rounded-xl border border-slate-800/80">
                     <div>
                         <span class="text-slate-500 text-[9px] block uppercase font-bold">@L["Label_CastingTime"]</span>
-                        <span class="text-slate-200">@Spell.CastingTime</span>
+                        <span class="text-slate-200"> @L["SpellCastTime_"+Spell.CastingTime]</span>
                     </div>
                     <div>
                         <span class="text-slate-500 text-[9px] block uppercase font-bold">@L["Label_Range"]</span>
-                        <span class="text-slate-200">@Spell.Range</span>
+                        <span class="text-slate-200">@L["SpellRange_"+Spell.Range]</span>
                     </div>
                     <div class="col-span-2 border-t border-slate-800/60 pt-1.5 mt-0.5">
                         <span class="text-slate-500 text-[9px] block uppercase font-bold">@L["Spell_Duration"]</span>
@@ -34,7 +33,7 @@
                 </div>
 
                 <div class="bg-black/20 p-3 rounded-xl border border-white/5 font-serif text-xs text-slate-300 leading-relaxed">
-                    @((MarkupString)FormatDescription(Spell.Description))
+                    @((MarkupString)Formatter.Format(Spell.Description,false))
                 </div>
             </div>
         </div>
@@ -45,28 +44,4 @@
     [Parameter] public SpellDto? Spell { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
 
-    private string FormatDescription(string rawDescription)
-    {
-        if (string.IsNullOrEmpty(rawDescription)) return string.Empty;
-
-        string processed = rawDescription;
-        string metersLabel = L["Label_mt"].Value;
-        string feetLabel = L["Label_ft"].Value;
-
-        processed = Regex.Replace(processed, @"{(?:dist|range):(\d+(?:\.\d+)?)_M}", match =>
-        {
-            string meters = match.Groups[1].Value;
-            return $"<span class=\"font-mono\">{meters} {metersLabel}</span>";
-        });
-
-        processed = Regex.Replace(processed, @"{(?:dist|range):(\d+(?:\.\d+)?)_FT}", match =>
-        {
-            string feet = match.Groups[1].Value;
-            return $"<span class=\"font-mono\">{feet} {feetLabel}</span>";
-        });
-
-        processed = Regex.Replace(processed, @"{[a-zA-Z0-9_.:]+}", string.Empty);
-
-        return processed;
-    }
 }

@@ -19,7 +19,7 @@ else
             <div @onclick="() => OnClassSelected.InvokeAsync(cls)"
                  class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-black/40 px-1 py-3 cursor-pointer hover:border-amber-500/40 transition-all group shadow-md">
                 <div class="min-w-0">
-                    <p class="text-base font-black text-white group-hover:text-amber-500 uppercase transition-colors">@cls.TechnicalName</p>
+                    <p class="text-base font-black text-white group-hover:text-amber-500 uppercase transition-colors">@cls.Name</p>
                     <p class="truncate text-xs text-slate-400 font-serif mt-0.5">
                         @LL["Primary_Stat"]: @string.Join(" / ", cls.PrimaryAbility.Select(a => L[a.ToString()].Value))
                     </p>

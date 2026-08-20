@@ -65,7 +65,7 @@ public class ClassLevelProgressionExtractor : ISheetExtractor
                     Id = Guid.NewGuid(),
                     ClassDefId = targetClass.Id,
                     Level = level,
-                    Features = [],
+                    Features = [feature],
                     Traits = classTraits
                 };
                 context.Package.ClassLevelProgressions.Add(progression);

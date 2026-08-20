@@ -9,6 +9,6 @@ namespace RafeTale.Domain.Entities
         public Guid RaceId { get; set; }
         public Race Race { get; set; } = null!;
 
-        public List<Trait>? Traits { get; set; }
+        public ICollection<Trait>? Traits { get; set; } = [];
     }
 }

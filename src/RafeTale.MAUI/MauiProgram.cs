@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using RafeTale.Application.DTOs;
 using RafeTale.Application.Interfaces;
 using RafeTale.Application.Interfaces.DtosInterfaces;
@@ -7,12 +8,13 @@ using RafeTale.Application.Services.Importer;
 using RafeTale.Application.Services.Importer.Initializer;
 using RafeTale.Domain.Entities;
 using RafeTale.Domain.Interfaces;
-using Microsoft.Extensions.Logging;
-using System.Globalization;
 using RafeTale.Infrastructure.Extraction;
 using RafeTale.Infrastructure.Extraction.Interfaces;
 using RafeTale.Infrastructure.Extraction.Sheets;
 using RafeTale.Infrastructure.Persistence;
+using RafeTale.UI.Shared.Shared.Extensions;
+using RafeTale.UI.Shared.Shared.Extensions.Interfaces;
+using System.Globalization;
 
 namespace RafeTale.MAUI;
 
@@ -40,7 +42,7 @@ public static class MauiProgram
         builder.Services.AddInfrastructure(dbPath);
         builder.Services.AddLocalization();
 
-        var culture = new CultureInfo("es-MX");
+        var culture = new CultureInfo("es");
         CultureInfo.DefaultThreadCurrentCulture = culture;
         CultureInfo.DefaultThreadCurrentUICulture = culture;
 
@@ -89,6 +91,8 @@ public static class MauiProgram
 
         builder.Services.AddScoped<IExcelImportService, ImportManager>();
         builder.Services.AddTransient<IDataExtractor, ExcelDataExtractor>();
+
+        builder.Services.AddSingleton<IDescriptionFormatter, DescriptionFormatter>();
 
         AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
         {

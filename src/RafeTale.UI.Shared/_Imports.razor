@@ -2,12 +2,15 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
-@using Microsoft.JSInterop
-@using RafeTale.Domain.Entities
-@using RafeTale.Application.Services
-@using RafeTale.Application.Models
-@using RafeTale.Application.Interfaces
-@using RafeTale.Application.Resources
-@using RafeTale.Domain.Interfaces
 @using Microsoft.Extensions.Localization
+@using Microsoft.JSInterop
+@using RafeTale.Application.Interfaces
+@using RafeTale.Application.Models
+@using RafeTale.Application.Resources
+@using RafeTale.Application.Services
+@using RafeTale.Domain.Entities
+@using RafeTale.Domain.Interfaces
 @using RafeTale.UI.Shared.Components.Character
+@using RafeTale.UI.Shared.Shared.Extensions.Interfaces
+
+@inject IDescriptionFormatter Formatter

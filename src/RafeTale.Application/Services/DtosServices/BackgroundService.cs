@@ -102,7 +102,7 @@ namespace RafeTale.Application.Services.DtosServices
                 {
                     Id = baseDto.Id,
                     TechnicalName = baseDto.TechnicalName,
-                    Name = baseDto.TechnicalName,
+                    Name = baseDto.Name,
                     Description = baseDto.Description,
                     ToolProficiencies = baseDto.ToolProficiencies,
                     Equipment = baseDto.Equipment,

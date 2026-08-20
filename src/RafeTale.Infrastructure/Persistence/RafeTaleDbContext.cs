@@ -26,7 +26,7 @@ public class RafeTaleDbContext(DbContextOptions<RafeTaleDbContext> options) : Db
     public DbSet<Campaign> Campaigns { get; set; } = null!;
     public DbSet<CampaignCharacter> CampaignCharacters { get; set; } = null!;
     public DbSet<JournalEntry> JournalEntries { get; set; } = null!;
-    public DbSet<SubRace> SubRaces { get; set; } = null!;
+    public DbSet<SubRace> SubRaces => Set<SubRace>();
     public DbSet<Language> Languages { get; set; } = null!;
     public DbSet<Trait> Traits { get; set; } = null!;
     public DbSet<Subclass> Subclasses { get; set; } = null!;
