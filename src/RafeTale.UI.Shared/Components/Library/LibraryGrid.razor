@@ -25,7 +25,7 @@
             <p class="mt-1 break-words text-sm text-slate-400">@LL["Classes_CardDescription"]</p>
         </div>
         <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-            @ClassesCount classes
+            @ClassesCount @LL["Classes_Count"]
         </span>
     </button>
 
@@ -43,7 +43,7 @@
             <p class="mt-1 break-words text-sm text-slate-400">@LL["Race_Description"]</p>
         </div>
         <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-            @RacesCount lineages
+            @RacesCount @LL["LineagesAndAncestries"]
         </span>
     </button>
 
@@ -61,7 +61,7 @@
             <p class="mt-1 break-words text-sm text-slate-400">@LL["Spells_Magic_Description"]</p>
         </div>
         <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-            @SpellsCount spells
+            @SpellsCount @LL["Spells_Count"]
         </span>
     </button>
 
@@ -108,11 +108,15 @@
             <i class="fa-solid fa-chevron-right mt-1 size-5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-500"></i>
         </div>
         <div class="min-w-0">
-            <h2 class="text-base font-semibold text-white">System Core Rules</h2>
-            <p class="mt-1 break-words text-sm text-slate-400">Experience progression and proficiency bonus charts.</p>
+            <h2 class="text-base font-semibold text-white">
+                @LL["SystemCoreRules_Title"]
+            </h2>
+            <p class="mt-1 break-words text-sm text-slate-400">
+                @LL["SystemCoreRules_Description"]
+            </p>
         </div>
         <span class="inline-flex w-fit items-center rounded-md bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
-            XP Table
+            @LL["XPTable"]
         </span>
     </button>
 </div>

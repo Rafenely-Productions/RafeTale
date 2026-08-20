@@ -6,6 +6,6 @@ namespace RafeTale.Domain.Entities
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string TechnicalName { get; set; } = string.Empty;
-        public IEnumerable<Race> Races { get; set; } = [];
+        public ICollection<Race> Races { get; set; } = [];
     }
 }

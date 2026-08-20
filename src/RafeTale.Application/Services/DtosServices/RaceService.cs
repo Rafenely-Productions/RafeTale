@@ -108,7 +108,7 @@ namespace RafeTale.Application.Services.DtosServices
                 Name = localizedSubraces.TryGetValue(LocProperty.Name, out var nameDict) && nameDict.TryGetValue(sr.Id, out var n) ? n : sr.TechnicalName,
                 Description = localizedSubraces.TryGetValue(LocProperty.Description, out var descDict) && descDict.TryGetValue(sr.Id, out var d) ? d : "No description",
                 RaceId = sr.RaceId,
-                Traits = ArmTraitDtos(sr.Traits, localizedTraits) // Retorna List<TraitDto> limpio
+                Traits = sr.Traits == null ? [] : ArmTraitDtos([.. sr.Traits], localizedTraits) // Retorna List<TraitDto> limpio
             })];
         }
 

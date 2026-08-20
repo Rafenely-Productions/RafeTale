@@ -27,7 +27,7 @@ public class ImportManager(IUnitOfWork unitOfWork, IDataExtractor dataExtractor,
         await unitOfWork.BeginTransactionAsync();
         try
         {
-            await SyncRacesAsync(data.Races);
+            await SyncRacesAsync([.. data.Races]);
             await SyncClassesAsync(data.ClassDefinitions);
             await unitOfWork.SaveChangesAsync();
 
@@ -65,7 +65,7 @@ public class ImportManager(IUnitOfWork unitOfWork, IDataExtractor dataExtractor,
         var existing = (await unitOfWork.Races.GetAllAsync()).Select(r => r!.TechnicalName.ToLower()).ToHashSet();
         var newRaces = races.Where(r => !existing.Contains(r.TechnicalName.ToLower())).ToList();
 
-        if (newRaces.Count > 0) await unitOfWork.Races.AddRangeAsync(newRaces);
+        if (newRaces.Count > 0) await unitOfWork.Races.AddRangeAsync([.. newRaces]);
         appInitializer.UpdateStatus("Razas importadas. Cargando clases...");
     }
 

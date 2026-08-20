@@ -32,8 +32,9 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        classes = await ClassService.GetAllAsync(null, null);
-        isLoading = false;
+        classes = await ClassService.GetAllAsync(null, includes: query => query
+            .IncludeCollection(r => r.Progressions, t => t.Features));
+    isLoading = false;
     }
 
     private void InspectClass(ClassDefinitionDto dto) => inspectedClass = dto;

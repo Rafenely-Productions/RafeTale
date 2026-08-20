@@ -4,8 +4,8 @@ namespace RafeTale.Application.Services.Importer
 {
     public class ImportDataPackage
     {
-        public List<Race> Races { get; set; } = [];
-        public List<SubRace> SubRaces { get; set; } = [];
+        public ICollection<Race> Races { get; set; } = [];
+        public ICollection<SubRace> SubRaces { get; set; } = [];
         public List<ClassDefinition> ClassDefinitions { get; set; } = [];
         public List<Spell> Spells { get; set; } = [];
 
