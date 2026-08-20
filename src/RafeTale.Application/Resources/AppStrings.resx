@@ -951,4 +951,34 @@
   <data name="Transmutation" xml:space="preserve">
     <value>Transmutation</value>
   </data>
+  <data name="Tiny" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="Small" xml:space="preserve">
+    <value>Small</value>
+  </data>
+  <data name="MediumSmall" xml:space="preserve">
+    <value>Medium Small</value>
+  </data>
+  <data name="Large" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="Huge" xml:space="preserve">
+    <value>Huge</value>
+  </data>
+  <data name="Gargantuan" xml:space="preserve">
+    <value>Gargantuan</value>
+  </data>
+  <data name="ThreeMusicalInstruments" xml:space="preserve">
+    <value>ThreeMusicalInstruments</value>
+  </data>
+  <data name="HerbalismKit" xml:space="preserve">
+    <value>HerbalismKit</value>
+  </data>
+  <data name="ArtisanToolsOrMusicalInstruments" xml:space="preserve">
+    <value>ArtisanToolsOrMusicalInstruments</value>
+  </data>
+  <data name="ThievesTools" xml:space="preserve">
+    <value>ThievesTools</value>
+  </data>
 </root>

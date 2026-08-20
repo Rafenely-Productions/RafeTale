@@ -634,7 +634,7 @@
     <value>Supervivencia</value>
   </data>
   <data name="AnimalHandling" xml:space="preserve">
-    <value>Trato con animales</value>
+    <value>Trato con Animales</value>
   </data>
   <data name="Light" xml:space="preserve">
     <value>Ligera</value>
@@ -950,5 +950,35 @@
   </data>
   <data name="Transmutation" xml:space="preserve">
     <value>Transmutación</value>
+  </data>
+  <data name="Tiny" xml:space="preserve">
+    <value>Medio</value>
+  </data>
+  <data name="Small" xml:space="preserve">
+    <value>Pequeño</value>
+  </data>
+  <data name="MediumSmall" xml:space="preserve">
+    <value>Mediano Pequeño</value>
+  </data>
+  <data name="Large" xml:space="preserve">
+    <value>Largo</value>
+  </data>
+  <data name="Huge" xml:space="preserve">
+    <value>Enorme</value>
+  </data>
+  <data name="Gargantuan" xml:space="preserve">
+    <value>Gargantuoso</value>
+  </data>
+  <data name="ThreeMusicalInstruments" xml:space="preserve">
+    <value>Tres Instrumentos Musicales</value>
+  </data>
+  <data name="HerbalismKit" xml:space="preserve">
+    <value>Kit Herbario</value>
+  </data>
+  <data name="ArtisanToolsOrMusicalInstruments" xml:space="preserve">
+    <value>Herramientas de Artesano o Instrumentos musicales</value>
+  </data>
+  <data name="ThievesTools" xml:space="preserve">
+    <value>Herramientas de Ladron</value>
   </data>
 </root>

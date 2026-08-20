@@ -9,7 +9,7 @@
         <div>
             <h2 class="text-base sm:text-lg font-black text-white uppercase tracking-wide">@L["Title_SpellsLearning"]</h2>
             <p class="text-xs text-slate-400 mt-0.5">
-                @L["Label_ClassSpellsAvailable"]: <span class="text-amber-400 font-bold">@CharDto?.ClassDef?.TechnicalName</span>
+                @L["Label_ClassSpellsAvailable"]: <span class="text-amber-400 font-bold">@CharDto?.ClassDef?.Name</span>
             </p>
         </div>
         <div class="flex gap-2.5">
@@ -86,10 +86,10 @@
                                     @(spell.Level == 0 ? "Can" : $"L{spell.Level}")
                                 </span>
                                 <h4 class="text-xs font-black uppercase text-white truncate group-hover:text-amber-400 transition-colors">
-                                    @spell.TechnicalName
+                                    @spell.Name
                                 </h4>
                             </div>
-                            <p class="text-[10px] text-slate-400 truncate">@spell.School</p>
+                            <p class="text-[10px] text-slate-400 truncate">@L[spell.School]</p>
                         </div>
 
                         <div class="shrink-0 flex items-center">
@@ -122,12 +122,12 @@
                 <div class="space-y-2 animate-in fade-in duration-300">
                     <div>
                         <span class="text-[8px] font-mono font-bold px-1.5 py-0.2 bg-amber-500/10 text-amber-400 rounded uppercase">
-                            @(selectedSpellForPreview.Level == 0 ? "Cantrip" : $"Level {selectedSpellForPreview.Level}")
+                            @(selectedSpellForPreview.Level == 0 ? L["Label_Cantrip"] : L["Level"]+ selectedSpellForPreview.Level)
                         </span>
-                        <h3 class="text-xs font-black text-white uppercase mt-1 tracking-wide">@selectedSpellForPreview.TechnicalName</h3>
+                        <h3 class="text-xs font-black text-white uppercase mt-1 tracking-wide">@selectedSpellForPreview.Name</h3>
                     </div>
                     <div class="text-[10px] text-slate-400 font-serif leading-relaxed max-h-[130px] overflow-y-auto pr-1">
-                        @((MarkupString)selectedSpellForPreview.Description)
+                        @Formatter.Format(selectedSpellForPreview.Description,false)
                     </div>
                 </div>
             }
