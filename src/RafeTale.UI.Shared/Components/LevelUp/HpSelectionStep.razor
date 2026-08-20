@@ -4,7 +4,7 @@
 <div class="space-y-6 animate-in fade-in duration-200">
     <div>
         <h2 class="text-base sm:text-lg font-black text-white uppercase tracking-wide">@L["Title_HitPointsGain"]</h2>
-        <p class="text-xs text-slate-400 mt-1">@L["Desc_HitPointsGain"] (@CharDto.ClassDef?.TechnicalName: 1d@CharDto.ClassDef?.HitDie).</p>
+        <p class="text-xs text-slate-400 mt-1">@L["Desc_HitPointsGain"] (@CharDto.ClassDef?.Name: 1d @CharDto.ClassDef?.HitDie).</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -19,7 +19,7 @@
         <div @onclick="RollHp" class="p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between bg-black/30 @(!Draft.UseAverageHp ? "border-amber-500 bg-amber-500/[0.02]" : "border-slate-800 hover:border-amber-500/30")">
             <div class="space-y-1">
                 <p class="text-xs sm:text-sm font-bold text-white uppercase">@L["Option_RollDice"]</p>
-                <p class="text-[11px] text-slate-400">@L["Desc_RollDice"] (1d@CharDto.ClassDef?.HitDie + CON mod)</p>
+                <p class="text-[11px] text-slate-400">@L["Desc_RollDice"] (1d @CharDto.ClassDef?.HitDie + CON mod)</p>
             </div>
             <div class="flex items-center gap-3">
                 @if (hasRolled)

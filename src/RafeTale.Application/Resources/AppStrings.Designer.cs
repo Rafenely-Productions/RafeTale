@@ -178,6 +178,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ArtisanToolsOrMusicalInstruments.
+        /// </summary>
+        public static string ArtisanToolsOrMusicalInstruments {
+            get {
+                return ResourceManager.GetString("ArtisanToolsOrMusicalInstruments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Athletics.
         /// </summary>
         public static string Athletics {
@@ -826,11 +835,29 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Gargantuan.
+        /// </summary>
+        public static string Gargantuan {
+            get {
+                return ResourceManager.GetString("Gargantuan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Heavy.
         /// </summary>
         public static string Heavy {
             get {
                 return ResourceManager.GetString("Heavy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HerbalismKit.
+        /// </summary>
+        public static string HerbalismKit {
+            get {
+                return ResourceManager.GetString("HerbalismKit", resourceCulture);
             }
         }
         
@@ -849,6 +876,15 @@ namespace RafeTale.Application.Resources {
         public static string Hit_Die {
             get {
                 return ResourceManager.GetString("Hit_Die", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Huge.
+        /// </summary>
+        public static string Huge {
+            get {
+                return ResourceManager.GetString("Huge", resourceCulture);
             }
         }
         
@@ -1213,6 +1249,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Large.
+        /// </summary>
+        public static string Large {
+            get {
+                return ResourceManager.GetString("Large", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Option to leave second stat empty for a +2 bonus.
         /// </summary>
         public static string Leave_Empty_For_PlusTwo {
@@ -1281,6 +1326,15 @@ namespace RafeTale.Application.Resources {
         public static string Medium {
             get {
                 return ResourceManager.GetString("Medium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium Small.
+        /// </summary>
+        public static string MediumSmall {
+            get {
+                return ResourceManager.GetString("MediumSmall", resourceCulture);
             }
         }
         
@@ -1632,6 +1686,15 @@ namespace RafeTale.Application.Resources {
         public static string Sleight_of_Hand {
             get {
                 return ResourceManager.GetString("Sleight of Hand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Small.
+        /// </summary>
+        public static string Small {
+            get {
+                return ResourceManager.GetString("Small", resourceCulture);
             }
         }
         
@@ -2127,6 +2190,33 @@ namespace RafeTale.Application.Resources {
         public static string Table_Reference {
             get {
                 return ResourceManager.GetString("Table_Reference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ThievesTools.
+        /// </summary>
+        public static string ThievesTools {
+            get {
+                return ResourceManager.GetString("ThievesTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ThreeMusicalInstruments.
+        /// </summary>
+        public static string ThreeMusicalInstruments {
+            get {
+                return ResourceManager.GetString("ThreeMusicalInstruments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        public static string Tiny {
+            get {
+                return ResourceManager.GetString("Tiny", resourceCulture);
             }
         }
         
