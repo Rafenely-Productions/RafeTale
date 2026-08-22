@@ -311,8 +311,8 @@ public class SpellServiceSystemTests
     private static Character CreateCharacterWithSlots()
     {
         var character = CreateCharacter();
-        character.SpellSlots = [];
-        {
+        character.SpellSlots =
+        [
             _ = new CharacterSpellSlots
             {
                 Id = Guid.NewGuid(),
@@ -320,7 +320,7 @@ public class SpellServiceSystemTests
                 Level = 1,
                 MaxSlots = 4,
                 UsedSlots = 0
-            };
+            },
             _ = new CharacterSpellSlots
             {
                 Id = Guid.NewGuid(),
@@ -328,8 +328,8 @@ public class SpellServiceSystemTests
                 Level = 2,
                 MaxSlots = 3,
                 UsedSlots = 0
-            };
-        }
+            }
+        ]
         ;
         return character;
     }
