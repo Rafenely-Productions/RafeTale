@@ -7,14 +7,9 @@ using System.Threading.Tasks;
 
 namespace RafeTale.Application.Services;
 
-public class CharacterQueryService : ICharacterQueryService
+public class CharacterQueryService(IUnitOfWork unitOfWork) : ICharacterQueryService
 {
-    private readonly IUnitOfWork _unitOfWork;
-
-    public CharacterQueryService(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<IEnumerable<Character>> GetDashboardCharactersAsync()
     {

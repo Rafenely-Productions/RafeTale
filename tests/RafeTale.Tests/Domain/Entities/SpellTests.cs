@@ -87,10 +87,11 @@ public class SpellTests
     public void SetSchoolOfMagic_School_ReturnsAssignedValue()
     {
         // Arrange
-        var spell = new Spell();
-
-        // Act
-        spell.School = SchoolOfMagicEnum.Evocation;
+        var spell = new Spell
+        {
+            // Act
+            School = SchoolOfMagicEnum.Evocation
+        };
 
         // Assert
         spell.School.Should().Be(SchoolOfMagicEnum.Evocation);
@@ -100,10 +101,11 @@ public class SpellTests
     public void SetCastingTime_CastingTime_ReturnsAssignedValue()
     {
         // Arrange
-        var spell = new Spell();
-
-        // Act
-        spell.CastingTime = CastingTime.BonusAction;
+        var spell = new Spell
+        {
+            // Act
+            CastingTime = CastingTime.BonusAction
+        };
 
         // Assert
         spell.CastingTime.Should().Be(CastingTime.BonusAction);
@@ -113,10 +115,11 @@ public class SpellTests
     public void SetRange_Range_ReturnsAssignedValue()
     {
         // Arrange
-        var spell = new Spell();
-
-        // Act
-        spell.Range = SpellRange.Touch;
+        var spell = new Spell
+        {
+            // Act
+            Range = SpellRange.Touch
+        };
 
         // Assert
         spell.Range.Should().Be(SpellRange.Touch);

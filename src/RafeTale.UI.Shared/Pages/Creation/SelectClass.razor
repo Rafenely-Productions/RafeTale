@@ -1,13 +1,11 @@
 @page "/character/create/class"
 @using RafeTale.Application.DTOs
-@using RafeTale.Domain.Entities
 @using RafeTale.Application.Interfaces.DtosInterfaces
+@using RafeTale.Domain.Entities
 @using RafeTale.Domain.Interfaces
-@using RafeTale.Domain.Enums
-@using RafeTale.Domain.Modifiers
 @using RafeTale.UI.Shared.Components.Library
-@using RafeTale.UI.Shared.Extensions
 @using RafeTale.UI.Shared.Components.UI
+@using RafeTale.UI.Shared.Shared.Extensions
 @inject IUnitOfWork UnitOfWork
 @inject NavigationManager Navigation
 @inject ICharacterCreationService CreationService
@@ -46,7 +44,7 @@
                                  class="group cursor-pointer px-3.5 py-2.5 lg:p-4 rounded-xl border transition-all duration-300 shrink-0 lg:shrink w-auto lg:w-auto @(SelectedClass?.Id == cls.Id ? "bg-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "bg-slate-900 border-amber-900/20 hover:border-amber-500/50")">
                                 <div class="flex justify-between items-center gap-3">
                                     <span class="text-xs lg:text-sm font-black uppercase tracking-tight truncate @(SelectedClass?.Id == cls.Id ? "text-black" : "text-white group-hover:text-amber-500")">
-                                        @cls.TechnicalName
+                                        @cls.Name
                                     </span>
                                     <i class="fa-solid fa-fire-bolt text-xs shrink-0 @(SelectedClass?.Id == cls.Id ? "text-black" : "text-amber-900/40")"></i>
                                 </div>
@@ -70,9 +68,9 @@
                     else
                     {
                         <div>
-                            <ClassInspector InspectedClass="SelectedClass"/>
+                            <ClassInspector InspectedClass="SelectedClass" />
                         </div>
-                        
+
                         <div class="mt-6 pt-4 border-t border-white/5 flex justify-end">
                             <button @onclick="Confirm"
                                     class="w-full sm:w-auto px-8 py-3.5 bg-lime-600 hover:bg-lime-500 text-black font-black rounded-2xl lg:rounded-[2rem] transition-all shadow-xl shadow-lime-900/20 flex items-center justify-center gap-4">
@@ -95,7 +93,7 @@
 
         <div class="relative bg-slate-900 border border-amber-500/30 w-full max-w-3xl rounded-3xl lg:rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
             <div class="p-6 lg:p-8 overflow-y-auto custom-scrollbar">
-                
+
                 <div class="flex justify-between items-start mb-6">
                     <div>
                         <span class="text-amber-700 font-black text-[10px] tracking-[0.3em] uppercase">@L["Skill_Detail"]</span>
@@ -214,16 +212,15 @@
     }
 
     private void CloseInspection()
-    { 
-        FeatureInInspection = null; 
+    {
+        FeatureInInspection = null;
         InspectedSpells.Clear();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        Classes = await ClassService.GetAllAsync(null, includes: query => query.Include(x => x.Progressions).IncludeCollection(r => r.Progressions, t => t.Features));
-
-        if(CreationService.SelectedClassId != null)
+        Classes = await ClassService.GetAllAsync(null, null);
+        if (CreationService.SelectedClassId != null)
         {
             SelectedClass = Classes.FirstOrDefault(x => x.Id == CreationService.SelectedClassId);
         }

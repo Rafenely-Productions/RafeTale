@@ -8,6 +8,6 @@ namespace RafeTale.Application.DTOs
         public string Name { get; init; } = string.Empty; // Traducción del nombre de la subraza
         public string Description { get; init; } = string.Empty; // Traducción del lore/descripción
         public Guid RaceId { get; init; }
-        public List<TraitDto> Traits { get; init; } = new();
+        public List<TraitDto> Traits { get; init; } = [];
     }
 }

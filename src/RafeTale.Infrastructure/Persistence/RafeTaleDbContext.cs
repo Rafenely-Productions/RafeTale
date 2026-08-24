@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace RafeTale.Infrastructure.Persistence;
 
-public class RafeTaleDbContext : DbContext
+public class RafeTaleDbContext(DbContextOptions<RafeTaleDbContext> options) : DbContext(options)
 {
     public DbSet<Character> Characters => Set<Character>();
     public DbSet<CharacterModifier> CharacterModifiers => Set<CharacterModifier>();
@@ -26,12 +26,11 @@ public class RafeTaleDbContext : DbContext
     public DbSet<Campaign> Campaigns { get; set; } = null!;
     public DbSet<CampaignCharacter> CampaignCharacters { get; set; } = null!;
     public DbSet<JournalEntry> JournalEntries { get; set; } = null!;
-    public DbSet<SubRace> SubRaces { get; set; } = null!;
+    public DbSet<SubRace> SubRaces => Set<SubRace>();
     public DbSet<Language> Languages { get; set; } = null!;
     public DbSet<Trait> Traits { get; set; } = null!;
     public DbSet<Subclass> Subclasses { get; set; } = null!;
     public DbSet<SubclassLevelProgression> SubclassLevelProgressions { get; set; } = null!;
-    public RafeTaleDbContext(DbContextOptions<RafeTaleDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

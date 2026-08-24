@@ -41,8 +41,8 @@ namespace RafeTale.Application.Services.DtosServices
                 Description = await loc.GetStringAsync(background.Id, LocProperty.Description),
                 ToolProficiencies = await loc.GetStringAsync(background.Id, LocProperty.ToolProficiencies),
                 Equipment = await loc.GetStringAsync(background.Id, LocProperty.Equipment),
-                ASIs = background.ASIs.Select(x=> x.ToString()).ToList(),
-                SkillProficiencies = background.SkillProficiencies.Select(x=> x.ToString()).ToList(),
+                ASIs = [.. background.ASIs.Select(x=> x.ToString())],
+                SkillProficiencies = [.. background.SkillProficiencies.Select(x=> x.ToString())],
                 FeatId = background.FeatId,
                 Feat = featDto
             };
@@ -59,8 +59,8 @@ namespace RafeTale.Application.Services.DtosServices
                 Description = localizedWords != null && localizedWords.TryGetValue(LocProperty.Description, out var descDict) && descDict.TryGetValue(background.Id, out var d) ? d : "[No Description]",
                 ToolProficiencies = localizedWords != null && localizedWords.TryGetValue(LocProperty.ToolProficiencies, out var toolDict) && toolDict.TryGetValue(background.Id, out var t) ? t : string.Empty,
                 Equipment = localizedWords != null && localizedWords.TryGetValue(LocProperty.Equipment, out var eqDict) && eqDict.TryGetValue(background.Id, out var e) ? e : string.Empty,
-                ASIs = background.ASIs.Select(x => x.ToString()).ToList(),
-                SkillProficiencies = background.SkillProficiencies.Select(x => x.ToString()).ToList(),
+                ASIs = [.. background.ASIs.Select(x => x.ToString())],
+                SkillProficiencies = [.. background.SkillProficiencies.Select(x => x.ToString())],
                 FeatId = background.FeatId,
                 Feat = null // Se inyectará en GetAllAsync si corresponde
             };
@@ -102,7 +102,7 @@ namespace RafeTale.Application.Services.DtosServices
                 {
                     Id = baseDto.Id,
                     TechnicalName = baseDto.TechnicalName,
-                    Name = baseDto.TechnicalName,
+                    Name = baseDto.Name,
                     Description = baseDto.Description,
                     ToolProficiencies = baseDto.ToolProficiencies,
                     Equipment = baseDto.Equipment,

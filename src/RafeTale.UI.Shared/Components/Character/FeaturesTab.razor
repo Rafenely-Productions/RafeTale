@@ -1,6 +1,7 @@
 @using RafeTale.Application.DTOs
 @using RafeTale.UI.Shared.Components.UI
 @inject IStringLocalizer<AppStrings> L
+@inject IStringLocalizer<LibraryStrings> LL
 
 <div class="bg-slate-900 border border-amber-900/20 rounded-2xl p-4 shadow-xl space-y-3">
     <h3 class="text-amber-500 font-black text-xs flex items-center gap-2 uppercase tracking-wider border-b border-amber-900/10 pb-2.5">
@@ -10,8 +11,8 @@
         @if (!CharDto.AcquiredFeatures.Any())
         {
             <EmptyState IconClass="fa-book-skull"
-            Title="@L["EmptyState_NoFeatures_Title"]"
-            Description="@L["EmptyState_NoFeatures_Desc"]" />
+            Title="@LL["EmptyState_NoFeatures_Title"]"
+            Description="@LL["EmptyState_NoFeatures_Desc"]" />
         }
         else
         {

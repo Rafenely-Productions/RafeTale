@@ -5,27 +5,18 @@ using RafeTale.Domain.Entities;
 
 namespace RafeTale.Application.Services;
 
-public class LibraryCountsService : ILibraryCountsService
+public class LibraryCountsService(
+    IService<ClassDefinitionDto, ClassDefinition> classService,
+    IService<RaceDto, Race> raceService,
+    IService<SpellDto, Spell> spellService,
+    IService<BackgroundDto, Background> bgService,
+    IService<FeatDto, Feat> featService) : ILibraryCountsService
 {
-    private readonly IService<ClassDefinitionDto, ClassDefinition> _classService;
-    private readonly IService<RaceDto, Race> _raceService;
-    private readonly IService<SpellDto, Spell> _spellService;
-    private readonly IService<BackgroundDto, Background> _bgService;
-    private readonly IService<FeatDto, Feat> _featService;
-
-    public LibraryCountsService(
-        IService<ClassDefinitionDto, ClassDefinition> classService,
-        IService<RaceDto, Race> raceService,
-        IService<SpellDto, Spell> spellService,
-        IService<BackgroundDto, Background> bgService,
-        IService<FeatDto, Feat> featService)
-    {
-        _classService = classService;
-        _raceService = raceService;
-        _spellService = spellService;
-        _bgService = bgService;
-        _featService = featService;
-    }
+    private readonly IService<ClassDefinitionDto, ClassDefinition> _classService = classService;
+    private readonly IService<RaceDto, Race> _raceService = raceService;
+    private readonly IService<SpellDto, Spell> _spellService = spellService;
+    private readonly IService<BackgroundDto, Background> _bgService = bgService;
+    private readonly IService<FeatDto, Feat> _featService = featService;
 
     public async Task<LibraryCounts> GetCountsAsync()
     {

@@ -57,7 +57,7 @@ public class ClassExtractor : ISheetExtractor
         }
     }
 
-    private void MapClassSkills(ClassDefinition classDef, string rawSkills, List<Skill> allSkills)
+    private static void MapClassSkills(ClassDefinition classDef, string rawSkills, List<Skill> allSkills)
     {
         var skillNames = rawSkills.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim());
         if (skillNames.Contains("Any", StringComparer.OrdinalIgnoreCase))

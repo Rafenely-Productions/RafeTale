@@ -630,4 +630,52 @@
   <data name="Msg_NoFeatsFound" xml:space="preserve">
     <value>There are no feats available to choose. Import a content pack to reveal them.</value>
   </data>
+  <data name="Title_MyCharacters" xml:space="preserve">
+    <value>My Characters</value>
+  </data>
+  <data name="Btn_CreateCharacter" xml:space="preserve">
+    <value>Create Character</value>
+  </data>
+  <data name="Btn_CreateFirstCharacter" xml:space="preserve">
+    <value>Create your first hero</value>
+  </data>
+  <data name="EmptyState_NoCharacters_Title" xml:space="preserve">
+    <value>The table is empty</value>
+  </data>
+  <data name="EmptyState_NoCharacters_Desc" xml:space="preserve">
+    <value>You haven't forged any characters yet. How about a brave warrior or a scholarly wizard?</value>
+  </data>
+  <data name="EmptyState_NoSpells_Title" xml:space="preserve">
+    <value>Empty Grimoire</value>
+  </data>
+  <data name="EmptyState_NoSpells_Desc" xml:space="preserve">
+    <value>This character doesn't know any spells yet.</value>
+  </data>
+  <data name="EmptyState_NoFeatures_Title" xml:space="preserve">
+    <value>Blank Adventure Journal</value>
+  </data>
+  <data name="EmptyState_NoFeatures_Desc" xml:space="preserve">
+    <value>You haven't unlocked any features yet. Level up to gain new abilities.</value>
+  </data>
+  <data name="Title_NoSpellsFound" xml:space="preserve">
+    <value>No Spells</value>
+  </data>
+  <data name="Msg_NoSpellsFound" xml:space="preserve">
+    <value>No spells match the search term.</value>
+  </data>
+  <data name="Classes_Count" xml:space="preserve">
+    <value>classes</value>
+  </data>
+  <data name="Spells_Count" xml:space="preserve">
+    <value>Spells</value>
+  </data>
+  <data name="SystemCoreRules_Description" xml:space="preserve">
+    <value>Experience progression and proficiency bonus charts.</value>
+  </data>
+  <data name="SystemCoreRules_Title" xml:space="preserve">
+    <value>System Core Rules</value>
+  </data>
+  <data name="XPTable" xml:space="preserve">
+    <value>XP Table</value>
+  </data>
 </root>

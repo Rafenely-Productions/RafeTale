@@ -12,14 +12,14 @@ public class ItemExtractorTests
     private readonly ItemExtractor _sut = new();
 
     private static readonly string[] Headers =
-        { "TechnicalName", "DescriptionES", "Category", "Owner", "Quantity", "IsEquipped" };
+        [ "TechnicalName", "DescriptionES", "Category", "Owner", "Quantity", "IsEquipped" ];
 
     [Fact]
     public void Extract_AssignsInventoryToKnownOwner()
     {
         var wb = CreateWorkbook("Items", Headers,
-            new[] { "Longsword", "Espada larga", "Weapon", "Gandalf", "1", "true" },
-            new[] { "Potion", "Poción", "Consumable", "", "", "" });
+            [ "Longsword", "Espada larga", "Weapon", "Gandalf", "1", "true" ],
+            [ "Potion", "Poción", "Consumable", "", "", "" ]);
         var ctx = CreateContext();
         var gandalf = new Character { Id = Guid.NewGuid(), Name = "Gandalf" };
         ctx.Package.Characters.Add(gandalf);
@@ -37,7 +37,7 @@ public class ItemExtractorTests
     public void Extract_UnknownOwner_CreatesTemplateWithoutInventory()
     {
         var wb = CreateWorkbook("Items", Headers,
-            new[] { "Longsword", "Espada", "Weapon", "Frodo", "1", "true" });
+            [ "Longsword", "Espada", "Weapon", "Frodo", "1", "true" ]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);
@@ -49,7 +49,7 @@ public class ItemExtractorTests
     public void Extract_InvalidCategory_FallsBackToAdventuringGear()
     {
         var wb = CreateWorkbook("Items", Headers,
-            new[] { "Thing", "Cosa", "NotACategory", "", "", "" });
+            [ "Thing", "Cosa", "NotACategory", "", "", "" ]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);

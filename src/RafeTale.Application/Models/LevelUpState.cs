@@ -11,9 +11,9 @@ namespace RafeTale.Application.Models
     public class LevelUpState
     {
         public int SelectedHp { get; set; }
-        public List<CharacterModifier> SelectedModifiers { get; set; } = new();
-        public List<Guid> SelectedFeatIds { get; set; } = new();
-        public List<Guid> SelectedSpellIds { get; set; } = new();
+        public List<CharacterModifier> SelectedModifiers { get; set; } = [];
+        public List<Guid> SelectedFeatIds { get; set; } = [];
+        public List<Guid> SelectedSpellIds { get; set; } = [];
         public Guid? SelectedFeatId { get; set; }
 
         public Dictionary<TargetPropertyType, string> SelectedAsi { get; set; } = new()
@@ -28,15 +28,14 @@ namespace RafeTale.Application.Models
 
         public List<CharacterModifier> GetModifiersFromAsi()
         {
-            return SelectedAsi
+            return [..SelectedAsi
                 .Select(kv => new CharacterModifier
                 {
                     Source = "Mejora de Característica",
                     Type = ModifierType.AttributeBonus,
                     Target = kv.Key.ToString(),
                     Value = 0
-                })
-                .ToList();
+                })];
         }
     }
 }

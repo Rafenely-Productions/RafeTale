@@ -15,8 +15,8 @@ public class BackgroundExtractorTests
     public void Extract_LinksFeatAndParsesProficiencies()
     {
         var wb = CreateWorkbook("Backgrounds",
-            new[] { "TechnicalName", "ASIs", "Feat", "Skills", "ToolProficienciesEN", "EquipmentEN", "DescriptionEN", "NameES", "ToolProficienciesES", "EquipmentES", "DescriptionES" },
-            new[] { "Soldier", "Strength,Constitution", "Tough", "Athletics,Intimidation", "None", "Equipment", "Desc", "Soldado", "Ninguna", "Equipo", "Trasfondo" });
+            [ "TechnicalName", "ASIs", "Feat", "Skills", "ToolProficienciesEN", "EquipmentEN", "DescriptionEN", "NameES", "ToolProficienciesES", "EquipmentES", "DescriptionES" ],
+            [ "Soldier", "Strength,Constitution", "Tough", "Athletics,Intimidation", "None", "Equipment", "Desc", "Soldado", "Ninguna", "Equipo", "Trasfondo" ]);
         var ctx = CreateContext();
         var feat = new Feat { Id = Guid.NewGuid(), TechnicalName = "Tough" };
         ctx.Package.Feats.Add(feat);
@@ -26,16 +26,16 @@ public class BackgroundExtractorTests
         var bg = ctx.Package.Backgrounds.Should().ContainSingle().Subject;
         bg.FeatId.Should().Be(feat.Id);
         bg.Feat.Should().Be(feat);
-        bg.ASIs.Should().BeEquivalentTo(new[] { AttributeImprovementChoice.Strength, AttributeImprovementChoice.Constitution });
-        bg.SkillProficiencies.Should().BeEquivalentTo(new[] { SkillType.Athletics, SkillType.Intimidation });
+        bg.ASIs.Should().BeEquivalentTo([ AttributeImprovementChoice.Strength, AttributeImprovementChoice.Constitution ]);
+        bg.SkillProficiencies.Should().BeEquivalentTo([ SkillType.Athletics, SkillType.Intimidation ]);
     }
 
     [Fact]
     public void Extract_UnknownFeat_LeavesFeatIdEmpty()
     {
         var wb = CreateWorkbook("Backgrounds",
-            new[] { "TechnicalName", "ASIs", "Feat", "Skills", "ToolProficienciesEN", "EquipmentEN", "DescriptionEN", "NameES", "ToolProficienciesES", "EquipmentES", "DescriptionES" },
-            new[] { "Hermit", "Wisdom", "NonExistent", "Medicine", "", "", "", "Ermitaño", "", "", "" });
+            [ "TechnicalName", "ASIs", "Feat", "Skills", "ToolProficienciesEN", "EquipmentEN", "DescriptionEN", "NameES", "ToolProficienciesES", "EquipmentES", "DescriptionES" ],
+            [ "Hermit", "Wisdom", "NonExistent", "Medicine", "", "", "", "Ermitaño", "", "", "" ]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);

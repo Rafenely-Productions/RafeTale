@@ -15,8 +15,8 @@ public class SpecialTraitExtractorTests
     public void Extract_ParsesModifiersAndLinksTrait()
     {
         var wb = CreateWorkbook("Special Traits",
-            new[] { "Trait", "TechnicalName", "DescriptionEN", "Modifiers", "NameES", "DescriptionES" },
-            new[] { "Darkvision", "Superior", "Desc", "[{\"Type\":\"AttributeBonus\",\"Target\":\"Wisdom\",\"Value\":1}]", "Sup", "Desc" });
+            [ "Trait", "TechnicalName", "DescriptionEN", "Modifiers", "NameES", "DescriptionES" ],
+            [ "Darkvision", "Superior", "Desc", "[{\"Type\":\"AttributeBonus\",\"Target\":\"Wisdom\",\"Value\":1}]", "Sup", "Desc" ]);
         var ctx = CreateContext();
         var trait = new Trait { Id = Guid.NewGuid(), TechnicalName = "Darkvision" };
         ctx.Package.Traits.Add(trait);
@@ -32,8 +32,8 @@ public class SpecialTraitExtractorTests
     public void Extract_InvalidModifiersJson_ReturnsEmptyList()
     {
         var wb = CreateWorkbook("Special Traits",
-            new[] { "Trait", "TechnicalName", "DescriptionEN", "Modifiers", "NameES", "DescriptionES" },
-            new[] { "T", "S", "D", "{not valid json", "N", "D" });
+            [ "Trait", "TechnicalName", "DescriptionEN", "Modifiers", "NameES", "DescriptionES" ],
+            [ "T", "S", "D", "{not valid json", "N", "D" ]);
         var ctx = CreateContext();
 
         _sut.Extract(wb, ctx);

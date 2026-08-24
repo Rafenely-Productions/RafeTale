@@ -46,8 +46,10 @@ public partial class App : Microsoft.Maui.Controls.Application
         await Task.Yield();
 
         var dbPath = Path.Combine(FileSystem.AppDataDirectory, "rafetale.db3");
-        _logger.LogInformation("DB path: {Path}", dbPath);
-
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("DB path: {Path}", dbPath);
+        }
         try
         {
             var initializer = _serviceProvider.GetRequiredService<IAppInitializer>();

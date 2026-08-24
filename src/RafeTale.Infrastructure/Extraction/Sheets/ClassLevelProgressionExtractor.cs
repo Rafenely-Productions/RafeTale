@@ -55,7 +55,7 @@ public class ClassLevelProgressionExtractor : ISheetExtractor
             if (existing != null)
             {
                 existing.Features.Add(feature);
-                if (classTraits.Any())
+                if (classTraits.Count != 0)
                     existing.Traits.AddRange(classTraits); // <-- BUG FIXED
             }
             else
@@ -65,7 +65,7 @@ public class ClassLevelProgressionExtractor : ISheetExtractor
                     Id = Guid.NewGuid(),
                     ClassDefId = targetClass.Id,
                     Level = level,
-                    Features = new List<Feature> { feature },
+                    Features = [feature],
                     Traits = classTraits
                 };
                 context.Package.ClassLevelProgressions.Add(progression);

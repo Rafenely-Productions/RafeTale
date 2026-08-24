@@ -12,12 +12,12 @@ public class ClassDefinition : IEntity
     public int HitDieValue => CalculateValue();
     public ICollection<AttributeImprovementChoice> PrimaryAbility { get; set; } =[]; // Ej: Fuerza, Inteligencia
     public ICollection<AttributeImprovementChoice> SavingThrowProficiencies { get; set; } = [];// Ej: "Fuerza, Constituci�n"
-    public ICollection<ArmorProficiency> ArmorProficiencies { get; set; } = new List<ArmorProficiency>();// Ej: "Armadura ligera, Armadura media"
-    public ICollection<WeaponProficiency> WeaponProficiencies { get; set; } = new List<WeaponProficiency>();// Ej: "Armas simples, Armas marciales"
-    public ICollection<ToolProficiency> ToolProficiencies { get; set; } = new List<ToolProficiency>(); // Ej: "Herramientas de ladr�n, Instrumentos musicales"
-    public List<Skill> SkillProficiencies { get; set; } = new List<Skill>(); // Ej: "Atletismo, Percepci�n"
+    public ICollection<ArmorProficiency> ArmorProficiencies { get; set; } = [];// Ej: "Armadura ligera, Armadura media"
+    public ICollection<WeaponProficiency> WeaponProficiencies { get; set; } = [];// Ej: "Armas simples, Armas marciales"
+    public ICollection<ToolProficiency> ToolProficiencies { get; set; } = []; // Ej: "Herramientas de ladr�n, Instrumentos musicales"
+    public List<Skill> SkillProficiencies { get; set; } = []; // Ej: "Atletismo, Percepci�n"
     public int SkillsToChoose { get; set; } = 2; // Bonificaci�n de competencia inicial
-    public ICollection<ClassTrait> Feats { get; set; } = new List<ClassTrait>();
+    public ICollection<ClassTrait> Feats { get; set; } = [];
 
     private int CalculateValue()
     {
@@ -35,6 +35,6 @@ public class ClassDefinition : IEntity
         return 0; // O lanzar una ArgumentException según las reglas de tu negocio
     }
 
-    public ICollection<ClassLevelProgression> Progressions { get; set; } = new List<ClassLevelProgression>();
-    public ICollection<Subclass> Subclasses { get; set; } = new List<Subclass>();
+    public ICollection<ClassLevelProgression> Progressions { get; set; } = [];
+    public ICollection<Subclass> Subclasses { get; set; } = [];
 }

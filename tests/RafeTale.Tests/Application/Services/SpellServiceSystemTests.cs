@@ -156,7 +156,7 @@ public class SpellServiceSystemTests
         _uow.ClassLevelProgressions.GetAllAsync(
                 Arg.Any<Expression<Func<ClassLevelProgression, bool>>>(),
                 Arg.Any<Action<IncludeAggregator<ClassLevelProgression>>>())
-            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>(new List<ClassLevelProgression>()));
+            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>([]));
 
         // Act
         await _sut.RecalculateMaxSlotsAsync(character);
@@ -174,7 +174,7 @@ public class SpellServiceSystemTests
         _uow.ClassLevelProgressions.GetAllAsync(
                 Arg.Any<Expression<Func<ClassLevelProgression, bool>>>(),
                 Arg.Any<Action<IncludeAggregator<ClassLevelProgression>>>())
-            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>(new List<ClassLevelProgression> { progression }));
+            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>([progression]));
 
         // Act
         await _sut.RecalculateMaxSlotsAsync(character);
@@ -188,11 +188,11 @@ public class SpellServiceSystemTests
     {
         // Arrange
         var character = CreateCharacter();
-        var progression = CreateProgression(spellSlots: new[] { 0, 3, 0, 0, 0, 0, 0, 0, 0 });
+        var progression = CreateProgression(spellSlots: [0, 3, 0, 0, 0, 0, 0, 0, 0]);
         _uow.ClassLevelProgressions.GetAllAsync(
                 Arg.Any<Expression<Func<ClassLevelProgression, bool>>>(),
                 Arg.Any<Action<IncludeAggregator<ClassLevelProgression>>>())
-            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>(new List<ClassLevelProgression> { progression }));
+            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>([progression]));
 
         // Act
         await _sut.RecalculateMaxSlotsAsync(character);
@@ -218,11 +218,11 @@ public class SpellServiceSystemTests
         };
         character.SpellSlots.Add(existingSlot);
 
-        var progression = CreateProgression(spellSlots: new[] { 0, 3, 0, 0, 0, 0, 0, 0, 0 });
+        var progression = CreateProgression(spellSlots: [0, 3, 0, 0, 0, 0, 0, 0, 0]);
         _uow.ClassLevelProgressions.GetAllAsync(
                 Arg.Any<Expression<Func<ClassLevelProgression, bool>>>(),
                 Arg.Any<Action<IncludeAggregator<ClassLevelProgression>>>())
-            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>(new List<ClassLevelProgression> { progression }));
+            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>([progression]));
         _uow.SpellSlotExistsAsync(existingSlot.Id).Returns(Task.FromResult(true));
 
         // Act
@@ -249,11 +249,11 @@ public class SpellServiceSystemTests
         };
         character.SpellSlots.Add(existingSlot);
 
-        var progression = CreateProgression(spellSlots: new[] { 0, 3, 0, 0, 0, 0, 0, 0, 0 });
+        var progression = CreateProgression(spellSlots: [0, 3, 0, 0, 0, 0, 0, 0, 0]);
         _uow.ClassLevelProgressions.GetAllAsync(
                 Arg.Any<Expression<Func<ClassLevelProgression, bool>>>(),
                 Arg.Any<Action<IncludeAggregator<ClassLevelProgression>>>())
-            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>(new List<ClassLevelProgression> { progression }));
+            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>([progression]));
         _uow.SpellSlotExistsAsync(existingSlot.Id).Returns(Task.FromResult(false));
 
         // Act
@@ -279,11 +279,11 @@ public class SpellServiceSystemTests
             UsedSlots = 0
         });
 
-        var progression = CreateProgression(spellSlots: new[] { 0, 3, 0, 0, 0, 0, 0, 0, 0 });
+        var progression = CreateProgression(spellSlots: [0, 3, 0, 0, 0, 0, 0, 0, 0]);
         _uow.ClassLevelProgressions.GetAllAsync(
                 Arg.Any<Expression<Func<ClassLevelProgression, bool>>>(),
                 Arg.Any<Action<IncludeAggregator<ClassLevelProgression>>>())
-            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>(new List<ClassLevelProgression> { progression }));
+            .Returns(Task.FromResult<IEnumerable<ClassLevelProgression?>>([progression]));
 
         // Act
         await _sut.RecalculateMaxSlotsAsync(character);
@@ -304,16 +304,16 @@ public class SpellServiceSystemTests
             Level = 5,
             ClassDefId = classDefId,
             ClassDef = new ClassDefinition { Id = classDefId },
-            SpellSlots = new List<CharacterSpellSlots>()
+            SpellSlots = []
         };
     }
 
     private static Character CreateCharacterWithSlots()
     {
         var character = CreateCharacter();
-        character.SpellSlots = new List<CharacterSpellSlots>
-        {
-            new CharacterSpellSlots
+        character.SpellSlots =
+        [
+            _ = new CharacterSpellSlots
             {
                 Id = Guid.NewGuid(),
                 CharacterId = character.Id,
@@ -321,7 +321,7 @@ public class SpellServiceSystemTests
                 MaxSlots = 4,
                 UsedSlots = 0
             },
-            new CharacterSpellSlots
+            _ = new CharacterSpellSlots
             {
                 Id = Guid.NewGuid(),
                 CharacterId = character.Id,
@@ -329,7 +329,8 @@ public class SpellServiceSystemTests
                 MaxSlots = 3,
                 UsedSlots = 0
             }
-        };
+        ]
+        ;
         return character;
     }
 
@@ -340,14 +341,14 @@ public class SpellServiceSystemTests
             Id = Guid.NewGuid(),
             Level = 5,
             ClassDefId = Guid.NewGuid(),
-            Traits = new List<ClassTrait>
-            {
+            Traits =
+            [
                 new ClassTrait
                 {
                     Type = ResourceType.SpellSlots,
                     SpellSlots = spellSlots
                 }
-            }
+            ]
         };
     }
 }

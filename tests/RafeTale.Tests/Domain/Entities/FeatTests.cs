@@ -78,10 +78,11 @@ public class FeatTests
     public void SetCategory_Category_ReturnsAssignedValue()
     {
         // Arrange
-        var feat = new Feat();
-
-        // Act
-        feat.Category = CategoryFeat.CombatStyle;
+        var feat = new Feat
+        {
+            // Act
+            Category = CategoryFeat.CombatStyle
+        };
 
         // Assert
         feat.Category.Should().Be(CategoryFeat.CombatStyle);

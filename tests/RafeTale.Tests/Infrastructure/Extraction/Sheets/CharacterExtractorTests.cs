@@ -14,8 +14,8 @@ public class CharacterExtractorTests
     public void Extract_ParsesStatsAndLinksRaceClassBackground()
     {
         var wb = CreateWorkbook("Personajes",
-            new[] { "Name", "Race", "Class", "Level", "XP", "Strength", "Intelligence" },
-            new[] { "Gandalf", "Human", "Wizard", "5", "6500", "10", "16" });
+            [ "Name", "Race", "Class", "Level", "XP", "Strength", "Intelligence" ],
+            [ "Gandalf", "Human", "Wizard", "5", "6500", "10", "16" ]);
         var ctx = CreateContext();
         var race = new Race { Id = Guid.NewGuid(), TechnicalName = "Human" };
         var classDef = new ClassDefinition { Id = Guid.NewGuid(), TechnicalName = "Wizard" };
@@ -51,8 +51,8 @@ public class CharacterExtractorTests
     public void Extract_NoBackgroundsAvailable_DoesNotThrow()
     {
         var wb = CreateWorkbook("Personajes",
-            new[] { "Name", "Race", "Class", "Level", "XP" },
-            new[] { "Gandalf", "Human", "Wizard", "5", "6500" });
+            [ "Name", "Race", "Class", "Level", "XP" ],
+            [ "Gandalf", "Human", "Wizard", "5", "6500" ]);
         var ctx = CreateContext(); // empty Backgrounds — previously crashed with backgrounds[0]
 
         Action act = () => _sut.Extract(wb, ctx);

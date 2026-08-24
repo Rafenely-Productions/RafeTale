@@ -11,7 +11,7 @@ namespace RafeTale.Domain.Entities
     {
         public Guid Id { get; set; }
         public int Level { get; set; }
-        public List<Feature> Features { get; set; } = new(); // Lo que ganas en este nivel
+        public List<Feature> Features { get; set; } = []; // Lo que ganas en este nivel
         public Subclass? Subclass { get; set; }
         public Guid SubclassId { get; set; }
 

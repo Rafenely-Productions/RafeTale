@@ -37,8 +37,8 @@ public static class ExcelTestHelpers
     }
 
     /// <summary>Full pipeline in dependency order — mirrors MauiProgram registration.</summary>
-    public static ExcelDataExtractor CreateFullPipeline() => new(new ISheetExtractor[]
-    {
+    public static ExcelDataExtractor CreateFullPipeline() => new(
+    [
         new LanguageExtractor(),
         new SkillExtractor(),
         new RaceExtractor(),
@@ -55,5 +55,5 @@ public static class ExcelTestHelpers
         new ClassLevelProgressionExtractor(),
         new SubclassLevelProgressionExtractor(),
         new XpRuleExtractor(),
-    });
+    ]);
 }

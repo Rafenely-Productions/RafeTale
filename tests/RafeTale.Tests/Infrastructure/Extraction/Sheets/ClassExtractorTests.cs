@@ -24,8 +24,8 @@ public class ClassExtractorTests
     public void Extract_ParsesProficienciesAndSkills()
     {
         var wb = CreateWorkbook("Classes",
-            new[] { "TechnicalName", "HitDie", "PrimaryAbility", "SavingThrows", "Armor", "Weapons", "Tools", "SkillsToChoose", "SkillList", "EquipmentES", "NameES", "DescriptionES" },
-            new[] { "Wizard", "d6", "Intelligence", "Intelligence,Wisdom", "Light", "Simple", "ThievesTools", "2", "Arcana,History", "Equipo", "Mago", "Desc" });
+            [ "TechnicalName", "HitDie", "PrimaryAbility", "SavingThrows", "Armor", "Weapons", "Tools", "SkillsToChoose", "SkillList", "EquipmentES", "NameES", "DescriptionES" ],
+            [ "Wizard", "d6", "Intelligence", "Intelligence,Wisdom", "Light", "Simple", "ThievesTools", "2", "Arcana,History", "Equipo", "Mago", "Desc" ]);
         var ctx = CtxWithSkills("Arcana", "History");
 
         _sut.Extract(wb, ctx);
@@ -45,8 +45,8 @@ public class ClassExtractorTests
     public void Extract_AnySkillChoice_AddsAllSkills()
     {
         var wb = CreateWorkbook("Classes",
-            new[] { "TechnicalName", "HitDie", "PrimaryAbility", "SavingThrows", "Armor", "Weapons", "Tools", "SkillsToChoose", "SkillList", "EquipmentES", "NameES", "DescriptionES" },
-            new[] { "Bard", "d8", "Charisma", "Dexterity,Charisma", "Light", "Simple", "", "3", "Any", "Equipo", "Bardo", "Desc" });
+            [ "TechnicalName", "HitDie", "PrimaryAbility", "SavingThrows", "Armor", "Weapons", "Tools", "SkillsToChoose", "SkillList", "EquipmentES", "NameES", "DescriptionES" ],
+            [ "Bard", "d8", "Charisma", "Dexterity,Charisma", "Light", "Simple", "", "3", "Any", "Equipo", "Bardo", "Desc" ]);
         var ctx = CtxWithSkills("Perception", "Stealth");
 
         _sut.Extract(wb, ctx);

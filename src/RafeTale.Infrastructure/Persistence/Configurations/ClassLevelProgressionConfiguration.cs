@@ -9,11 +9,10 @@ namespace RafeTale.Infrastructure.Persistence.Configurations
 {
     public class ClassLevelProgressionConfiguration : IEntityTypeConfiguration<ClassLevelProgression>
     {
-        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        private static readonly JsonSerializerOptions _jsonOptions = new()
         {
             WriteIndented = false,
             PropertyNameCaseInsensitive = true, // Ignora si en el JSON viene 'type' o 'Type'
-            Converters = { new JsonStringEnumConverter() } // Permite leer "SpellSlots" o "RagesCount" en texto
         };
         public void Configure(EntityTypeBuilder<ClassLevelProgression> builder)
         {

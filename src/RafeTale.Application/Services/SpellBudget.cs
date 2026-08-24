@@ -9,13 +9,13 @@ public class SpellBudget
     public int MaxSpellLevel { get; set; }
 
     // Hechizos que el personaje ya tenía antes de entrar a este flujo (baseline)
-    public List<Guid> InitiallyKnownSpellIds { get; set; } = new();
+    public List<Guid> InitiallyKnownSpellIds { get; set; } = [];
 
     // Lógica dinámica reutilizable, ahora recibe la selección actual como parámetro
-    public int SelectedCantripsCount(IEnumerable<Guid> selectedIds, List<SpellDto> allSpells) =>
+    public static int SelectedCantripsCount(IEnumerable<Guid> selectedIds, List<SpellDto> allSpells) =>
         allSpells.Count(s => selectedIds.Contains(s.Id) && s.Level == 0);
 
-    public int SelectedSpellsCount(IEnumerable<Guid> selectedIds, List<SpellDto> allSpells) =>
+    public static int SelectedSpellsCount(IEnumerable<Guid> selectedIds, List<SpellDto> allSpells) =>
         allSpells.Count(s => selectedIds.Contains(s.Id) && s.Level > 0);
 
     // Validación pura: No guarda estado, solo calcula. Devuelve llaves de error para i18n.

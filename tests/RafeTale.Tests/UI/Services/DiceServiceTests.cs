@@ -11,7 +11,7 @@ namespace RafeTale.Tests.UI.Services;
 
 public class DiceServiceTests
 {
-    private readonly IDiceService _diceService = new DiceService();
+    private readonly DiceService _diceService = new();
 
     [Theory]
     [InlineData(0)]
@@ -22,7 +22,7 @@ public class DiceServiceTests
         Action act = () => _diceService.Roll(numberOfDice, 6);
 
         act.Should().Throw<ArgumentException>()
-            .WithParameterName("numberOfDice");
+            .WithParameterName(nameof(numberOfDice));
     }
 
     [Theory]
@@ -34,7 +34,7 @@ public class DiceServiceTests
         Action act = () => _diceService.Roll(1, sides);
 
         act.Should().Throw<ArgumentException>()
-            .WithParameterName("sides");
+            .WithParameterName(nameof(sides));
     }
 
     [Theory]
@@ -83,7 +83,7 @@ public class DiceServiceTests
         {
             NumberOfDice = 1,
             DiceSides = 20,
-            IndividualRolls = new List<int> { 20 }
+            IndividualRolls = [20]
         };
 
         result.IsCriticalHit.Should().BeTrue();
@@ -97,7 +97,7 @@ public class DiceServiceTests
         {
             NumberOfDice = 1,
             DiceSides = 20,
-            IndividualRolls = new List<int> { 1 }
+            IndividualRolls = [1]
         };
 
         result.IsCriticalMiss.Should().BeTrue();
@@ -112,7 +112,7 @@ public class DiceServiceTests
         {
             NumberOfDice = numberOfDice,
             DiceSides = sides,
-            IndividualRolls = Enumerable.Repeat(rollValue, numberOfDice).ToList()
+            IndividualRolls = [.. Enumerable.Repeat(rollValue, numberOfDice)]
         };
 
         result.IsCriticalHit.Should().BeFalse();

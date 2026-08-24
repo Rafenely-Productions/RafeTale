@@ -52,12 +52,13 @@ public class XpRulesTests
     public void SetValues_Properties_ReturnAssignedValues(int level, int requiredXp)
     {
         // Arrange
-        var xpRule = new XpRules();
-
-        // Act
-        xpRule.Level = level;
-        xpRule.RequiredXp = requiredXp;
-        xpRule.Bonus = 2;
+        var xpRule = new XpRules
+        {
+            // Act
+            Level = level,
+            RequiredXp = requiredXp,
+            Bonus = 2
+        };
 
         // Assert
         xpRule.Level.Should().Be(level);

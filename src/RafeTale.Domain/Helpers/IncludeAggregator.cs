@@ -41,7 +41,7 @@ public class IncludeAggregator<T> where T : class
         IncludePaths.Add($"{parent}.{child}.{grandchild}");
         return this;
     }
-    private string ExtractPath(LambdaExpression expression)
+    private static string ExtractPath(LambdaExpression expression)
     {
         var body = expression.Body;
         if (body is UnaryExpression unary && unary.NodeType == ExpressionType.Convert)
@@ -71,13 +71,13 @@ public class IncludeAggregator<T> where T : class
         var selectIndex = str.IndexOf(".Select");
         if (selectIndex != -1)
         {
-            str = str.Substring(0, selectIndex);
+            str = str[..selectIndex];
         }
 
         var dotIndex = str.LastIndexOf('.');
         if (dotIndex != -1)
         {
-            return str.Substring(dotIndex + 1).Replace(")", "").Trim();
+            return str[(dotIndex + 1)..].Replace(")", "").Trim();
         }
 
         return str;

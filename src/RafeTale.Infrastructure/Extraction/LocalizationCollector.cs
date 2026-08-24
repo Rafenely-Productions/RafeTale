@@ -1,17 +1,13 @@
 using RafeTale.Domain.Entities;
 using RafeTale.Domain.Enums;
+using RafeTale.Infrastructure.Extraction.Interfaces;
 
-namespace RafeTale.Infrastructure.Extraction.Localization;
+namespace RafeTale.Infrastructure.Extraction;
 
-public class LocalizationCollector : ILocalizationCollector
+public class LocalizationCollector(LocLanguage currentCulture) : ILocalizationCollector
 {
-    private readonly Dictionary<string, LocalizedContent> _cache = new();
-    private readonly LocLanguage _currentCulture;
-
-    public LocalizationCollector(LocLanguage currentCulture)
-    {
-        _currentCulture = currentCulture;
-    }
+    private readonly Dictionary<string, LocalizedContent> _cache = [];
+    private readonly LocLanguage _currentCulture = currentCulture;
 
     public void SaveBoth(Guid entityId, LocEntity entity, LocProperty prop, string en, string localized, LocLanguage locLanguage)
     {
@@ -29,5 +25,5 @@ public class LocalizationCollector : ILocalizationCollector
             _cache.Add(key, new LocalizedContent { Id = Guid.NewGuid(), EntityId = entityId, EntityType = entity, Property = prop, Text = text, LanguageCode = lang });
     }
 
-    public IReadOnlyList<LocalizedContent> GetAll() => _cache.Values.ToList();
+    public IReadOnlyList<LocalizedContent> GetAll() => [.. _cache.Values];
 }

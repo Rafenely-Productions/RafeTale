@@ -115,6 +115,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Abjuration.
+        /// </summary>
+        public static string Abjuration {
+            get {
+                return ResourceManager.GetString("Abjuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Acrobatics.
         /// </summary>
         public static string Acrobatics {
@@ -126,9 +135,9 @@ namespace RafeTale.Application.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Animal Handling.
         /// </summary>
-        public static string Animal_Handling {
+        public static string AnimalHandling {
             get {
-                return ResourceManager.GetString("Animal Handling", resourceCulture);
+                return ResourceManager.GetString("AnimalHandling", resourceCulture);
             }
         }
         
@@ -169,6 +178,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ArtisanToolsOrMusicalInstruments.
+        /// </summary>
+        public static string ArtisanToolsOrMusicalInstruments {
+            get {
+                return ResourceManager.GetString("ArtisanToolsOrMusicalInstruments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Athletics.
         /// </summary>
         public static string Athletics {
@@ -178,7 +196,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Atributos (ASI).
+        ///   Looks up a localized string similar to Ability Scores (ASI).
         /// </summary>
         public static string Background_AbilityScores {
             get {
@@ -187,7 +205,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to * Puedes aplicar un aumento de +2 a uno de estos atributos y +1 a otro, o un +1 a los tres..
+        ///   Looks up a localized string similar to * You can increase one ability score by 2 and another by 1, or increase three ability scores by 1..
         /// </summary>
         public static string Background_ASINote {
             get {
@@ -214,7 +232,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dote de Origen (Nivel 1).
+        ///   Looks up a localized string similar to Origin Feat (Lvl 1).
         /// </summary>
         public static string Background_OriginFeat {
             get {
@@ -223,7 +241,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dote de Origen.
+        ///   Looks up a localized string similar to Origin Feat.
         /// </summary>
         public static string Background_OriginFeatBadge {
             get {
@@ -232,7 +250,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Competencias en Habilidades.
+        ///   Looks up a localized string similar to Skill Proficiencies.
         /// </summary>
         public static string Background_SkillProficiencies {
             get {
@@ -241,7 +259,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Equipo Inicial.
+        ///   Looks up a localized string similar to Starting Equipment.
         /// </summary>
         public static string Background_StartingEquipment {
             get {
@@ -250,7 +268,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Competencias en Herramientas.
+        ///   Looks up a localized string similar to Tool Proficiencies.
         /// </summary>
         public static string Background_ToolProficiencies {
             get {
@@ -345,6 +363,15 @@ namespace RafeTale.Application.Resources {
         public static string Btn_ConfirmRace {
             get {
                 return ResourceManager.GetString("Btn_ConfirmRace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Character.
+        /// </summary>
+        public static string Btn_CreateCharacter {
+            get {
+                return ResourceManager.GetString("Btn_CreateCharacter", resourceCulture);
             }
         }
         
@@ -480,6 +507,15 @@ namespace RafeTale.Application.Resources {
         public static string Charisma {
             get {
                 return ResourceManager.GetString("Charisma", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chose a Background.
+        /// </summary>
+        public static string Choose_Background {
+            get {
+                return ResourceManager.GetString("Choose_Background", resourceCulture);
             }
         }
         
@@ -628,11 +664,20 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ninguna.
+        ///   Looks up a localized string similar to None.
         /// </summary>
         public static string Common_None {
             get {
                 return ResourceManager.GetString("Common_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Conjuration.
+        /// </summary>
+        public static string Conjuration {
+            get {
+                return ResourceManager.GetString("Conjuration", resourceCulture);
             }
         }
         
@@ -700,6 +745,60 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Divination.
+        /// </summary>
+        public static string Divination {
+            get {
+                return ResourceManager.GetString("Divination", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enchantment.
+        /// </summary>
+        public static string Enchantment {
+            get {
+                return ResourceManager.GetString("Enchantment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have exceeded the limit of allowed cantrips..
+        /// </summary>
+        public static string Error_MaxCantripsExceeded {
+            get {
+                return ResourceManager.GetString("Error_MaxCantripsExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You selected a spell of a higher level than allowed..
+        /// </summary>
+        public static string Error_MaxSpellLevelExceeded {
+            get {
+                return ResourceManager.GetString("Error_MaxSpellLevelExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have exceeded the limit of prepared spells..
+        /// </summary>
+        public static string Error_MaxSpellsExceeded {
+            get {
+                return ResourceManager.GetString("Error_MaxSpellsExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Evocation.
+        /// </summary>
+        public static string Evocation {
+            get {
+                return ResourceManager.GetString("Evocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exotic.
         /// </summary>
         public static string Exotic {
@@ -736,11 +835,29 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Gargantuan.
+        /// </summary>
+        public static string Gargantuan {
+            get {
+                return ResourceManager.GetString("Gargantuan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Heavy.
         /// </summary>
         public static string Heavy {
             get {
                 return ResourceManager.GetString("Heavy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HerbalismKit.
+        /// </summary>
+        public static string HerbalismKit {
+            get {
+                return ResourceManager.GetString("HerbalismKit", resourceCulture);
             }
         }
         
@@ -759,6 +876,24 @@ namespace RafeTale.Application.Resources {
         public static string Hit_Die {
             get {
                 return ResourceManager.GetString("Hit_Die", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Huge.
+        /// </summary>
+        public static string Huge {
+            get {
+                return ResourceManager.GetString("Huge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Illusion.
+        /// </summary>
+        public static string Illusion {
+            get {
+                return ResourceManager.GetString("Illusion", resourceCulture);
             }
         }
         
@@ -813,6 +948,15 @@ namespace RafeTale.Application.Resources {
         public static string Label_AuditingLevel {
             get {
                 return ResourceManager.GetString("Label_AuditingLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background.
+        /// </summary>
+        public static string Label_Background {
+            get {
+                return ResourceManager.GetString("Label_Background", resourceCulture);
             }
         }
         
@@ -1105,6 +1249,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Large.
+        /// </summary>
+        public static string Large {
+            get {
+                return ResourceManager.GetString("Large", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Option to leave second stat empty for a +2 bonus.
         /// </summary>
         public static string Leave_Empty_For_PlusTwo {
@@ -1173,6 +1326,15 @@ namespace RafeTale.Application.Resources {
         public static string Medium {
             get {
                 return ResourceManager.GetString("Medium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium Small.
+        /// </summary>
+        public static string MediumSmall {
+            get {
+                return ResourceManager.GetString("MediumSmall", resourceCulture);
             }
         }
         
@@ -1263,6 +1425,15 @@ namespace RafeTale.Application.Resources {
         public static string Msg_NoRollsYet {
             get {
                 return ResourceManager.GetString("Msg_NoRollsYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No spells found matching the search or selected filter..
+        /// </summary>
+        public static string Msg_NoSpellsFound {
+            get {
+                return ResourceManager.GetString("Msg_NoSpellsFound", resourceCulture);
             }
         }
         
@@ -1362,6 +1533,15 @@ namespace RafeTale.Application.Resources {
         public static string NavLibrary {
             get {
                 return ResourceManager.GetString("NavLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Necromancy.
+        /// </summary>
+        public static string Necromancy {
+            get {
+                return ResourceManager.GetString("Necromancy", resourceCulture);
             }
         }
         
@@ -1506,6 +1686,15 @@ namespace RafeTale.Application.Resources {
         public static string Sleight_of_Hand {
             get {
                 return ResourceManager.GetString("Sleight of Hand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Small.
+        /// </summary>
+        public static string Small {
+            get {
+                return ResourceManager.GetString("Small", resourceCulture);
             }
         }
         
@@ -2005,6 +2194,33 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ThievesTools.
+        /// </summary>
+        public static string ThievesTools {
+            get {
+                return ResourceManager.GetString("ThievesTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ThreeMusicalInstruments.
+        /// </summary>
+        public static string ThreeMusicalInstruments {
+            get {
+                return ResourceManager.GetString("ThreeMusicalInstruments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        public static string Tiny {
+            get {
+                return ResourceManager.GetString("Tiny", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Available Magic Energy.
         /// </summary>
         public static string Tip_AvailableSlot {
@@ -2055,6 +2271,15 @@ namespace RafeTale.Application.Resources {
         public static string Title_DiceRoller {
             get {
                 return ResourceManager.GetString("Title_DiceRoller", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty Tavern.
+        /// </summary>
+        public static string Title_EmptyTavern {
+            get {
+                return ResourceManager.GetString("Title_EmptyTavern", resourceCulture);
             }
         }
         
@@ -2118,6 +2343,15 @@ namespace RafeTale.Application.Resources {
         public static string Title_NewHero {
             get {
                 return ResourceManager.GetString("Title_NewHero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Spells Available.
+        /// </summary>
+        public static string Title_NoSpellsFound {
+            get {
+                return ResourceManager.GetString("Title_NoSpellsFound", resourceCulture);
             }
         }
         
@@ -2379,6 +2613,15 @@ namespace RafeTale.Application.Resources {
         public static string TraitType_WeaponExpertiseCount {
             get {
                 return ResourceManager.GetString("TraitType_WeaponExpertiseCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmutation.
+        /// </summary>
+        public static string Transmutation {
+            get {
+                return ResourceManager.GetString("Transmutation", resourceCulture);
             }
         }
         

@@ -51,7 +51,7 @@ namespace RafeTale.Application.Services.DtosServices
                 Range = spell.Range.ToString(),
                 School = spell.School.ToString(),
                 CastingTime = spell.CastingTime.ToString(),
-                Duration = spell.Duration.Select(x=> x.ToString()).ToList(),
+                Duration = [.. spell.Duration.Select(x => x.ToString())],
             };
 
         }

@@ -250,6 +250,24 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Character.
+        /// </summary>
+        public static string Btn_CreateCharacter {
+            get {
+                return ResourceManager.GetString("Btn_CreateCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create your first hero.
+        /// </summary>
+        public static string Btn_CreateFirstCharacter {
+            get {
+                return ResourceManager.GetString("Btn_CreateFirstCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Forge Legend.
         /// </summary>
         public static string Btn_FinishCharacter {
@@ -385,6 +403,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to classes.
+        /// </summary>
+        public static string Classes_Count {
+            get {
+                return ResourceManager.GetString("Classes_Count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Classes &amp; Subclasses.
         /// </summary>
         public static string Classes_Subclasses {
@@ -462,6 +489,60 @@ namespace RafeTale.Application.Resources {
         public static string Dragon {
             get {
                 return ResourceManager.GetString("Dragon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You haven&apos;t forged any characters yet. How about a brave warrior or a scholarly wizard?.
+        /// </summary>
+        public static string EmptyState_NoCharacters_Desc {
+            get {
+                return ResourceManager.GetString("EmptyState_NoCharacters_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The table is empty.
+        /// </summary>
+        public static string EmptyState_NoCharacters_Title {
+            get {
+                return ResourceManager.GetString("EmptyState_NoCharacters_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You haven&apos;t unlocked any features yet. Level up to gain new abilities..
+        /// </summary>
+        public static string EmptyState_NoFeatures_Desc {
+            get {
+                return ResourceManager.GetString("EmptyState_NoFeatures_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blank Adventure Journal.
+        /// </summary>
+        public static string EmptyState_NoFeatures_Title {
+            get {
+                return ResourceManager.GetString("EmptyState_NoFeatures_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This character doesn&apos;t know any spells yet..
+        /// </summary>
+        public static string EmptyState_NoSpells_Desc {
+            get {
+                return ResourceManager.GetString("EmptyState_NoSpells_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty Grimoire.
+        /// </summary>
+        public static string EmptyState_NoSpells_Title {
+            get {
+                return ResourceManager.GetString("EmptyState_NoSpells_Title", resourceCulture);
             }
         }
         
@@ -853,6 +934,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No spells match the search term..
+        /// </summary>
+        public static string Msg_NoSpellsFound {
+            get {
+                return ResourceManager.GetString("Msg_NoSpellsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have {0} pending feat(s) or ASI to choose..
         /// </summary>
         public static string Msg_PendingFeats {
@@ -1069,6 +1159,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spells.
+        /// </summary>
+        public static string Spells_Count {
+            get {
+                return ResourceManager.GetString("Spells_Count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spells &amp; Magic.
         /// </summary>
         public static string Spells_Magic {
@@ -1155,6 +1254,24 @@ namespace RafeTale.Application.Resources {
         public static string Survival {
             get {
                 return ResourceManager.GetString("Survival", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Experience progression and proficiency bonus charts..
+        /// </summary>
+        public static string SystemCoreRules_Description {
+            get {
+                return ResourceManager.GetString("SystemCoreRules_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Core Rules.
+        /// </summary>
+        public static string SystemCoreRules_Title {
+            get {
+                return ResourceManager.GetString("SystemCoreRules_Title", resourceCulture);
             }
         }
         
@@ -1285,6 +1402,15 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to My Characters.
+        /// </summary>
+        public static string Title_MyCharacters {
+            get {
+                return ResourceManager.GetString("Title_MyCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Game Codex.
         /// </summary>
         public static string Title_Name {
@@ -1326,6 +1452,15 @@ namespace RafeTale.Application.Resources {
         public static string Title_NoRacesFound {
             get {
                 return ResourceManager.GetString("Title_NoRacesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Spells.
+        /// </summary>
+        public static string Title_NoSpellsFound {
+            get {
+                return ResourceManager.GetString("Title_NoSpellsFound", resourceCulture);
             }
         }
         
@@ -1596,6 +1731,15 @@ namespace RafeTale.Application.Resources {
         public static string Wisdom {
             get {
                 return ResourceManager.GetString("Wisdom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XP Table.
+        /// </summary>
+        public static string XPTable {
+            get {
+                return ResourceManager.GetString("XPTable", resourceCulture);
             }
         }
     }

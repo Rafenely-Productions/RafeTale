@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 namespace RafeTale.Infrastructure.Repositories;
 
 
-public class FeatureRepository : Repository<Feature>, IFeatureRepository
+public class FeatureRepository(RafeTaleDbContext context) : Repository<Feature>(context), IFeatureRepository
 {
-    public FeatureRepository(RafeTaleDbContext context) : base(context) { }
 }
