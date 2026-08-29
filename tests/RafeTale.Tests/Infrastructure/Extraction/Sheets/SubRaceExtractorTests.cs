@@ -6,9 +6,9 @@ using static RafeTale.Tests.Infrastructure.Extraction.ExcelTestHelpers;
 
 namespace RafeTale.Tests.Infrastructure.Extraction.Sheets;
 
-public class SubRaceExtractorTests
+public class SubraceExtractorTests
 {
-    private readonly SubRaceExtractor _sut = new();
+    private readonly SubraceExtractor _sut = new();
 
     [Fact]
     public void Extract_LinksToParentRace()
@@ -22,7 +22,7 @@ public class SubRaceExtractorTests
 
         _sut.Extract(wb, ctx);
 
-        var sub = ctx.Package.SubRaces.Should().ContainSingle().Subject;
+        var sub = ctx.Package.Subraces.Should().ContainSingle().Subject;
         sub.TechnicalName.Should().Be("HighElf");
         sub.RaceId.Should().Be(elf.Id);
     }
@@ -37,6 +37,6 @@ public class SubRaceExtractorTests
 
         _sut.Extract(wb, ctx);
 
-        ctx.Package.SubRaces.Single().RaceId.Should().Be(Guid.Empty);
+        ctx.Package.Subraces.Single().RaceId.Should().Be(Guid.Empty);
     }
 }

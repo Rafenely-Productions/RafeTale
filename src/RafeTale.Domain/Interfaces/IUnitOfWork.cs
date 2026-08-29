@@ -20,7 +20,7 @@ public interface IUnitOfWork : IDisposable
     ILocalizedContentRepository LocalizedContents { get; }
     IRepository<Trait> Traits { get; }
     IRepository<Language> Languages { get; }
-    IRepository<SubRace> SubRaces { get; }
+    IRepository<Subrace> Subraces { get; }
     IRepository<SchoolOfMagic> SchoolsOfMagic { get; }
     IRepository<Subclass> Subclasses { get; }
     IRepository<SubclassLevelProgression> SubclassLevelProgressions { get; }

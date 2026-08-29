@@ -479,7 +479,7 @@ public enum CodexKey
 public enum LocEntity
 {
     Race,
-    SubRace,
+    Subrace,
     Class,
     Subclass,
     Background,
@@ -497,13 +497,18 @@ public enum LocEntity
     Character,
     SchoolOfMagic,
     ItemTemplate,
-    Skill
+    Skill,
+    Attribute,
+    DamageType,
+    CreatureType
 }
 
 public enum LocProperty
 {
     Name,
     Description,
+    ShortName,
+    Example,
     AdditionalInfo,
     Resistances,
     Lore,

@@ -7,6 +7,8 @@ namespace RafeTale.Infrastructure.Extraction;
 public class ExtractionContext(LocLanguage currentCulture)
 {
     public ImportDataPackage Package { get; } = new();
-    public ILocalizationCollector Localization { get; } = new LocalizationCollector(currentCulture);
     public LocLanguage CurrentCulture { get; } = currentCulture;
+    [Obsolete("Refactor needed")]
+    public ILocalizationCollector Localization { get; } = new LocalizationCollector(currentCulture);
+
 }

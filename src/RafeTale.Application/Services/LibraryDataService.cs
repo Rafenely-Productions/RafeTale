@@ -24,7 +24,7 @@ public class LibraryDataService(
     public async Task<IReadOnlyList<RaceDto>> GetRacesAsync()
         => await _raceService.GetAllAsync(null, includes: query => query
             .Include(x => x.Languages)
-            .IncludeCollection(x => x.SubRaces, z => z.Traits)
+            .IncludeCollection(x => x.Subraces, z => z.Traits)
             .Include(x => x.Traits));
 
     public async Task<IReadOnlyList<SpellDto>> GetSpellsAsync()

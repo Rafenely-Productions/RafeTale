@@ -29,7 +29,6 @@ namespace RafeTale.Infrastructure.Extraction
                 extractor.Extract(workbook, context);
             }
 
-            context.Package.LocalizedContents.AddRange(context.Localization.GetAll());
             return context.Package;
         }
     }

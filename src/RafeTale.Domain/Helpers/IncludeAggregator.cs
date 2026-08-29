@@ -8,7 +8,7 @@ public class IncludeAggregator<T> where T : class
 {
     public List<string> IncludePaths { get; } = [];
 
-    // 1. Include normal de primer nivel (ej: r => r.SubRaces)
+    // 1. Include normal de primer nivel (ej: r => r.Subraces)
     public IncludeAggregator<T> Include<TProperty>(Expression<Func<T, TProperty>> expression)
     {
         IncludePaths.Add(ExtractPath(expression));

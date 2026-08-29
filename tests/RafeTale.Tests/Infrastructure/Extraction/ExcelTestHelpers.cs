@@ -42,7 +42,7 @@ public static class ExcelTestHelpers
         new LanguageExtractor(),
         new SkillExtractor(),
         new RaceExtractor(),
-        new SubRaceExtractor(),
+        new SubraceExtractor(),
         new TraitExtractor(),
         new SpecialTraitExtractor(),
         new ClassExtractor(),

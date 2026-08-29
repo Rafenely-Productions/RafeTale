@@ -10,14 +10,14 @@ namespace RafeTale.Domain.Modifiers
     public class ModifierData
     {
         public ModifierType Type { get; set; }
-        public string Target { get; set; } = ""; // "Charisma", "MaxHp", "Spell_Shield"
+        public string Target { get; set; } = String.Empty; // "Charisma", "MaxHp", "Spell_Shield"
         public int Value { get; set; }                     // 1, 2, 10, etc.
     }
 
     public class FeatPrerequisiteModifierData
     {
         public FeatPrerequisiteType Type { get; set; }
-        public string Target { get; set; } = ""; // "Charisma", "MaxHp", "Spell_Shield"
+        public string Target { get; set; } = string.Empty; // "Charisma", "MaxHp", "Spell_Shield"
         public int Value { get; set; }                     // 1, 2, 10, etc.
     }
 }

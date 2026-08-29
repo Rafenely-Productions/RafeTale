@@ -28,7 +28,7 @@ public class UnitOfWork : IUnitOfWork
     public ILocalizedContentRepository LocalizedContents { get; }
     public IRepository<Language> Languages { get; }
     public IRepository<Trait> Traits { get; }
-    public IRepository<SubRace> SubRaces { get; }
+    public IRepository<Subrace> Subraces { get; }
     public IRepository<SchoolOfMagic> SchoolsOfMagic { get; }
     public IRepository<Background> Backgrounds { get; }
     public IRepository<Subclass> Subclasses { get; }
@@ -51,7 +51,7 @@ public class UnitOfWork : IUnitOfWork
         LocalizedContents = new LocalizedContentRepository(_context);
         Languages = new Repository<Language>(_context);
         Traits = new Repository<Trait>(_context);
-        SubRaces = new Repository<SubRace>(_context);
+        Subraces = new Repository<Subrace>(_context);
         SchoolsOfMagic = new Repository<SchoolOfMagic>(_context);
         Subclasses = new Repository<Subclass>(_context);
         SubclassLevelProgressions = new Repository<SubclassLevelProgression>(_context);

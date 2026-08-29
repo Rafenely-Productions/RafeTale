@@ -13,7 +13,7 @@ public class TraitExtractor : ISheetExtractor
         public const int TechnicalName = 1;
         public const int RequiredLevel = 2;
         public const int RaceName = 3;
-        public const int SubRaceName = 4;
+        public const int SubraceName = 4;
         public const int NameLoc = 5;
         public const int DescriptionLoc = 6;
         public const int DescriptionEn = 7;
@@ -31,17 +31,17 @@ public class TraitExtractor : ISheetExtractor
             };
 
             var raceName = row.Cell(Col.RaceName).GetString();
-            var subRaceName = row.Cell(Col.SubRaceName).GetString();
+            var SubraceName = row.Cell(Col.SubraceName).GetString();
 
             if (!string.IsNullOrEmpty(raceName))
             {
                 trait.Race = context.Package.Races
                     .FirstOrDefault(r => r.TechnicalName.Equals(raceName, StringComparison.OrdinalIgnoreCase))!;
             }
-            else if (!string.IsNullOrEmpty(subRaceName))
+            else if (!string.IsNullOrEmpty(SubraceName))
             {
-                trait.Subrace = context.Package.SubRaces
-                    .FirstOrDefault(r => r.TechnicalName.Equals(subRaceName, StringComparison.OrdinalIgnoreCase))!;
+                trait.Subrace = context.Package.Subraces
+                    .FirstOrDefault(r => r.TechnicalName.Equals(SubraceName, StringComparison.OrdinalIgnoreCase))!;
             }
 
             context.Package.Traits.Add(trait);

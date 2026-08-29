@@ -17,7 +17,7 @@ namespace RafeTale.Domain.Entities
 
         public string Speed { get; set; } = string.Empty;
         public List<Language> Languages { get; set; } = [];
-        public List<SubRace> SubRaces { get; set; } = [];
+        public List<Subrace> Subraces { get; set; } = [];
 
         public List<Trait> Traits { get; set; } = [];
     }

@@ -20,7 +20,7 @@ namespace RafeTale.Infrastructure.Persistence.Configurations
             builder.HasKey(e => e.Id);
             builder.Property(e => e.TechnicalName).HasMaxLength(50);
 
-            builder.HasMany(e => e.SubRaces)
+            builder.HasMany(e => e.Subraces)
                 .WithOne(e => e.Race)
                 .HasForeignKey("RaceId");
 

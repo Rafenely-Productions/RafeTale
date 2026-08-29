@@ -722,7 +722,7 @@ namespace RafeTale.Infrastructure.Migrations
                     b.ToTable("Spells", (string)null);
                 });
 
-            modelBuilder.Entity("RafeTale.Domain.Entities.SubRace", b =>
+            modelBuilder.Entity("RafeTale.Domain.Entities.Subrace", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -740,7 +740,7 @@ namespace RafeTale.Infrastructure.Migrations
 
                     b.HasIndex("RaceId");
 
-                    b.ToTable("SubRaces", (string)null);
+                    b.ToTable("Subraces", (string)null);
                 });
 
             modelBuilder.Entity("RafeTale.Domain.Entities.Subclass", b =>
@@ -1088,10 +1088,10 @@ namespace RafeTale.Infrastructure.Migrations
                     b.Navigation("Character");
                 });
 
-            modelBuilder.Entity("RafeTale.Domain.Entities.SubRace", b =>
+            modelBuilder.Entity("RafeTale.Domain.Entities.Subrace", b =>
                 {
                     b.HasOne("RafeTale.Domain.Entities.Race", "Race")
-                        .WithMany("SubRaces")
+                        .WithMany("Subraces")
                         .HasForeignKey("RaceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1128,7 +1128,7 @@ namespace RafeTale.Infrastructure.Migrations
                         .HasForeignKey("RaceId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("RafeTale.Domain.Entities.SubRace", "Subrace")
+                    b.HasOne("RafeTale.Domain.Entities.Subrace", "Subrace")
                         .WithMany("Traits")
                         .HasForeignKey("SubraceId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -1190,12 +1190,12 @@ namespace RafeTale.Infrastructure.Migrations
 
             modelBuilder.Entity("RafeTale.Domain.Entities.Race", b =>
                 {
-                    b.Navigation("SubRaces");
+                    b.Navigation("Subraces");
 
                     b.Navigation("Traits");
                 });
 
-            modelBuilder.Entity("RafeTale.Domain.Entities.SubRace", b =>
+            modelBuilder.Entity("RafeTale.Domain.Entities.Subrace", b =>
                 {
                     b.Navigation("Traits");
                 });

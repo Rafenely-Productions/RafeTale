@@ -14,7 +14,7 @@ namespace RafeTale.Application.DTOs
         public string Speed { get; init; } = string.Empty;
 
         public List<LanguageDto> Languages { get; init; } = [];
-        public List<SubRaceDto> SubRaces { get; init; } = [];
+        public List<SubraceDto> Subraces { get; init; } = [];
         public List<TraitDto> Traits { get; init; } = [];
     }
 }

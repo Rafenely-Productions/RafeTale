@@ -65,7 +65,7 @@
         </div>
     </div>
 
-    @if (RaceDto.SubRaces != null && RaceDto.SubRaces.Any())
+    @if (RaceDto.Subraces != null && RaceDto.Subraces.Any())
     {
         <div class="space-y-4 mt-8">
             <h3 class="text-lg font-black text-amber-500 uppercase italic tracking-wider border-b border-slate-800 pb-1">
@@ -73,14 +73,14 @@
             </h3>
 
             <div class="flex flex-wrap gap-2">
-                @foreach (var subrace in RaceDto.SubRaces)
+                @foreach (var Subrace in RaceDto.Subraces)
                 {
-                    <button @onclick="() => SelectSubrace(subrace)"
+                    <button @onclick="() => SelectSubrace(Subrace)"
                             class="px-4 py-2 text-xs font-black uppercase tracking-wider rounded-lg border transition-all
-                                           @(selectedSubrace?.Id == subrace.Id
+                                           @(selectedSubrace?.Id == Subrace.Id
                                                                    ? "bg-amber-500/10 border-amber-500 text-amber-500"
                                                                    : "bg-black/30 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700")">
-                @subrace.Name
+                @Subrace.Name
             </button>
                         }
             </div>
@@ -127,13 +127,13 @@
 @code {
     [Parameter] public RaceDto RaceDto { get; set; } = null!;
 
-    private SubRaceDto? selectedSubrace;
+    private SubraceDto? selectedSubrace;
 
     protected override async Task OnParametersSetAsync()
     {
-        if (RaceDto?.SubRaces != null && RaceDto.SubRaces.Any())
+        if (RaceDto?.Subraces != null && RaceDto.Subraces.Any())
         {
-            selectedSubrace = RaceDto.SubRaces.First();
+            selectedSubrace = RaceDto.Subraces.First();
         }
         else
         {
@@ -147,8 +147,8 @@
         catch { }
     }
 
-    private void SelectSubrace(SubRaceDto subrace)
+    private void SelectSubrace(SubraceDto Subrace)
     {
-        selectedSubrace = subrace;
+        selectedSubrace = Subrace;
     }
 }

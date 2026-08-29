@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace RafeTale.Infrastructure.Persistence.Configurations
 {
-    public class SubRaceConfiguration : IEntityTypeConfiguration<SubRace>
+    public class SubraceConfiguration : IEntityTypeConfiguration<Subrace>
     {
-        public void Configure(EntityTypeBuilder<SubRace> builder)
+        public void Configure(EntityTypeBuilder<Subrace> builder)
         {
-            builder.ToTable("SubRaces");
+            builder.ToTable("Subraces");
             builder.HasKey(sr => sr.Id);
             builder.Property(sr => sr.TechnicalName).IsRequired().HasMaxLength(50);
 
             builder.HasOne(s => s.Race)
-            .WithMany(c => c.SubRaces)
+            .WithMany(c => c.Subraces)
             .HasForeignKey(s => s.RaceId)
             .OnDelete(DeleteBehavior.Cascade);
 

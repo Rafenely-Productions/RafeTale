@@ -1051,7 +1051,7 @@ namespace RafeTale.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ancestries, traits, and their subrace branches.
+        ///   Looks up a localized string similar to Ancestries, traits, and their Subrace branches.
         /// </summary>
         public static string Race_Description {
             get {

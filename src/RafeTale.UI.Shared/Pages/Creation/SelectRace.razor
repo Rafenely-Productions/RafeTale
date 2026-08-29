@@ -85,7 +85,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        DtoRaces = await RaceService.GetAllAsync(null, includes: query => query.Include(x => x.Languages).IncludeCollection(x => x.SubRaces, z => z.Traits).Include(x => x.Traits));
+        DtoRaces = await RaceService.GetAllAsync(null, includes: query => query.Include(x => x.Languages).IncludeCollection(x => x.Subraces, z => z.Traits).Include(x => x.Traits));
 
         if (CreationService.SelectedRaceId != null)
         {

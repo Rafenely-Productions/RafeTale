@@ -19,7 +19,7 @@ public class TraitExtractorTests
             ["SubTrait", "1", "", "HighElf", "Rasgo", "Desc", "Desc" ]);
         var ctx = CreateContext();
         ctx.Package.Races.Add(new Race { Id = Guid.NewGuid(), TechnicalName = "Human" });
-        ctx.Package.SubRaces.Add(new SubRace { Id = Guid.NewGuid(), TechnicalName = "HighElf" });
+        ctx.Package.Subraces.Add(new Subrace { Id = Guid.NewGuid(), TechnicalName = "HighElf" });
 
         _sut.Extract(wb, ctx);
 

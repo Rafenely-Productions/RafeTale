@@ -70,7 +70,6 @@ public class ExcelDataExtractorTests
         result.SubclassLevelProgressions.Should().ContainSingle(p => p.Level == 3);
         result.XpRules.Should().HaveCount(2);
         result.Items.Should().ContainSingle(i => i.TechnicalName == "Longsword");
-        result.LocalizedContents.Should().NotBeEmpty();
 
         var gandalf = result.Characters.Should().ContainSingle(c => c.Name == "Gandalf").Subject;
         gandalf.Stats["Intelligence"].Should().Be(16);

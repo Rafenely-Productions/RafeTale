@@ -72,10 +72,11 @@ public static class MauiProgram
 
         //Excel
 
+        builder.Services.AddTransient<ISheetExtractor, RulebookExtractor>();
         builder.Services.AddTransient<ISheetExtractor, LanguageExtractor>();
         builder.Services.AddTransient<ISheetExtractor, SkillExtractor>();
         builder.Services.AddTransient<ISheetExtractor, RaceExtractor>();
-        builder.Services.AddTransient<ISheetExtractor, SubRaceExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, SubraceExtractor>();
         builder.Services.AddTransient<ISheetExtractor, TraitExtractor>();
         builder.Services.AddTransient<ISheetExtractor, SpecialTraitExtractor>();
         builder.Services.AddTransient<ISheetExtractor, ClassExtractor>();
@@ -88,6 +89,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ISheetExtractor, ClassLevelProgressionExtractor>();
         builder.Services.AddTransient<ISheetExtractor, SubclassLevelProgressionExtractor>();
         builder.Services.AddTransient<ISheetExtractor, XpRuleExtractor>();
+        builder.Services.AddTransient<ISheetExtractor, TranslationsExtractor>();
 
         builder.Services.AddScoped<IExcelImportService, ImportManager>();
         builder.Services.AddTransient<IDataExtractor, ExcelDataExtractor>();

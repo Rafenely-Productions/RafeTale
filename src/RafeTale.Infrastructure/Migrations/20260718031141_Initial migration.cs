@@ -194,7 +194,7 @@ namespace RafeTale.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubRaces",
+                name: "Subraces",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -203,9 +203,9 @@ namespace RafeTale.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SubRaces", x => x.Id);
+                    table.PrimaryKey("PK_Subraces", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubRaces_Races_RaceId",
+                        name: "FK_Subraces_Races_RaceId",
                         column: x => x.RaceId,
                         principalTable: "Races",
                         principalColumn: "Id",
@@ -258,9 +258,9 @@ namespace RafeTale.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Traits_SubRaces_SubraceId",
+                        name: "FK_Traits_Subraces_SubraceId",
                         column: x => x.SubraceId,
-                        principalTable: "SubRaces",
+                        principalTable: "Subraces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -807,8 +807,8 @@ namespace RafeTale.Infrastructure.Migrations
                 column: "SubclassId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubRaces_RaceId",
-                table: "SubRaces",
+                name: "IX_Subraces_RaceId",
+                table: "Subraces",
                 column: "RaceId");
 
             migrationBuilder.CreateIndex(
@@ -886,7 +886,7 @@ namespace RafeTale.Infrastructure.Migrations
                 name: "Languages");
 
             migrationBuilder.DropTable(
-                name: "SubRaces");
+                name: "Subraces");
 
             migrationBuilder.DropTable(
                 name: "ClassLevelProgressions");

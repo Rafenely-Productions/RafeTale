@@ -1,7 +1,7 @@
 
 namespace RafeTale.Application.DTOs
 {
-    public class SubRaceDto
+    public class SubraceDto
     {
         public Guid Id { get; init; }
         public string TechnicalName { get; init; } = string.Empty;

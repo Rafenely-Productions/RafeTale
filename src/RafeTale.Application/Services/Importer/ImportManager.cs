@@ -232,11 +232,11 @@ public class ImportManager(IUnitOfWork unitOfWork, IDataExtractor dataExtractor,
             var newLanguages = ((IEnumerable<Language>)data.Languages).Where(x => !existingLanguages.Contains(x.TechnicalName)).ToList();
             if (newLanguages.Count > 0) await unitOfWork.Languages.AddRangeAsync(newLanguages);
         }
-        if (data.SubRaces.Count > 0)
+        if (data.Subraces.Count > 0)
         {
-            var existingSubRaces = (await unitOfWork.SubRaces.GetAllAsync()).Select(x => x!.TechnicalName).ToHashSet();
-            var newSubRaces = ((IEnumerable<SubRace>)data.SubRaces).Where(x => !existingSubRaces.Contains(x.TechnicalName)).ToList();
-            if (newSubRaces.Count > 0) await unitOfWork.SubRaces.AddRangeAsync(newSubRaces);
+            var existingSubraces = (await unitOfWork.Subraces.GetAllAsync()).Select(x => x!.TechnicalName).ToHashSet();
+            var newSubraces = ((IEnumerable<Subrace>)data.Subraces).Where(x => !existingSubraces.Contains(x.TechnicalName)).ToList();
+            if (newSubraces.Count > 0) await unitOfWork.Subraces.AddRangeAsync(newSubraces);
         }
         if (data.Subclasses.Count > 0)
         {

@@ -34,7 +34,7 @@ else
     {
         races = await RaceService.GetAllAsync(null, includes: query => query
             .Include(x => x.Languages)
-            .IncludeCollection(x => x.SubRaces, z => z.Traits)
+            .IncludeCollection(x => x.Subraces, z => z.Traits)
             .Include(x => x.Traits));
         isLoading = false;
     }

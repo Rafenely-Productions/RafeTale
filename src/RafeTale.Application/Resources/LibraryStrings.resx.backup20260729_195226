@@ -84,7 +84,7 @@
     <value>Return to Directory</value>
   </data>
   <data name="Race_Description" xml:space="preserve">
-    <value>Ancestries, traits, and their subrace branches</value>
+    <value>Ancestries, traits, and their Subrace branches</value>
   </data>
   <data name="Race_Subrace_Title" xml:space="preserve">
     <value>Races &amp; Subraces</value>

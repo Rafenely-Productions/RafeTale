@@ -6,7 +6,7 @@ using RafeTale.Infrastructure.Extraction.Interfaces;
 
 namespace RafeTale.Infrastructure.Extraction.Sheets;
 
-public class SubRaceExtractor : ISheetExtractor
+public class SubraceExtractor : ISheetExtractor
 {
     private static class Col
     {
@@ -21,7 +21,7 @@ public class SubRaceExtractor : ISheetExtractor
     {
         foreach (var row in workbook.GetDataRows("Sub Races", isRequired: true))
         {
-            var sub = new SubRace
+            var sub = new Subrace
             {
                 Id = Guid.NewGuid(),
                 TechnicalName = row.Cell(Col.TechnicalName).GetString()
@@ -33,14 +33,14 @@ public class SubRaceExtractor : ISheetExtractor
             if (race != null)
                 sub.RaceId = race.Id;
 
-            context.Package.SubRaces.Add(sub);
+            context.Package.Subraces.Add(sub);
 
-            context.Localization.Save(sub.Id, LocEntity.SubRace, LocProperty.Name, sub.TechnicalName, LocLanguage.en);
-            context.Localization.Save(sub.Id, LocEntity.SubRace, LocProperty.Description,
+            context.Localization.Save(sub.Id, LocEntity.Subrace, LocProperty.Name, sub.TechnicalName, LocLanguage.en);
+            context.Localization.Save(sub.Id, LocEntity.Subrace, LocProperty.Description,
                 row.Cell(Col.DescriptionEn).GetString(), LocLanguage.en);
-            context.Localization.Save(sub.Id, LocEntity.SubRace, LocProperty.Name,
+            context.Localization.Save(sub.Id, LocEntity.Subrace, LocProperty.Name,
                 row.Cell(Col.NameLoc).GetString(), context.CurrentCulture);
-            context.Localization.Save(sub.Id, LocEntity.SubRace, LocProperty.Description,
+            context.Localization.Save(sub.Id, LocEntity.Subrace, LocProperty.Description,
                 row.Cell(Col.DescriptionLoc).GetString(), context.CurrentCulture);
         }
     }

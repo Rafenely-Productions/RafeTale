@@ -16,7 +16,7 @@ public class RaceTests
 
         // Assert
         race.Languages.Should().NotBeNull();
-        race.SubRaces.Should().NotBeNull();
+        race.Subraces.Should().NotBeNull();
         race.Traits.Should().NotBeNull();
     }
 
@@ -51,18 +51,18 @@ public class RaceTests
     }
 
     [Fact]
-    public void AddSubRace_SubRaces_ContainsTheSubRace()
+    public void AddSubrace_Subraces_ContainsTheSubrace()
     {
         // Arrange
         var race = new Race();
-        var subRace = new SubRace { TechnicalName = "High Elf" };
+        var Subrace = new Subrace { TechnicalName = "High Elf" };
 
         // Act
-        race.SubRaces.Add(subRace);
+        race.Subraces.Add(Subrace);
 
         // Assert
-        race.SubRaces.Should().ContainSingle()
-            .Which.Should().Be(subRace);
+        race.Subraces.Should().ContainSingle()
+            .Which.Should().Be(Subrace);
     }
 
     [Fact]

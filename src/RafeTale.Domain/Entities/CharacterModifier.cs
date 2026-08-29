@@ -1,9 +1,6 @@
 using RafeTale.Domain.Enums;
 using RafeTale.Domain.Interfaces;
-using System;
 namespace RafeTale.Domain.Entities;
-
-
 
 public class CharacterModifier : IEntity
 {

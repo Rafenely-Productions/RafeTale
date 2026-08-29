@@ -11,11 +11,10 @@ namespace RafeTale.Domain.Entities
     public class LocalizedContent : IEntity
     {
         public Guid Id { get; set; }
+        public LocEntity EntityType { get; set; }
         public Guid EntityId { get; set; }
 
-        public LocEntity EntityType { get; set; }
 
-        // Qué campo estamos traduciendo (ej: "Name", "Description", "Lore")
         public LocProperty Property { get; set; }
 
         // El código del idioma (ISO 2 letras: "es", "en", "pt")

@@ -18,7 +18,7 @@ namespace RafeTale.Application.Services.DtosServices
     {
         public async Task<RaceDto> ArmDto(Race race)
         {
-            var localizedSubraces = await loc.GetAllAsync(LocEntity.SubRace, [LocProperty.Name, LocProperty.Description]);
+            var localizedSubraces = await loc.GetAllAsync(LocEntity.Subrace, [LocProperty.Name, LocProperty.Description]);
             var localizedTraits = await loc.GetAllAsync(LocEntity.Trait, [LocProperty.Name, LocProperty.Description]);
 
             return new RaceDto
@@ -32,7 +32,7 @@ namespace RafeTale.Application.Services.DtosServices
                 Speed = race.Speed,
                 Languages = ArmLanguagesDto(race.Languages),
                 Traits = ArmTraitDtos(race.Traits, localizedTraits),
-                SubRaces = ArmSubraceDtos(race.SubRaces, localizedSubraces, localizedTraits)
+                Subraces = ArmSubraceDtos(race.Subraces, localizedSubraces, localizedTraits)
             };
         }
 
@@ -49,7 +49,7 @@ namespace RafeTale.Application.Services.DtosServices
                 Speed = race.Speed,
                 Languages = ArmLanguagesDto(race.Languages),
                 Traits = [], // Se llenan en GetAllAsync usando el inicializador si hiciera falta
-                SubRaces = []
+                Subraces = []
             };
         }
 
@@ -57,7 +57,7 @@ namespace RafeTale.Application.Services.DtosServices
         {
             var races = await uow.Races.GetAllAsync(filter, includes);
 
-            var localizedSubraces = await loc.GetAllAsync(LocEntity.SubRace, [LocProperty.Name, LocProperty.Description]);
+            var localizedSubraces = await loc.GetAllAsync(LocEntity.Subrace, [LocProperty.Name, LocProperty.Description]);
             var localizedTraits = await loc.GetAllAsync(LocEntity.Trait, [LocProperty.Name, LocProperty.Description]);
             var localizedWords = await loc.GetAllAsync(LocEntity.Race, [LocProperty.Name, LocProperty.Description, LocProperty.Resistances]);
 
@@ -80,7 +80,7 @@ namespace RafeTale.Application.Services.DtosServices
                     Speed = baseDto.Speed,
                     Languages = baseDto.Languages,
                     Traits = ArmTraitDtos(race.Traits, localizedTraits),
-                    SubRaces = ArmSubraceDtos(race.SubRaces, localizedSubraces, localizedTraits)
+                    Subraces = ArmSubraceDtos(race.Subraces, localizedSubraces, localizedTraits)
                 };
 
                 raceDtos.Add(completeDto);
@@ -97,11 +97,11 @@ namespace RafeTale.Application.Services.DtosServices
         }
 
 
-        private static List<SubRaceDto> ArmSubraceDtos(List<SubRace>? subraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedSubraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedTraits)
+        private static List<SubraceDto> ArmSubraceDtos(List<Subrace>? Subraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedSubraces, Dictionary<LocProperty, Dictionary<Guid, string>> localizedTraits)
         {
-            if (subraces == null) return [];
+            if (Subraces == null) return [];
 
-            return [.. subraces.Select(sr => new SubRaceDto
+            return [.. Subraces.Select(sr => new SubraceDto
             {
                 Id = sr.Id,
                 TechnicalName = sr.TechnicalName,

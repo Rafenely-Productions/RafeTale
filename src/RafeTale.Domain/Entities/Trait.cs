@@ -19,6 +19,6 @@ namespace RafeTale.Domain.Entities
         public Race? Race { get; set; }
 
         public Guid? SubraceId { get; set; }
-        public SubRace? Subrace { get; set; }
+        public Subrace? Subrace { get; set; }
     }
 }
